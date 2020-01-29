@@ -62,14 +62,14 @@ module.exports = (function () {
 	 * @apiParam {number} [private] If true, the parameter will be sent privately. Defaults to false.
 	 * @apiSuccess {number} reminderID ID of the reminder that was just created.
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
-	 *     If both id and name were used at the same time<br>
-	 *     If target user does not exist
+	 * If both id and name were used at the same time<br>
+	 * If target user does not exist
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
 	 * @apiError (403) AccessDenied Insufficient user level
 	 * @apiError (403) Forbidden Target user has opted out from being reminded at all<br>
-	 *     Target user has opted out from being reminded a by you<br>
-     *     You have too many pending reminders<br>
-	 *     Target has too many pending reminders<br>
+	 * Target user has opted out from being reminded a by you<br>
+	 * You have too many pending reminders<br>
+	 * Target has too many pending reminders
 	 */
 	Router.post("/", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
@@ -186,8 +186,8 @@ module.exports = (function () {
 	 * @apiSuccess {number} reminderID ID of the reminder that was created
 	 * @apiSuccess {string} message Human readable result of the operation
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
-	 *     If both id and name were used at the same time<br>
-	 *     If target user does not exist
+	 * If both id and name were used at the same time<br>
+	 * If target user does not exist
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */

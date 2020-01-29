@@ -66,8 +66,8 @@ module.exports = (function () {
 	 * @api {put} /data/suggestion/ Suggestion - Edit
 	 * @apiName EditSuggestion
 	 * @apiDescription Updates an already existing suggestion, based on ID.<br>
-	 *     Users with level >= admin can set anything without limitations on any suggestion
-	 *     Other users with level >= login can set categories, or dismiss their suggestions
+	 * Users with level >= admin can set anything without limitations on any suggestion<br>
+	 * Other users with level >= login can set categories, or dismiss their suggestions
 	 * @apiGroup Data
 	 * @apiPermission login
 	 * @apiParam {number} ID ID of suggestion to edit
@@ -78,11 +78,11 @@ module.exports = (function () {
 	 * @apiParam {string} [notes] Only available for admins
 	 * @apiSuccess {boolean} success True if everything was completed successfully
 	 * @apiError (400) InvalidRequest Suggestion ID does not exist<br>
-	 *     Suggestion ID is malformed<br>
-     *     Using both `addendum` and `text` at the same time<br>
-	 *     When not admin, attempting to edit someone else's suggestion<br>
-	 *     When not admin, attempting to edit suggestion with locked status<br>
-	 *     When not admin, attempting to set a disallowed status<br>
+	 * Suggestion ID is malformed<br>
+	 * Using both `addendum` and `text` at the same time<br>
+	 * When not admin, attempting to edit someone else's suggestion<br>
+	 * When not admin, attempting to edit suggestion with locked status<br>
+	 * When not admin, attempting to set a disallowed status<br>
 	 * @apiError (401) Unauthorized Authorization failed
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
