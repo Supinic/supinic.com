@@ -1,0 +1,35 @@
+doctype html
+html
+    head
+        block topheader
+        include ./header.pug
+        include ./datatables.pug
+        include ./navigation.pug
+
+        script.
+            $(document).ready(() => {
+                const table = $("#author-list").DataTable();
+            });
+        meta(charset="UTF-8")
+        style(type="text/css").
+            td.key {
+                vertical-align: middle !important;
+            }
+
+            #author-list-wrapper {
+                padding: 10px 40px 0 40px !important;
+            }
+    body
+        block navigation
+        div(id="author-list-wrapper")
+            table(id="author-list", class="table table-striped table-bordered")
+                thead
+                    th Name
+                    th Youtube
+                    th Country
+                tbody
+                    each row in data
+                        tr
+                            td !{row.detail}
+                            td !{row.youtube}
+                            td #{row.country}

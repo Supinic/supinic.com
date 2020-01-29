@@ -1,0 +1,33 @@
+doctype html
+html
+    head
+        block topheader
+        include ./header.pug
+        include ./navigation.pug
+    body
+        block navigation
+
+        center
+            div(id="data")
+                input(id="link" placeholder="Link")
+                button(id="parse-link").
+                    Parse link
+                br
+                br
+                input(id="name" placeholder="Track name")
+                br
+                br
+                input(id="author" placeholder="Author" disabled)
+                br
+                button(id="add-author").
+                    Add author
+                br
+                br
+                input(id="tag" placeholder="Author" disabled)
+                br
+                button(id="add-tag").
+                    Add tag
+                br
+                br
+                input(id="duration" placeholder="Duration")
+                br

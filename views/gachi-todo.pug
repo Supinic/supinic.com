@@ -1,0 +1,21 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug		
+
+		style(type="text/css").
+			html {
+				height: calc(100% - 60px);
+			}
+			body, iframe {
+				height: 100%;
+				width: 100%;
+			}
+
+		include ./navigation.pug
+	body
+		block navigation
+		iframe(
+			src="https://docs.google.com/spreadsheets/d/1vxwhOml19YxV_Xu_0ugvyvZiyExZyE6nALiXX9G3v7E/edit?usp=sharing"
+		)

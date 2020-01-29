@@ -1,0 +1,46 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug
+		include ./datatables.pug
+			
+		meta(charset="UTF-8")
+		style(type="text/css").
+			td.hover {
+				text-decoration: underline !important;
+				cursor: zoom-in;
+			}
+		script.
+			$(document).ready(function() {
+				$("#suggestions").DataTable({
+					pageLength: 10,
+					order: [3, "asc"],
+				});
+			});
+
+		style(type="text/css").
+			.highlight { 
+				background-color: yellow 
+			}
+			.searchable {
+				display: none;
+			}
+			#suggestions_wrapper {
+				padding: 10px 40px 0 40px !important;
+			}
+
+		include ./navigation.pug
+	body
+		block navigation
+		center
+			a(href="https://docs.google.com/spreadsheets/d/1YaG_4izWh5-QERsvM-LdkoMuxYo8NopNoSZn2YYOQbQ") Old suggestions
+		table(id="suggestions", class="table table-striped table-bordered")
+			thead
+				tr
+					each key in head
+						th #{key}
+			each row in data
+					tr
+						each key in head
+							td #{row[key]}

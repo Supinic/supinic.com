@@ -1,0 +1,39 @@
+append topheader
+	style(type="text/css").
+		table {
+			color: #FFF !important;
+		}
+		body {
+			font-size: 0.75rem !important;
+		}
+		a.dropdown-item {
+			font-size: 0.75rem !important;
+		}
+		td {
+			padding: 0.45rem !important;
+		}
+
+append navigation
+	nav(class="navbar navbar-expand-sm bg-dark navbar-dark")
+		a(class="navbar-brand" href="/") Supinic
+		div(class="nnavbar-nav mr-auto")
+			ul(class="navbar-nav")
+				each routeData in navitems
+					- if (routeData.items) {
+						li(class="nav-item dropdown")
+							a(class="nav-link dropdown-toggle" "data-toggle"="dropdown" href="#") !{routeData.name}
+							div(class="dropdown-menu")
+								each itemData in routeData.items
+									a(class="dropdown-item" href=`/${routeData.link}/${itemData.link}`) !{itemData.name}
+					- }
+					- else {
+						li(class="nav-item")
+							a(class="nav-link" href=`/${routeData.link}`) !{routeData.name}
+					- }
+		div(class="navbar-nav ml-auto")
+			- if (authUser) {
+				div Logged in as #{authUser.display}
+			- }
+			- else {
+				a(class="nav-link" href=`/auth/twitch?returnTo=${currentLocation}`) Twitch login
+			- }

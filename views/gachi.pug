@@ -1,0 +1,38 @@
+doctype html
+html
+	head
+		include ./header.pug
+		include ./navigation.pug
+		link(rel="stylesheet", type="text/css", href="/public/css/bootstrap-datatable.css")
+		script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js")
+		script(src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+		script(src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js")
+		script.
+			$(document).ready(() => {
+				$("#gachi").DataTable({
+					fixedColumns: { leftColumns: 1 },
+					pageLength: 25,
+					order: [1, "asc"],
+				});
+			});
+		meta(charset="UTF-8")
+	body
+		block navigation
+		table(id="gachi", class="table table-striped table-bordered")
+			thead
+				th("data-sortable"="false") ID
+				th Right version &nbsp;
+					img(style={"vertical-align": "bottom"} src="https://cdn.frankerfacez.com/emoticon/229760/1")
+				th Author
+				th Left version &nbsp;
+					img(style={"vertical-align": "bottom"} src="https://fourtf.com/chatterino/emotes/replacements/DansGame.png" alt="DansGame")
+				th Published
+			tbody
+				each row in data
+					tr
+						- var linkID = "/gachi/" + row.ID;
+						td: a(href=linkID) #{row.ID}
+						td: a(target="_blank" href=row.Main_Link) #{row.Name}
+						td #{row.Author}
+						td !{row.Based_On}
+						td #{row.Published}

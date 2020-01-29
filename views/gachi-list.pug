@@ -1,0 +1,81 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug
+		include ./datatables.pug
+
+		script.
+			$(document).ready(() => {
+				const table = $("#gachi").DataTable({
+					columnDefs: [
+						{ targets: [-1], visible: false, searchable: true },
+					],
+					pageLength: 25,
+					order: [0, "desc"],
+					rowCallback: (row, data, displayNum, displayIndex, dataIndex) => {
+						if (data[6] && data[6].toLowerCase().includes("issue:")) {
+							const check = data[6].toLowerCase();
+							let found = false;
+
+							if (check.includes("translation required")) {
+								found = true;
+								$(row).find("#name").css("background-color", "rgba(255,0,0,0.3)");
+							}
+							if (check.includes("no youtube reupload")) {
+								found = true;
+								$(row).find("#name").css("background-color", "rgba(255,0,255,0.3)");
+							}
+							if (check.includes("left version")) {
+								found = true;
+								$(row).find("#basedOn").css("background-color", "rgba(255,0,0,0.3)");
+							}
+							if (check.includes("original upload is")) {
+								found = true;
+								$(row).find("#author").css("background-color", "rgba(255,0,0,0.3)");
+							}
+
+							if (!found) {
+								$(row).css("background-color", "rgba(255,127,0,0.3)");
+							}
+						}
+					}
+				});
+			});
+		meta(charset="UTF-8")
+		style(type="text/css").
+			.highlight { 
+				background-color: yellow;
+			}
+			.searchable {
+				display: none;
+			}
+			#gachi_wrapper {
+				padding: 10px 40px 0 40px !important;
+			}
+
+		include ./navigation.pug
+	body
+		block navigation
+		table(id="gachi", class="table table-striped table-bordered")
+			thead
+				th ID
+				th Right version &nbsp;
+					img(style={"vertical-align": "bottom"} src="https://cdn.frankerfacez.com/emoticon/229760/1")
+				th Author
+				th Left version &nbsp;
+					img(style={"vertical-align": "bottom"} src="https://fourtf.com/chatterino/emotes/replacements/DansGame.png" alt="DansGame")
+				th Published
+				th Length
+				th.searchable Searchables
+			tbody
+				each row in data
+					tr
+						- var linkID = "/gachi/detail/" + row.ID;
+						td(id="listID"): a(href=linkID) #{row.ID}
+						td(id="name"): a(rel="noopener noreferrer" target="_blank" href=row.Main_Link) #{row.Name}
+						td(id="author") #{row.Author}
+						td(id="basedOn") !{row.Based_On}
+						td(id="publishedOn") #{row.Published}
+						td(data-order=row.Sort_Length) #{row.Length}
+						td.searchable #{row.Foreign_Name}|#{row.Notes}|#{row.Other_Link}

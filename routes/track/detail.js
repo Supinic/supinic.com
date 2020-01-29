@@ -1,0 +1,123 @@
+module.exports = (function () {
+	"use strict";
+
+	const LinkParserClass = require("track-link-parser");
+	const Express = require("express");
+	const Router = Express.Router();
+	const LinkParser = new LinkParserClass({
+		youtube: {
+			key: sb.Config.get("API_GOOGLE_YOUTUBE")
+		},
+		bilibili: {
+			appKey: sb.Config.get("BILIBILI_APP_KEY"),
+			token: sb.Config.get("BILIBILI_PRIVATE_TOKEN"),
+			userAgentDescription: sb.Config.get("BILIBILI_USER_AGENT")
+		},
+		soundcloud: {
+			key: sb.Config.get("SOUNDCLOUD_CLIENT_ID")
+		}
+	});
+
+	Router.get("/", async (req, res) => res.sendStatus(200));
+
+	Router.get("/new", async (req, res) => {
+		res.render("track-add");
+	});
+
+	Router.get("/:id", async (req, res) => {
+		const trackID = Number(req.params.id);
+		const rawData = JSON.parse(await sb.Utils.request("https://supinic.com/api/track/detail/" + trackID));
+		if (rawData.statusCode !== 200 || rawData.data === null) {
+			return res.status(404).render("error", {
+				error: "404 Not Found",
+				message: "Invalid ID"
+			});
+		}
+
+		const trackData = rawData.data;
+
+		let embed = "N/A";
+		switch (trackData.videoType) {
+			case 1: {
+				embed = `<iframe width="320px" height="166" scrolling="no" frameborder="no" src="https://www.youtube.com/embed/${trackData.link}">`;
+				break;
+			}
+			case 3: {
+				const data = await LinkParser.fetchData(trackData.parsedLink);
+				embed = `<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${data.extra.apiID}&amp;color=0066cc"></iframe>`;
+				break;
+			}
+			case 4: {
+				embed = `<iframe src="//player.vimeo.com/video/${trackData.link}" width="320px" height="166px" frameborder="0" allowfullscreen=""></iframe>`;
+				break;
+			}
+			case 21: {
+				embed = `<iframe width="320px" height="166" scrolling="no" frameborder="no" src="https://embed.nicovideo.jp/watch/${trackData.link}">`;
+				break;
+			}
+			case 22: {
+				let suffix = "";
+				let link = trackData.link;
+				if (trackData.link.includes("/?p=")) {
+					const number = link.match(/\/\?p=(\d+)$/)[1];
+					suffix = "&page=" + number;
+					link = trackData.link.replace(/\/\?p=\d+/, "");
+				}
+
+				embed = `<iframe src="//player.bilibili.com/player.html?aid=${link.replace(/av/, "")}${suffix}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width: 320px; height: 166px; max-width: 100%"></iframe>`;
+				break;
+			}
+			case 23: {
+				embed = `<audio style="width:100%" controls><source src="${trackData.parsedLink}"></audio>`;
+				break;
+			}
+			case 25: {
+				embed = `<video width="320" height="166" controls style="width:100%"><source type="video/mp4" src="${trackData.parsedLink}"></video>`;
+				break;
+			}
+		}
+
+		const data = {
+			ID: trackData.ID,
+			Name: trackData.name || "N/A",
+			Aliases: trackData.aliases.join("<br>") || "N/A",
+			Link: `<a href='${trackData.parsedLink}' rel="noopener noreferrer" target="_blank">${trackData.parsedLink}</a>`,
+			"Track type": trackData.trackType || "Unknown",
+			Duration: trackData.duration || "N/A",
+			Available: String(trackData.available),
+			Published: (trackData.published) ? new sb.Date(trackData.published).sqlDate() : "N/A",
+			Tags: (Array.isArray(trackData.tags))
+				? trackData.tags.join(", ")
+				: "(none)",
+
+			Authors: trackData.authors.map(i => ({
+				name: `<a target='_blank' href='/track/author/${i.ID}'>${i.name}</a>`,
+				role: sb.Utils.capitalize(i.role)
+			})),
+			"Related tracks": trackData.relatedTracks.map(i => {
+				const obj = { relationship: i.relationship};
+				if (i.fromID === trackData.ID) {
+					obj.from = "This";
+					obj.to = `<a title='${i.name}' href='/track/detail/${i.toID}'>${i.toID}</a>`;
+				}
+				else if (i.toID === trackData.ID) {
+					obj.from = `<a title='${i.name}' href='/track/detail/${i.fromID}'>${i.fromID}</a>`;
+					obj.to = "This";
+				}
+				return obj;
+			}),
+
+			"Added on": (trackData.addedOn) ? new sb.Date(trackData.addedOn).sqlDate() : "N/A",
+			"Added by": (trackData.addedBy) ? trackData.addedBy : "N/A",
+			Notes: trackData.notes || "N/A",
+			Embed: embed
+		};
+
+		res.render("author", {
+			data: data
+		});
+	});
+
+
+	return Router;
+})();

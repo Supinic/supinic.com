@@ -1,0 +1,113 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug
+		include ./navigation.pug
+
+		style(type="text/css").
+			table#format-guidelines {
+				color: #888 !important;
+			}
+			table#format-guidelines td {
+				padding: 0 10px 0 0 !important;
+			}
+	body
+		ul
+			li
+				b Name - Name of the song as it will appear in the list table
+				ul
+					li Try and make it as (English) readable as possible
+					li Remove all tags, all leading, ending and redundant symbols, all redundant info as you see fit
+					li We do not need any "Gachimuchi" tags or names, as this list contains only gachimuchi tracks
+					li If (after these steps) the name of the track is not in English, you have several options:
+						ul
+							li Leave it as is. 
+							li Use an existing translation (i.e. a reupload name)
+							li Attempt to translate it yourself (not recommended unless you know what you are doing) - do NOT use the raw output of Google Translate!
+				br
+			li
+				b Foreign (original) name - Original name of the song
+				ul
+					li Only available if Youtube Reupload or Normalized Name options are checked
+					li If you edited the track name for the previous step, put the 100% original name in this field
+				br
+			li
+				b Link - The main track link
+				ul
+					li This is the original upload link for a given track
+					li Strongly tied with the Video type field - the uploading site must match the Video type selected
+					li If the original upload is missing, use a reupload link instead, but mention this fact in the Notes field
+					li If the original has been deleted, use it anyway. Mention this fact in the Notes field - this is useful for potential web archive searches
+				br
+			li
+				b Author - Creator of the track
+				ul
+					li This is the person who created the track, not an uploader, or a reuploader
+					li Do not attempt to translate foreign authors' names - always leave them as is
+					li If there are multiple people (i.e. Audio and Video tracks authors), input "Various" and list the authors in the Notes field
+					li If the author is unknown (i.e. original upload has been deleted), input "?" and mention this fact in the Notes field
+				br
+			li
+				b Published on - Publishing date of the track
+				ul
+					li This is the date the original of a given track has been published (note: not created or copyrighted or else)
+					li If there is no such info for an original upload, use the publish date of a reupload, and mention this fact in the Notes field
+				br
+			li
+				b Duration - Duration of the track in seconds
+				ul
+					li Sometimes, Youtube rounds the duration to the closest higher number. This is not an issue, just keep the time close
+					li Watch out! Nicovideo date format is MM-DD-YYYY, Bilibili is YYYY-MM-DD
+				br
+			li
+				b Based on - name
+				ul
+					li Name of the track the gachi track is based upon, or inspired by
+					li If there are multiple songs the tracks is based upon, input "Various" and list the tracks (ideally with links) in the Notes field
+					li If you are unsure of the track that has been used, input "?" and leave the Based on - link empty
+					li If you are 100% sure the track has no original (it is a 100% original) - check the "100% original" option
+					li Recommended formats of the names for original tracks:
+						table(id="format-guidelines")
+							thead
+								td 
+									b Type
+								td 
+									b Format
+							tr
+								td Collaboration track
+								td [Track name]
+							tr 
+								td Regular song
+								td [Artist(s)] - [Song name]
+							tr 
+								td Regular song with an alternate name
+								td [Artist(s)] - [Song name] ([Alternate name])
+							tr 
+								td Regular song with features
+								td [Artist(s)] ft. [Features] - [Song name]
+							tr
+								td Remix
+								td [Original artist(s)] - [Song name] ([Remixer name] remix)
+							tr
+								td Original soundtrack
+								td [Movie/series/game name] OST - [Song name]
+							tr
+								td Original soundtrack with a significant artist
+								td [Movie/series/game name] OST - [Artist] - [Song name]
+							tr
+								td Touhou track - game name goes to Notes
+								td Touhou: [Game #] OST - [Song name]
+				br
+			li
+				b Based on - link
+				ul
+					li The Youtube (and only! Youtube) link to the based on track
+					li Can be left empty if the based on track is "Various", "?", yet unavailable on Youtube, or not 100% sure
+				br
+			li
+				b Notes
+				ul
+					li Everything that doesn't fit into other fields should be input here
+					li Personal notes are encouraged if they make sense in the track's context
+					li Keep in mind: notes are also searchable from the main table, so should you need extra "tags", or foreign transliterations, this is the place for them
