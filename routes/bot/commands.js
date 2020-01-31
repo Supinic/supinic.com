@@ -189,7 +189,8 @@ module.exports = (function () {
 
 		res.render("code", {
 			header: data.values.Name,
-			code: data.values.Code
+			code: data.values.Code,
+			link: `<a href="https://github.com/Supinic/supibot-sql/blob/master/commands/${data.values.Name}.sql">Github link</a>`
 		});
 	});
 
@@ -202,7 +203,6 @@ module.exports = (function () {
 		res.set("Content-Type", "text/html");
 		res.send("NYI");
 	});
-
 
 	return Router;
 })();
