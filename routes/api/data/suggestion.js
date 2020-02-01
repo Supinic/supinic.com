@@ -10,6 +10,18 @@ module.exports = (function () {
 	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
 
 	/**
+	 * @api {put} /data/suggestion/status/list Suggestion - Status - List
+	 * @apiName ListSuggestionsStatuses
+	 * @apiDescription Posts the list of possible suggestions' statuses,
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {string[]} data
+	 */
+	Router.get("/status/list", async (req, res) => {
+		return sb.WebUtils.apiSuccess(res, await Suggestion.listStatuses());
+	});
+
+	/**
 	 * @api {put} /data/suggestion/list Suggestion - List
 	 * @apiName ListSuggestions
 	 * @apiDescription Posts a list of suggestions

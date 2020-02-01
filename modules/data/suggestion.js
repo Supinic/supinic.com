@@ -42,6 +42,18 @@ module.exports = (function () {
 			}));
 		}
 
+		static async listStatuses () {
+			return (await sb.Query.getRecordset(rs => rs
+				.select("COLUMN_TYPE AS Columns")
+				.from("INFORMATION_SCHEMA", "COLUMNS")
+				.where("TABLE_SCHEMA = %s", this.database)
+				.where("TABLE_NAME = %s", this.table)
+				.where("COLUMN_NAME = %s", "Status")
+				.limit(1)
+				.single()
+			)).Columns.replace(/enum\(|\)|'/g, "").split(",").sort();
+		}
+
 		static get name () { return "track"; }
 		static get database () { return "data"; }
 		static get table () { return "Suggestion"; }
