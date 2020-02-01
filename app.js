@@ -219,9 +219,6 @@
 		res.redirect("/contact");
 	});
 
-	// Twitch webhook - followers
-	app.use("/twitch/follow", require("./routes/follow.js"));
-
 	// Paypal
 	app.post("/paypal", (req, res) => {
 		const parsedData = {
@@ -245,7 +242,10 @@
 
 	// 404
 	app.get("*", (req, res) => {
-		res.status(404).render("404");
+		return res.status(401).render("error", {
+			message: "404 Not found",
+			error: "Endpoint was not found"
+		});
 	});
 
 	app.listen(port, () => console.log("Listening..."));
