@@ -1,0 +1,22 @@
+{
+  "name": "supinic.com",
+  "version": "1.0.0",
+  "description": "Supinic's website project",
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "express-cache-controller": "^1.1.0",
+    "express-session": "latest",
+    "passport": "latest",
+    "passport-oauth": "latest",
+    "request": "latest",
+    "supinic-globals": "file:/code/custom_modules/supinic-globals",
+    "track-link-parser": "file:/code/custom_modules/track-link-parser"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Supinic",
+  "license": "ISC"
+}
