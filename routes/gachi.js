@@ -292,63 +292,6 @@ module.exports = (function () {
 			error: "503",
 			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
 		});
-
-		if (!res.locals.authUser) {
-			res.render("gachi-edit", {
-				required: {},
-				types: {},
-				data: {}
-			});
-			return;
-		}
-
-		const fields = Gachi.fields;
-		const id = Number(req.params.id);
-		if (Number.isNaN(id) || id === Infinity || id < 1 || Math.trunc(id) !== id) {
-			res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "ID not a valid number"
-			});
-			return;
-		}
-
-		let types = {};
-		let required = {};
-		let data = await Gachi.get(id);
-		if (data === null) {
-			res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "ID does not exist"
-			});
-			return;
-		}
-
-		if (data.Published) {
-			data.Published = data.Published.format("Y-m-d");
-		}
-
-		for (const key of Object.keys(data)) {
-			const field = fields.find(i => i.name === key);
-			if (!field) {
-				console.log("Could not find", key);
-				continue;
-			}
-
-			if (field.adminOnly && !res.locals.authUser.admin) {
-				delete data[key];
-				continue;
-			}
-
-			required[key] = field.required;
-			types[key] = fields.htmlType;
-			data[key] = (data[key] === null) ? "<NULL>" : data[key];
-		}
-
-		res.render("gachi-edit", {
-			required: required,
-			types: types,
-			data: data
-		});
 	});
 
 	Router.post("/edit/:id", async (req, res) => {
@@ -356,39 +299,6 @@ module.exports = (function () {
 			error: "503",
 			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
 		});
-
-		// const ID = Number(req.body.ID);
-		// addOrEdit(req, res, "/gachi/detail/" + ID);
-	});
-
-	Router.get("/todo", async (req, res) => {
-		const rawData = await Gachi.getTodoList();
-		const css = "<style type='text/css'>body { background-color:#111; color: white; } a:visited { color:darkviolet; } a { color:dodgerblue; } </style>";
-
-		const header = [
-			"<h4>",
-			"Unfinished: " + rawData.filter(i => !i.Notes && !i.Result && !i.Rejected).length,
-			"Noted (reuploads): " + rawData.filter(i => i.Notes && !i.Result && !i.Rejected).length,
-			"Rejected: " + rawData.filter(i => i.Rejected).length,
-			"Finished: " + rawData.filter(i => i.Result && !i.Rejected).length,
-			"</h4>"
-		].join("<br>");
-
-		const sendData = rawData.sort((a, b) => a.ID - b.ID).map(row => {
-			const notes = (row.Notes) ? ("<ul><li>" + row.Notes + "</li></ul>") : "";
-			if (row.Rejected) {
-				return "<li>ID " + row.ID + ": <del>" + row.Link + "</del>" + notes + "</li>";
-			}
-			else if (row.Result) {
-				// return `<li>ID ${row.ID}: Finished${notes}</li>`;
-			}
-			else {
-				return `<li>ID ${row.ID}: <a rel="noopener noreferrer" target="_blank" href="${row.Link_Prefix.replace("$", row.Link)}">${row.Link}</a>` + notes + "</li>";
-			}
-		}).filter(Boolean).join("");
-
-		res.set("Content-Type", "text/html");
-		res.send("<h1>lidl ass todo list</h1><ul>" + css + header + sendData + "</ul>");
 	});
 
 	Router.get("/add", async (req, res) => {
@@ -396,8 +306,6 @@ module.exports = (function () {
 			error: "503",
 			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
 		});
-
-		// res.render("gachi-add");
 	});	
 
 	Router.post("/add", async (req, res) => {
@@ -405,8 +313,6 @@ module.exports = (function () {
 			error: "503",
 			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
 		});
-
-		// addOrEdit(req, res, "/gachi/list");
 	});
 
 	Router.get("/guidelines", async (req, res) => {
