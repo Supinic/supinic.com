@@ -10,26 +10,36 @@ module.exports = (function () {
 
 	Router.get("/", async (req, res) => {	
 		const rawData = await Channel.list();
-		let data = rawData.map(i => ({
-			ID: i.ID,
-			Link: `${i.Name}-${i.ID}`,
+
+		// Use all non-Discord channels, and only show Discord channels with a description
+		// Those who aren't are most likely inactive.
+		const data = rawData.filter(i => i.PlatformName !== "Discord" || i.Description).map(i => ({
 			Name: (i.PlatformName === "Discord")
 				? (i.Description || "(unnamed discord channel)")
 				: i.Name,
 			Mode: i.Mode,
 			Platform: i.PlatformName,
-			LineCount: String(i.LineCount).replace(/\B(?=(\d{3})+(?!\d))/g, " "),
-			LineCountNumber: i.LineCount,
-			ByteLength: (i.ByteLength >= 1e9)
-				? (sb.Utils.round(i.ByteLength / 1e9, 3) + " GB")
-				: (i.ByteLength >= 1e6)
-					? (sb.Utils.round(i.ByteLength / 1e6, 3) + " MB")
-					: (sb.Utils.round(i.ByteLength / 1e3, 0) + " kB"),
-			ByteLengthNumber: i.ByteLength
+			LineCount: {
+				dataOrder: i.LineCount,
+				value: String(i.LineCount).replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+			},
+			ByteLength: {
+				dataOrder: i.ByteLength,
+				value: (i.ByteLength >= 1e9)
+					? (sb.Utils.round(i.ByteLength / 1e9, 3) + " GB")
+					: (i.ByteLength >= 1e6)
+						? (sb.Utils.round(i.ByteLength / 1e6, 3) + " MB")
+						: (sb.Utils.round(i.ByteLength / 1e3, 0) + " kB")
+			},
+			ID: `<a href="/bot/channels/${i.ID}/activity" ${i.ID}</a>`
 		}));
 
-		res.render("channels-list", {
-			data: data
+		res.render("generic-list-table", {
+			data: data,
+			head: Object.keys(data[0]),
+			pageLength: 50,
+			sortColumn: 0,
+			sortDirection: "asc"
 		});
 	});
 

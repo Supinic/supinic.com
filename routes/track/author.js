@@ -33,11 +33,7 @@ module.exports = (function () {
 			data: listData,
 			head: Object.keys(listData[0]),
 			pageLength: 25
-		})
-
-		// res.render("author-list", {
-		// 	data: listData
-		// });
+		});
 	});
 
 	Router.get("/:id", async (req, res) => {
