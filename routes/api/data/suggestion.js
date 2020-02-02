@@ -103,12 +103,20 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Malformed suggestion ID");
 		}
 
-		const row = await Suggestion.getRow(ID);
-		if (row === null) {
+		const data = await Suggestion.selectSingleCustom(q => q
+			.select("User_Alias.Name AS Username")
+			.join("chat_data", "User_Alias")
+			.where("Suggestion.ID = %n", ID)
+		);
+
+		if (!data) {
 			return sb.WebUtils.apiFail(res, 404, "Suggestion does not exist");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, row.valuesObject);
+			data.User_ID = data.User_Alias;
+			delete data.User_Alias;
+
+			return sb.WebUtils.apiSuccess(res, data);
 		}
 	});
 
