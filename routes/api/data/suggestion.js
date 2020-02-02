@@ -75,7 +75,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {put} /data/suggestion/status/list Suggestion - Status - List
+	 * @api {get} /data/suggestion/:id Suggestion - Status - List
 	 * @apiName ListSuggestionsStatuses
 	 * @apiDescription Posts the list of possible suggestions' statuses,
 	 * @apiGroup Data
@@ -89,7 +89,12 @@ module.exports = (function () {
 		}
 
 		const row = await Suggestion.getRow(ID);
-		return sb.WebUtils.apiSuccess(res, row.valuesObject);
+		if (row === null) {
+			return sb.WebUtils.apiFail(res, 404, "Suggestion does not exist");
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, row.valuesObject);
+		}
 	});
 
 	/**
