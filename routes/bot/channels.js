@@ -6,7 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Throughput = require("../../modules/messages.js");
-	const Channel = require("../../modules/channel.js");
+	const Channel = require("../../modules/chat-data/channel.js");
 
 	Router.get("/", async (req, res) => {	
 		const rawData = await Channel.list();

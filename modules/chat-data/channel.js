@@ -1,7 +1,7 @@
 module.exports = (function () {
-	"use strict";
+	const TemplateModule = require("../template.js");
 
-	class Channel {
+	class Channel extends TemplateModule {
 		static async list () {
 			const channels = await sb.Query.getRecordset(rs => rs
 				.select("Channel.*")
@@ -20,18 +20,26 @@ module.exports = (function () {
 				channel.LineCount = (await sb.Query.getRecordset(rs => rs
 					.select("MAX(ID) AS LineCount")
 					.from("chat_line", dbName)
-				))[0].LineCount;
+					.limit(1)
+					.single()
+				)).LineCount;
 
 				channel.ByteLength = (await sb.Query.getRecordset(rs => rs
 					.select("(DATA_LENGTH + INDEX_LENGTH) AS ByteLength")
 					.from("INFORMATION_SCHEMA", "TABLES")
 					.where("TABLE_SCHEMA = %s", "chat_line")
 					.where("TABLE_NAME = %s", dbName)
-				))[0].ByteLength;
+					.limit(1)
+					.single()
+				)).ByteLength;
 
 				return channel;
 			}));
 		}
+
+		static get name () { return "channel"; }
+		static get database () { return "chat_data"; }
+		static get table () { return "Channel"; }
 	}
 
 	return Channel;
