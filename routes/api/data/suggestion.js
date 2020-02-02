@@ -5,12 +5,13 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Suggestion = require("../../../modules/data/suggestion.js");
+	const Columns = require("../../../modules/information-schema/columns.js");
 
 	const nonAdminStatuses = ["Dismissed by author"];
 	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
 
 	/**
-	 * @api {put} /data/suggestion/status/list Suggestion - Status - List
+	 * @api {get} /data/suggestion/status/list Suggestion - Status - List
 	 * @apiName ListSuggestionsStatuses
 	 * @apiDescription Posts the list of possible suggestions' statuses,
 	 * @apiGroup Data
@@ -18,7 +19,21 @@ module.exports = (function () {
 	 * @apiSuccess {string[]} data
 	 */
 	Router.get("/status/list", async (req, res) => {
-		return sb.WebUtils.apiSuccess(res, await Suggestion.listStatuses());
+		const data = await Columns.getEnumColumnOptions("data", "Suggestion", "Status");
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /data/suggestion/status/list Suggestion - Category - List
+	 * @apiName ListSuggestionsCategories
+	 * @apiDescription Posts the list of possible suggestions' categories,
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {string[]} data
+	 */
+	Router.get("/category/list", async (req, res) => {
+		const data = await Columns.getEnumColumnOptions("data", "Suggestion", "Category");
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	/**
