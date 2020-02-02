@@ -74,16 +74,6 @@ module.exports = class TemplateModule {
 			});
 		}
 
-		if (typeof ID !== "number" || ID < 1 || Math.trunc(ID) !== ID || !Number.isFinite(ID)) {
-			throw new sb.Error({
-				message: `ID must be a finite positive integer`,
-				args: {
-					type: typeof ID,
-					ID: ID
-				}
-			});
-		}
-
 		return Boolean(await sb.Query.getRecordset(rs => rs
 			.select("1")
 			.from(this.database, this.table)
