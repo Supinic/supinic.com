@@ -75,6 +75,24 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {put} /data/suggestion/status/list Suggestion - Status - List
+	 * @apiName ListSuggestionsStatuses
+	 * @apiDescription Posts the list of possible suggestions' statuses,
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {string[]} data
+	 */
+	Router.get("/:id", async (req, res) => {
+		const ID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed suggestion ID");
+		}
+
+		const row = await Suggestion.getRow(ID);
+		return sb.WebUtils.apiSuccess(res, row.valuesObject);
+	});
+
+	/**
 	 * @api {put} /data/suggestion/ Suggestion - Edit
 	 * @apiName EditSuggestion
 	 * @apiDescription Updates an already existing suggestion, based on ID.<br>
