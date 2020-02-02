@@ -13,6 +13,9 @@ module.exports = (function () {
 	];
 
 	Router.all("/*", (req, res, next) => {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 		sb.WebUtils.apiLogRequest(req);
 		next();
 	});
