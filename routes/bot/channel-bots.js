@@ -70,14 +70,11 @@ module.exports = (function () {
 					Prefix: i.Prefix,
 					Author: i.Author,
 					Language: i.Language,
-					Level: `<a href="/bot/channel-bots/levels">${i.Level}</a>`,
+					Level: {
+						dataOrder: i.Level,
+						value: `<a href="/bot/channel-bots/levels">${i.Level}</a>`
+					},
 					Badges: badgeInfo.join(""),
-					"Last seen ": {
-						dataOrder: Number(i.Last_Verified) || 0,
-						value: (i.Last_Verified)
-							? sb.Utils.timeDelta(i.Last_Verified)
-							: "N/A"
-					}
 				};
 			})()
 		));
