@@ -11,10 +11,13 @@ module.exports = (function () {
 		const data = (await Suggestion.list()).map(i => ({
 			ID: i.ID,
 			Name: i.User_Name,
-			Date: i.Date.format("Y-m-d H:i:s"),
 			Text: i.Text,
 			Category: i.Category,
 			Status: i.Status,
+			Date: {
+				dataOrder: i.Date.valueOf(),
+				value: i.Date.format("Y-m-d")
+			},
 			Notes: (i.Notes)
 				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.Notes}">Hover</div>`
 				: "N/A"
@@ -23,7 +26,9 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			data: data,
 			head: Object.keys(data[0]),
-			pageLength: 25
+			pageLength: 25,
+			sortColumn: 5,
+			sortDirection: "desc"
 		});
 	});
 
