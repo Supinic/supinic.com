@@ -8,11 +8,6 @@ module.exports = (function () {
 	const ChannelBot = require("../../modules/bot-data/bot.js");
 
 	Router.get("/", async (req, res) => {
-		const badgeData = await sb.Query.getRecordset(rs => rs
-			.select("Name", "Emoji")
-			.from("bot_data", "Badge")
-		);
-
 		const rawData = await ChannelBot.selectMultipleCustom(q => q
 			.select("Bot_Author.Name AS Author")
 			.select("Bot_User_Alias.Name AS Bot_Name")
