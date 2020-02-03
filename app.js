@@ -4,11 +4,23 @@
 	process.env.PROJECT_TYPE = "site";
 
 	require("./db-access.js");
-	await require("supinic-globals")(["objects", "singletons"]);
+	await require("supinic-globals")("sb", {
+		whitelist: [
+			"objects/date",
+			"objects/error",
+			"objects/promise",
+			"objects/url-params",
 
-	// @todo please remove this and make supinic-globals take more params on what to load
-	// what the hell.
-	sb.User = await (await require("../custom_modules/supinic-globals/classes/user.js")).initialize();
+			"singletons/query",
+			"classes/config",
+			"singletons/utils",
+			"singletons/internal-request",
+
+			"classes/user"
+		]
+	});
+
+	// Todo move WebUtils into globals package
 	sb.WebUtils = require("./webutils");
 
 	const port = 80;
