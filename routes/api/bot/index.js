@@ -17,7 +17,7 @@ module.exports = (function () {
 		["text-to-speech", "tts.js"]
 	];
 
-	subroutes.forEach(([name, link]) =>  Router.use("/" + name, require("./" + link)));
+	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
 	/**
 	 * @api {get} /bot/active Channel bots data
