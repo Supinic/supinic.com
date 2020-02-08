@@ -7,10 +7,12 @@ module.exports = (function () {
 
 	Router.get("/", async (req, res) => {
 		const data = sb.Config.get("TTS_VOICE_DATA");
+
 		res.render("generic-list-table", {
 			data: data,
 			head: Object.keys(data[0]),
-			pageLength: 50
+			pageLength: 50,
+			specificFiltering: true
 		});
 	});
 
