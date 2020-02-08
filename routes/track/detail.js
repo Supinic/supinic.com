@@ -96,12 +96,14 @@ module.exports = (function () {
 			})),
 			"Related tracks": trackData.relatedTracks.map(i => {
 				const obj = { relationship: i.relationship};
+				const name = sb.Utils.wrapString(i.name, 100);
+
 				if (i.fromID === trackData.ID) {
 					obj.from = "This";
-					obj.to = `<a title='${i.name}' href='/track/detail/${i.toID}'>${i.toID}</a>`;
+					obj.to = `<a title='ID ${i.toID}: ${name}' href='/track/detail/${i.toID}'>${name}</a>`;
 				}
 				else if (i.toID === trackData.ID) {
-					obj.from = `<a title='${i.name}' href='/track/detail/${i.fromID}'>${i.fromID}</a>`;
+					obj.from = `<a title='ID ${i.fromID}: ${name}' href='/track/detail/${i.fromID}'>${name}</a>`;
 					obj.to = "This";
 				}
 				return obj;
