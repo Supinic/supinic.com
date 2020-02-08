@@ -14,15 +14,9 @@ html
 		- if (typeof specificFiltering === "undefined") {
 		-	specificFiltering = false;
 		- }
+
 		script.
 			$(document).ready(() => {
-				if (#{specificFiltering}) {
-					$('thead th').each(function () {
-						const title = $(this).text();
-						$(this).html('<input class="megadank" type="text" placeholder="Search ' + title + '" />');
-					});
-				}
-
 				const table = $("#table").DataTable({
 					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
 					pageLength: #{pageLength},
@@ -30,9 +24,9 @@ html
 				});
 
 				if (#{specificFiltering}) {
-					$('thead th').each(function (i) {
-						const title = $(this).text();
-							$(this).html('<input type="text" placeholder="Search ' + title + '" />');
+					$('td.searchFooter').each(function (i) {
+						const title = $(this).attr("name");
+							$(this).html(`<input type="text" placeholder="🔎 ${title}">`);
 
 							$('input', this).on('keyup change', function () {
 								if (table.column(i).search() !== this.value) {
@@ -46,6 +40,12 @@ html
 		style(type="text/css").
 			.searchable {
 				display: none;
+			}
+
+			td.searchFooter > input {
+				width: 100%;
+				max-width: 100%;
+				min-width: 50px;
 			}
 
 			td a {
@@ -77,3 +77,10 @@ html
 						- else {
 							td !{row[key]}
 						- }
+
+			- if (specificFiltering) {
+				tfoot
+					tr
+						each key in head
+							td(class="searchFooter" name=key)
+			- }

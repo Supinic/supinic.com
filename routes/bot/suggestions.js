@@ -28,7 +28,8 @@ module.exports = (function () {
 			head: Object.keys(data[0]),
 			pageLength: 25,
 			sortColumn: 5,
-			sortDirection: "desc"
+			sortDirection: "desc",
+			specificFiltering: true
 		});
 	});
 
