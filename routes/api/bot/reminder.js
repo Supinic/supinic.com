@@ -102,7 +102,6 @@ module.exports = (function () {
 		}
 
 		const privateReminder = Boolean(rawPrivateReminder);
-
 		const userIdentifier = (userID) ? Number(userID) : username;
 		const userData = await sb.User.get(userIdentifier, true);
 		if (!userData) {
@@ -167,7 +166,7 @@ module.exports = (function () {
 			Schedule: schedule ?? null,
 			Text: text || "(no message)",
 			Active: true,
-			Private_Message: false
+			Private_Message: privateReminder
 		});
 
 		await reloadBotReminders();
