@@ -10,8 +10,8 @@
     "passport": "latest",
     "passport-oauth": "latest",
     "request": "latest",
-    "supinic-globals": "file:/code/custom_modules/supinic-globals",
-    "track-link-parser": "file:/code/custom_modules/track-link-parser"
+    "supi-core": "github:supinic/supi-core",
+    "track-link-parser": "github:supinic/track-link-parser"
   },
   "main": "app.js",
   "scripts": {

@@ -4,7 +4,7 @@
 	process.env.PROJECT_TYPE = "site";
 
 	require("./db-access.js");
-	await require("supinic-globals")("sb", {
+	await require("supi-core")("sb", {
 		whitelist: [
 			"objects/date",
 			"objects/error",
