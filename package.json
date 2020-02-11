@@ -13,9 +13,12 @@
     "supi-core": "github:supinic/supi-core",
     "track-link-parser": "github:supinic/track-link-parser"
   },
+  "engines": {
+    "node": ">= 13.2"
+  },
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./app.js --harmony-nullish --harmony-optional-chaining"
   },
   "author": "Supinic",
   "license": "ISC"
