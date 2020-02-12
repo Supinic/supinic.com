@@ -113,7 +113,7 @@ module.exports = class WebUtils {
 		row.setValues({
 			Method: req.method,
 			Endpoint: req.baseUrl + req.url,
-			Source_IP: req.header("X-Forwarded-For") || req.connection.remoteAddress,
+			Source_IP: req.header("X-Forwarded-For") + " (" + req.connection.remoteAddress + ")",
 			User_Agent: req.header("User-Agent") || null,
 			Headers: JSON.stringify(req.headers),
 			Query: JSON.stringify(req.query),
