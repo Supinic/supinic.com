@@ -231,27 +231,6 @@
 		res.redirect("/contact");
 	});
 
-	// Paypal
-	app.post("/paypal", (req, res) => {
-		const parsedData = {
-			id: req.body.id,
-			created: new sb.Date(req.body.create_time).valueOf(),
-			summary: req.body.summary,
-			state: req.body.resource.state,
-			mode: req.body.resource.amount.mode,
-			currency: req.body.resource.amount.currency,
-			amount: Number(req.body.resource.amount.total)
-		};
-
-		const params = new sb.URLParams().set("type", "paypal");
-		for (const [key, value] of Object.entries(parsedData)) {
-			params.set(key, value);
-		}
-		sb.InternalRequest.send(params);
-
-		res.status(200).end();
-	});
-
 	// 404
 	app.get("*", (req, res) => {
 		return res.status(401).render("error", {
