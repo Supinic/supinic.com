@@ -103,7 +103,7 @@ module.exports = (function () {
 					obj.to = `<a title='ID ${i.toID}: ${name}' href='/track/detail/${i.toID}'>${name}</a>`;
 				}
 				else if (i.toID === trackData.ID) {
-					const name = sb.Utils.wrapString(i.name ?? i.fromID, 50);
+					const name = sb.Utils.wrapString(i.name ?? String(i.fromID), 50);
 					obj.from = `<a title='ID ${i.fromID}: ${name}' href='/track/detail/${i.fromID}'>${name}</a>`;
 					obj.to = "This";
 				}
@@ -112,7 +112,7 @@ module.exports = (function () {
 
 			"Added on": (trackData.addedOn) ? new sb.Date(trackData.addedOn).sqlDate() : "N/A",
 			"Added by": (trackData.addedBy) ? trackData.addedBy : "N/A",
-			Notes: trackData.notes || "N/A",
+			Notes: (trackData.notes) ? (trackData.notes.replace(/\n/g, "<br>")) : "N/A",
 			Embed: embed
 		};
 
