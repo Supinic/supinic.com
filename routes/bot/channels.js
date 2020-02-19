@@ -50,25 +50,30 @@ module.exports = (function () {
 
 		const channelData = tableList.find(i => i.ID === channelID && i.Name === channelName);
 		if (!channelData) {
-			res.status(404).render("error", {
+			return res.status(404).render("error", {
 				error: "404",
 				message: "Target channel has no activity data"
 			});
-			return;
 		}
 
-		console.time("Activity SQL");
+		if (typeof sb.App.cache.channelActivity === "undefined") {
+			sb.App.cache.channelActivity = {};
+		}
+
 		const [lastHourData, lastDayData, lastMonthData] = await Promise.all([
 			Throughput.lastHour(channelData.ID),
 			Throughput.lastDay(channelData.ID),
-			Throughput.lastMonth(channelData.ID)
+			(async () => sb.App.cache.channelActivity[channelID] ?? await Throughput.lastMonth(channelData.ID))()
 		]);
-		console.timeEnd("Activity SQL");
+
+		if (typeof sb.App.cache.channelActivity[channelID] === "undefined") {
+			sb.App.cache.channelActivity[channelID] = lastMonthData;
+		}
 
 		let minuteData = [];
 		let hourData = [];
-		let dayData = [];
 		let dayLabels = [];
+		let dayData = [];
 
 		for (const row of lastHourData) {
 			minuteData.push(Number(row.Amount));

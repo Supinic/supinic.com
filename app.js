@@ -16,7 +16,8 @@
 			"singletons/utils",
 			"singletons/internal-request",
 
-			"classes/user"
+			"classes/user",
+			"classes/cron"
 		]
 	});
 
@@ -242,4 +243,5 @@
 	app.listen(port, () => console.log("Listening..."));
 
 	sb.App = app;
+	sb.App.cache = {};
 })();	
