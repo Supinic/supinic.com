@@ -22,9 +22,10 @@ module.exports = (function () {
 		const data = raw.data.map(i => ({
 			ID: `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`,
 			Name: `<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>`,
-			Published: (i.published)
-				? new sb.Date(i.published).format("Y-m-d H:i")
-				: "N/A",
+			Published: {
+				value: (i.published) ? new sb.Date(i.published).format("Y-m-d H:i") : "N/A",
+				dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
+			},
 			Author: (i.authors.length !== 0)
 				? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
 				: "N/A",
