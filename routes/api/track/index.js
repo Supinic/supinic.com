@@ -200,7 +200,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /track/list/ Track - Search
+	 * @api {get} /track/search Track - Search
 	 * @apiName SearchTrackList
 	 * @apiDescription Fetches a filtered list of Tracks based on query
 	 * @apiGroup Track-List
