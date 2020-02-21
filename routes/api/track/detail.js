@@ -5,14 +5,42 @@ module.exports = (function () {
 	const Router = Express.Router();
 	const Track = require("../../../modules/track/track.js");
 
+	/**
+	 * @api {get} /track/list/:id Track - Get
+	 * @apiName GetTrack
+	 * @apiDescription Fetches full data about a specific track ID
+	 * @apiGroup Tracka
+	 * @apiPermission any
+	 * @apiSuccess {Object} track Single track object
+	 * @apiSuccess {number} track.ID
+	 * @apiSuccess {string} track.name
+	 * @apiSuccess {number} track.videoType
+	 * @apiSuccess {string} track.trackType
+	 * @apiSuccess {number} track.duration
+	 * @apiSuccess {boolean} track.available
+	 * @apiSuccess {string} track.published
+	 * @apiSuccess {string} [track.notes]
+	 * @apiSuccess {string} track.addedBy
+	 * @apiSuccess {string} track.addedOn
+	 * @apiSuccess {string} [track.lastEdit]
+	 * @apiSuccess {string[]} track.aliases
+	 * @apiSuccess {object[]} track.authors
+	 * @apiSuccess {string} track.authors.role
+	 * @apiSuccess {number} track.authors.ID
+	 * @apiSuccess {string} track.authors.name
+	 * @apiSuccess {string[]} track.tags
+	 * @apiSuccess {string]} track.relatedTracks.relationship
+	 * @apiSuccess {number} track.relatedTracks.fromID
+	 * @apiSuccess {number} track.relatedTracks.toID
+	 * @apiSuccess {string} track.relatedTracks.name
+	 * @apiSuccess {number} [track.legacyID]
+	 * @apiError (400) InvalidRequest ID is out of range<br>
+	 *     ID is out of bounds (does not exist)
+	 */
 	Router.get("/:id", async (req, res) => {
 		const id = Number(req.params.id);
 		if (!id) {
-			return res.status(400)
-				.send(JSON.stringify({
-					statusCode: 400,
-					error: "ID provided is not a valid positive integer"
-				}));
+			return sb.WebUtils.apiFail(res, 400, "Provided ID is not a valid integer");
 		}
 
 		let trackData = null;
@@ -20,28 +48,10 @@ module.exports = (function () {
 			trackData = await Track.get(id);
 		}
 		catch (e) {
-			console.error(e);
-			return res.status(400)
-				.send(JSON.stringify({
-					statusCode: 400,
-					error: "ID is out of bounds"
-				}));
+			return sb.WebUtils.apiFail(res, 400, "ID is out of bounds");
 		}
 
-		if (!trackData) {
-			return res.status(400)
-				.send(JSON.stringify({
-					statusCode: 400,
-					error: "No data for given ID"
-				}));
-		}
-
-		res.type("application/json")
-			.status(200)
-			.send(JSON.stringify({
-				statusCode: 200,
-				data: sb.Utils.convertCaseObject(trackData, "snake", "camel")
-			}));
+		return sb.WebUtils.apiSuccess(res, trackData ?? null);
 	});
 
 	return Router;
