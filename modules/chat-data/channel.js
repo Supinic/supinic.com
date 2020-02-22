@@ -5,7 +5,7 @@ module.exports = (function () {
 		static async list () {
 			const channels = await sb.Query.getRecordset(rs => rs
 				.select("Channel.*")
-				.select("Platform.Name AS PlatformName")
+				.select("Platform.Name AS Platform_Name")
 				.from("chat_data", "Channel")
 				.join("chat_data", "Platform")
 				.where("Mode <> %s", "Inactive")
@@ -13,25 +13,25 @@ module.exports = (function () {
 			);
 
 			return await Promise.all(channels.map(async channel => {
-				const dbName = (channel.PlatformName === "Twitch")
+				const dbName = (channel.Platform_Name === "Twitch")
 					? channel.Name
-					: (channel.PlatformName.toLowerCase() + "_" + channel.Name);
+					: (channel.Platform_Name.toLowerCase() + "_" + channel.Name);
 
-				channel.LineCount = (await sb.Query.getRecordset(rs => rs
-					.select("MAX(ID) AS LineCount")
+				channel.Line_Count = (await sb.Query.getRecordset(rs => rs
+					.select("MAX(ID) AS Line_Count")
 					.from("chat_line", dbName)
 					.limit(1)
 					.single()
-				)).LineCount;
+				)).Line_Count;
 
-				channel.ByteLength = (await sb.Query.getRecordset(rs => rs
-					.select("(DATA_LENGTH + INDEX_LENGTH) AS ByteLength")
+				channel.Byte_Length = (await sb.Query.getRecordset(rs => rs
+					.select("(DATA_LENGTH + INDEX_LENGTH) AS Byte_Length")
 					.from("INFORMATION_SCHEMA", "TABLES")
 					.where("TABLE_SCHEMA = %s", "chat_line")
 					.where("TABLE_NAME = %s", dbName)
 					.limit(1)
 					.single()
-				)).ByteLength;
+				)).Byte_Length;
 
 				return channel;
 			}));

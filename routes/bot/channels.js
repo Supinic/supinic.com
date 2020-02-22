@@ -9,29 +9,29 @@ module.exports = (function () {
 	const Channel = require("../../modules/chat-data/channel.js");
 
 	Router.get("/", async (req, res) => {	
-		const rawData = await Channel.list();
+		const { data: rawData } = JSON.parse(await sb.Utils.request("https://supinic.com/api/bot/channel/list"));
 
 		// Use all non-Discord channels, and only show Discord channels with a description
 		// Those who aren't are most likely inactive.
-		const data = rawData.filter(i => i.PlatformName !== "Discord" || i.Description).map(i => ({
-			Name: (i.PlatformName === "Discord")
-				? (i.Description || "(unnamed discord channel)")
-				: i.Name,
-			Mode: i.Mode,
-			Platform: i.PlatformName,
+		const data = rawData.filter(i => i.platformName !== "Discord" || i.description).map(i => ({
+			Name: (i.platformName === "Discord")
+				? (i.description || "(unnamed discord channel)")
+				: i.name,
+			Mode: i.mode,
+			Platform: i.platformName,
 			LineCount: {
-				dataOrder: i.LineCount,
-				value: String(i.LineCount).replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+				dataOrder: i.lineCount,
+				value: String(i.lineCount).replace(/\B(?=(\d{3})+(?!\d))/g, " ")
 			},
 			ByteLength: {
-				dataOrder: i.ByteLength,
-				value: (i.ByteLength >= 1e9)
-					? (sb.Utils.round(i.ByteLength / 1e9, 3) + " GB")
-					: (i.ByteLength >= 1e6)
-						? (sb.Utils.round(i.ByteLength / 1e6, 3) + " MB")
-						: (sb.Utils.round(i.ByteLength / 1e3, 0) + " kB")
+				dataOrder: i.byteLength,
+				value: (i.byteLength >= 1e9)
+					? (sb.Utils.round(i.byteLength / 1e9, 3) + " GB")
+					: (i.byteLength >= 1e6)
+						? (sb.Utils.round(i.byteLength / 1e6, 3) + " MB")
+						: (sb.Utils.round(i.byteLength / 1e3, 0) + " kB")
 			},
-			ID: `<a href="/bot/channels/${i.ID}/activity" ${i.ID}</a>`
+			ID: `<a href="/bot/channels/${i.ID}/activity">${i.ID}</a>`
 		}));
 
 		res.render("generic-list-table", {
