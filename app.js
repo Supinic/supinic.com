@@ -16,6 +16,7 @@
 			"singletons/utils",
 			"singletons/internal-request",
 
+			"classes/got",
 			"classes/user",
 			"classes/cron"
 		]
