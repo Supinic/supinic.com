@@ -103,7 +103,6 @@
 				{ name: "Cookie statistics", link: "cookie/list" },
 				{ name: "Commands", link: "command" },
 				{ name: "Commands statistics", link: "command/stats" },
-				{ name: "Playsounds", link: "playsound" },
 				{ name: "Reminders - yours", link: "reminder/list" },
 				{ name: "Slots winners list", link: "slots-winner/list" },
 				{ name: "Suggestions - all", link: "suggestions/list" },
@@ -145,6 +144,7 @@
 			link: "stream",
 			items: [
 				{ name: "TTS voices", link: "tts" },
+				{ name: "Playsounds", link: "playsound" },
 				{ name: "Video request queue", link: "video-queue" }
 			]
 		},

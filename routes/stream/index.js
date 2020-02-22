@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 	const subroutes = [
 		["tts", "tts.js"],
+		["playsound", "playsound.js"],
 		["video-queue", "video-queue.js"]
 	];
 
