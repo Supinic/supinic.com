@@ -7,7 +7,7 @@ module.exports = (function () {
 	const ExtraUserData = require("../../../modules/chat-data/extra-user-data");
 
 	/**
-	 * @api {get} /bot/cookie/check/ Check Cookie status
+	 * @api {get} /bot/cookie/check/ Cookie - Specific user stats
 	 * @apiName GetCookieStatus
 	 * @apiDescription Get current Cookie status for a given user and also the cookie statistics
 	 * @apiGroup Bot
@@ -57,6 +57,36 @@ module.exports = (function () {
 				received: extraData.Cookie_Gifts_Received || 0
 			}
 		});
+	});
+
+	/**
+	 * @api {get} /bot/cookie/list/ Cookie - Total stats
+	 * @apiName ListCookieStats
+	 * @apiDescription Gets a total list of all cookies eaten, grouped by each user
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiSuccess {Object[]} data
+	 * @apiSuccess {string} user If true, the user's cookie is gifted, and they cannot gift it again
+	 * @apiSuccess {number} total Total amount of cookies consumed by the user
+	 * @apiSuccess {number} daily Daily cookies eaten
+	 * @apiSuccess {number} gifted Total amount of cookies gifted away
+	 * @apiSuccess {number} received Total amount of cookies received as gifts
+	 */
+	Router.get("/list", async (req, res) => {
+		const rawData = await ExtraUserData.list();
+		const data = rawData.map(i => {
+			const total = i.Cookies_Total + i.Cookie_Gifts_Received - i.Cookie_Gifts_Sent + i.Cookie_Today;
+			const daily = i.Cookies_Total - i.Cookie_Gifts_Sent;
+			return {
+				User: i.Name,
+				Total: (total < 0) ? 0 : total,
+				Daily: (daily < 0) ? 0 : daily,
+				Gifted: i.Cookie_Gifts_Sent,
+				Received: i.Cookie_Gifts_Received
+			};
+		});
+
+		sb.WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;
