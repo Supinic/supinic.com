@@ -8,7 +8,7 @@ module.exports = (function () {
 	const Playsound = require("../../modules/playsound.js");
 
 	Router.get("/list", async (req, res) => {
-		const { data: { playsounds } } = await sb.Got.instances.Supinic("bot/playsound/list");
+		const { data: { playsounds } } = await sb.Got.instances.Supinic("bot/playsound/list").json();
 
 		const data = playsounds.map(i => ({
 			Name: i.name,
