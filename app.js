@@ -145,7 +145,7 @@
 			link: "stream",
 			items: [
 				{ name: "TTS voices", link: "tts" },
-				{ name: "Playsounds", link: "playsound" },
+				{ name: "Playsounds", link: "playsound/list" },
 				{ name: "Video request queue", link: "video-queue" }
 			]
 		},
