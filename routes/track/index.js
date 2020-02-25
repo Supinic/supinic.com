@@ -10,9 +10,10 @@ module.exports = (function () {
 	Router.use("/detail", require("./detail.js"));
 
 	Router.get("/todo/list", async (req, res) => {
-		const raw = JSON.parse(await sb.Utils.request({
-			uri: "https://supinic.com/api/track/search?includeTags=20"
-		}));
+		const { data: raw } = await sb.Got.instances.Supinic({
+			url: "track/search",
+			searchParams: "includeTags=20"
+		}).json();
 
 		const authorIDs = new Set(raw.data.map(i => i.authors).flat());
 		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs

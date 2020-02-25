@@ -38,10 +38,10 @@ module.exports = (function () {
 		const check = (layer, subPath) => {
 			if (Array.isArray(layer?.handle?.stack)) {
 				for (const subLayer of layer.handle.stack) {
-					check(subLayer, subPath + "/" + layer.regexp.toString().match(/\w+/)[0]);
+					check(subLayer, subPath + "/" + layer.regexp.toString().match(/[\w\-]+/)[0]);
 				}
 			}
-			else if (layer.route && !["*", "/", "/*", "/robots.txt"].includes(layer.route.path)) {
+			else if (layer.route && !["*", "/*", "/robots.txt"].includes(layer.route.path)) {
 				for (const method of Object.keys(layer.route.methods)) {
 					endpoints[method.toUpperCase()].push(subPath + layer.route.path);
 				}

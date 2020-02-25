@@ -26,7 +26,8 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const trackID = Number(req.params.id);
-		const rawData = JSON.parse(await sb.Utils.request("https://supinic.com/api/track/detail/" + trackID));
+		const { data: rawData } = await sb.Got.instances.Supinic("track/detail/" + trackID).json();
+
 		if (rawData.statusCode !== 200 || rawData.data === null) {
 			return res.status(404).render("error", {
 				error: "404 Not Found",

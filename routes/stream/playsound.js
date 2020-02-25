@@ -7,16 +7,16 @@ module.exports = (function () {
 
 	const Playsound = require("../../modules/playsound.js");
 
-	Router.get("/", async (req, res) => {
-		const data = (await Playsound.getAll())
-			.filter(i => i.Access !== "System")
-			.map(i => ({
-				Name: i.Name,
-				Cooldown: (i.Cooldown / 1000) + " seconds",
-				Notes: (i.Notes)
-					? i.Notes.replace(/\r?\n/g, "<br>")
-					: "N/A"
-			}));
+	Router.get("/list", async (req, res) => {
+		const { data: { playsounds } } = await sb.Got.instances.Supinic("bot/playsound/list");
+
+		const data = playsounds.map(i => ({
+			Name: i.name,
+			Cooldown: (i.cooldown / 1000) + " seconds",
+			Notes: (i.notes)
+				? i.notes.replace(/\r?\n/g, "<br>")
+				: "N/A"
+		}));
 
 		res.render("generic-list-table", {
 			data: data,

@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => {
-		const rawData = JSON.parse(await sb.Utils.request("https://supinic.com/api/track/author/list"));
+		const { data: rawData } = await sb.Got.instances.Supinic("track/author/list").json();
 		if (!rawData || rawData.statusCode !== 200) {
 			return res.status(404).render("error", {
 				error: "500 Internal server error",
@@ -38,7 +38,8 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const authorID = Number(req.params.id);
-		const rawData = JSON.parse(await sb.Utils.request("https://supinic.com/api/track/author/" + authorID));
+		const { data: rawData } = await sb.Got.instances.Supinic("track/author/" + authorID).json();
+
 		if (!rawData || rawData.statusCode !== 200) {
 			return res.status(404).render("error", {
 				error: "404 Not Found",

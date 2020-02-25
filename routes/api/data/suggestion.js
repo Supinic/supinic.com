@@ -68,23 +68,12 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Cannot use both userID and userName in the same request");
 		}
 
-		const rawData = (await Suggestion.list()).filter(i => (
+		const data = (await Suggestion.list()).filter(i => (
 			(!category || category === i.Category)
 			&& (!status || status === i.Status)
 			&& (!userID || userID === i.User_Alias)
 			&& (!userName || userName === i.User_Name)
 		));
-
-		const data = rawData.map(i => ({
-			ID: i.ID,
-			userID: i.User_Alias,
-			userName: i.User_Name,
-			category: i.Category,
-			status: i.Status,
-			text: i.Text,
-			date: i.Date,
-			notes: i.Notes
-		}));
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});

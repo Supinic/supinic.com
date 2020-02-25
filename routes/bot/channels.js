@@ -8,8 +8,8 @@ module.exports = (function () {
 	const Throughput = require("../../modules/messages.js");
 	const Channel = require("../../modules/chat-data/channel.js");
 
-	Router.get("/", async (req, res) => {	
-		const { data: rawData } = JSON.parse(await sb.Utils.request("https://supinic.com/api/bot/channel/list"));
+	Router.get("/", async (req, res) => {
+		const { data: rawData } = await sb.Got.instances.Supinic("bot/channel/list").json();
 
 		// Use all non-Discord channels, and only show Discord channels with a description
 		// Those who aren't are most likely inactive.

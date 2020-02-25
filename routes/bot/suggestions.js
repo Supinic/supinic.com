@@ -8,24 +8,29 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const data = (await Suggestion.list()).map(i => ({
+		const { data } = await sb.Got.instances.Supinic("data/suggestion/list").json();
+
+		const printData = data.map(i => ({
 			ID: i.ID,
-			Name: i.User_Name,
-			Text: i.Text,
-			Category: i.Category,
-			Status: i.Status,
+			Name: i.userName,
+			Text: i.text,
+			Category: i.category,
+			Status: i.status,
 			Date: {
-				dataOrder: i.Date.valueOf(),
-				value: i.Date.format("Y-m-d")
+				dataOrder: new sb.Date(i.date).valueOf(),
+				value: new sb.Date(i.date).format("Y-m-d")
 			},
-			Notes: (i.Notes)
-				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.Notes}">Hover</div>`
+			Notes: (i.notes)
+				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
+				: "N/A",
+			Update: (i.lastUpdate)
+				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
 				: "N/A"
 		}));
 
 		res.render("generic-list-table", {
-			data: data,
-			head: Object.keys(data[0]),
+			data: printData,
+			head: Object.keys(printData[0]),
 			pageLength: 25,
 			sortColumn: 5,
 			sortDirection: "desc",

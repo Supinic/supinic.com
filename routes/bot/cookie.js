@@ -6,7 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data } = JSON.parse(await sb.Utils.request("https://supinic.com/api/bot/cookie/list"));
+		const { data } = await sb.Got.instances.Supinic("bot/cookie/list").json();
 		res.render("generic-list-table", {
 			data: data,
 			head: Object.keys(data[0]),
