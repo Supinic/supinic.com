@@ -5,8 +5,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Playsound = require("../../modules/playsound.js");
-
 	Router.get("/list", async (req, res) => {
 		const { data: { playsounds } } = await sb.Got.instances.Supinic("bot/playsound/list").json();
 
