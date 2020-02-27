@@ -206,7 +206,8 @@ module.exports = (function () {
 	 * @apiGroup Track-List
 	 * @apiParam {number} addedByID Internal ID of the user who added the Track to the list
 	 * @apiParam {string} addedByName Name of user who added the Track to the list
-	 * @apiParam {string} author Filter by name of someone who has been a part of the Track creation
+	 * @apiParam {string} authorID Filter by the ID of author
+	 * @apiParam {string} authorName Filter by author name
 	 * @apiParam {number[]} includeTags Comma-delimited list of Tag IDs that all must be connected to tracks
 	 * @apiParam {number[]} excludeTags Comma-delimited list of Tag IDs that all must NOT be connected to tracks
 	 * @apiParam {boolean} hasLegacyID If true, filters tracks that are also present in the deprecated list
@@ -232,13 +233,14 @@ module.exports = (function () {
 	 * @apiSuccess {number[]} track.tags List of tag IDs associated with this Track.
 	 */
 	Router.get("/search", async (req, res) => {
-		const {addedByID, addedByName, author, includeTags, excludeTags, hasLegacyID, name} = req.query;
+		const {addedByID, addedByName, authorID, authorName, includeTags, excludeTags, hasLegacyID, name} = req.query;
 		const data = await Track.search({
 			addedByID,
 			addedByName,
 			name,
 			hasLegacyID,
-			author: Number(author),
+			authorID: Number(authorID),
+			authorName: authorName,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
 			excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null,
 		});

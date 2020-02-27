@@ -172,12 +172,7 @@ module.exports = (function () {
 		}
 
 		static async search (options = {}) {
-			let data = await Track.list();
-
-			if (options.addedByID) {
-				const userID = Number(options.addedByID);
-				data = data.filter(i => i.Added_By === userID);
-			}
+			const queries = [];
 
 			if (options.addedByName) {
 				const userData = await UserAlias.selectSingleCustom(q => q
@@ -188,19 +183,24 @@ module.exports = (function () {
 					return new Result(false, "addedBy user does not exist");
 				}
 
-				data = data.filter(i => i.Added_By === userData.ID);
+				queries.push(rs => rs.where("Added_By = %n", userData.ID));
+			}
+
+			if (options.addedByID) {
+				const userID = Number(options.addedByID);
+				queries.push(rs => rs.where("Added_By = %n", userID));
 			}
 
 			if (options.name) {
-				options.name = options.name.toLowerCase();
-				data = data.filter(i => (
-					(i.Name && i.Name.toLowerCase().includes(options.name))
-					|| (i.Aliases && i.Aliases.some(j => j.toLowerCase().includes(options.name)))
-				));
+				queries.push(rs => rs.where("Track.Name %*like* OR Alias.Name %*like*", options.name, options.name));
 			}
 
-			if (options.author) {
-				data = data.filter(i => i.Authors.includes(options.author));
+			if (options.authorName) {
+				queries.push(rs => rs.where("Author.Name %*like*", options.authorName));
+			}
+
+			if (options.authorID) {
+				queries.push(rs => rs.where("Author.ID = %n", options.authorID));
 			}
 
 			if (options.includeTags) {
@@ -208,9 +208,8 @@ module.exports = (function () {
 					options.includeTags = [options.includeTags];
 				}
 
-				for (const tag of options.includeTags) {
-					data = data.filter(row => row.Tags.includes(tag));
-				}
+				const string = [...Array(options.includeTags.length)].fill("Tag.ID = %n").join(" OR ");
+				queries.push(rs => rs.where(string, ...options.includeTags));
 			}
 
 			if (options.excludeTags) {
@@ -218,13 +217,51 @@ module.exports = (function () {
 					options.excludeTags = [options.excludeTags];
 				}
 
-				for (const tag of options.excludeTags) {
-					data = data.filter(row => !row.Tags.includes(tag));
-				}
+				const string = [...Array(options.excludeTags.length)].fill("Tag.ID = %n").join(" AND ");
+				queries.push(rs => rs.where(string, ...options.excludeTags));
 			}
 
 			if (options.hasLegacyID) {
-				data = data.filter(row => Boolean(row.Legacy_ID));
+				queries.push(rs => rs.where("Legacy_ID IS NOT NULL"));
+			}
+
+			const data = await Track.selectMultipleCustom(rs => {
+				rs.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
+					.leftJoin({
+						toTable: "Track_Tag",
+						on: "Track_Tag.Track = Track.ID"
+					})
+					.leftJoin({
+						toTable: "Tag",
+						on: "Track_Tag.Tag = Tag.ID"
+					})
+					.leftJoin({
+						toTable: "Track_Author",
+						on: "Track_Author.Track = Track.ID"
+					})
+					.leftJoin({
+						toTable: "Author",
+						on: "Track_Author.Author = Author.ID"
+					})
+					.leftJoin({
+						toTable: "Alias",
+						on: `Alias.Target_Table = "Track" AND Alias.Target_ID = Track.ID`
+					})
+					.groupBy("Track.ID");
+
+				for (const query of queries) {
+					query(rs);
+				}
+
+				return rs;
+			});
+
+			await sb.WebUtils.loadVideoTypes();
+			for (let i = data.length - 1; i >= 0; i--) {
+				const track = data[i];
+
+				track.Tags = track.Tags.split(",") || [];
+				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 			}
 
 			return data;
