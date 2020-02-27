@@ -4,11 +4,45 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const Badge = require("../../../modules/bot-data/badge.js");
 	const ChannelBot = require("../../../modules/bot-data/bot.js");
+	const Level = require("../../../modules/bot-data/level.js");
 
 	/**
-	 * @api {get} /bot-program/active Channel bots data
-	 * @apiName GetBotProgramActivity
+	 * @api {get} /bot-program/badge/list Badge - list
+	 * @apiName GetBotProgramBadgeList
+	 * @apiDescription Fetches all badges in the bot program
+	 * @apiGroup Bot-Program
+	 * @apiPermission none
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} name
+	 * @apiSuccess {string} emoji Emoji that represents the badge
+	 * @apiSuccess {string} [description]
+	 * @apiSuccess {number} [required] Parent badge that is required to achieve before the current one can be achieved
+	 * @apiSuccess {string} [imageUrl] URL for the image used for the badge (currently unused)
+	 **/
+	Router.get("/badge/list", async (req, res) => {
+		const data = await Badge.selectAll();
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /bot-program/level/list Level - list
+	 * @apiName GetBotProgramLevelist
+	 * @apiDescription Fetches all levels in the bot program
+	 * @apiGroup Bot-Program
+	 * @apiPermission none
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} description
+	 **/
+	Router.get("/level/list", async (req, res) => {
+		const data = await Level.selectAll();
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /bot-program/bot/list Bot - List
+	 * @apiName GetBotProgramList
 	 * @apiDescription Fetches all the relevant data for channel bots
 	 * @apiGroup Bot-Program
 	 * @apiPermission none
@@ -21,7 +55,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [lastSeen] If the bot verifies, this is the date of last verification - as ISO string
 	 * @apiSuccess {number} [lastSeenTimestamp] If the bot verifies, this is the date of last verification - as timestamp
 	 **/
-	Router.get("/active", async (req, res) => {
+	Router.get("/bot/list", async (req, res) => {
 		const rawData = await ChannelBot.selectMultipleCustom(q => q
 			.select("Bot_User_Alias.Name AS Bot_Name")
 			.select("GROUP_CONCAT(Badge.Name SEPARATOR ',') AS Badges")
@@ -56,8 +90,8 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {put} /bot-program/active Set channel bot activity
-	 * @apiName PutBotProgramActivity
+	 * @api {put} /bot-program/bot/active Bot - Update activity
+	 * @apiName UpdateBotActivity
 	 * @apiDescription Updates the "Last Active" column of a Channel Bot. This is used to summarize channel bots being online and active.
 	 * @apiGroup Bot-Program
 	 * @apiPermission login
@@ -66,7 +100,7 @@ module.exports = (function () {
 	 * @apiError (401) Unauthorized Authorization failed
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
-	Router.put("/active", async (req, res) => {
+	Router.put("/bot/active", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return sb.WebUtils.apiFail(res, 401, auth.error);
