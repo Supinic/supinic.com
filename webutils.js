@@ -122,6 +122,37 @@ module.exports = class WebUtils {
 
 		return await row.save();
 	}
+
+	static async loadVideoTypes () {
+		if (WebUtils.videoTypes) {
+			return;
+		}
+
+		const data = await sb.Query.getRecordset(rs => rs
+			.select("*")
+			.from("data", "Video_Type")
+		);
+
+		WebUtils.videoTypes = Object.fromEntries(data.map(i => [i.ID, {...i}]));
+	}
+
+	static parseVideoLink (type, link) {
+		const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
+		const fullVideoType = WebUtils.videoTypes[type];
+
+		if (!fullVideoType) {
+			throw new sb.Error({
+				message: "Unrecognized video type"
+			});
+		}
+		else if (!fullVideoType.Link_Prefix) {
+			throw new sb.Error({
+				message: "Provided type does not have a link prefix"
+			});
+		}
+
+		return fullVideoType.Link_Prefix.replace(videoTypePrefix, link);
+	}
 };
 
 /**
