@@ -8,34 +8,88 @@ module.exports = class WebUtils {
 		};
 	}
 
+	/**
+	 * Returns response in the standardized format for all API errors.
+	 * @param {Express.response} res
+	 * @param {number} code = 500
+	 * @param {string} message = "Unknown error"
+	 * @param {Object} data = {}
+	 */
 	static apiFail (res, code = 500, message = "Unknown error", data = {}) {
 		if (!res || typeof res.type !== "function") {
 			throw new TypeError("Argument res must provided and be Express result");
 		}
+		const responseData = {
+			statusCode: code,
+			timestamp: new Date().valueOf(),
+			data: null,
+			error: message
+		};
+
+		if (res.req.session.deprecated) {
+			responseData.deprecated = res.req.session.deprecated;
+		}
 
 		return res.type("application/json")
 			.status(code)
-			.send(JSON.stringify({
-				statusCode: code,
-				timestamp: new Date().valueOf(),
-				data: null,
-				error: message
-			}));
+			.send(JSON.stringify(responseData));
 	}
 
+	/**
+	 * Returns response in the standardized format for all API successes.
+	 * @param {Express.response} res
+	 * @param {Object} data = {}
+	 */
 	static apiSuccess (res, data = {}) {
 		if (!res || typeof res.type !== "function") {
 			throw new TypeError("Argument res must provided and be Express result");
 		}
 
+		const responseData = {
+			statusCode: 200,
+			timestamp: new Date().valueOf(),
+			data: sb.Utils.convertCaseObject(data, "snake", "camel"),
+			error: null
+		};
+
+		if (res.req.session.deprecated) {
+			responseData.deprecated = res.req.session.deprecated;
+		}
+
 		return res.type("application/json")
 			.status(200)
-			.send(JSON.stringify({
-				statusCode: 200,
-				timestamp: new Date().valueOf(),
-				data: sb.Utils.convertCaseObject(data, "snake", "camel"),
-				error: null
-			}));
+			.send(JSON.stringify(responseData));
+	}
+
+	/**
+	 * Handles deprecation of an API(!) endpoint by redirecting and setting session data with deprecation info.
+	 * Additionally, if the endpoint has retired (based on timestamp), returns 410 instead.
+	 * @param {Express.request} req
+	 * @param {Express.response} res
+	 * @param {Object} options = {}
+	 */
+	static async apiDeprecated (req, res, options) {
+		const { original, replacement, timestamp = null } = options;
+		if (timestamp !== null && sb.Date.now() > timestamp) {
+			res.statusMessage = "ppPoof";
+			return res.type("application/json")
+				.status(410)
+				.send(JSON.stringify({
+					status: "Endpoint retired",
+					retirement: timestamp,
+					replacement
+				}));
+		}
+
+		req.session.deprecated = {
+			active: true,
+			original,
+			replacement,
+			notice: `Endpoint "${original}" is deprecated, please use "${replacement}" instead at your own convenience`,
+			retirement: timestamp
+		};
+
+		return res.redirect(replacement);
 	}
 
 	/**
