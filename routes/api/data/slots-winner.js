@@ -13,8 +13,10 @@ module.exports = (function () {
 	 * @apiGroup Data
 	 * @apiPermission none
 	 * @apiSuccess {number} ID
-	 * @apiSuccess {number} userID
-	 * @apiSuccess {number} channel Channel, where the slots happened
+	 * @apiSuccess {number} userAlias
+	 * @apiSuccess {string} userName
+	 * @apiSuccess {number} channel Channel ID, where the slots happened
+	 * @apiSuccess {number} channelName Channel name, where the slots happened
 	 * @apiSuccess {number} odds Odds in format 1:X
 	 * @apiSuccess {string} source Whatever words, numbers the user rolled with
 	 * @apiSuccess {string} result Whatever the slots resulted in
