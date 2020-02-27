@@ -4,12 +4,13 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 	const subroutes = [
-		["track", "track"],
+		["bot", "bot"],
+		["bot-program", "bot-program"],
+		["data", "data"],
 		["gachi", "gachi.js"],
 		["text-normalize", "text-normalize.js"],
+		["track", "track"],
 		["trackData", "trackData.js"],
-		["bot", "bot"],
-		["data", "data"]
 	];
 
 	Router.all("/*", (req, res, next) => {
