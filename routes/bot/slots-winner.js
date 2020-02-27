@@ -8,15 +8,17 @@ module.exports = (function () {
 	const SlotsWinner = require("../../modules/data/slots-winner.js");
 
 	Router.get("/list", async (req, res) => {
-		const data = (await SlotsWinner.list()).map(i => ({
-			"Odds - 1:X" : sb.Utils.round(i.Odds, 3),
-			User: i.User_Name,
-			Channel: i.Channel_Name,
+		const { data: rawData } = await sb.Got.instances.Supinic("/data/slots-winner/list").json();
+
+		const data = rawData.map(i => ({
+			"Odds - 1:X" : sb.Utils.round(i.odds, 3),
+			User: i.userName,
+			Channel: i.channelName,
 			Roll: [
-				`<div title="Input: ${i.Source.replace(/"/g, `&ldquo;`)}" style="cursor: pointer; text-decoration: underline;">List of words</div>`,
-				`<div title="Winning roll: ${i.Result.replace(/"/g, `&ldquo;`)}" style="cursor: pointer; text-decoration: underline;">Winning roll</div>`
+				`<div title="Input: ${i.source.replace(/"/g, `&ldquo;`)}" style="cursor: pointer; text-decoration: underline;">List of words</div>`,
+				`<div title="Winning roll: ${i.result.replace(/"/g, `&ldquo;`)}" style="cursor: pointer; text-decoration: underline;">Winning roll</div>`
 			].join(""),
-			Date: new sb.Date(i.Timestamp).format("Y-m-d H:i:s")
+			Date: new sb.Date(i.timestamp).format("Y-m-d H:i:s")
 		}));
 
 		res.render("generic-list-table", {

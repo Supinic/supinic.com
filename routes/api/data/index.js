@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const subroutes = [
+		["slots-winner", "slots-winner.js"],
 		["suggestion", "suggestion.js"]
 	];
 
