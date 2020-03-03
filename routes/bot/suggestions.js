@@ -2,31 +2,31 @@ module.exports = (function () {
 	"use strict";
 	
 	const Suggestion = require("../../modules/data/suggestion.js");
-	const UserAlias = require("../../modules/chat-data/user-alias.js");
 
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const prettifyData = (data) => data.map(i => ({
+		ID: i.ID,
+		Name: i.userName,
+		Text: i.text,
+		Category: i.category,
+		Status: i.status,
+		Date: {
+			dataOrder: new sb.Date(i.date).valueOf(),
+			value: new sb.Date(i.date).format("Y-m-d")
+		},
+		Notes: (i.notes)
+			? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
+			: "N/A",
+		Update: (i.lastUpdate)
+			? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
+			: "N/A"
+	}));
+
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("data/suggestion/list").json();
-
-		const printData = data.map(i => ({
-			ID: i.ID,
-			Name: i.userName,
-			Text: i.text,
-			Category: i.category,
-			Status: i.status,
-			Date: {
-				dataOrder: new sb.Date(i.date).valueOf(),
-				value: new sb.Date(i.date).format("Y-m-d")
-			},
-			Notes: (i.notes)
-				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
-				: "N/A",
-			Update: (i.lastUpdate)
-				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
-				: "N/A"
-		}));
+		const printData = prettifyData(data);
 
 		res.render("generic-list-table", {
 			data: printData,
@@ -92,12 +92,17 @@ module.exports = (function () {
 			});
 		}
 
-		const userData = await UserAlias.selectSingleCustom(q => q.where("Name = %s", res.locals.authUser.login));
-		const data = await Suggestion.listByUser(userData.ID);
+		const { data } = await sb.Got.instances.Supinic({
+			url: "data/suggestion/list",
+			searchParams: new sb.URLParams()
+				.set("userName", res.locals.authUser.login)
+				.toString()
+		}).json();
 
+		const printData = prettifyData(data);
 		res.render("generic-list-table", {
-			data: data,
-			head: ["ID", "Date", "Text", "Category", "Status", "Notes"],
+			data: printData,
+			head: ["ID", "Date", "Text", "Category", "Status", "Notes", "Update"],
 			pageLength: 25,
 			sortColumn: 1,
 			sortDirection: "desc"

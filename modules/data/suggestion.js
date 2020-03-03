@@ -1,45 +1,36 @@
 module.exports = (function () {
 	"use strict";
 
-	const Result = require("../result.js");
 	const TemplateModule = require("../template.js");
 
-	let UserAlias = null;
-
 	class Suggestion extends TemplateModule {
-		static async list () {
-			return await super.selectMultipleCustom(q => q
-				.select("User_Alias.Name AS User_Name")
-				.join("chat_data", "User_Alias")
-				.where("Status <> %s", "Quarantined")
-				.orderBy("Suggestion.ID")
-			);
-		}
+		/**
+		 * Lists all suggestions, optionally filtered by options.
+		 * @param {Object} options = {}
+		 * @param {string} [options.category]
+		 * @param {string} [options.status]
+		 * @param {number} [options.userID]
+		 * @returns {Promise<Object[]>}
+		 */
+		static async list (options = {}) {
+			return await super.selectMultipleCustom(q => {
+				q.select("User_Alias.Name AS User_Name")
+					.join("chat_data", "User_Alias")
+					.where("Status <> %s", "Quarantined")
+					.orderBy("Suggestion.ID");
 
-		static async listByUser (userID) {
-			userID = Number(userID);
+				if (options.category) {
+					q.where("Category = %s", options.category);
+				}
+				if (options.status) {
+					q.where("Status = %s", options.status);
+				}
+				if (Number(options.userID)) {
+					q.where("User_Alias = %n", Number(options.userID));
+				}
 
-			if (!sb.Utils.isValidInteger(userID)) {
-				return new Result(false, "Suggestion: UserAlias ID is not valid");
-			}
-
-			UserAlias = UserAlias || require("../chat-data/user-alias.js");
-			if (!await UserAlias.exists(userID)) {
-				return new Result(false, "Suggestion: UserAlias ID does not exist");
-			}
-
-			return (await super.selectMultipleCustom(q => q
-				.where("User_Alias = %n", userID)
-				.where("Status <> %s", "Quarantined")
-				.orderBy("Suggestion.ID")
-			)).map(i => ({
-				ID: i.ID,
-				Date: i.Date.format("Y-m-d H:i"),
-				Text: i.Text,
-				Category: i.Category,
-				Status: i.Status,
-				Notes: i.Notes
-			}));
+				return q;
+			});
 		}
 
 		static get name () { return "track"; }

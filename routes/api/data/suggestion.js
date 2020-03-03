@@ -56,25 +56,14 @@ module.exports = (function () {
 	 **/
 	Router.get("/list", async (req, res) => {
 		const { category, status, userID: rawUserID, userName } = req.query;
+
 		let userID = null;
-		if (rawUserID) {
-			userID = Number(rawUserID);
-			if (!sb.Utils.isValidInteger(userID)) {
-				return sb.WebUtils.apiFail(res, 400, "Malformed user ID");
-			}
+		if (rawUserID || userName) {
+			const userData = await sb.User.get(Number(rawUserID) || userName);
+			userID = userData.ID;
 		}
 
-		if (userID && userName) {
-			return sb.WebUtils.apiFail(res, 400, "Cannot use both userID and userName in the same request");
-		}
-
-		const data = (await Suggestion.list()).filter(i => (
-			(!category || category === i.Category)
-			&& (!status || status === i.Status)
-			&& (!userID || userID === i.User_Alias)
-			&& (!userName || userName === i.User_Name)
-		));
-
+		const data = await Suggestion.list({ category, status, userID });
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
