@@ -22,6 +22,17 @@ module.exports = (function () {
 		next();
 	});
 
+	Router.all("/*", (req, res, next) => {
+		const { deprecation } = req.query;
+		if (deprecation && sb.App.data.deprecation.has(deprecation)) {
+			delete req.query.deprecation;
+			req.session.deprecation = sb.App.data.deprecation.get(deprecation);
+			sb.App.data.deprecation.delete(deprecation);
+		}
+
+		next();
+	});
+
 	/**
 	 * @api {get} /endpoints Endpoints - List
 	 * @apiName ListEndpoints

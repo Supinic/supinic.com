@@ -26,8 +26,8 @@ module.exports = class WebUtils {
 			error: message
 		};
 
-		if (res.req.session.deprecated) {
-			responseData.deprecated = res.req.session.deprecated;
+		if (res.req.session.deprecation) {
+			responseData.deprecation = res.req.session.deprecation;
 		}
 
 		return res.type("application/json")
@@ -52,8 +52,8 @@ module.exports = class WebUtils {
 			error: null
 		};
 
-		if (res.req.session.deprecated) {
-			responseData.deprecated = res.req.session.deprecated;
+		if (res.req.session.deprecation) {
+			responseData.deprecation = res.req.session.deprecation;
 		}
 
 		return res.type("application/json")
@@ -81,15 +81,20 @@ module.exports = class WebUtils {
 				}));
 		}
 
-		req.session.deprecated = {
+		const key = sb.Utils.randomString(8);
+		sb.App.data.deprecation.set(key, {
 			active: true,
 			original,
 			replacement,
 			notice: `Endpoint "${original}" is deprecated, please use "${replacement}" instead at your own convenience`,
 			retirement: timestamp
-		};
+		});
 
-		return res.redirect(replacement);
+		const { parse, stringify } = require("querystring");
+		const obj = parse(res.req._parsedOriginalUrl.query);
+		obj.deprecation = key;
+
+		res.redirect(`${replacement}?${stringify(obj)}`);
 	}
 
 	/**

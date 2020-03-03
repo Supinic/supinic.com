@@ -11,7 +11,8 @@
     "passport-oauth": "latest",
     "request": "latest",
     "supi-core": "github:supinic/supi-core",
-    "track-link-parser": "github:supinic/track-link-parser"
+    "track-link-parser": "github:supinic/track-link-parser",
+    "memorystore": "latest"
   },
   "engines": {
     "node": ">= 13.2"

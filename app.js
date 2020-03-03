@@ -34,9 +34,8 @@
 	const Passport = require("passport");
 	const { OAuth2Strategy } = require("passport-oauth");
 	const CacheController = require("express-cache-controller");
+	const MemoryStore = require("memorystore")(Session);
 
-	const UserAlias = require("./modules/chat-data/user-alias.js");
-	
 	class Strategy extends OAuth2Strategy {
 		userProfile (accessToken, done) {
 			const options = {
@@ -59,17 +58,19 @@
 	}
 	
 	const app = Express();
-
 	app.use(Session({
 		secret: crypto.randomBytes(16).toString(), // SESSION_SECRET
 		resave: false,
-		saveUninitialized: false
+		saveUninitialized: false,
+		store: new MemoryStore({ checkPeriod: 36.0e5 }),
 	}));
+
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(CacheController({
 		noCache: true
 	}));
+
 	app.use("/public", Express.static(__dirname + "/public/"));
 	app.use("/api", Express.static(__dirname + "/apidocs/"));
 
@@ -245,4 +246,8 @@
 
 	sb.App = app;
 	sb.App.cache = {};
+	sb.App.data = {
+		/** @type {Map<string, Object>} */
+		deprecation: new Map()
+	};
 })();	
