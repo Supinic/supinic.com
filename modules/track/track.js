@@ -260,7 +260,7 @@ module.exports = (function () {
 			for (let i = data.length - 1; i >= 0; i--) {
 				const track = data[i];
 
-				track.Tags = track.Tags.split(",") || [];
+				track.Tags = (track.Tags) ? track.Tags.split(",") : [];
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 			}
 
