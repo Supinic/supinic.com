@@ -6,7 +6,8 @@ module.exports = (function () {
 
 	const subroutes = [
 		["slots-winner", "slots-winner.js"],
-		["suggestion", "suggestion.js"]
+		["suggestion", "suggestion.js"],
+		["tts", "tts.js"]
 	];
 
 	subroutes.forEach(([name, link]) =>  Router.use("/" + name, require("./" + link)));

@@ -6,11 +6,16 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => {
-		const data = sb.Config.get("TTS_VOICE_DATA");
+		const { data } = await sb.Got.instances.Supinic("data/tts/voices/list").json();
+		const renderData = data.map(i => ({
+			Name: i.name,
+			Language: i.lang,
+			Gender: i.gender ?? "N/A"
+		}));
 
 		res.render("generic-list-table", {
-			data: data,
-			head: Object.keys(data[0]),
+			data: renderData,
+			head: Object.keys(renderData[0]),
 			pageLength: 50,
 			specificFiltering: true
 		});
