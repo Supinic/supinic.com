@@ -68,7 +68,7 @@ module.exports = class WebUtils {
 	 * @param {Express.response} res
 	 * @param {Object} options = {}
 	 */
-	static async apiDeprecated (req, res, options) {
+	static async apiDeprecated (req, res,  options) {
 		const { original, replacement, timestamp = null } = options;
 		if (timestamp !== null && sb.Date.now() > timestamp) {
 			res.statusMessage = "ppPoof";
