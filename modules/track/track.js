@@ -226,7 +226,8 @@ module.exports = (function () {
 			}
 
 			const data = await Track.selectMultipleCustom(rs => {
-				rs.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
+				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
+					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
 					.leftJoin({
 						toTable: "Track_Tag",
 						on: "Track_Tag.Track = Track.ID"
@@ -260,7 +261,8 @@ module.exports = (function () {
 			for (let i = data.length - 1; i >= 0; i--) {
 				const track = data[i];
 
-				track.Tags = (track.Tags) ? track.Tags.split(",") : [];
+				track.Authors = (track.Authors) ? track.Authors.split(",").map(Number) : [];
+				track.Tags = (track.Tags) ? track.Tags.split(",").map(Number) : [];
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 			}
 
