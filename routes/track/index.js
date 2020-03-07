@@ -15,12 +15,12 @@ module.exports = (function () {
 			searchParams: "includeTags=20"
 		}).json();
 
-		const authorIDs = new Set(raw.data.map(i => i.authors).flat());
+		const authorIDs = new Set(raw.map(i => i.authors).flat());
 		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
 			.where("ID IN %n+", Array.from(authorIDs))
 		)).map(i => [i.ID, i.Name]));
 
-		const data = raw.data.map(i => ({
+		const data = raw.map(i => ({
 			ID: `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`,
 			Name: `<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>`,
 			Published: {
@@ -37,7 +37,7 @@ module.exports = (function () {
 			data: data,
 			head: Object.keys(data[0]),
 			pageLength: 25,
-			sortColumn: 3,
+			sortColumn: 4,
 			sortDirection: "desc"
 		});
 	});
