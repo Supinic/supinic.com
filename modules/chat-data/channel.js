@@ -3,38 +3,38 @@ module.exports = (function () {
 
 	class Channel extends TemplateModule {
 		static async list () {
-			const channels = await sb.Query.getRecordset(rs => rs
-				.select("Channel.*")
-				.select("Platform.Name AS Platform_Name")
-				.from("chat_data", "Channel")
-				.join("chat_data", "Platform")
-				.where("Mode <> %s", "Inactive")
-				.orderBy("Name ASC")
-			);
-
-			return await Promise.all(channels.map(async channel => {
-				const dbName = (channel.Platform_Name === "Twitch")
-					? channel.Name
-					: (channel.Platform_Name.toLowerCase() + "_" + channel.Name);
-
-				channel.Line_Count = (await sb.Query.getRecordset(rs => rs
-					.select("MAX(ID) AS Line_Count")
-					.from("chat_line", dbName)
-					.limit(1)
-					.single()
-				)).Line_Count;
-
-				channel.Byte_Length = (await sb.Query.getRecordset(rs => rs
+			const [channels, informationSchema] = await Promise.all([
+				sb.Query.getRecordset(rs => rs
+					.select("Channel.ID", "Channel.Name", "Channel.Platform", "Channel.Specific_ID", "Channel.Mode")
+					.select("Channel.Ping", "Channel.Links_Allowed", "Channel.NSFW", "Channel.Banphrase_API_Type")
+					.select("Channel.Banphrase_API_URL", "Channel.Banphrase_API_Downtime", "Channel.Message_Limit")
+					.select("Channel.Mirror", "Channel.Description")
+					.select("Platform.Name AS Platform_Name")
+					.from("chat_data", "Channel")
+					.join("chat_data", "Platform")
+					.where("Mode <> %s", "Inactive")
+					.orderBy("Name ASC")
+				),
+				sb.Query.getRecordset(rs => rs
+					.select("TABLE_NAME AS Channel")
 					.select("(DATA_LENGTH + INDEX_LENGTH) AS Byte_Length")
+					.select("AUTO_INCREMENT AS Max_ID")
 					.from("INFORMATION_SCHEMA", "TABLES")
 					.where("TABLE_SCHEMA = %s", "chat_line")
-					.where("TABLE_NAME = %s", dbName)
-					.limit(1)
-					.single()
-				)).Byte_Length;
+				)
+			]);
+
+			return channels.map(channel => {
+				const databaseName = (channel.Platform_Name === "Twitch")
+					? channel.Name
+					: `${channel.Platform_Name.toLowerCase()}_${channel.Name}`;
+
+				const infoRow = informationSchema.find(i => i.Channel === databaseName);
+				channel.Line_Count = infoRow.Max_ID;
+				channel.Byte_Length = infoRow.Byte_Length;
 
 				return channel;
-			}));
+			});
 		}
 
 		static get name () { return "channel"; }
