@@ -122,6 +122,14 @@
 				{ name: "Levels", link: "channel-bots/levels" }
 			]
 		},
+
+		{
+			name: "Data",
+			link: "data",
+			items: [
+				{ name: "Emote origins", link: "origin/list" },
+			]
+		},
 		{
 			name: "Gachi",
 			link: "gachi",
@@ -149,10 +157,6 @@
 				{ name: "Playsounds", link: "playsound/list" },
 				{ name: "Video request queue", link: "video-queue" }
 			]
-		},
-		{
-			name: "Emote origins",
-			link: "origin"
 		},
 		{
 			name: "API",
