@@ -19,6 +19,21 @@ module.exports = class TemplateModule {
 		return row;
 	}
 
+	static async selectCustom (callback) {
+		if (typeof callback !== "function") {
+			throw new sb.Error({
+				message: "Custom select callback must be a function",
+				args: typeof callback
+			});
+		}
+
+		return await sb.Query.getRecordset(rs => {
+			rs.from(this.database, this.table);
+			callback(rs);
+			return rs;
+		});
+	}
+
 	static async selectSingleCustom (callback) {
 		return await sb.Query.getRecordset(rs => {
 			rs.single()
