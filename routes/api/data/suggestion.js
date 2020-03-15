@@ -51,6 +51,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} userName
 	 * @apiSuccess {string} category
 	 * @apiSuccess {string} status
+	 * @apiSuccess {number} [priority]
 	 * @apiSuccess {date} date ISO date string of the suggestion creation
 	 * @apiSuccess {string} [notes]
 	 **/
