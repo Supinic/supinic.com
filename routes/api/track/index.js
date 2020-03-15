@@ -29,6 +29,7 @@ module.exports = (function () {
 	const subroutes = [
 		["author", "author.js"],
 		["detail", "detail.js"],
+		["gachi", "gachi.js"],
 		["tag", "tag.js"],
 		// ["todo", "todo.js"],
 		// ["reupload", "reupload.js"],
