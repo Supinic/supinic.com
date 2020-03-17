@@ -130,34 +130,13 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Target user has blocked you from reminding them");
 		}
 
-		const countCheckFrom = (await sb.Query.getRecordset(rs => rs
-			.select("COUNT(*) AS Count")
-			.from("chat_data", "Reminder")
-			.where("Active = %b", true)
-			.where("Schedule IS NULL")
-			.where("User_From = %n", auth.userID)
-			.single()
-		));
-
-		const countCheckTo = (await sb.Query.getRecordset(rs => rs
-			.select("COUNT(*) AS Count")
-			.from("chat_data", "Reminder")
-			.where("Active = %b", true)
-			.where("Schedule IS NULL")
-			.where("User_To = %n", userData.ID)
-			.single()
-		));
-
-		if (countCheckFrom && countCheckFrom.Count >= sb.Config.get("MAX_ACTIVE_REMINDERS") * 2) {
-			return sb.WebUtils.apiFail(res, 403, "You have too many pending reminders");
-		}
-		else if (countCheckTo && countCheckTo.Count >= sb.Config.get("MAX_ACTIVE_REMINDERS")) {
-			return sb.WebUtils.apiFail(res, 403, "Target user has too many pending reminders");
+		const { success, cause } = await sb.Reminder.checkLimits(auth.userID, userData.ID, schedule);
+		if (!success) {
+			return sb.WebUtils.apiFail(res, 403, cause);
 		}
 
 		const platformID = (schedule || privateReminder) ? 1 : null;
 		const targetChannelID = (schedule && !privateReminder) ? 37 : null;
-
 		const newReminder = await Reminder.insertCustom({
 			User_From: auth.userID,
 			User_To: userData.ID,
