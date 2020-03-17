@@ -10,11 +10,12 @@ module.exports = (function () {
 		ID: i.ID,
 		Name: i.userName,
 		Text: i.text,
-		Category: i.category,
 		Status: i.status,
-		Date: {
-			dataOrder: new sb.Date(i.date).valueOf(),
-			value: new sb.Date(i.date).format("Y-m-d")
+		Priority: {
+			value: i.priority ?? "N/A",
+			dataOrder: (i.priority === null)
+				? -1
+				: i.priority
 		},
 		Notes: (i.notes)
 			? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
@@ -32,7 +33,7 @@ module.exports = (function () {
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 25,
-			sortColumn: 5,
+			sortColumn: 0,
 			sortDirection: "desc",
 			specificFiltering: true
 		});
