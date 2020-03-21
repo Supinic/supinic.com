@@ -10,7 +10,8 @@ module.exports = (function () {
 		const renderData = data.map(i => ({
 			Name: i.name,
 			Language: i.lang,
-			Gender: i.gender ?? "N/A"
+			Gender: i.gender ?? "N/A",
+			Sample: `<a target="_blank" href="https://api.streamelements.com/kappa/v2/speech?voice=${i.ID}&text=This+is+a+sample+message.">Sample</a>`
 		}));
 
 		res.render("generic-list-table", {
