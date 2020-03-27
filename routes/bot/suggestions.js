@@ -100,12 +100,28 @@ module.exports = (function () {
 				.toString()
 		}).json();
 
+		if (data.length === 0) {
+			return res.render("generic", {
+				data: `
+					<center>
+						<h5>
+							You have not made any suggestions so far.
+							<br>
+							Check this guide for Twitch:
+						</h5>
+						<br>
+						<img alt="guide" src="/public/img/suggestion-guide.png">
+					</center>	
+				`
+			});
+		}
+
 		const printData = prettifyData(data);
 		res.render("generic-list-table", {
 			data: printData,
-			head: ["ID", "Date", "Text", "Category", "Status", "Notes", "Update"],
+			head: Object.keys(printData[0]),
 			pageLength: 25,
-			sortColumn: 1,
+			sortColumn: 0,
 			sortDirection: "desc"
 		});
 	});
