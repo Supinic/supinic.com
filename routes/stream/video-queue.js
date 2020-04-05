@@ -5,50 +5,27 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const ExtraUserData = require("../../modules/chat-data/extra-user-data.js");
-
 	Router.get("/", async (req, res) => {
-		sb.InternalRequest.pending.queue = new sb.Promise();
-		sb.InternalRequest.send(new sb.URLParams().set("type", "queue"));
-		const { current, queue } = await sb.InternalRequest.pending.queue;
-		sb.InternalRequest.pending.queue = null;
+		const header = ["ID", "User", "Name", "Length", "Status"];
+		const { data } = await sb.Got.instances.Supinic("bot/song-request/queue").json();
 
-		const data = [];
-		if (current) {
-			for (const record of queue) {
-				let status = "";
-				if (record.vlcID === current.vlcID) {
-					status = "Playing";
-				}
-				else if (record.vlcID > current.vlcID) {
-					status = "Pending";
-				}
-				else {
-					status = "Played";
-				}
+		const users = await sb.User.getMultiple(data.map(i => i.userAlias));
+		const printData = data.map(track => {
+			const user = users.find(i => track.userAlias === i.ID);
+			return {
+				ID: track.vlcID,
+				User: user.Name,
+				Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
+				Length: track.length,
+				Status: track.status
+			};
+		});
 
-				data.push({
-					ID: record.vlcID,
-					Link: `<a href="${record.link}">${record.name}</a>`,
-					Length: record.length,
-					Status: status,
-					"Requested by": (await sb.User.get(record.user)).Name,
-					"Requested on": new sb.Date(record.requested).format("Y-m-d H:i")
-				})
-			}
-
-			res.render("generic-list-table", {
-				data: data,
-				head: Object.keys(data[0]),
-				pageLength: 25
-			});
-		}
-		else {
-			res.render("error", {
-				message: "Song requests are off",
-				error: "Nothing is currently playing because the song requests module is turned off."
-			});
-		}
+		res.render("generic-list-table", {
+			data: printData,
+			head: header,
+			pageLength: 25
+		});
 	});
 
 	return Router;
