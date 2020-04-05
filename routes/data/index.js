@@ -4,6 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 	const subroutes = [
+		["corona", "corona.js"],
 		["origin", "origin.js"]
 	];
 
