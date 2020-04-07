@@ -9,7 +9,7 @@ module.exports = (function () {
 
 	Router.get("/", async (req, res) => {
 		const rawData = await ChannelBot.selectMultipleCustom(q => q
-			.select("Bot_Author.Name AS Author")
+			.select("Bot_Author.Name AS Creator")
 			.select("Bot_User_Alias.Name AS Bot_Name")
 			.select("IFNULL(GROUP_CONCAT(Badge.Name SEPARATOR ','), '') AS Badges")
 			.join({
@@ -63,7 +63,7 @@ module.exports = (function () {
 				return {
 					Name: `<div style="cursor: pointer; text-decoration: underline dotted;" title="${i.Description || "(no description)"}">${i.Bot_Name}</div>`,
 					Prefix: i.Prefix,
-					Author: i.Author,
+					Author: i.Creator,
 					Language: i.Language,
 					Level: {
 						dataOrder: i.Level,

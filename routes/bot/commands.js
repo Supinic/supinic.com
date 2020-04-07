@@ -61,7 +61,6 @@ module.exports = (function () {
 		const [statistics, start] = await Promise.all([
 			CommandExecution.hourlyStats(),
 			CommandExecution.selectSingleCustom(rs => rs
-				.select("Executed")
 				.orderBy("Executed ASC")
 				.limit(1)
 			)
