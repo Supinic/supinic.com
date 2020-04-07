@@ -20,7 +20,7 @@ module.exports = (function () {
 			}
 
 			return await super.selectMultipleCustom(rs => {
-				rs.select("Channel.Name AS Channel")
+				rs.select("Channel.Name AS Channel_Name")
 					.select("RAuthor.Name AS Author")
 					.select("RTarget.Name AS Target")
 					.leftJoin("chat_data", "Channel")

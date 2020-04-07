@@ -5,8 +5,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Reminder = require("../../modules/chat-data/reminder.js");
-
 	Router.get("/list", async (req, res) => {
 		if (!res || !res.locals) {
 			return res.status(401).render("error", {
@@ -23,6 +21,7 @@ module.exports = (function () {
 
 		const user = res.locals.authUser.login.toLowerCase();
 		const rawData = await Reminder.listByUser(user);
+
 		const data = rawData.map(i => {
 			if (i.Author.toLowerCase() === user) {
 				i.Author = "(You)";
@@ -36,7 +35,7 @@ module.exports = (function () {
 				Active: (i.Active) ? "Yes" : "No",
 				Author: i.Author,
 				Target: i.Target,
-				Channel: (i.Channel) ? i.Channel : "<private reminder>",
+				Channel: (i.Channel_Name) ? i.Channel_Name : "<private reminder>",
 				Text: i.Text,
 				Scheduled: (i.Schedule) ? i.Schedule.format("Y-m-d H:i:s") : "N/A",
 				ID: i.ID
