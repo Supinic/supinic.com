@@ -11,9 +11,10 @@ module.exports = (function () {
 			);
 		}
 
-		static getRegions () {
+		static getRegions (parent) {
 			return this.selectMultipleCustom(q => q
-				.where("Parent IS NOT NULL")
+				.where({ condition: parent }, "Parent = %s", parent)
+				.where({ condition: !parent }, "Parent IS NULL")
 				.where("Region IS NOT NULL")
 			);
 		}

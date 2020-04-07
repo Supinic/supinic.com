@@ -7,6 +7,7 @@ module.exports = (function () {
 		static async latest () {
 			return this.selectMultipleCustom(q => q
 				.select("Place.Name AS Place_Name")
+				.select("Place.Children AS Place_Children")
 				.join({
 					toTable: "Place",
 					on: "Place.ID = Status.Place"
