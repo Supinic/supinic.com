@@ -5,6 +5,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const Reminder = require("../../modules/chat-data/reminder.js");
+
 	Router.get("/list", async (req, res) => {
 		if (!res || !res.locals) {
 			return res.status(401).render("error", {
