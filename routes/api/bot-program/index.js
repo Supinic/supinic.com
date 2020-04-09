@@ -43,19 +43,29 @@ module.exports = (function () {
 	/**
 	 * @api {get} /bot-program/bot/list Bot - List
 	 * @apiName GetBotProgramList
-	 * @apiDescription Fetches all the relevant data for channel bots
+	 * @apiDescription Fetches all the relevant data for channel bots and badges
 	 * @apiGroup Bot-Program
 	 * @apiPermission none
-	 * @apiSuccess {number} id Bot's internal ID
-	 * @apiSuccess {string} name Bot's name
-	 * @apiSuccess {string} [prefix] Bot's command prefix. Can be null, if none is used (no commands) or unknown
-	 * @apiSuccess {string} [author] Author's ID. Can be null if unknown
-	 * @apiSuccess {string} [language] Programming language use to implement the bot. Can be null if unknown.
-	 * @apiSuccess {string} [description] Voluntary description
-	 * @apiSuccess {string} [lastSeen] If the bot verifies, this is the date of last verification - as ISO string
-	 * @apiSuccess {number} [lastSeenTimestamp] If the bot verifies, this is the date of last verification - as timestamp
+	 * @apiSuccess {Object[]} bots Bots data
+	 * @apiSuccess {number} bots.ID Bot's internal ID
+	 * @apiSuccess {string} bots.name Bot's name
+	 * @apiSuccess {string} [bots.prefix] Bot's command prefix. Can be null, if none is used (no commands) or unknown
+	 * @apiSuccess {string} [bots.authorID] Author's ID. Can be null if unknown
+	 * @apiSuccess {string} bots.authorName Author's name. Can be "N/A" if unknown
+	 * @apiSuccess {string} [bots.language] Programming language use to implement the bot. Can be null if unknown.
+	 * @apiSuccess {string} [bots.description] Voluntary description
+	 * @apiSuccess {string} [bots.lastSeen] If the bot verifies, this is the date of last verification - as ISO string
+	 * @apiSuccess {number} [bots.lastSeenTimestamp] If the bot verifies, this is the date of last verification - as timestamp
+	 * @apiSuccess {Object[]} badges Badges data
+	 * @apiSuccess {number} badges.ID Badge's internal ID
+	 * @apiSuccess {string} badges.name
+	 * @apiSuccess {string} badges.emoji
+	 * @apiSuccess {string} badges.description
+	 * @apiSuccess {number} [badges.required] If set, this badge has a prerequisite
+	 * @apiSuccess {string} badges.imageUrl Emoji link
 	 **/
 	Router.get("/bot/list", async (req, res) => {
+		const badgeList = await Badge.selectAll();
 		const rawData = await ChannelBot.selectMultipleCustom(q => q
 			.select("Bot_User_Alias.Name AS Bot_Name")
 			.select("GROUP_CONCAT(Badge.Name SEPARATOR ',') AS Badges")
@@ -66,27 +76,55 @@ module.exports = (function () {
 				on: "Bot.Bot_Alias = Bot_User_Alias.ID"
 			})
 			.leftJoin({
-				toDatabase: "bot_data", toTable: "Bot_Badge", on: "Bot_Badge.Bot = Bot.Bot_Alias"
+				toDatabase: "bot_data",
+				toTable: "Bot_Badge",
+				on: "Bot_Badge.Bot = Bot.Bot_Alias"
 			})
 			.leftJoin({
-				toDatabase: "bot_data", toTable: "Badge", on: "Bot_Badge.Badge = Badge.ID"
+				toDatabase: "bot_data",
+				toTable: "Badge",
+				on: "Bot_Badge.Badge = Badge.ID"
 			})
+			.where("Bot.Active = %b", true)
 			.groupBy("Bot.Bot_Alias"));
 
-		const data = rawData.map(i => ({
-			id: i.Bot_Alias,
-			name: i.Bot_Name,
-			prefix: i.Prefix,
-			author: i.Author,
-			language: i.Language,
-			description: i.Description,
-			level: i.Level,
-			last_seen: (i.Last_Verified) ? i.Last_Verified.sqlDateTime() : null,
-			last_seen_timestamp: (i.Last_Verified) ? i.Last_Verified.valueOf() : null,
-			badges: (i.Badges) ? i.Badges.split(",") : []
-		}));
+		const promises = rawData.map(async (bot) => {
+			const userData = (bot.Author === null)
+				? null
+				: await sb.User.get(bot.Author);
 
-		return sb.WebUtils.apiSuccess(res, data);
+			const badges = (await sb.Query.getRecordset(rs => rs
+				.select("Badge", "Notes")
+				.from("bot_data", "Bot_Badge")
+				.where("Bot = %n", bot.Bot_Alias)
+			)).map(row => {
+				const badge = badgeList.find(i => i.ID === row.Badge);
+				return {
+					ID: badge.ID,
+					Notes: row.Notes
+				};
+			});
+
+			return {
+				id: bot.Bot_Alias,
+				name: bot.Bot_Name,
+				prefix: bot.Prefix,
+				authorID: bot.Author,
+				author_name: userData?.Name ?? "N/A",
+				language: bot.Language,
+				description: bot.Description,
+				level: bot.Level,
+				last_seen: (bot.Last_Verified) ? bot.Last_Verified.sqlDateTime() : null,
+				last_seen_timestamp: (bot.Last_Verified) ? bot.Last_Verified.valueOf() : null,
+				badges
+			};
+		});
+
+		const data = await Promise.all(promises);
+		return sb.WebUtils.apiSuccess(res, {
+			bots: data,
+			badges: badgeList
+		});
 	});
 
 	/**
