@@ -39,7 +39,8 @@ module.exports = (function () {
 			head: Object.keys(data[0]),
 			pageLength: 50,
 			sortColumn: 0,
-			sortDirection: "asc"
+			sortDirection: "asc",
+			specificFiltering: true
 		});
 	});
 
