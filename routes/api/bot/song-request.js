@@ -13,8 +13,8 @@ module.exports = (function () {
 	 * @apiName GetSongRequestState
 	 * @apiDescription Fetches the stream's current song request state
 	 * @apiGroup Stream
-	 * @apiPermission any
-	 * @apiSuccess {string} state One of "off", "vlc", "cytube", "dubtrack
+	 * @apiPermission none
+	 * @apiSuccess {string} state One of "off", "vlc", "cytube", "dubtrack"
 	 */
 	Router.get("/state", async (req, res) => {
 		const state = await Config.selectSingleCustom(q => q
@@ -33,16 +33,16 @@ module.exports = (function () {
 	 * @apiGroup Stream
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} data
-	 * @apiSuccess {number) data.ID
-	 * @apiSuccess {number) data.vlcID
-	 * @apiSuccess {string) data.link
-	 * @apiSuccess {number) data.videoType
-	 * @apiSuccess {string) data.name
-	 * @apiSuccess {number) data.length
-	 * @apiSuccess {string) data.status
-	 * @apiSuccess {number) data.userAlias
-	 * @apiSuccess {string) data.added ISO Date
-	 * @apiSuccess {string) data.parsedLink
+	 * @apiSuccess {number} data.ID
+	 * @apiSuccess {number} data.vlcID
+	 * @apiSuccess {string} data.link
+	 * @apiSuccess {number} data.videoType
+	 * @apiSuccess {string} data.name
+	 * @apiSuccess {number} data.length
+	 * @apiSuccess {string} data.status
+	 * @apiSuccess {number} data.userAlias
+	 * @apiSuccess {string} data.added ISO Date
+	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/queue", async (req, res) => {
 		const [videoTypes, prefixSymbol, rawData] = await Promise.all([

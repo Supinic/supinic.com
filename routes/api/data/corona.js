@@ -29,7 +29,7 @@ module.exports = (function () {
 	 * @apiGroup Corona
 	 * @apiPermission none
 	 * @apiError (400) InvalidRequest If no region is provided
-	 * @apierr {string[]} data
+	 * @apiSuccess {string[]} data
 	 */
 	Router.get("/region/:region/latest", async (req, res) => {
 		const { region } = req.params;
