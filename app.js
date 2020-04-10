@@ -15,6 +15,7 @@
 			"classes/config",
 			"singletons/utils",
 			"singletons/internal-request",
+			"singletons/system-log",
 
 			"classes/got",
 			"classes/user",
@@ -34,7 +35,10 @@
 	const crypto = require("crypto");
 	const request = require("request");
 	const bodyParser = require("body-parser");
+
 	const Express = require("express");
+	require("express-async-errors");
+
 	const Session = require("express-session");
 	const Passport = require("passport");
 	const { OAuth2Strategy } = require("passport-oauth");
@@ -241,6 +245,14 @@
 		}
 
 		res.redirect("/contact");
+	});
+
+	app.use(async (err, req, res, next) => {
+		const errorID = await sb.SystemLogger.sendError("Website", err);
+		return res.status(500).render("error", {
+			error: "500 Internal Error",
+			message: `Internal error encountered (ID ${errorID})`
+		});
 	});
 
 	// 404

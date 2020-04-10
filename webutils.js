@@ -15,7 +15,7 @@ module.exports = class WebUtils {
 	 * @param {string} message = "Unknown error"
 	 * @param {Object} data = {}
 	 */
-	static apiFail (res, code = 500, message = "Unknown error", data = {}) {
+	static apiFail (res, code = 500, message = "Unknown error", data = null) {
 		if (!res || typeof res.type !== "function") {
 			throw new TypeError("Argument res must provided and be Express result");
 		}
@@ -23,7 +23,10 @@ module.exports = class WebUtils {
 			statusCode: code,
 			timestamp: new Date().valueOf(),
 			data: null,
-			error: message
+			error: {
+				message,
+				data
+			}
 		};
 
 		if (res.req.session.deprecation) {

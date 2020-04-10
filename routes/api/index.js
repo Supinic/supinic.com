@@ -74,5 +74,10 @@ module.exports = (function () {
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
+	Router.use(async (err, req, res, next) => {
+		const errorID = await sb.SystemLogger.sendError("Website - API", err);
+		return sb.WebUtils.apiFail(res, 500, err.message, { ID: errorID });
+	});
+
 	return Router;
 })();
