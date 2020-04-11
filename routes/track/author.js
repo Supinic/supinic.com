@@ -5,15 +5,8 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => {
-		const { data: rawData } = await sb.Got.instances.Supinic("track/author/list").json();
-		if (!rawData || rawData.statusCode !== 200) {
-			return res.status(404).render("error", {
-				error: "500 Internal server error",
-				message: "API/Data unavailable, contact administrator"
-			});
-		}
-
-		const listData = rawData.data.map(row => {
+		const { data } = await sb.Got.instances.Supinic("track/author/list").json();
+		const printData = data.map(row => {
 			let youtubeRefer = "N/A";
 			if (row.youtubeChannelID) {
 				youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/channel/${row.youtubeChannelID}">${row.youtubeName}</a>`;
@@ -30,61 +23,53 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
-			data: listData,
-			head: Object.keys(listData[0]),
+			data: printData,
+			head: Object.keys(printData[0]),
 			pageLength: 25
 		});
 	});
 
 	Router.get("/:id", async (req, res) => {
 		const authorID = Number(req.params.id);
-		const { data: rawData } = await sb.Got.instances.Supinic("track/author/" + authorID).json();
+		const { data } = await sb.Got.instances.Supinic("track/author/" + authorID).json();
 
-		if (!rawData || rawData.statusCode !== 200) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Invalid ID"
-			});
-		}
-
-		const authorData = rawData.data;
 		let youtubeRefer = "N/A";
-		if (authorData.youtubeChannelID) {
-			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/channel/${authorData.youtubeChannelID}">${authorData.youtubeName}</a>`;
+		if (data.youtubeChannelID) {
+			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/channel/${data.youtubeChannelID}">${data.youtubeName}</a>`;
 		}
-		else if (authorData.youtubeUserID) {
-			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/user/${authorData.youtubeUserID}">${authorData.youtubeName}</a>`;
+		else if (data.youtubeUserID) {
+			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/user/${data.youtubeUserID}">${data.youtubeName}</a>`;
 		}
 
-		const data = {
-			Name: authorData.name,
-			"Also known as": authorData.aliases
-				? authorData.aliases.join("<br>")
+		const printData = {
+			Name: data.name,
+			"Also known as": data.aliases
+				? data.aliases.join("<br>")
 				: "N/A",
-			Country: (authorData.country)
-				? authorData.country
+			Country: (data.country)
+				? data.country
 				: "N/A",
-			Bilibili: (authorData.bilibiliID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//space.bilibili.com/${authorData.bilibiliID}">${authorData.bilibiliID}</a>`
+			Bilibili: (data.bilibiliID)
+				? `<a target="_blank" rel="noopener noreferrer" href="//space.bilibili.com/${data.bilibiliID}">${data.bilibiliID}</a>`
 				: "N/A",
-			Nicovideo: (authorData.nicovideoID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//nicovideo.jp/user/${authorData.nicovideoID}">${authorData.nicovideoID}</a>`
+			Nicovideo: (data.nicovideoID)
+				? `<a target="_blank" rel="noopener noreferrer" href="//nicovideo.jp/user/${data.nicovideoID}">${data.nicovideoID}</a>`
 				: "N/A",
-			Soundcloud: (authorData.soundcloudID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//soundcloud.com/${authorData.soundcloudID}">${authorData.soundcloudID}</a>`
+			Soundcloud: (data.soundcloudID)
+				? `<a target="_blank" rel="noopener noreferrer" href="//soundcloud.com/${data.soundcloudID}">${data.soundcloudID}</a>`
 				: "N/A",
-			Twitter: (authorData.twitterID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//www.twitter.com/${authorData.twitterID}">${authorData.twitterID}</a>`
+			Twitter: (data.twitterID)
+				? `<a target="_blank" rel="noopener noreferrer" href="//www.twitter.com/${data.twitterID}">${data.twitterID}</a>`
 				: "N/A",
-			Twitch: (authorData.userAlias)
-				? `<a target="_blank" rel="noopener noreferrer" href="//twitch.tv/${authorData.userAlias.name}">${authorData.userAlias.name}</a>`
+			Twitch: (data.userAlias)
+				? `<a target="_blank" rel="noopener noreferrer" href="//twitch.tv/${data.userAlias.name}">${data.userAlias.name}</a>`
 				: "N/A",
 			Youtube: youtubeRefer,
-			Notes: authorData.notes || "N/A",
+			Notes: data.notes || "N/A",
 			Tracks: [
 				"<table id='authorTracks'>",
 				"<thead><tr><th>Track</th><th>Role</th><th>Published</th></tr></thead>",
-				authorData.tracks
+				data.tracks
 					.sort((a, b) => a.name.localeCompare(b.name))
 					.map(i => [
 						"<tr>",
@@ -99,7 +84,7 @@ module.exports = (function () {
 		};
 
 		res.render("author", {
-			data: data
+			data: printData
 		});
 	});
 
