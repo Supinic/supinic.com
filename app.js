@@ -76,12 +76,18 @@
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
+
+	app.use("/public", Express.static(__dirname + "/public/", {
+		etag: true,
+		maxAge: "1 day",
+		lastModified: true
+	}));
+
+	app.use("/api", Express.static(__dirname + "/apidocs/"));
+
 	app.use(CacheController({
 		noCache: true
 	}));
-
-	app.use("/public", Express.static(__dirname + "/public/"));
-	app.use("/api", Express.static(__dirname + "/apidocs/"));
 
 	app.use(Passport.initialize());
 	app.use(Passport.session());
