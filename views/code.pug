@@ -10,6 +10,10 @@ html
             hljs.initHighlightingOnLoad();
 
         style.
+            pre, code {
+                white-space: pre-wrap;
+            }
+
             .hljs-keyword, .hljs-params {
                 color: deeppink;
             }
@@ -53,6 +57,17 @@ html
 
         br
 
+        pre.
+            Command definition:
         pre
             code(class="javascript").
                 #{code}
+
+        - if (staticData) {
+            br
+            pre.
+                Static data:
+            pre
+                code(class="javascript").
+                    #{staticData}
+        - }
