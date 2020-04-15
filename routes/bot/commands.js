@@ -188,8 +188,8 @@ module.exports = (function () {
 
 		res.render("code", {
 			header: data.values.Name,
-			code: data.values.Code,
-			staticData: data.values.Static_Data ?? null,
+			code: `// Command code:\n${data.values.Code}`,
+			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
 			link: `<a href="https://github.com/Supinic/supibot-sql/blob/master/commands/${data.values.Name}.sql">Github link</a>`
 		});
 	});
