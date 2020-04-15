@@ -188,7 +188,11 @@
 	app.get("/robots.txt", (req, res) => {
 		res.type("text/plain");
 		res.send("User-agent: Googlebot\nAllow: /\nUser-Agent: *\nDisallow: /");
-	});	
+	});
+
+	app.get("/favicon.ico", (req, res) => {
+		res.redirect("/public/img/hackerman.gif");
+	});
 
 	await app.all("*", async (req, res, next) => {
 		app.locals.currentLocation = req.originalUrl;
