@@ -6,28 +6,35 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyData = (data) => data.map(i => ({
-		ID: i.ID,
-		Name: i.userName,
-		Text: i.text,
-		Status: i.status,
-		Priority: {
-			value: i.priority ?? "N/A",
-			dataOrder: (i.priority === null)
-				? -1
-				: i.priority
-		},
-		Notes: (i.notes)
-			? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
-			: "N/A",
-		Update: (i.lastUpdate)
-			? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
-			: "N/A"
-	}));
+	const prettifyData = (data, addName) => data.map(i => {
+		const object = {
+			ID: i.ID,
+			Text: i.text,
+			Status: i.status,
+			Priority: {
+				value: i.priority ?? "N/A",
+				dataOrder: (i.priority === null)
+					? -1
+					: i.priority
+			},
+			Notes: (i.notes)
+				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
+				: "N/A",
+			Update: (i.lastUpdate)
+				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
+				: "N/A"
+		};
+
+		if (addName) {
+			object.Name = i.userName;
+		}
+
+		return object;
+	});
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("data/suggestion/list").json();
-		const printData = prettifyData(data);
+		const printData = prettifyData(data, true);
 
 		res.render("generic-list-table", {
 			data: printData,
@@ -116,7 +123,7 @@ module.exports = (function () {
 			});
 		}
 
-		const printData = prettifyData(data);
+		const printData = prettifyData(data, false);
 		res.render("generic-list-table", {
 			data: printData,
 			head: Object.keys(printData[0]),
