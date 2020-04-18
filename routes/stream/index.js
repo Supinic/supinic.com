@@ -6,7 +6,7 @@ module.exports = (function () {
 	const subroutes = [
 		["tts", "tts.js"],
 		["playsound", "playsound.js"],
-		["video-queue", "video-queue.js"]
+		["song-request", "song-request.js"]
 	];
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));

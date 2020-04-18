@@ -42,6 +42,8 @@ module.exports = (function () {
 	 * @apiSuccess {string} data.status
 	 * @apiSuccess {number} data.userAlias
 	 * @apiSuccess {string} data.added ISO Date
+	 * @apiSuccess {string} [data.started] ISO Date
+	 * @apiSuccess {string} [data.ended] ISO Date
 	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/queue", async (req, res) => {
@@ -52,6 +54,48 @@ module.exports = (function () {
 			),
 			SongRequest.selectMultipleCustom(rs =>  rs
 				.where("Status IN %s+", ["Queued", "Current"])
+			)
+		]);
+
+		const data = rawData.map(track => {
+			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
+			track.Parsed_Link = prefix.replace(prefixSymbol.Value, track.Link);
+
+			return track;
+		});
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /bot/song-request/queue Song Request - Queue
+	 * @apiName GetSongRequestQueue
+	 * @apiDescription Fetches the stream's song request history for the past week.
+	 * @apiGroup Stream
+	 * @apiPermission any
+	 * @apiSuccess {Object[]} data
+	 * @apiSuccess {number} data.ID
+	 * @apiSuccess {number} data.vlcID
+	 * @apiSuccess {string} data.link
+	 * @apiSuccess {number} data.videoType
+	 * @apiSuccess {string} data.name
+	 * @apiSuccess {number} data.length
+	 * @apiSuccess {string} data.status
+	 * @apiSuccess {number} data.userAlias
+	 * @apiSuccess {string} data.added ISO Date
+	 * @apiSuccess {string} [data.started] ISO Date
+	 * @apiSuccess {string} [data.ended] ISO Date
+	 * @apiSuccess {string} data.parsedLink
+	 */
+	Router.get("/history", async (req, res) => {
+		const [videoTypes, prefixSymbol, rawData] = await Promise.all([
+			VideoType.getParsers(),
+			Config.selectSingleCustom(q => q
+				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
+			),
+			SongRequest.selectMultipleCustom(rs =>  rs
+				.where("Status = %s", "Inactive")
+				.where("Added >= (NOW() - INTERVAL 7 DAY)")
 			)
 		]);
 

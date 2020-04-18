@@ -170,7 +170,8 @@
 			items: [
 				{ name: "TTS voices", link: "tts" },
 				{ name: "Playsounds", link: "playsound/list" },
-				{ name: "Video request queue", link: "video-queue" }
+				{ name: "Video request queue", link: "song-request/queue" },
+				{ name: "Video request history", link: "song-request/history" }
 			]
 		},
 		{
