@@ -27,13 +27,14 @@ module.exports = (function () {
 	];
 
 	const subroutes = [
+		["alias", "alias.js"],
 		["author", "author.js"],
 		["detail", "detail.js"],
+		["favourite", "favourite.js"],
 		["gachi", "gachi.js"],
 		["tag", "tag.js"],
 		// ["todo", "todo.js"],
 		// ["reupload", "reupload.js"],
-		["alias", "alias.js"]
 	];
 
 	const linkOrUnlink = async (type, req, res) => {

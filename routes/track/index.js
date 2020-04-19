@@ -6,8 +6,13 @@ module.exports = (function () {
 
 	const Author = require("../../modules/track/author.js");
 
-	Router.use("/author", require("./author.js"));
-	Router.use("/detail", require("./detail.js"));
+	const subroutes = [
+		["author", "author.js"],
+		["detail", "detail.js"],
+		["favourite", "favourite.js"]
+	];
+
+	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
 	Router.get("/todo/list", async (req, res) => {
 		const { data: raw } = await sb.Got.instances.Supinic({

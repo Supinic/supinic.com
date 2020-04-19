@@ -117,11 +117,22 @@ module.exports = (function () {
 			Embed: embed
 		};
 
-		res.render("author", {
+		let favourite = null;
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.userID) {
+			const { data } = await sb.Got.instances.Supinic({
+				url: `track/favourite/user/${auth.userID}/track/${trackID}`
+			}).json();
+
+			favourite = Boolean(data);
+		}
+
+		res.render("track-detail", {
+			favourite,
+			ID: trackData.ID,
 			data: data
 		});
 	});
-
 
 	return Router;
 })();

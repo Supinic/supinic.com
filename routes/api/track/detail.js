@@ -3,6 +3,7 @@ module.exports = (function () {
 
 	const Express = require("express");
 	const Router = Express.Router();
+
 	const Track = require("../../../modules/track/track.js");
 
 	/**
@@ -38,10 +39,19 @@ module.exports = (function () {
 	 *     ID is out of bounds (does not exist)
 	 */
 	Router.get("/:id", async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		let favourite = null;
+
 		const id = Number(req.params.id);
 		if (!id) {
 			return sb.WebUtils.apiFail(res, 400, "Provided ID is not a valid integer");
 		}
+
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, 401, auth.error);
+		}
+
+		// @todo add favourite to the result
 
 		let trackData = null;
 		try {
