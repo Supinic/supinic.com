@@ -12,7 +12,10 @@ module.exports = (function () {
 			const obj = {
 				User: user.Name,
 				Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
-				Length: track.length
+				Length: {
+					dataOrder: Number(track.length),
+					value: sb.Utils.formatTime(Number(track.length), true)
+				}
 			};
 
 			if (extraFields.includes("ID")) {
