@@ -51,7 +51,9 @@ module.exports = class WebUtils {
 		const responseData = {
 			statusCode: 200,
 			timestamp: new Date().valueOf(),
-			data: sb.Utils.convertCaseObject(data, "snake", "camel"),
+			data: (data)
+				? sb.Utils.convertCaseObject(data, "snake", "camel")
+				: data,
 			error: null
 		};
 
