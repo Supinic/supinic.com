@@ -177,44 +177,29 @@ module.exports = class TemplateModule {
 	static async updateCustom (values, callback) {
 		if (!values || values.constructor !== Object || Object.keys(values).length === 0) {
 			throw new sb.Error({
-				message: "Custom insert values must be an Object with at least on property",
+				message: "Custom insert values must be an Object with at least one property",
 				args: values
 			});
 		}
-
-		if (typeof callback !== "function") {
+		else if (typeof callback !== "function") {
 			throw new sb.Error({
 				message: "Custom update callback must be a function",
 				args: typeof callback
 			});
 		}
 
-		const condition = sb.Query.getCondition(callback);
-		if (!condition || deleteAllFailsafeRegex.test(condition)) {
-			throw new sb.Error({
-				message: "Custom update condition must be set and cannot evaluate to true",
-				args: condition
-			});
-		}
+		await sb.Query.getRecordUpdater(ru => {
+			ru.update(this.database, this.table);
 
-		const columnDefinition = (await sb.Query.getDefinition(this.database, this.table)).columns;
-		const targets = Object.entries(values).map(([name, value]) => {
-			const column = columnDefinition.find(i => i.name === name);
-			if (!column) {
-				throw new sb.Error({
-					message: "Unrecognized column",
-					args: {
-						database: this.database,
-						table: this.table,
-						column: name
-					}
-				});
+			for (const [name, value] of Object.entries(values)) {
+				ru.set(name, value);
 			}
 
-			return "`" + name + "` = " + sb.Query.convertToSQL(value, column.type);
-		});
+			// This is the condition callback
+			callback(ru);
 
-		await sb.Query.raw(`UPDATE ${this.escapedPath} SET ${targets.join(",")} WHERE ${condition}`);
+			return ru;
+		});
 	}
 
 	static async delete (ID) {
