@@ -161,6 +161,7 @@
 			name: "Tracks",
 			link: "track",
 			items: [
+				{ name: "Favourites", link: "favourite/list" },
 				{ name: "Todo", link: "todo/list" },
 			]
 		},
@@ -196,7 +197,9 @@
 	});
 
 	await app.all("*", async (req, res, next) => {
-		app.locals.currentLocation = req.originalUrl;
+		if (!req.originalUrl.includes("api")) {
+			app.locals.currentLocation = req.originalUrl;
+		}
 
 		if (req.session.passport) {
 			const data = req.session.passport.user.data[0];
