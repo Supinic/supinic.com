@@ -32,6 +32,14 @@ module.exports = (function () {
 		Tests: {
 			dataOrder: i.tests,
 			value: pretty(i.tests)
+		},
+		"Tests/1mil": {
+			dataOrder: (i.population && i.tests)
+				? (i.tests / i.population) * 1e6
+				: 0,
+			value: (i.population && i.tests)
+				? pretty(Math.trunc((i.tests / i.population) * 1e6))
+				: "N/A"
 		}
 	}));
 	
