@@ -117,14 +117,15 @@ module.exports = (function () {
 			Embed: embed
 		};
 
-		let favourite = null;
+		let favourite = "none";
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
+			// data can be null (if no favourite exists) or a proper API response
 			const { data } = await sb.Got.instances.Supinic({
 				url: `track/favourite/user/${auth.userID}/track/${trackID}`
 			}).json();
 
-			favourite = Boolean(data);
+			favourite = (data?.active) ? "active" : "inactive";
 		}
 
 		res.render("track-detail", {

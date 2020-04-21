@@ -7,18 +7,19 @@ html
 		include ./navigation.pug
 		script.
 			$(document).ready(() => {
+				const type = `!{favourite}`;
 				const active = `<img alt="Favourite" height=32 width=32 src="/public/img/favourite-star.png">`;
 				const inactive = `<img alt="Not favourite" height=32 width=32 src="/public/img/favourite-star-off.png">`;
-				const noLogin = "Log in to use the favourite button!";
+				const noLogin = `<i>Log in to use the favourite button!</i>`;
 
-				if (!{favourite} === true) {
+				if (type === "active") {
 					$("#favourite").html(active);
 				}
-				else if (!{favourite} === false) {
+				else if (type === "inactive") {
 					$("#favourite").html(inactive);
 				}
-				else {
-					$("#favourite").text(noLogin);
+				else if (type === "none") {
+					$("#favourite").html(noLogin);
 				}
 
 				$("#favourite").click(async () => {
@@ -27,7 +28,7 @@ html
 						.catch(i => i.json());
 					
 					if (data.statusCode === 403) {
-						$("#favourite").text(noLogin);
+						$("#favourite").html(noLogin);
 					}
 					else if (data.active === true) {
 						$("#favourite").html(active);
