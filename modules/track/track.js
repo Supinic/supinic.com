@@ -48,7 +48,10 @@ module.exports = (function () {
 				})
 				.groupBy("Track.ID")
 			)).map(row => {
-				row.Parsed_Link = row.Prefix.replace(videoTypePrefix, row.Link);
+				if (row.Link) {
+					row.Parsed_Link = row.Prefix.replace(videoTypePrefix, row.Link);
+				}
+
 				delete row.Prefix;
 
 				row.Aliases = (row.Aliases)
