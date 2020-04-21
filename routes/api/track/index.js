@@ -5,11 +5,13 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Author = require("../../../modules/track/author.js");
+	const Config = require("../../../modules/data/config.js");
 	const Tag = require("../../../modules/track/tag.js");
 	const Track = require("../../../modules/track/track.js");
 	const TrackAuthor = require("../../../modules/track/track-author.js");
-	const TrackTag = require("../../../modules/track/track-tag.js");
-	const UserAlias = require("../../../modules/chat-data/user-alias.js");
+	const VideoType = require("../../../modules/data/video-type.js");
+	// const TrackTag = require("../../../modules/track/track-tag.js");
+	// const UserAlias = require("../../../modules/chat-data/user-alias.js");
 
 	const allowedConnectTables = ["Author", "Table"];
 	const allowedAuthorTypes = [
@@ -176,27 +178,18 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const rawData = await Track.list();
-		const list = rawData.map(i => {
-			const row = {
-				ID: i.ID,
-				Link: i.Link,
-				Video_Type: i.Video_Type,
-				Track_Type: i.Track_Type,
-				Duration: i.Duration,
-				Available: i.Available,
-				Published: i.Published,
-				Legacy_ID: i.Legacy_ID,
-				Tags: i.Tags
-			};
-
-			if (i.Link && i.Prefix) {
-				row.ParsedLink = i.Prefix.replace("$", i.Link);
-			}
-			else {
-				row.ParsedLink = null;
-			}
-			return row;
-		});
+		const list = rawData.map(row => ({
+			ID: row.ID,
+			Link: row.Link,
+			Parsed_Link: row.Parsed_Link,
+			Video_Type: row.Video_Type,
+			Track_Type: row.Track_Type,
+			Duration: row.Duration,
+			Available: row.Available,
+			Published: row.Published,
+			Legacy_ID: row.Legacy_ID,
+			Tags: row.Tags
+		}));
 
 		return sb.WebUtils.apiSuccess(res, list);
 	});
