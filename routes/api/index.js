@@ -79,5 +79,9 @@ module.exports = (function () {
 		return sb.WebUtils.apiFail(res, 500, err.message, { ID: errorID });
 	});
 
+	Router.all("*", (req, res) => {
+		return sb.WebUtils.apiFail(res, 404, "Not found");
+	});
+
 	return Router;
 })();
