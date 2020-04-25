@@ -37,7 +37,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {put} /data/suggestion/list Suggestion - List
+	 * @api {get} /data/suggestion/list Suggestion - List
 	 * @apiName ListSuggestions
 	 * @apiDescription Posts a list of suggestions
 	 * @apiGroup Data
