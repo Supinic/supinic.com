@@ -8,7 +8,7 @@ module.exports = (function () {
 	const Throughput = require("../../modules/messages.js");
 	const Channel = require("../../modules/chat-data/channel.js");
 
-	Router.get("/", async (req, res) => {
+	Router.get("/list", async (req, res) => {
 		const { data: rawData } = await sb.Got.instances.Supinic("bot/channel/list").json();
 
 		// Use all non-Discord channels, and only show Discord channels with a description
@@ -31,7 +31,7 @@ module.exports = (function () {
 						? (sb.Utils.round(i.byteLength / 1e6, 3) + " MB")
 						: (sb.Utils.round(i.byteLength / 1e3, 0) + " kB")
 			},
-			ID: `<a href="/bot/channels/${i.ID}/activity">${i.ID}</a>`
+			ID: `<a href="/bot/channel/${i.ID}/activity">${i.ID}</a>`
 		}));
 
 		res.render("generic-list-table", {
@@ -44,19 +44,24 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:name-:id/activity", async (req, res) => {
-		const tableList = await Throughput.getList();
+	Router.get("/:id/activity", async (req, res) => {
 		const channelID = Number(req.params.id);
-		const channelName = String(req.params.name).toLowerCase();
-
-		const channelData = tableList.find(i => i.ID === channelID && i.Name === channelName);
-		if (!channelData) {
+		if (!sb.Utils.isValidInteger(channelID)) {
 			return res.status(404).render("error", {
-				error: "404",
+				error: "404 Not found",
 				message: "Target channel has no activity data"
 			});
 		}
 
+		const channelRow = await Channel.getRow(channelID);
+		if (!channelRow) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Target channel has no activity data"
+			});
+		}
+
+		const channelData = channelRow.values;
 		if (typeof sb.App.cache.channelActivity === "undefined") {
 			sb.App.cache.channelActivity = {};
 		}
@@ -94,7 +99,7 @@ module.exports = (function () {
 			hourData: JSON.stringify(hourData),
 			dayData: JSON.stringify(dayData),
 			dayLabels: JSON.stringify(dayLabels),
-			channelName: channelName
+			channelName: channelData.Name
 		});
 	});
 

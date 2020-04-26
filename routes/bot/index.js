@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 	const subroutes = [
 		["channel-bots", "channel-bots.js"],
-		["channels", "channels.js"],
+		["channel", "channel.js"],
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
 		["reminder", "reminders.js"],

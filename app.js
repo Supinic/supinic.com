@@ -114,7 +114,7 @@
 			name: "Chat bot",
 			link: "bot",
 			items: [
-				{ name: "Channel data", link: "channels" },
+				{ name: "Channel list", link: "channel/list" },
 				{ name: "Cookie statistics", link: "cookie/list" },
 				{ name: "Commands", link: "command" },
 				{ name: "Commands statistics", link: "command/stats" },
