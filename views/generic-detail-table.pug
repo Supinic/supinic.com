@@ -16,7 +16,7 @@ html
                 word-break: break-word;
             }
 
-            #table_wrapper {
+            #table_wrapper, #post_wrapper {
                 padding: 10px 40px 0 40px !important;
             }
 
@@ -31,3 +31,8 @@ html
                         b #{key}
                     td.value.
                         !{value}
+        - if(postData)
+        - {
+        div(id="post_wrapper")
+            !{postData}
+        - }
