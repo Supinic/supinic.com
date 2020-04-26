@@ -31,7 +31,7 @@ module.exports = (function () {
 						? (sb.Utils.round(i.byteLength / 1e6, 3) + " MB")
 						: (sb.Utils.round(i.byteLength / 1e3, 0) + " kB")
 			},
-			ID: `<a href="/bot/channel/${i.ID}/activity">${i.ID}</a>`
+			ID: `<a href="/bot/channel/${i.ID}">${i.ID}</a>`
 		}));
 
 		res.render("generic-list-table", {
@@ -42,6 +42,44 @@ module.exports = (function () {
 			sortDirection: "asc",
 			specificFiltering: true
 		});
+	});
+
+	Router.get("/:id", async (req, res) => {
+		const channelID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Target channel has no activity data"
+			});
+		}
+
+		const channelData = await Channel.selectSingleCustom(q => q
+			.select("Platform.Name AS Platform_Name")
+			.select("Platform.Message_Limit AS Platform_Message_Limit")
+			.join("chat_data", "Platform")
+			.where("Channel.ID = %n", channelID)
+		);
+		if (!channelData) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Target channel has no activity data"
+			});
+		}
+
+		const data = {
+			ID: channelData.ID,
+			Name: channelData.Name,
+			Platform: channelData.Platform_Name,
+			"Platform ID": channelData.Specific_ID,
+			"Bot mode": channelData.Mode,
+			"Banphrase API": channelData.Banphrase_API_URL ?? "N/A",
+			"Message limit": channelData.Message_Limit ?? channelData.Platform_Message_Limit,
+			Description: channelData.Description ?? "N/A",
+			Activity: `<a href="./${channelData.ID}/activity">Activity charts</a>`,
+			Filters: `<a href="./${channelData.ID}/filters">List of filters</a>`,
+		};
+
+		res.render("generic-detail-table", { data });
 	});
 
 	Router.get("/:id/activity", async (req, res) => {
@@ -61,7 +99,7 @@ module.exports = (function () {
 			});
 		}
 
-		const channelData = channelRow.values;
+		const channelData = channelRow.valuesObject;
 		if (typeof sb.App.cache.channelActivity === "undefined") {
 			sb.App.cache.channelActivity = {};
 		}
