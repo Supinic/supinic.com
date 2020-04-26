@@ -5,8 +5,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Throughput = require("../../modules/messages.js");
 	const Channel = require("../../modules/chat-data/channel.js");
+	const Throughput = require("../../modules/messages.js");
 
 	Router.get("/list", async (req, res) => {
 		const { data: rawData } = await sb.Got.instances.Supinic("bot/channel/list").json();
@@ -75,8 +75,8 @@ module.exports = (function () {
 			"Banphrase API": channelData.Banphrase_API_URL ?? "N/A",
 			"Message limit": channelData.Message_Limit ?? channelData.Platform_Message_Limit,
 			Description: channelData.Description ?? "N/A",
-			Activity: `<a href="./${channelData.ID}/activity">Activity charts</a>`,
-			Filters: `<a href="./${channelData.ID}/filters">List of filters</a>`,
+			Activity: `<a href="/channel/${channelData.ID}/activity">Activity charts</a>`,
+			Filters: `<a href="/channel/${channelData.ID}/filter/list">List of filters</a>`,
 		};
 
 		res.render("generic-detail-table", { data });
@@ -138,6 +138,31 @@ module.exports = (function () {
 			dayData: JSON.stringify(dayData),
 			dayLabels: JSON.stringify(dayLabels),
 			channelName: channelData.Name
+		});
+	});
+
+	Router.get("/:id/filter/list", async (req, res) => {
+		const channelID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Target channel has no filter data"
+			});
+		}
+
+		const { data } = await sb.Got.instances.Supinic(`/bot/filter/channel/${channelID}/list`).json();
+		const printData = data.map(i => ({
+			ID: i.ID,
+			User: i.userName ?? "(all)",
+			Command: i.commandName ?? "(all)",
+			Created: new sb.Date(i.created).format("Y-m-d H:i"),
+			Reason: i.reason ?? "N/A"
+		}));
+
+		res.render("generic-list-table", {
+			data: printData,
+			head: ["ID", "User", "Command", "Created", "Reason"],
+			pageLength: 10
 		});
 	});
 

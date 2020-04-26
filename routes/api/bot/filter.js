@@ -66,5 +66,24 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, filterList);
 	});
 
+	Router.get("/channel/:id/list", async (req, res) => {
+		const id = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(id)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+		}
+
+		const data = await Filter.selectMultipleCustom(q => q
+			.select("Command.Name AS Command_Name")
+			.select("User_Alias.Name AS User_Name")
+			.leftJoin("chat_data", "Command")
+			.leftJoin("chat_data", "User_Alias")
+			.where("Channel = %n", id)
+			.where("Active = %b", true)
+			.where("Type = %s", "Blacklist")
+		);
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
 	return Router;
 })();
