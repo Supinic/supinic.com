@@ -33,7 +33,6 @@
 
 	const port = 80;
 	const crypto = require("crypto");
-	const request = require("request");
 	const bodyParser = require("body-parser");
 
 	const Express = require("express");
@@ -47,24 +46,23 @@
 
 	class Strategy extends OAuth2Strategy {
 		userProfile (accessToken, done) {
-			const options = {
-				url: "https://api.twitch.tv/helix/users",
+			sb.Got.instances.Twitch.Helix({
+				url: "users",
 				method: "GET",
 				headers: {
 					Authorization: "Bearer " + accessToken
 				}
-			};
-			
-			request(options, (err, resp, body) => {
-				if (resp && resp.statusCode === 200) {
-					done(null, JSON.parse(body));
+			}).then(({ body, statusCode }) => {
+				if (statusCode === 200) {
+					done(null, body);
 				}
 				else {
-					done(JSON.parse(body));
+					done(body);
 				}
 			});
 		}
 	}
+
 	
 	const app = Express();
 	app.use(Session({
