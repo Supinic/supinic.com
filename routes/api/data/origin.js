@@ -21,7 +21,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/list", async (req, res) => {
 		const data = await Origin.selectCustom(rs => rs
-			.select("ID", "Name", "Text", "Platform", "Emote_Added", "Notes")
+			.select("ID", "Name", "Text", "Type", "Emote_Added", "Notes")
 			.orderBy("Name ASC")
 		);
 
