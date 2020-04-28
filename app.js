@@ -269,7 +269,7 @@
 
 	// 404
 	app.get("*", (req, res) => {
-		return res.status(401).render("error", {
+		return res.status(404).render("error", {
 			message: "404 Not found",
 			error: "Endpoint was not found"
 		});
