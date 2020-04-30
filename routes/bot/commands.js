@@ -98,7 +98,7 @@ module.exports = (function () {
 			const key = rawKey.replace(/_/g, " ");
 			if (key === "Dynamic Description") {
 				data[key] = (value)
-					? (await eval(value)(commandPrefix)).join("<br>")
+					? (await eval(value)(commandPrefix, rawData.valuesObject)).join("<br>")
 					: "N/A";
 			}
 			else if (key === "Aliases" && value !== null) {
