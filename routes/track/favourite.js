@@ -8,7 +8,7 @@ module.exports = (function () {
 		const { data } = await sb.Got.instances.Supinic("track/favourite/list").json();
 		const printData = data.filter(i => i.active).map(i => ({
 			User: i.userName,
-			Track: i.trackName
+			Track: `<a href="/track/detail/${i.track}">${i.trackName}</a>`
 		}));
 
 		res.render("generic-list-table", {
