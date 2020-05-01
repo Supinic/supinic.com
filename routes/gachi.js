@@ -9,10 +9,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const data = await Gachi.getAll();
-		
-		res.render("gachi-list", {
-			data: data
-		});
+		res.render("gachi-list", { data });
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
