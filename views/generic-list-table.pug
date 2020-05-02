@@ -36,7 +36,7 @@ html
 
 						$("input", this).on("keyup change", function () {
 							if (table.column(i).search() !== this.value) {
-								table.column(i).search(this.value).draw();
+								table.column(i).search(this.value, true).draw();
 							}
 						});
 
