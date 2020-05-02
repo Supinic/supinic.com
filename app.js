@@ -121,7 +121,6 @@
 				{ name: "Reminders - yours", link: "reminder/list" },
 				{ name: "Slots winners list", link: "slots-winner/list" },
 				{ name: "Suggestions - all", link: "suggestions/list" },
-				{ name: "Suggestions - yours", link: "suggestions/mine" },
 				{ name: "Suggestions - your stats", link: "suggestions/stats" }
 			]
 		},

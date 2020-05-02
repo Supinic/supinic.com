@@ -86,52 +86,5 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/mine", async (req, res) => {
-		if (!res || !res.locals) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "Your session timed out, please log in again"
-			});
-		}
-		else if (!res.locals.authUser) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "You must be logged in before viewing your suggestions"
-			});
-		}
-
-		const { data } = await sb.Got.instances.Supinic({
-			url: "data/suggestion/list",
-			searchParams: new sb.URLParams()
-				.set("userName", res.locals.authUser.login)
-				.toString()
-		}).json();
-
-		if (data.length === 0) {
-			return res.render("generic", {
-				data: `
-					<center>
-						<h5>
-							You have not made any suggestions so far.
-							<br>
-							Check this guide for Twitch:
-						</h5>
-						<br>
-						<img alt="guide" src="/public/img/suggestion-guide.png">
-					</center>	
-				`
-			});
-		}
-
-		const printData = prettifyData(data, false);
-		res.render("generic-list-table", {
-			data: printData,
-			head: Object.keys(printData[0]),
-			pageLength: 25,
-			sortColumn: 0,
-			sortDirection: "desc"
-		});
-	});
-
 	return Router;
 })();
