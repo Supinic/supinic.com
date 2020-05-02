@@ -196,6 +196,18 @@
 
 	await app.all("*", async (req, res, next) => {
 		if (!req.originalUrl.includes("api")) {
+			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
+			if (columnValues.length !== 0) {
+				app.locals.columnValues = columnValues.map(key => ({
+					position: Number(key.match(/column(\d+)/)?.[1]) ?? null,
+					title: key.replace(/_/g, " ").match(/column(\w+)/)?.[1] ?? null,
+					value: req.query[key]
+				}));
+			}
+			else {
+				app.locals.columnValues = [];
+			}
+
 			app.locals.currentLocation = req.originalUrl;
 		}
 

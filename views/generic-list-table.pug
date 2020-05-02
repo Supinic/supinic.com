@@ -17,6 +17,8 @@ html
 
 		script.
 			$(document).ready(() => {
+				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
+
 				const table = $("#table").DataTable({
 					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
 					pageLength: #{pageLength},
@@ -24,16 +26,26 @@ html
 				});
 
 				if (#{specificFiltering}) {
-					$('td.searchFooter').each(function (i) {
+					$("td.searchFooter").each(function (i) {
+						const position = Number($(this).attr("position"));
 						const title = $(this).attr("name");
-							$(this).html(`<input type="text" placeholder="🔎 ${title}">`);
+						const column = columnValues.find(value => value.title === title || value.position === position);
+						const value = (column && column.value) || null
 
-							$('input', this).on('keyup change', function () {
-								if (table.column(i).search() !== this.value) {
-									table.column(i).search(this.value).draw();
-								}
-							});
+						$(this).html(`<input type="text" placeholder="🔎 ${title}">`);
+
+						$("input", this).on("keyup change", function () {
+							if (table.column(i).search() !== this.value) {
+								table.column(i).search(this.value).draw();
+							}
 						});
+
+						if (value) {
+							const input = $(this).children("input").first();
+							input.val(value);
+							input.trigger("change");
+						}
+					});
 				}
 			});
 		meta(charset="UTF-8")
@@ -81,6 +93,8 @@ html
 			- if (specificFiltering) {
 				tfoot
 					tr
+					- var index = 0;
 						each key in head
-							td(class="searchFooter" name=key)
+							td(class="searchFooter" name=key position=index)
+							- index++;
 			- }
