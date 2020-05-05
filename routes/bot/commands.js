@@ -161,7 +161,8 @@ module.exports = (function () {
 		}).filter(Boolean).join("<br>") || "N/A";
 
 		res.render("generic-detail-table", {
-			data: data
+			data: data,
+			postData: "<iframe id=\"codeFrame\" src=\"./code\"></iframe>"
 		});
 	});
 
