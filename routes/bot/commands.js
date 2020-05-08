@@ -98,9 +98,11 @@ module.exports = (function () {
 			const key = rawKey.replace(/_/g, " ");
 			if (key === "Dynamic Description") {
 				if (value) {
-					const values = Object.assign({}, rawData.valuesObject);
-					values.data = {};
-					values.getStaticData = function () { return eval(this.Static_Data)};
+					const values = { ...rawData.valuesObject };
+					values.getStaticData = function () {
+						this.data = {};
+						return eval(this.Static_Data)
+					};
 
 					const fn = eval(value);
 					const result = await fn(commandPrefix, values);
