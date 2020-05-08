@@ -97,9 +97,19 @@ module.exports = (function () {
 		for (const [rawKey, value] of Object.entries(rawData.values)) {
 			const key = rawKey.replace(/_/g, " ");
 			if (key === "Dynamic Description") {
-				data[key] = (value)
-					? (await eval(value)(commandPrefix, rawData.valuesObject)).join("<br>")
-					: "N/A";
+				if (value) {
+					const values = Object.assign({}, rawData.valuesObject);
+					values.data = {};
+					values.getStaticData = function () { return eval(this.Static_Data)};
+
+					const fn = eval(value);
+					const result = await fn(commandPrefix, values);
+
+					data[key] = result.join("<br>");
+				}
+				else {
+					data[key] = "N/A";
+				}
 			}
 			else if (key === "Aliases" && value !== null) {
 				data[key] = JSON.parse(value).join(", ");
