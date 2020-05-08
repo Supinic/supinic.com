@@ -46,12 +46,13 @@
 
 	class Strategy extends OAuth2Strategy {
 		userProfile (accessToken, done) {
-			sb.Got.instances.Twitch.Helix({
-				url: "users",
+			sb.Got({
 				method: "GET",
+				url: "https://api.twitch.tv/helix/users",
 				headers: {
 					Authorization: "Bearer " + accessToken
-				}
+				},
+				responseType: "json"
 			}).then(({ body, statusCode }) => {
 				if (statusCode === 200) {
 					done(null, body);
@@ -62,7 +63,6 @@
 			});
 		}
 	}
-
 	
 	const app = Express();
 	app.use(Session({
@@ -271,11 +271,22 @@
 	});
 
 	app.use(async (err, req, res, next) => {
-		const errorID = await sb.SystemLogger.sendError("Website", err);
-		return res.status(500).render("error", {
-			error: "500 Internal Error",
-			message: `Internal error encountered (ID ${errorID})`
-		});
+		console.error("Website error", err);
+
+		try {
+			const errorID = await sb.SystemLogger.sendError("Website", err);
+			return res.status(500).render("error", {
+				error: "500 Internal Error",
+				message: `Internal error encountered (ID ${errorID})`
+			});
+		}
+		catch (e) {
+			console.error("Error while trying to save error", e);
+			return res.status(500).render("error", {
+				error: "500 Internal Error",
+				message: `Internal server error`
+			});
+		}
 	});
 
 	// 404
