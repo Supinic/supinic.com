@@ -114,6 +114,15 @@ module.exports = (function () {
 					data[key] = "N/A";
 				}
 			}
+			else if (key === "Flags") {
+				if (value === null) {
+					data[key] = "none";
+				}
+				else {
+					const list = value.map(i => `<li>${i}</li>`).join("");
+					data[key] = `<ul>${list}</ul>`;
+				}
+			}
 			else if (key === "Aliases" && value !== null) {
 				data[key] = JSON.parse(value).join(", ");
 			}
@@ -184,7 +193,7 @@ module.exports = (function () {
 			}
 		}
 
-		const prefix = (rawData.values.Whitelisted) ? "Only " : "";
+		const prefix = (rawData.Flags?.includes("whitelist")) ? "Only " : "";
 		data.Restrictions = restrictions.filter(i => i.Channel_Mode !== "Inactive" && i.Channel_Mode !== "Read").map(i => {
 			if (i.Type === "Opt-out") {
 				return i.Username + " opted out from this command";
