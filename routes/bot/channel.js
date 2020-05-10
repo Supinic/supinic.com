@@ -75,8 +75,8 @@ module.exports = (function () {
 			"Banphrase API": channelData.Banphrase_API_URL ?? "N/A",
 			"Message limit": channelData.Message_Limit ?? channelData.Platform_Message_Limit,
 			Description: channelData.Description ?? "N/A",
-			Activity: `<a href="/channel/${channelData.ID}/activity">Activity charts</a>`,
-			Filters: `<a href="/channel/${channelData.ID}/filter/list">List of filters</a>`,
+			Activity: `<a href="/bot/channel/${channelData.ID}/activity">Activity charts</a>`,
+			Filters: `<a href="/bot/channel/${channelData.ID}/filter/list">List of filters</a>`,
 		};
 
 		res.render("generic-detail-table", { data });
