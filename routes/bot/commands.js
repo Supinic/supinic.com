@@ -229,7 +229,14 @@ module.exports = (function () {
 			console.error(e);
 			return res.status(404).render("error", {
 				error: "404 Not Found",
-				message: "ID is out of bounds"
+				message: "Malformed command ID"
+			});
+		}
+
+		if (!data) {
+			return res.status(404).render("error", {
+				error: "404 Not Found",
+				message: "Command ID is out of bounds"
 			});
 		}
 
