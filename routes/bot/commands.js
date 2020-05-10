@@ -90,6 +90,7 @@ module.exports = (function () {
 			});
 		}
 
+		const auth = await sb.WebUtils.getUserLevel(req, res);
 		const skip = ["static data", "examples", "rollbackable", "system", "read only", "ping", "skip banphrases", "whitelisted", "whitelist response", "code"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
@@ -147,7 +148,41 @@ module.exports = (function () {
 			.orderBy("Username ASC")
 		);
 
-		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
+		if (auth.userID) {
+			const check = await sb.Query.getRecordset(rs => rs
+				.select("ID")
+				.from("chat_data", "Filter")
+				.where("Command = %n", ID)
+				.where("User_Alias = %n", auth.userID)
+				.where("Type = %s", "Opt-out")
+				.where("Active = %b", true)
+				.single()
+			);
+
+			const status = (check?.ID) ? "are" : "are <b>not</b>";
+			data.Optout = `You ${status} opted out from this command`;
+
+			const blocks = await sb.Query.getRecordset(rs => rs
+				.select("User_Alias.Name AS Username")
+				.from("chat_data", "Filter")
+				.join({
+					toTable: "User_Alias",
+					on: "Filter.Blocked_User = User_Alias.ID"
+				})
+				.where("Command = %n", ID)
+				.where("User_Alias = %n", auth.userID)
+				.where("Type = %s", "Block")
+				.where("Active = %b", true)
+			);
+
+			if (blocks.length === 0) {
+				data.Blocks = "You are not currently blocking anyone from this command.";
+			}
+			else {
+				const list = blocks.map(i => `<li>${i.Username}</li>`).join("");
+				data.Blocks = `You are curently blocking the following users from this command: <ul>${list}</ul>`;
+			}
+		}
 
 		const prefix = (rawData.values.Whitelisted) ? "Only " : "";
 		data.Restrictions = restrictions.filter(i => i.Channel_Mode !== "Inactive" && i.Channel_Mode !== "Read").map(i => {
@@ -158,8 +193,8 @@ module.exports = (function () {
 				const who = i.Username || "Everyone";
 				const where = (i.Channel_Name) ? (`in ${i.Platform_Name} channel ${i.Channel_Name}`) : "everywhere";
 				return (i.Username)
-						? `${prefix}<u>${who}</u> can use this command ${where}`
-						: `<u>${who}</u> can use this command ${prefix.toLowerCase()} ${where}`
+					? `${prefix}<u>${who}</u> can use this command ${where}`
+					: `<u>${who}</u> can use this command ${prefix.toLowerCase()} ${where}`
 			}
 			else if (i.Type === "Blacklist") {
 				if (i.Username) {
@@ -172,9 +207,9 @@ module.exports = (function () {
 			}
 		}).filter(Boolean).join("<br>") || "N/A";
 
-		res.render("generic-detail-table", {
-			data: data
-		});
+		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
+
+		res.render("generic-detail-table", { data });
 	});
 
 	Router.get("/:id/code", async (req, res) => {
