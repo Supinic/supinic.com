@@ -15,7 +15,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} author.ID
 	 * @apiSuccess {string} author.name
 	 * @apiSuccess {string} author.normalizedName
-	 * @apiSuccess {string} [author.country]
+	 * @apiSuccess {string} [author.countryName]
 	 * @apiSuccess {string} [author.notes]
 	 * @apiSuccess {number} author.addedBy
 	 * @apiSuccess {string} author.addedOn

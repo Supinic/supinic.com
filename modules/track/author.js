@@ -10,7 +10,7 @@ module.exports = (function () {
 		static async list () {
 			const data = await super.selectMultipleCustom(rs => rs
 				.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
-				.select("Country.Name AS Country")
+				.select("Country.Name AS Country_Name")
 				.leftJoin("data", "Country")
 				.leftJoin({
 					toDatabase: "music",
@@ -135,7 +135,7 @@ module.exports = (function () {
 
 			if (options.country) {
 				options.country = options.country.toLowerCase();
-				data = data.filter(i => i.Country && i.Country.toLowerCase() === options.country);
+				data = data.filter(i => i.countryName && i.countryName.toLowerCase() === options.country);
 			}
 
 			if (options.name) {
