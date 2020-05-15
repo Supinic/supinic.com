@@ -14,24 +14,24 @@ module.exports = (function () {
 	});
 
 	Router.get("/list", async (req, res) => {
-		const rawData = await Command.selectAll();
-
-		const data = rawData.filter(i => !i.System && !i.Archived).map(i => ({
-			Name: i.Name,
-			Aliases: (i.Aliases) ? JSON.parse(i.Aliases).join(", ") : "",
-			Cooldown: {
-				value: (i.Cooldown / 1000) + " seconds",
-				dataOrder: (i.Cooldown / 1000)
-			},
-			Whitelisted: (i.Whitelisted) ? "Yes" : "No",
-			Description: i.Description || "N/A",
-			ID: `<a href="/bot/command/${i.ID}">${i.ID}</a>`
-		})).sort((a, b) => a.Name.localeCompare(b.Name));
+		const { data } = await sb.Got.instances.Supinic("bot/command/list").json();
+		const printData = data.map(i => ({
+				Name: i.name,
+				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "(none)",
+				Cooldown: {
+					value: (i.cooldown / 1000) + " seconds",
+					dataOrder: (i.cooldown / 1000)
+				},
+				Whitelisted: (i.flags.includes("whitelist")) ? "Yes" : "No",
+				Description: i.description || "N/A",
+				ID: `<a href="/bot/command/${i.ID}">${i.ID}</a>`
+			}))
+			.sort((a, b) => a.Name.localeCompare(b.Name));
 
 		res.render("generic-list-table", {
-			data: data,
-			head: Object.keys(data[0]),
-			pageLength: 100
+			data: printData,
+			head: Object.keys(printData[0]),
+			pageLength: 250
 		});
 
 		// const css = "<style type='text/css'>body { background-color:#111; color: white; } a:visited { color:darkviolet; } a { color:dodgerblue; } </style>";

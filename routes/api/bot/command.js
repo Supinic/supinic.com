@@ -30,23 +30,15 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const data = (await Command.selectMultipleCustom(rs => rs
-			.where("Archived = %b", false)
-			.where("System = %b", false)
+			.where("Flags NOT %*like*", "archived")
+			.where("Flags NOT %*like*", "system")
 		)).map(i => ({
 			ID: i.ID,
 			Name: i.Name,
-			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : null,
+			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : [],
 			Description: i.Description,
 			Cooldown: i.Cooldown,
-			Rollbackable: i.Rollbackable,
-			Skip_Banphrases: i.Skip_Banphrases,
-			Read_Only: i.Read_Only,
-			Opt_Outable: i.Opt_Outable,
-			Blockable: i.Blockable,
-			Ping: i.Ping,
-			Pipeable: i.Pipeable,
-			Whitelisted: i.Whitelisted,
-			Whitelist_Response: i.Whitelist_Response,
+			Flags: i.Flags
 		}));
 
 		return sb.WebUtils.apiSuccess(res, data);
