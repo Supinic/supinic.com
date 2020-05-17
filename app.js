@@ -45,22 +45,24 @@
 	const MemoryStore = require("memorystore")(Session);
 
 	class Strategy extends OAuth2Strategy {
-		userProfile (accessToken, done) {
-			sb.Got({
+		async userProfile (accessToken, done, ...rest) {
+			const { statusCode, body } = await sb.Got({
 				method: "GET",
+				throwHttpErrors: false,
 				url: "https://api.twitch.tv/helix/users",
 				headers: {
-					Authorization: "Bearer " + accessToken
+					Authorization: "Bearer " + accessToken,
+					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
 				},
 				responseType: "json"
-			}).then(({ body, statusCode }) => {
-				if (statusCode === 200) {
-					done(null, body);
-				}
-				else {
-					done(body);
-				}
 			});
+
+			if (statusCode === 200) {
+				done(null, body);
+			}
+			else {
+				done(body);
+			}
 		}
 	}
 	
