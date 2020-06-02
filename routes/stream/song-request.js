@@ -9,12 +9,22 @@ module.exports = (function () {
 		const users = await sb.User.getMultiple(data.map(i => i.userAlias));
 		return data.map(track => {
 			const user = users.find(i => track.userAlias === i.ID);
+			const startTime = (track.startTime)
+				? sb.Utils.formatTime(track.startTime, true)
+				: "0:00";
+			const endTime = (track.endTime)
+				? sb.Utils.formatTime(track.endTime, true)
+				: sb.Utils.formatTime(Number(track.length), true);
+
 			const obj = {
 				User: user.Name,
 				Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
-				Length: {
-					dataOrder: Number(track.length),
-					value: sb.Utils.formatTime(Number(track.length), true)
+				Segment: (track.startTime || track.endTime)
+					? `${startTime} - ${endTime}`
+					: "N/A",
+				Duration: {
+					dataOrder: Number(track.duration),
+					value: sb.Utils.formatTime(Number(track.duration), true)
 				}
 			};
 
@@ -33,7 +43,7 @@ module.exports = (function () {
 	};
 
 	Router.get("/queue", async (req, res) => {
-		const header = ["ID", "User", "Name", "Length", "Status"];
+		const header = ["ID", "User", "Name", "Duration", "Segment", "Status"];
 		const { data } = await sb.Got.instances.Supinic("bot/song-request/queue").json();
 
 		res.render("generic-list-table", {
@@ -44,7 +54,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/history", async (req, res) => {
-		const header = ["User", "Name", "Length", "Added"];
+		const header = ["User", "Name", "Duration", "Segment", "Added"];
 		const { data } = await sb.Got.instances.Supinic("bot/song-request/history").json();
 
 		res.render("generic-list-table", {

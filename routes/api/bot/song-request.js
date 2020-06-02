@@ -52,9 +52,7 @@ module.exports = (function () {
 			Config.selectSingleCustom(q => q
 				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
 			),
-			SongRequest.selectMultipleCustom(rs =>  rs
-				.where("Status IN %s+", ["Queued", "Current"])
-			)
+			SongRequest.getNormalizedQueue(q => q.where("Status IN %s+", ["Current", "Queued"]))
 		]);
 
 		const data = rawData.map(track => {
@@ -93,7 +91,7 @@ module.exports = (function () {
 			Config.selectSingleCustom(q => q
 				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
 			),
-			SongRequest.selectMultipleCustom(rs =>  rs
+			SongRequest.getNormalizedQueue(q => q
 				.where("Status = %s", "Inactive")
 				.where("Added >= (NOW() - INTERVAL 7 DAY)")
 			)
