@@ -12,7 +12,8 @@ module.exports = (function () {
 		["playsound", "playsound.js"],
 		["reminder", "reminder.js"],
 		["song-request", "song-request.js"],
-		["text-to-speech", "tts.js"]
+		["text-to-speech", "tts.js"],
+		["top-chatters", "top-chatters.js"]
 	];
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
