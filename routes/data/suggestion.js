@@ -6,43 +6,67 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyData = (data, addName) => data.map(i => {
-		const object = {
-			ID: i.ID,
-			Text: i.text,
-			Status: i.status,
-			Priority: {
-				value: i.priority ?? "N/A",
-				dataOrder: (i.priority === null)
-					? -1
-					: i.priority
-			},
-			Notes: (i.notes)
-				? `<div style="text-decoration: underline; cursor: zoom-in;" title="${i.notes}">Hover</div>`
-				: "N/A",
-			Update: (i.lastUpdate)
-				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
-				: "N/A"
-		};
-
-		if (addName) {
-			object.Name = i.userName;
-		}
-
-		return object;
-	});
+	const prettifyData = (data) => data.map(i => ({
+		Author: i.userName,
+		Text: i.text,
+		Status: i.status,
+		Priority: {
+			value: i.priority ?? "N/A",
+			dataOrder: (i.priority === null)
+				? -1
+				: i.priority
+		},
+		Update: (i.lastUpdate)
+			? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
+			: "N/A",
+		ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
+	}));
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("data/suggestion/list").json();
-		const printData = prettifyData(data, true);
+		const printData = prettifyData(data);
 
 		res.render("generic-list-table", {
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 25,
-			sortColumn: 0,
+			sortColumn: 5,
 			sortDirection: "desc",
 			specificFiltering: true
+		});
+	});
+
+	Router.get("/:id", async (req, res) => {
+		const suggestionID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(suggestionID)) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Invalid suggestion ID"
+			});
+		}
+
+		const { data } = await sb.Got.instances.Supinic(`data/suggestion/${suggestionID}`).json();
+		if (!data) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Suggestion does not exist"
+			});
+		}
+
+		res.render("generic-detail-table", {
+			data: {
+				ID: data.ID,
+				"Created by": data.username,
+				"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
+				Category: data.category,
+				Status: data.status,
+				Priority: data.priority ?? "N/A",
+				Text: data.text ?? "N/A",
+				Notes: data.notes   ?? "N/A",
+				"Last update": (data.lastUpdate)
+					? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
+					: "N/A"
+			}
 		});
 	});
 

@@ -17,7 +17,7 @@ module.exports = (function () {
 				q.select("User_Alias.Name AS User_Name")
 					.join("chat_data", "User_Alias")
 					.where("Status <> %s", "Quarantined")
-					.orderBy("Suggestion.ID");
+					.orderBy("Suggestion.ID DESC");
 
 				if (options.category) {
 					q.where("Category = %s", options.category);

@@ -9,8 +9,7 @@ module.exports = (function () {
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
 		["reminder", "reminders.js"],
-		["slots-winner", "slots-winner.js"],
-		["suggestions", "suggestions.js"]
+		["slots-winner", "slots-winner.js"]
 	];
 
 	Router.get("/", (req, res) => res.sendStatus(200));

@@ -121,9 +121,7 @@
 				{ name: "Commands", link: "command" },
 				{ name: "Commands statistics", link: "command/stats" },
 				{ name: "Reminders - yours", link: "reminder/list" },
-				{ name: "Slots winners list", link: "slots-winner/list" },
-				{ name: "Suggestions - all", link: "suggestions/list" },
-				{ name: "Suggestions - your stats", link: "suggestions/stats" }
+				{ name: "Slots winners list", link: "slots-winner/list" }
 			]
 		},
 		{
@@ -142,6 +140,8 @@
 			link: "data",
 			items: [
 				{ name: "Emote origins", link: "origin/list" },
+				{ name: "Suggestions - all", link: "suggestion/list" },
+				{ name: "Suggestions - your stats", link: "suggestion/stats" }
 			]
 		},
 		{
