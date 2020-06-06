@@ -17,8 +17,14 @@ module.exports = (function () {
 				: i.priority
 		},
 		Update: (i.lastUpdate)
-			? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
-			: "N/A",
+			? {
+				value: sb.Utils.timeDelta(new sb.Date(i.lastUpdate)),
+				dataOrder: new sb.Date(i.lastUpdate).valueOf()
+			}
+			: {
+				value: "N/A",
+				dataOrder: 0
+			},
 		ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 	}));
 
