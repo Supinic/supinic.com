@@ -15,7 +15,10 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("bot/command/list").json();
-		const printData = data.map(i => ({
+
+		const isDeveloper = Boolean(res.locals.authUser?.userData.Data.developer);
+		const printData = data.filter(i => isDeveloper || !i.flags.includes("developer"))
+			.map(i => ({
 				Name: i.name,
 				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "(none)",
 				Cooldown: {
