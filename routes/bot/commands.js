@@ -33,28 +33,6 @@ module.exports = (function () {
 			head: Object.keys(printData[0]),
 			pageLength: 250
 		});
-
-		// const css = "<style type='text/css'>body { background-color:#111; color: white; } a:visited { color:darkviolet; } a { color:dodgerblue; } </style>";
-		// const data = await Command.getAll();
-		// const header = `<thead><td><b>Name</b></td><td><b>Aliases</b></td><td><b>Whitelisted</b></td></td><td><b>Description</b></td><td><b>Cooldown</b></td></thead>`;
-		// const table = data.filter(i => !i.System).sort((a, b) => a.Name.localeCompare(b.Name)).map(row => {
-		// 	const aliases = (row.Aliases) ? eval(row.Aliases).join(", ") : "";
-		//
-		// 	return [
-		// 		"<tr>",
-		// 			"<td>" + row.Name + "</td>",
-		// 			"<td>" + aliases + "</td>",
-		// 			"<td>" + (row.Whitelisted ? "<b>Yes</b>" : "") + "</td>",
-		// 			"<td>" + row.Description + "</td>",
-		// 			"<td>" + (row.Cooldown / 1000 + " sec") + "</td>",
-		// 		"</tr>"
-		// 	].join("");q
-		// }).join("");
-		//
-		// const html = `${css}<table>${header}${table}</table>`;
-		//
-		// res.set("Content-Type", "text/html");
-		// res.send(html);
 	});
 
 	Router.get("/stats", async (req, res) => {

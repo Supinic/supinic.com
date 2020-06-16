@@ -10,12 +10,6 @@ module.exports = (function () {
 				.groupBy("HOUR(Executed)")
 			);
 		}
-		/*
-			 SELECT Command.Name, COUNT(*)
-			 FROM Command_Execution
-			 JOIN Command ON Command.ID = Command
-			 GROUP BY Command
-		 */
 
 		static get name () { return "command"; }
 		static get database () { return "chat_data"; }
