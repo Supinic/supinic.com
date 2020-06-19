@@ -30,11 +30,15 @@ module.exports = (function () {
 					: `${channel.Platform_Name.toLowerCase()}_${channel.Name}`;
 
 				const infoRow = informationSchema.find(i => i.Channel === databaseName);
+				if (!infoRow) {
+					return null;
+				}
+
 				channel.Line_Count = infoRow.Max_ID;
 				channel.Byte_Length = infoRow.Byte_Length;
 
 				return channel;
-			});
+			}).filter(Boolean);
 		}
 
 		static get name () { return "channel"; }
