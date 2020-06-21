@@ -89,10 +89,10 @@ html
 				tr
 					each key in head
 						- if (row[key] && typeof row[key].dataOrder !== "undefined") {
-							td(data-order=row[key].dataOrder) !{row[key].value}
+							td(data-order=row[key].dataOrder field=key) !{row[key].value}
 						- }
 						- else {
-							td !{row[key]}
+							td(field=key) !{row[key]}
 						- }
 
 			- if (specificFiltering) {
