@@ -15,6 +15,11 @@ html
 		-	specificFiltering = false;
 		- }
 
+		- if (typeof extraScript !== "undefined") {
+			script.
+				#{extraScript}
+		- }
+
 		script.
 			$(document).ready(() => {
 				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
