@@ -7,10 +7,10 @@ module.exports = (function () {
 	const Track = require("../../../modules/track/track.js");
 
 	/**
-	 * @api {get} /track/list/:id Track - Get
-	 * @apiName GetTrack
+	 * @api {get} /track/detail/:id Track - Get detail
+	 * @apiName GetTrackDetail
 	 * @apiDescription Fetches full data about a specific track ID
-	 * @apiGroup Tracka
+	 * @apiGroup Track-List
 	 * @apiPermission any
 	 * @apiSuccess {Object} track Single track object
 	 * @apiSuccess {number} track.ID

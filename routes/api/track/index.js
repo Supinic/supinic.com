@@ -279,7 +279,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {post} /track/list/ Track - Connect
+	 * @api {post} /track/connect/ Track - Connect
 	 * @apiName PostTrackConnect
 	 * @apiDescription Creates a connection between existing Track and another table (Author/Tag)
 	 * @apiGroup Track-List
@@ -306,7 +306,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {delete} /track/list/ Track - Disconnect
+	 * @api {delete} /track/connect/ Track - Disconnect
 	 * @apiName DeleteTrackConnect
 	 * @apiDescription Removes an existing connection between existing Track and another table (Author/Tag)
 	 * @apiGroup Track-List
@@ -338,7 +338,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {post} /track/list/ Track - Reupload
+	 * @api {post} /track/reupload/ Track - Reupload
 	 * @apiName PostTrackReupload
 	 * @apiDescription Creates a new Reupload connection between two existing Tracks, or an existing Track and a provided link, which is automatically turned into a new Track
 	 * @apiGroup Track-List
