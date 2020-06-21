@@ -51,17 +51,14 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 401, auth.error);
 		}
 
-		// @todo add favourite to the result
+		const trackData = await Track.get(id);
 
-		let trackData = null;
-		try {
-			trackData = await Track.get(id);
+		if (trackData === null) {
+			return sb.WebUtils.apiFail(res, 404, "Track ID not found");
 		}
-		catch (e) {
-			return sb.WebUtils.apiFail(res, 400, "ID is out of bounds");
+		else {
+			return sb.WebUtils.apiSuccess(res, trackData);
 		}
-
-		return sb.WebUtils.apiSuccess(res, trackData ?? null);
 	});
 
 	return Router;
