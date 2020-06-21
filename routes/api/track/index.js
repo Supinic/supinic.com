@@ -173,6 +173,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [track.published] Track publish date, as ISO string<br>
 	 *     If null, the track has been unavailable before the publish date could be fetched, OR<br>
 	 *     The above mentioned link is null
+	 * @apiSuccess {number} track.favourites Amount of favourites each track has. Defaults to zero.
 	 * @apiSuccess {number} [track.legacyID] ID pointer to the legacy gachi list<br>If null, no such track exists in the deprecated list
 	 * @apiSuccess {number[]} track.tags List of tag IDs associated with this Track.
 	 */
@@ -188,7 +189,8 @@ module.exports = (function () {
 			Available: row.Available,
 			Published: row.Published,
 			Legacy_ID: row.Legacy_ID,
-			Tags: row.Tags
+			Tags: row.Tags,
+			Favourites: row.Favourites
 		}));
 
 		return sb.WebUtils.apiSuccess(res, list);

@@ -18,9 +18,15 @@ module.exports = (function () {
 			return (await super.selectMultipleCustom(rs => rs
 				.select("Video_Type.Link_Prefix AS Prefix")
 				.select("Gachi.ID AS Legacy_ID")
+				.select("COUNT(User_Favourite.Track) AS Favourites")
 				.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
 				.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 				.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
+				.leftJoin({
+					toDatabase: "music",
+					toTable: "User_Favourite",
+					on: "User_Favourite.Track = Track.ID"
+				})
 				.leftJoin({
 					toDatabase: "music",
 					toTable: "Track_Author",
@@ -231,6 +237,11 @@ module.exports = (function () {
 			const data = await Track.selectMultipleCustom(rs => {
 				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
+					.select("COUNT(User_Favourite.Track) AS Favourites")
+					.leftJoin({
+						toTable: "User_Favourite",
+						on: "User_Favourite.Track = Track.ID"
+					})
 					.leftJoin({
 						toTable: "Track_Tag",
 						on: "Track_Tag.Track = Track.ID"
@@ -264,9 +275,16 @@ module.exports = (function () {
 			for (let i = data.length - 1; i >= 0; i--) {
 				const track = data[i];
 
-				track.Authors = (track.Authors) ? track.Authors.split(",").map(Number) : [];
-				track.Tags = (track.Tags) ? track.Tags.split(",").map(Number) : [];
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
+
+				// @todo Remove these filters and make it so the above recordset uses reference table methods when they're implemented
+				track.Authors = (track.Authors)
+					? track.Authors.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
+					: [];
+
+				track.Tags = (track.Tags)
+					? track.Tags.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
+					: [];
 			}
 
 			return data;

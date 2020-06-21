@@ -161,6 +161,7 @@
 			link: "track",
 			items: [
 				{ name: "Favourites", link: "favourite/list" },
+				{ name: "Gachi list", link: "gachi/list" },
 				{ name: "Todo", link: "todo/list" },
 			]
 		},
@@ -183,6 +184,7 @@
 			link: "contact"
 		}
 	];
+
 	app.set("view engine", "pug");
 	
 	// robots.txt - disallow everything
