@@ -207,6 +207,8 @@ module.exports = (function () {
 	 * @apiParam {string} authorName Filter by author name
 	 * @apiParam {number[]} includeTags Comma-delimited list of Tag IDs that all must be connected to tracks
 	 * @apiParam {number[]} excludeTags Comma-delimited list of Tag IDs that all must NOT be connected to tracks
+	 * @apiParam {number} checkUsernameFavourite If set, will check if given user or userID has results songs in their favourites.
+	 * @apiParam {|string} checkUserIDFavourite If set, will check if given user or userID has results songs in their favourites.
 	 * @apiParam {boolean} hasLegacyID If true, filters tracks that are also present in the deprecated list
 	 * @apiParam {string} name Filter by name
 	 * @apiPermission any
@@ -230,12 +232,26 @@ module.exports = (function () {
 	 * @apiSuccess {number[]} track.tags List of tag IDs associated with this Track.
 	 */
 	Router.get("/search", async (req, res) => {
-		const {addedByID, addedByName, authorID, authorName, includeTags, excludeTags, hasLegacyID, name} = req.query;
+		const {
+			addedByID,
+			addedByName,
+			authorID,
+			authorName,
+			checkUserIDFavourite,
+			checkUsernameFavourite,
+			includeTags,
+			excludeTags,
+			hasLegacyID,
+			name
+		} = req.query;
+
 		const data = await Track.search({
 			addedByID,
 			addedByName,
 			name,
 			hasLegacyID,
+			checkUserIDFavourite,
+			checkUsernameFavourite,
 			authorID: Number(authorID),
 			authorName: authorName,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,

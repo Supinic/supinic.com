@@ -15,24 +15,31 @@ module.exports = (function () {
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
 	const fetchList = async (req, res, listType) => {
-		let searchParams = "";
+		let searchParams = new sb.URLParams();
 		let sortColumn = 0;
 
 		if (listType === "todo") {
-			searchParams = "includeTags=20";
+			searchParams.set("includeTags", "20");
 			sortColumn = 4;
 		}
 		else if (listType === "gachi") {
-			searchParams = "includeTags=6";
+			searchParams.set("includeTags", "6");
 			sortColumn = 3;
 		}
 		else {
-			return [];
+			throw new sb.Error({
+				message: "Unrecognized internal list type " + listType
+			});
+		}
+
+		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		if (userID) {
+			searchParams.set("checkUserIDFavourite", String(userID));
 		}
 
 		const { data: raw } = await sb.Got.instances.Supinic({
 			url: "track/search",
-			searchParams
+			searchParams: searchParams.toString()
 		}).json();
 
 		const authorIDs = new Set(raw.map(i => i.authors).flat());
@@ -59,8 +66,18 @@ module.exports = (function () {
 				};
 			}
 
-			obj.Favs = i.favourites;
+			let imageElement = "";
+			if (typeof i.isFavourite === "boolean") {
+				const link = (i.isFavourite)
+					? "/public/img/favourite-star.png"
+					: "/public/img/favourite-star-off.png";
+
+				imageElement = `<img onclick="toggleFavourite(window.event, this)" width="16" height="16" alt="favourite" src="${link}">`;
+			}
+
+			obj.Favs = `<div class="favourites">${i.favourites}</div>${imageElement}`;
 			obj.ID = `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`;
+
 			return obj;
 		});
 
@@ -69,7 +86,29 @@ module.exports = (function () {
 			head: Object.keys(data[0]),
 			sortColumn,
 			pageLength: 25,
-			sortDirection: "desc"
+			sortDirection: "desc",
+			extraCSS: "div.favourites { display: initial }",
+			extraScript: (async function toggleFavourite (event, element) {
+				const row = event.path.find(i => i.tagName === "TR");
+				const ID = [...row.children].find(i => i.getAttribute("field") === "ID").textContent;
+
+				const { data } = await fetch("/api/track/favourite/track/" + ID, { method: "PUT" })
+					.then(i => i.json())
+					.catch(i => i.json());
+
+				const sibling = element.previousSibling;
+				if (data.statusCode === 403) {
+					element.setAttribute("src", "/public/img/stop-sign.png");
+				}
+				else if (data.active === true) {
+					sibling.textContent = String(Number(sibling.textContent) + 1);
+					element.setAttribute("src", "/public/img/favourite-star.png");
+				}
+				else if (data.active === false) {
+					sibling.textContent = String(Number(sibling.textContent) - 1);
+					element.setAttribute("src", "/public/img/favourite-star-off.png");
+				}
+			}).toString()
 		});
 	};
 

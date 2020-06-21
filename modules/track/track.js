@@ -237,10 +237,10 @@ module.exports = (function () {
 			const data = await Track.selectMultipleCustom(rs => {
 				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
-					.select("COUNT(User_Favourite.Track) AS Favourites")
+					.select("GROUP_CONCAT(User_Favourite.User_Alias SEPARATOR ',') AS Fans")
 					.leftJoin({
 						toTable: "User_Favourite",
-						on: "User_Favourite.Track = Track.ID"
+						on: "User_Favourite.Track = Track.ID AND User_Favourite.Active = 1"
 					})
 					.leftJoin({
 						toTable: "Track_Tag",
@@ -271,11 +271,30 @@ module.exports = (function () {
 				return rs;
 			});
 
+			let targetUserID = null;
+			if (options.checkUserIDFavourite) {
+				targetUserID = Number(options.checkUserIDFavourite);
+			}
+			else if (options.checkUsernameFavourite) {
+				const userData = await sb.User.get(options.checkUsernameFavourite);
+				targetUserID = userData?.ID ?? null;
+			}
+
 			await sb.WebUtils.loadVideoTypes();
 			for (let i = data.length - 1; i >= 0; i--) {
 				const track = data[i];
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
+				track.Favourites = track.Fans?.split(",").length ?? 0;
+
+				if (targetUserID !== null) {
+					if (!track.Fans) {
+						track.Is_Favourite = false;
+					}
+					else {
+						track.Is_Favourite = track.Fans.split(",").map(Number).includes(targetUserID);
+					}
+				}
 
 				// @todo Remove these filters and make it so the above recordset uses reference table methods when they're implemented
 				track.Authors = (track.Authors)

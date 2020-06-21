@@ -17,7 +17,11 @@ html
 
 		- if (typeof extraScript !== "undefined") {
 			script.
-				#{extraScript}
+				!{extraScript}
+		- }
+		- if (typeof extraCSS !== "undefined") {
+			style(type="text/css").
+				!{extraCSS}
 		- }
 
 		script.
