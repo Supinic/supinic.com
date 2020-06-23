@@ -29,7 +29,7 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
-			pageLength: 25,
+			pageLength: 100,
 			data: printData,
 			head: Object.keys(printData[0])
 		});
