@@ -51,7 +51,7 @@ module.exports = (function () {
 			const obj = {
 				Name: `<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>`,
 				Published: {
-					value: (i.published) ? new sb.Date(i.published).format("Y-m-d H:i") : "N/A",
+					value: (i.published) ? new sb.Date(i.published).format("Y-m-d") : "N/A",
 					dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
 				},
 				Author: (i.authors.length !== 0)
@@ -66,16 +66,12 @@ module.exports = (function () {
 				};
 			}
 
-			let imageElement = "";
+			let imageClass = "";
 			if (typeof i.isFavourite === "boolean") {
-				const link = (i.isFavourite)
-					? "/public/img/favourite-star.png"
-					: "/public/img/favourite-star-off.png";
-
-				imageElement = `<img onclick="toggleFavourite(window.event, this)" width="16" height="16" alt="favourite" src="${link}">`;
+				imageClass = (i.isFavourite) ? "favourite active" : "favourite inactive";
 			}
 
-			obj.Favs = `<div class="favourites">${i.favourites}</div>${imageElement}`;
+			obj.Favs = `<div class="${imageClass}">${i.favourites}</div>`;
 			obj.ID = `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`;
 
 			return obj;
@@ -87,28 +83,49 @@ module.exports = (function () {
 			sortColumn,
 			pageLength: 25,
 			sortDirection: "desc",
-			extraCSS: "div.favourites { display: initial }",
-			extraScript: (async function toggleFavourite (event, element) {
-				const row = event.path.find(i => i.tagName === "TR");
-				const ID = [...row.children].find(i => i.getAttribute("field") === "ID").textContent;
-
-				const { data } = await fetch("/api/track/favourite/track/" + ID, { method: "PUT" })
-					.then(i => i.json())
-					.catch(i => i.json());
-
-				const sibling = element.previousSibling;
-				if (data.statusCode === 403) {
-					element.setAttribute("src", "/public/img/stop-sign.png");
+			extraCSS: sb.Utils.tag.trim`
+				div.favourite { 					
+				    background-position: center; 
+				    background-repeat: no-repeat;
+				    background-size: contain;
+			    }
+			    div.favourite.active { 
+			        background-image: url("/public/img/favourite-star.png");
+			    }
+			    div.favourite.inactive { 
+			        background-image: url("/public/img/favourite-star-off.png");
+			    }
+			`,
+			extraScript: sb.Utils.tag.trim`
+				window.onload = () => {
+					const list = Array.from(document.getElementsByClassName("favourite"));
+					for (const element of list) {
+						element.parentElement.addEventListener("click", () => toggleFavourite(element));
+					}
+				};
+				 				
+				async function toggleFavourite (element) {
+					const row = element.parentElement.parentElement;
+					const ID = Array.from(row.children).find(i => i.getAttribute("field") === "ID").textContent;	
+					const { data } = await fetch("/api/track/favourite/track/" + ID, { method: "PUT" })
+						.then(i => i.json())
+						.catch(i => i.json());
+	
+					if (data.statusCode === 403) {
+						alert("Your session expired! Please log in again.");
+					}
+					else if (data.active === true) {
+						element.textContent = String(Number(element.textContent) + 1);
+						element.classList.remove("inactive");
+						element.classList.add("active");
+					}
+					else if (data.active === false) {
+						element.textContent = String(Number(element.textContent) - 1);		
+						element.classList.remove("active");
+						element.classList.add("inactive");
+					}
 				}
-				else if (data.active === true) {
-					sibling.textContent = String(Number(sibling.textContent) + 1);
-					element.setAttribute("src", "/public/img/favourite-star.png");
-				}
-				else if (data.active === false) {
-					sibling.textContent = String(Number(sibling.textContent) - 1);
-					element.setAttribute("src", "/public/img/favourite-star-off.png");
-				}
-			}).toString()
+			`
 		});
 	};
 
