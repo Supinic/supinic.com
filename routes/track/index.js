@@ -83,6 +83,7 @@ module.exports = (function () {
 			sortColumn,
 			pageLength: 25,
 			sortDirection: "desc",
+			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim`
 				div.favourite { 					
 				    background-position: center; 
