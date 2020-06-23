@@ -65,6 +65,13 @@ module.exports = (function () {
 			);
 		}
 
+		static async getActiveForTrack (trackID) {
+			return await super.selectMultipleCustom(q => q
+				.where("Track = %n", trackID)
+				.where("Active = %b", true)
+			);
+		}
+
 		static get name () { return "user-favourite"; }
 		static get database () { return "music"; }
 		static get table () { return "User_Favourite"; }

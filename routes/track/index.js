@@ -96,33 +96,46 @@ module.exports = (function () {
 			    div.favourite.inactive { 
 			        background-image: url("/public/img/favourite-star-off.png");
 			    }
+			    div.favourite.loading {
+			        background-image: url("/public/img/ppCircle.gif");
+			    }
 			`,
 			extraScript: sb.Utils.tag.trim`
 				window.onload = () => {
-					const list = Array.from(document.getElementsByClassName("favourite"));
+					const list = document.getElementsByClassName("favourite");
 					for (const element of list) {
 						element.parentElement.addEventListener("click", () => toggleFavourite(element));
 					}
 				};
 				 				
 				async function toggleFavourite (element) {
+					if (element.classList.contains("loading")) {
+						console.log("Aborted requested, previous is still pending");
+						return;
+					}
+					
 					const row = element.parentElement.parentElement;
 					const ID = Array.from(row.children).find(i => i.getAttribute("field") === "ID").textContent;	
+					
+					element.classList.remove("inactive");
+					element.classList.remove("active");
+					element.classList.add("loading");
 					const { data } = await fetch("/api/track/favourite/track/" + ID, { method: "PUT" })
 						.then(i => i.json())
 						.catch(i => i.json());
+					
+					element.classList.remove("loading");
 	
 					if (data.statusCode === 403) {
+						element.classList.add("inactive");
 						alert("Your session expired! Please log in again.");
 					}
 					else if (data.active === true) {
-						element.textContent = String(Number(element.textContent) + 1);
-						element.classList.remove("inactive");
+						element.textContent = String(data.amount);
 						element.classList.add("active");
 					}
 					else if (data.active === false) {
-						element.textContent = String(Number(element.textContent) - 1);		
-						element.classList.remove("active");
+						element.textContent = String(data.amount);
 						element.classList.add("inactive");
 					}
 				}

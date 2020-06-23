@@ -42,10 +42,15 @@ module.exports = (function () {
 			await UserFavourite.add({ trackID, userID: auth.userID });
 		}
 
-		const currentStatus = await UserFavourite.get({ trackID, userID: auth.userID });
+		const [currentStatus, currentActiveList] = await Promise.all([
+			UserFavourite.get({ trackID, userID: auth.userID }),
+			UserFavourite.getActiveForTrack(trackID),
+		]);
+
 		return sb.WebUtils.apiSuccess(res, {
 			success: true,
-			active: currentStatus.Active
+			active: currentStatus.Active,
+			amount: currentActiveList.length
 		});
 	});
 
