@@ -31,6 +31,16 @@
 	// Todo move WebUtils into globals package
 	sb.WebUtils = require("./webutils");
 
+	const subRoutes = [
+		"api",
+		"bot",
+		"contact",
+		"data",
+		"rss",
+		"stream",
+		"track"
+	];
+
 	const port = 80;
 	const crypto = require("crypto");
 	const bodyParser = require("body-parser");
@@ -113,66 +123,51 @@
 
 	app.locals.navitems = [
 		{
-			name: "Chat bot",
-			link: "bot",
+			name: "Supibot",
 			items: [
-				{ name: "Channel list", link: "channel/list" },
-				{ name: "Cookie statistics", link: "cookie/list" },
-				{ name: "Commands", link: "command" },
-				{ name: "Commands statistics", link: "command/stats" },
-				{ name: "Reminders - yours", link: "reminder/list" },
-				{ name: "Slots winners list", link: "slots-winner/list" }
+				{ name: "Channel list", link: "bot/channel/list" },
+				{ name: "Commands", link: "bot/command/list" },
+				{ name: "Commands statistics", link: "bot/command/stats" },
+				{ name: "Emote origins", link: "data/origin/list" },
+				{ name: "Reminders - yours", link: "bot/reminder/list" },
+				{ name: "Slots winners list", link: "bot/slots-winner/list" },
+				{ name: "Suggestions - all", link: "data/suggestion/list" },
+				{ name: "Suggestions - your stats", link: "data/suggestion/stats" }
 			]
 		},
 		{
-			name: "Channel bots",
-			link: "bot",
+			name: "Make-a-bot",
 			items: [
-				{ name: "Program info", link: "channel-bots" },
-				{ name: "Bots", link: "channel-bots" },
-				{ name: "Badges", link: "channel-bots/badges" },
-				{ name: "Levels", link: "channel-bots/levels" }
+				{ name: "Readme", link: "bot/channel-bots/readme" },
+				{ name: "Bots", link: "bot/channel-bots/list" },
+				{ name: "Badges", link: "bot/channel-bots/badges" },
+				{ name: "Levels", link: "bot/channel-bots/levels" }
 			]
 		},
+		{
+			name: "Music",
+			items: [
+				{ name: "Gachi list", link: "track/gachi/list" },
+				{ name: "Favourites", link: "track/favourite/list" },
+				{ name: "Todo list", link: "track/todo/list" },
 
-		{
-			name: "Data",
-			link: "data",
-			items: [
-				{ name: "Emote origins", link: "origin/list" },
-				{ name: "Suggestions - all", link: "suggestion/list" },
-				{ name: "Suggestions - your stats", link: "suggestion/stats" }
-			]
-		},
-		{
-			name: "Gachi",
-			link: "gachi",
-			items: [
-				{ name: "List", link: "list" },
+				{ separator: true },
+
+				{ name: "Archives", link: "gachi/archive" },
+				{ name: "Legacy list", link: "gachi/list" },
 				// { name: "Add new", link: "add" },
 				// { name: "Guidelines", link: "guidelines" },
 				// { name: "Todo list", link: "todo" },
-				{ name: "Archive", link: "archive" },
-				{ name: "Resources", link: "resources" }
-			]
-		},
-		{
-			name: "Tracks",
-			link: "track",
-			items: [
-				{ name: "Favourites", link: "favourite/list" },
-				{ name: "Gachi list", link: "gachi/list" },
-				{ name: "Todo", link: "todo/list" },
+				// { name: "Resources", link: "resources" }
 			]
 		},
 		{
 			name: "Stream",
-			link: "stream",
 			items: [
-				{ name: "TTS voices", link: "tts" },
-				{ name: "Playsounds", link: "playsound/list" },
-				{ name: "Video request queue", link: "song-request/queue" },
-				{ name: "Video request history", link: "song-request/history" }
+				{ name: "TTS voices", link: "stream/tts" },
+				{ name: "Playsounds", link: "stream/playsound/list" },
+				{ name: "Video request queue", link: "stream/song-request/queue" },
+				{ name: "Video request history", link: "stream/song-request/history" }
 			]
 		},
 		{
@@ -239,14 +234,9 @@
 	});
 
 	app.get("/", (req, res) => res.render("index"));
-	app.locals.navitems.forEach(routeData => app.use("/" + routeData.link, require("./routes/" + routeData.link)));
-	app.use("/track", require("./routes/track"));
-
-	app.use("/api", require("./routes/api"));
-	app.use("/rss", require("./routes/rss.js"));
-
-	// @deprecated redirect to new commands endpoint
-	app.use("/bot/commands*", (req, res) => res.redirect("/bot/command/list"));
+	for (const route of subRoutes) {
+		app.use("/" + route, require("./routes/" + route));
+	}
 
 	// Twitch auth
 	app.get("/auth/twitch", (req, res, next) => {

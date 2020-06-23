@@ -9,10 +9,6 @@ module.exports = (function () {
 	const CommandExecution = require("../../modules/chat-data/command-execution.js");
 	const Filter = require("../../modules/chat-data/filter.js");
 
-	Router.get("/", async (req, res) => {
-		res.redirect("/bot/commands/list");
-	});
-
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("bot/command/list").json();
 

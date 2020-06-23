@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/", async (req, res) => {
+	Router.get("/list", async (req, res) => {
 		const { data: {bots, badges} } = await sb.Got.instances.Supinic("bot-program/bot/list").json();
 		const printData = bots.map(bot => {
 			const botBadges = bot.badges.map(row => {

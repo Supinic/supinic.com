@@ -1,7 +1,7 @@
 append topheader
 	style(type="text/css").
 		table {
-			color: #FFF !important;
+			color: white !important;
 		}
 		body {
 			font-size: 0.75rem !important;
@@ -12,11 +12,15 @@ append topheader
 		td {
 			padding: 0.45rem !important;
 		}
+		hr.dropdown-divider {
+			border-top: 1px solid white;
+			margin: 8px 12px;
+		}
 
 append navigation
 	nav(class="navbar navbar-expand-sm bg-dark navbar-dark")
 		a(class="navbar-brand" href="/") Supinic
-		div(class="nnavbar-nav mr-auto")
+		div(class="navbar-nav mr-auto")
 			ul(class="navbar-nav")
 				each routeData in navitems
 					- if (routeData.items) {
@@ -24,7 +28,12 @@ append navigation
 							a(class="nav-link dropdown-toggle" "data-toggle"="dropdown" href="#") !{routeData.name}
 							div(class="dropdown-menu")
 								each itemData in routeData.items
-									a(class="dropdown-item" href=`/${routeData.link}/${itemData.link}`) !{itemData.name}
+									- if (itemData.separator) {
+										hr(class="dropdown-divider")
+									- }
+									- else {
+										a(class="dropdown-item" href=`/${itemData.link}`) !{itemData.name}
+									- }
 					- }
 					- else {
 						li(class="nav-item")
