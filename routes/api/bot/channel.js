@@ -7,7 +7,7 @@ module.exports = (function () {
 	const Channel = require("../../../modules/chat-data/channel");
 
 	/**
-	 * @api {get} /bot/command/list/ Channel - list
+	 * @api {get} /bot/channel/list/ Channel - list
 	 * @apiName GetChannelList
 	 * @apiDescription Posts a list of currently joined channels
 	 * @apiGroup Bot
