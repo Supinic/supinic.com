@@ -25,7 +25,19 @@ module.exports = (function () {
 			data: renderData,
 			head: Object.keys(renderData[0]),
 			pageLength: 50,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCSS: `div.MEGADANK { text-align: center } `,
+			extraScript: `
+				window.onload = () => {
+					const navbar = document.getElementById("table_wrapper").previousSibling;
+					navbar.insertAdjacentHTML("afterend", \`
+						<div class="MEGADANK">
+							<h5>Supibot does not support channel-points TTS!</h5>
+							<h5>This is just a voice list! Contact <a href="//twitch.tv/icdb">@icdb</a> for the TTS bot.</h5>
+						</div>\`
+					);
+				};			
+			`
 		});
 	});
 
