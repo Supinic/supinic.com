@@ -36,6 +36,7 @@
 		"bot",
 		"contact",
 		"data",
+		"gachi",
 		"rss",
 		"stream",
 		"track"
