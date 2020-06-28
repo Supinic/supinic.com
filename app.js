@@ -39,6 +39,7 @@
 		"gachi",
 		"rss",
 		"stream",
+		"teapot",
 		"track"
 	];
 
