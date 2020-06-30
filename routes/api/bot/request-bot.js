@@ -35,7 +35,7 @@ module.exports = (function () {
 		if (userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
 			const { mods } = await sb.Got.instances.Leppunen("twitch/modsvips/" + escapedChannel).json();
-			const isModerator = mods.find(i => i.login === escapedChannel);
+			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {
 				return sb.WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
