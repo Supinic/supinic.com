@@ -1,0 +1,49 @@
+doctype html
+html
+    head
+        block topheader
+        include ./header.pug
+        include ./datatables.pug
+
+        - if (typeof script !== "undefined") {
+            script.
+                !{script}
+        - }
+        - if (typeof extraCSS !== "undefined") {
+            style(type="text/css").
+                !{extraCSS}
+        - }
+
+        meta(charset="UTF-8")
+        include ./navigation.pug
+    body
+        block navigation
+        div(class="px-4" id="prepend").
+            !{prepend}
+        div(class="px-4" id="form-wrapper")
+            for value, key in fields
+                - if (!value.type) value.type = "string";
+
+                div(class="form-group")
+                    label(for=value.name) !{value.name}
+                    - if (value.type === "memo") {
+                        textarea(
+                            class="form-control"
+                            id=value.id
+                            name=value.name
+                            placeholder=value.placeholder
+                            rows=(value.rows || 3)
+                        ).
+                            !{value.value}
+                    - }
+                    - else {
+                        input(
+                            class="form-control"
+                            id=value.id
+                            name=value.name
+                            type=value.type
+                            placeholder=value.placeholder
+                            value=value.value
+                        )
+                    - }
+            button(class="btn btn-primary" onclick=onSubmit) Submit

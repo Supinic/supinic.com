@@ -9,12 +9,15 @@ module.exports = (function () {
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
 		["reminder", "reminders.js"],
+		["request-bot", "request-bot.js"],
 		["slots-winner", "slots-winner.js"]
 	];
 
 	Router.get("/", (req, res) => res.sendStatus(200));
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [name, link] of subroutes) {
+		Router.use(`/${name}`, require(`./${link}`));
+	}
 
 	return Router;
 })();

@@ -11,12 +11,15 @@ module.exports = (function () {
 		["filter", "filter.js"],
 		["playsound", "playsound.js"],
 		["reminder", "reminder.js"],
+		["request-bot", "request-bot.js"],
 		["song-request", "song-request.js"],
 		["text-to-speech", "tts.js"],
 		["top-chatters", "top-chatters.js"]
 	];
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [name, link] of subroutes) {
+		Router.use(`/${name}`, require(`./${link}`));
+	}
 
 	/**
 	 * @api {get} /bot/active Channel bots data
