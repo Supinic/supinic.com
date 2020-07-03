@@ -3,11 +3,37 @@ html
 	head
 		block topheader
 		include ./header.pug
-		include ./navigation.pug			
+		include ./navigation.pug
+
+		script(type="text/javascript").
+			window.addEventListener("load", async () => {
+				const response = await fetch ("https://api.twitch.tv/kraken/streams/31400525", {
+					headers: {
+						"Accept": "application/vnd.twitchtv.v5+json",
+						"Client-ID": "z1ymdwsi2d9lt5835zh0rnkshzgnb5"
+					}
+				});
+
+				const { stream } = await response.json();
+				const element = document.getElementById("twitch-status");
+				if (!stream) {
+					element.innerHTML = "I'm not currently streaming.";
+				}
+				else {
+					element.innerHTML = `
+						<h6>I'm streaming on Twitch right now!</h6>
+						<h6>Playing ${stream.game} for ${stream.viewers} viewers.</h6>
+						<a href="//twitch.tv/supinic">
+							<img src="${stream.preview.large}">
+						</a>
+					`;
+				}
+			});
+
 		meta(name="google-site-verification" content="lF51U5qMQbOR4gJoT33cBTiGkf89XEYfrALUxBUIhmc")
 	body
 		block navigation
-		center
+		div(class="col-xs-1 text-center")
 			p
 				h3
 					img(src="public/img/pepeL.png" alt="pepeL")
@@ -41,3 +67,6 @@ html
 						| Go to&nbsp;
 						a(href="//github.com/Supinic/supibot#i-want-to-use-supibot") Supibot's GitHub
 						| &nbsp;and read the reference on where to go next, based on your platform.
+		br
+
+		div(class="col-xs-1 text-center" id="twitch-status")
