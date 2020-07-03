@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const Channel = require("../../modules/chat-data/channel.js");
 	const Reminder = require("../../modules/chat-data/reminder.js");
 
 	Router.get("/list", async (req, res) => {
@@ -33,16 +34,18 @@ module.exports = (function () {
 			}
 
 			return {
-				Created: i.Created.format("Y-m-d H:i:s"),
+				Created: i.Created.format("Y-m-d"),
 				Active: (i.Active) ? "Yes" : "No",
-				Author: i.Author,
-				Target: i.Target,
-				Channel: (i.Channel_Name) ? i.Channel_Name : "<private reminder>",
+				Sender: i.Author,
+				Recipient: i.Target,
 				Text: i.Text,
-				Scheduled: (i.Schedule) ? i.Schedule.format("Y-m-d H:i:s") : "N/A",
-				ID: i.ID
+				Scheduled: {
+					dataOrder: (i.Schedule) ? i.Schedule.valueOf() : 0,
+					value: (i.Schedule) ? sb.Utils.timeDelta(i.Schedule) : "N/A",
+				},
+				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
 			};
-		}).sort((a, b) => a.ID - b.ID);
+		}).sort((a, b) => b.ID - a.ID);
 
 		res.render("generic-list-table", {
 			data: data,
@@ -51,8 +54,75 @@ module.exports = (function () {
 				: ["Created", "Active", "Author", "Target", "Channel", "Text", "Scheduled", "ID"],
 			pageLength: 25,
 			sortColumn: 0,
-			sortDirection: "desc"
+			sortDirection: "desc",
+			specificFiltering: true
 		});
+	});
+
+	Router.get("/:id", async (req, res) => {
+		if (!res || !res.locals) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "Your session timed out, please log in again"
+			});
+		}
+		else if (!res.locals.authUser) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "You must be logged in before viewing your reminders"
+			});
+		}
+
+		const ID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return res.status(400).render("error", {
+				error: "400 Invalid Request",
+				message: "Malformed reminder ID"
+			});
+		}
+
+		const row = await Reminder.getRow(ID);
+		if (!row) {
+			return res.status(400).render("error", {
+				error: "404 Not Found",
+				message: "Reminder ID does not exist"
+			});
+		}
+
+		const rawData = row.valuesObject;
+		const { userData } = res.locals.authUser;
+		if (rawData.User_To !== userData.ID && rawData.User_From !== userData.ID) {
+			return res.status(400).render("error", {
+				error: "403 Access Denied",
+				message: "This reminder was not created by you or for you"
+			});
+		}
+
+		const senderUserData = (rawData.User_From === userData.ID)
+			? userData
+			: await sb.User.get(rawData.User_From);
+
+		const recipientUserData = (rawData.User_To === userData.ID)
+			? userData
+			: await sb.User.get(rawData.User_To);
+
+		const data = {
+			ID: rawData.ID,
+			Sender: senderUserData.Name,
+			Recipient: recipientUserData.Name,
+			"Created in channel": (rawData.Channel)
+				? (await Channel.getRow(rawData.Channel)).values.Name
+				: "(created in PMs)",
+			Text: rawData.Text,
+			Pending: (rawData.Active) ? "yes" : "no",
+			Created: rawData.Created.format("Y-m-d H:i:s"),
+			Scheduled: (rawData.Schedule)
+				? rawData.Schedule.format("Y-m-d H:i:s")
+				: "(not scheduled)",
+			Private: (rawData.Private_Message) ? "yes" : "no"
+		};
+
+		res.render("generic-detail-table", { data });
 	});
 
 	return Router;

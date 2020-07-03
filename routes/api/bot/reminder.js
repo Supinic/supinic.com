@@ -13,6 +13,39 @@ module.exports = (function () {
 		await sb.InternalRequest.send(params);
 	};
 
+	const fetchReminderDetail = async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, 401, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const reminderID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(reminderID)) {
+			return sb.WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
+		}
+
+		const row = await Reminder.getRow(reminderID);
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 400, "Reminder ID does not exist");
+		}
+		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
+			return sb.WebUtils.apiFail(res, 403, "Reminder was not created by you and you aren't its target");
+		}
+		else if (!row.values.Active) {
+			return sb.WebUtils.apiFail(res, 400, "Reminder is not active");
+		}
+
+		return {
+			success: true,
+			auth,
+			row,
+			reminderID
+		};
+	};
+
 	/**
 	 * @api {get} /bot/reminder/list Reminder - list
 	 * @apiName ListReminders
@@ -156,6 +189,37 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /bot/reminder/<id> Reminder - check
+	 * @apiName GetReminder
+	 * @apiDescription Gets reminder detail data
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {number} userFrom
+	 * @apiSuccess {number} userTo
+	 * @apiSuccess {number} [channel]
+	 * @apiSuccess {number} [platform]
+	 * @apiSuccess {string} [text]
+	 * @apiSuccess {date} created
+	 * @apiSuccess {date} [schedule]
+	 * @apiSuccess {boolean} active
+	 * @apiSuccess {boolean} privateMessage
+	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
+	 * If both id and name were used at the same time<br>
+	 * If target user does not exist
+	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
+	 * @apiError (403) AccessDenied Insufficient user level
+	 */
+	Router.get("/:id", async (req, res) => {
+		const check = await fetchReminderDetail(req, res);
+		if (!check.success) {
+			return check;
+		}
+
+		return sb.WebUtils.apiSuccess(res, ...check.row.valuesObject);
+	});
+
+	/**
 	 * @api {post} /bot/reminder/<id> Reminder - unset
 	 * @apiName UnsetReminder
 	 * @apiDescription Unsets a reminder
@@ -170,37 +234,19 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.delete("/:id", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
-		if (auth.error) {
-			return sb.WebUtils.apiFail(res, 401, auth.error);
-		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		const check = await fetchReminderDetail(req, res);
+		if (!check.success) {
+			return check;
 		}
 
-		const reminderID = Number(req.params.id);
-		if (!sb.Utils.isValidInteger(reminderID)) {
-			return sb.WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
-		}
-
-		const row = await Reminder.getRow(reminderID);
-		if (!row) {
-			return sb.WebUtils.apiFail(res, 400, "Reminder ID does not exist");
-		}
-		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
-			return sb.WebUtils.apiFail(res, 403, "Reminder was not created by you and you aren't its target");
-		}
-		else if (!row.values.Active) {
-			return sb.WebUtils.apiFail(res, 400, "Reminder is not active");
-		}
-
+		const { reminderID, row } = check;
 		row.values.Active = false;
 		await row.save();
 
 		await reloadBotReminders();
 
 		return sb.WebUtils.apiSuccess(res, {
-			reminderID: reminderID,
+			reminderID,
 			message: "Reminder unset successfully"
 		});
 	});
