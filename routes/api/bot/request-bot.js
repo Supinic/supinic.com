@@ -46,6 +46,7 @@ module.exports = (function () {
 			User_Alias: userData.ID,
 			Category: "Bot addition",
 			Notes: "Requested via website",
+			Priority: 255,
 			Text: `Channel: ${targetChannel}, requested by: ${userData.Name}, description: ${description ?? "N/A"}`
 		});
 
