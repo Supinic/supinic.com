@@ -221,7 +221,7 @@
 				id: data.id,
 				image: data.profile_image_url,
 				admin: data.login === "supinic",
-				userData: userData
+				userData
 			};
 
 			res.locals.level = {
