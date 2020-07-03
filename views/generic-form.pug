@@ -5,6 +5,13 @@ html
         include ./header.pug
         include ./datatables.pug
 
+        style(type="text/css").
+            input, textarea {
+                background-color: rgb(24, 26, 27) !important;
+                color: rgb(218, 215, 209) !important;
+                border-color: rgb(51, 51, 51) !important;
+            }
+
         - if (typeof script !== "undefined") {
             script.
                 !{script}
