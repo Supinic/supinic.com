@@ -208,7 +208,7 @@ module.exports = (function () {
 	 * @apiParam {number[]} includeTags Comma-delimited list of Tag IDs that all must be connected to tracks
 	 * @apiParam {number[]} excludeTags Comma-delimited list of Tag IDs that all must NOT be connected to tracks
 	 * @apiParam {number} checkUsernameFavourite If set, will check if given user or userID has results songs in their favourites.
-	 * @apiParam {|string} checkUserIDFavourite If set, will check if given user or userID has results songs in their favourites.
+	 * @apiParam {string} checkUserIDFavourite If set, will check if given user or userID has results songs in their favourites.
 	 * @apiParam {boolean} hasLegacyID If true, filters tracks that are also present in the deprecated list
 	 * @apiParam {string} name Filter by name
 	 * @apiPermission any
