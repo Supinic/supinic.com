@@ -26,8 +26,11 @@ html
 
 		script.
 			$(document).ready(() => {
-				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
+				if (typeof beforeTableInitalize === "function") {
+					beforeTableInitalize();
+				}
 
+				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
 				const table = $("#table").DataTable({
 					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
 					pageLength: #{pageLength},
