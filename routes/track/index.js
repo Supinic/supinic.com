@@ -101,12 +101,12 @@ module.exports = (function () {
 			    }
 			`,
 			extraScript: sb.Utils.tag.trim`
-				window.onload = () => {
+				async function beforeTableInitalize () {
 					const list = document.getElementsByClassName("favourite");
 					for (const element of list) {
 						element.parentElement.addEventListener("click", () => toggleFavourite(element));
 					}
-				};
+				}
 				 				
 				async function toggleFavourite (element) {
 					if (element.classList.contains("loading")) {
