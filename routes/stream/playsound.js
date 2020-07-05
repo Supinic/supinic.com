@@ -10,7 +10,10 @@ module.exports = (function () {
 
 		const data = playsounds.map(i => ({
 			Name: i.name,
-			Cooldown: (i.cooldown / 1000) + " seconds",
+			Cooldown: {
+				dataOrder: i.cooldown,
+				value: (i.cooldown / 1000) + " seconds"
+			},
 			Notes: (i.notes)
 				? i.notes.replace(/\r?\n/g, "<br>")
 				: "N/A"
