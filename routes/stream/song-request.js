@@ -19,9 +19,14 @@ module.exports = (function () {
 			const obj = {
 				User: user.Name,
 				Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
-				Segment: (track.startTime || track.endTime)
-					? `${startTime} - ${endTime}`
-					: "N/A",
+				Segment: {
+					dataOrder: (track.startTime || track.endTime)
+						? ((track.endTime ?? track.duration) - (track.startTime ?? 0))
+						: 0,
+					value: (track.startTime || track.endTime)
+						? `${startTime} - ${endTime}`
+						: "(full song)",
+				},
 				Duration: {
 					dataOrder: Number(track.duration),
 					value: sb.Utils.formatTime(Number(track.duration), true)
