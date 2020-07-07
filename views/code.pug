@@ -35,6 +35,12 @@ html
                     #{staticData}
         - }
 
+        - if (dynamicDescription) {
+            pre(class="line-numbers language-js")
+                code(class="language-js").
+                    #{dynamicDescription}
+        - }
+
         script(src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/prism.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js")
