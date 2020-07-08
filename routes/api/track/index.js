@@ -262,6 +262,46 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /track/resolve/:id Quick track ID resolver
+	 * @apiName ResolveTrackID
+	 * @apiDescription Quickly resolves a track ID into a link + video type
+	 * @apiGroup Track-List
+	 * @apiParam {number} id Track ID
+	 * @apiPermission any
+	 * @apiSuccess {number} ID Reflection of the track ID back
+	 * @apiSuccess {string} link Fully parsed link with the media site as well
+	 * @apiSuccess {string} videoType Media site description
+	 * @apiSuccess {object} raw Unparsed values
+	 * @apiSuccess {string} raw.link Unparsed link, just the video ID
+	 * @apiSuccess {number} raw.videoType Unparsed video type ID
+	 */
+	Router.get("/resolve/:id", async (req, res) => {
+		const ID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed track ID");
+		}
+
+		const row = await Track.getRow(ID);
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "Track ID does not exist");
+		}
+
+		await sb.WebUtils.loadVideoTypes();
+		const link = sb.WebUtils.parseVideoLink(row.values.Video_Type, row.values.Link);
+		const videoType = sb.WebUtils.videoTypes[row.values.Video_Type].Parser_Name;
+
+		return sb.WebUtils.apiSuccess(res, {
+			ID,
+			link,
+			Video_Type: videoType,
+			raw: {
+				link: row.values.Link,
+				Video_Type: row.values.Video_Type,
+			}
+		});
+	});
+
+	/**
 	 * @api {get} /track/present Track - Check present
 	 * @apiName GetTrackPresent
 	 * @apiDescription Checks if a Track is present in the list
