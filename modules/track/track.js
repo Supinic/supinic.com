@@ -234,6 +234,21 @@ module.exports = (function () {
 				queries.push(rs => rs.where("Legacy_ID IS NOT NULL"));
 			}
 
+			if (options.includeReuploads) {
+				queries.push(rs => rs
+					.select("GROUP_CONCAT(Reupload.ID SEPARATOR ',') AS Reuploads")
+					.leftJoin({
+						toTable: "Track_Relationship",
+						on: "Track_Relationship.Track_To = Track.ID AND Track_Relationship.Relationship = 'Reupload of'"
+					})
+					.leftJoin({
+						toTable: "Track",
+						alias: "Reupload",
+						on: "Track_Relationship.Track_From = Reupload.ID"
+					})
+				);
+			}
+
 			const data = await Track.selectMultipleCustom(rs => {
 				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
@@ -303,6 +318,10 @@ module.exports = (function () {
 
 				track.Tags = (track.Tags)
 					? track.Tags.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
+					: [];
+
+				track.Reuploads = (track.Reuploads)
+					? track.Reuploads.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
 					: [];
 			}
 

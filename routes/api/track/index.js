@@ -242,7 +242,8 @@ module.exports = (function () {
 			includeTags,
 			excludeTags,
 			hasLegacyID,
-			name
+			name,
+			includeReuploads
 		} = req.query;
 
 		const data = await Track.search({
@@ -252,6 +253,7 @@ module.exports = (function () {
 			hasLegacyID,
 			checkUserIDFavourite,
 			checkUsernameFavourite,
+			includeReuploads,
 			authorID: Number(authorID),
 			authorName: authorName,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
