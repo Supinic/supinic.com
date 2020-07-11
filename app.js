@@ -40,7 +40,8 @@
 		"rss",
 		"stream",
 		"teapot",
-		"track"
+		"track",
+		"user"
 	];
 
 	const port = 80;
@@ -180,6 +181,9 @@
 			name: "Contact",
 			link: "contact"
 		}
+	];
+	app.locals.loginItems = [
+		{ name: "Command aliases", link: "user/alias/list" },
 	];
 
 	app.set("view engine", "pug");
