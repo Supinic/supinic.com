@@ -16,6 +16,9 @@ append topheader
 			border-top: 1px solid white;
 			margin: 8px 12px;
 		}
+		div.megadank-shift {
+			left: -10px;
+		}
 
 append navigation
 	nav(class="navbar navbar-expand-sm bg-dark navbar-dark")
@@ -41,7 +44,16 @@ append navigation
 					- }
 		div(class="navbar-nav ml-auto")
 			- if (authUser) {
-				div Logged in as #{authUser.display}
+				li(class="nav-item dropdown")
+					a(class="nav-link dropdown-toggle" "data-toggle"="dropdown" href="#") Logged in as #{authUser.display}
+					div(class="dropdown-menu megadank-shift")
+						each itemData in loginItems
+							- if (itemData.separator) {
+								hr(class="dropdown-divider")
+							- }
+							- else {
+								a(class="dropdown-item" href=`/${itemData.link}`) !{itemData.name}
+							- }
 			- }
 			- else {
 				a(class="nav-link" href=`/auth/twitch?returnTo=${currentLocation}`) Twitch login
