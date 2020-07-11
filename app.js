@@ -187,6 +187,8 @@
 	];
 	app.locals.loginItems = [
 		{ name: "Command aliases", link: "user/alias/list" },
+		{ separator: true },
+		{ name: "Log out", link: "user/logout" },
 	];
 
 	app.set("view engine", "pug");

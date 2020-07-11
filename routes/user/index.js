@@ -31,6 +31,11 @@ module.exports = (function () {
 		next();
 	});
 
+	Router.get("/logout", async (req, res) => {
+		req.session.destroy();
+		res.redirect("/");
+	});
+
 	Router.post("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
 		const crypto = require("crypto");
