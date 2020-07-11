@@ -19,6 +19,13 @@ module.exports = (function () {
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Request Supibot in a Twitch channel</h5>
        			<div id="alert-anchor"></div>
+       			<h6>Rules</h6>
+				<ul>
+					<li>You can only request Supibot in your own channel or someone else's channel if you are a moderator there.</li>
+					<li>Make sure to not accidentally ban the bot - because when it does, it will automatically leave your channel and will not come back on its own. You can 100% prevent this by modding it - it doesn't do any moderation, and it's safe to do so.</li>
+					<li>If you change your name (outside of changing lower- and uppercase characters), Supibot will not track your namechange and you must request the bot again. If this is the case, you also must add your previous name to the request.</li>
+					<li>Please refer to Supibot as "the bot" or "Supibot", not as "Supi". "Supi" refers to me (Supinic), and it gets very confusing sometimes 😃</li>
+				</ul>
 			`,
 			onSubmit: "submit()",
 			fields: [
