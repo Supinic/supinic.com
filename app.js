@@ -128,6 +128,8 @@
 		{
 			name: "Supibot",
 			items: [
+				{ name: "Request Supibot", link: "bot/request-bot/form" },
+				{ separator: true },
 				{ name: "Channel list", link: "bot/channel/list" },
 				{ name: "Commands", link: "bot/command/list" },
 				{ name: "Commands statistics", link: "bot/command/stats" },
