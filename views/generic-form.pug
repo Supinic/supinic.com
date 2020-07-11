@@ -40,6 +40,7 @@ html
                             name=value.name
                             placeholder=value.placeholder
                             rows=(value.rows || 3)
+                            disabled=value.disabled || false
                         ).
                             !{value.value}
                     - }
@@ -51,6 +52,7 @@ html
                             type=value.type
                             placeholder=value.placeholder
                             value=value.value
+                            disabled=value.disabled || false
                         )
                     - }
             button(class="btn btn-primary" onclick=onSubmit) Submit
