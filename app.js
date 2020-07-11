@@ -175,7 +175,10 @@
 		},
 		{
 			name: "API",
-			link: "api"
+			items: [
+				{ name: "Documentation", link: "api" },
+				{ name: "Get API key", link: "user/auth-key"}
+			]
 		},
 		{
 			name: "Contact",
@@ -217,6 +220,8 @@
 
 		if (req.session.passport) {
 			const data = req.session.passport.user.data[0];
+
+			sb.User.data.delete(data.login);
 			const userData = await sb.User.get(data.login, false);
 
 			res.locals.authUser = {
