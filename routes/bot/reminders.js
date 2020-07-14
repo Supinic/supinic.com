@@ -24,8 +24,9 @@ module.exports = (function () {
 
 		const user = res.locals.authUser.login.toLowerCase();
 		const rawData = await Reminder.listByUser(user);
+		const sortedData = rawData.sort((a, b) => b.ID - a.ID);
 
-		const data = rawData.map(i => {
+		const data = sortedData.map(i => {
 			if (i.Author.toLowerCase() === user) {
 				i.Author = "(You)";
 			}
@@ -41,11 +42,13 @@ module.exports = (function () {
 				Text: i.Text,
 				Scheduled: {
 					dataOrder: (i.Schedule) ? i.Schedule.valueOf() : 0,
-					value: (i.Schedule) ? sb.Utils.timeDelta(i.Schedule) : "N/A",
+					value: (i.Schedule)
+						? `<div class="hoverable" title="UTC: ${i.Schedule.format("Y-m-d H:i:s")}">${sb.Utils.timeDelta(i.Schedule)}</div>`
+						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
 			};
-		}).sort((a, b) => b.ID - a.ID);
+		});
 
 		res.render("generic-list-table", {
 			data: data,
@@ -55,7 +58,12 @@ module.exports = (function () {
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "desc",
-			specificFiltering: true
+			specificFiltering: true,
+			extraCSS: `
+				div.hoverable {
+					text-decoration: underline dotted;
+				}
+			`
 		});
 	});
 
