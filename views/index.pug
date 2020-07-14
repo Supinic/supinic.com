@@ -17,15 +17,11 @@ html
 				const { stream } = await response.json();
 				const element = document.getElementById("twitch-status");
 				if (!stream) {
-					element.innerHTML = "I'm not currently streaming.";
+					element.innerHTML = "<h6>I'm not currently streaming.</h6>";
 				}
 				else {
 					element.innerHTML = `
-						<h6>I'm streaming on Twitch right now!</h6>
-						<h6>Playing ${stream.game} for ${stream.viewers} viewers.</h6>
-						<a href="//twitch.tv/supinic">
-							<img src="${stream.preview.large}">
-						</a>
+						<h6>I'm streaming right now! Playing ${stream.game} for ${stream.viewers} viewers.</h6>
 					`;
 				}
 			});
@@ -67,6 +63,14 @@ html
 						| Go to&nbsp;
 						a(href="//github.com/Supinic/supibot#i-want-to-use-supibot") Supibot's GitHub
 						| &nbsp;and read the reference on where to go next, based on your platform.
-		br
 
-		div(class="col-xs-1 text-center" id="twitch-status")
+				br
+
+				li
+					h6.
+						Do you stream anywhere?
+					h6
+						| I usually stream programming and games on Twitch. Check it out&nbsp;
+						a(href="//twitch.tv/supinic") here.
+
+					div(class="col-xs-1" id="twitch-status")
