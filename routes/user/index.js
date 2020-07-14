@@ -115,7 +115,14 @@ module.exports = (function () {
 				<h5 class="pt-3 text-center">API authentication key</h5>
        			<div id="alert-anchor"></div>
        			<br>
-       			<div class="px-4" id="form-wrapper">
+       			<div class="px-2 py-2" id="form-wrapper">
+       				<div class="form-group">
+                    	<label for="userid">
+		                    Your user ID
+                        </label>
+                        <input id="userid" type="string" class="form-control" disabled value="${userData.ID}">    
+					</div>
+       			
        				<div class="form-group">
                     	<label for="authkey">
                     		Authentication key
