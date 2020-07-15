@@ -92,7 +92,7 @@
 				columnNames: {
 					session_id: "SID",
 					expires: "Expires",
-					Data: "Data"
+					data: "Data"
 				}
 			}
 		}, sb.Query.pool)
