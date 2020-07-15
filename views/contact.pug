@@ -4,41 +4,35 @@ html
 		block topheader
 		include ./header.pug
 		include ./navigation.pug
+
+		style(type="text/css").
+			img.icon {
+				width: 32px;
+				height: 32px;
+			}
+
 	body
 		block navigation
 		center
 			br
 
-			b E-mail
 			a(href="mailto:supinic@pm.me")
-				div supinic@pm.me
+				img(class="icon" title="E-mail" alt="E-mail" src="/public/img/email.png")
 
 			br
-			br
 
-			a(target="_blank" href="https://github.com/")
-				img(title="GitHub" alt="GitHub" style="width: 32px; height: 32px;" src="/public/img/github.png")
-			br
-			a(target="_blank" href="https://github.com/Supinic") Supinic
+			a(target="_blank" href="https://github.com/Supinic")
+				img(class="icon" title="GitHub" alt="GitHub" src="/public/img/github.png")
 
 			br
-			br
 
-			a(target="_blank" href="https://twitch.tv")
-				img(title="Twitch" alt="Twitch" style="height: 40px;" src="/public/img/twitch.png")
-			br
-			a(target="_blank" href="https://twitch.tv/supinic") Supinic
+			a(target="_blank" href="https://twitch.tv/supinic")
+				img(class="icon" title="Twitch" alt="Twitch" src="/public/img/twitch.png")
 
 			br
-			br
 
-			a(target="_blank" href="https://discordapp.com/")
-				img(title="Discord" alt="Discord" style="height: 40px;" src="/public/img/discord_1.png")
-			br
-			div Supinic#5238
-
-			br
-			br
+			a(target="_blank" href="https://discord.gg/RtYSuV9")
+				img(class="icon" title="Discord server" alt="Discord server"  src="/public/img/discord.png")
 
 			a(target="_blank" href="https://tox.chat/")
 				img(alt="TOX" style="height: 32px;" src="/public/img/tox.png")
