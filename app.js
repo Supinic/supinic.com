@@ -56,6 +56,7 @@
 	const { OAuth2Strategy } = require("passport-oauth");
 	const CacheController = require("express-cache-controller");
 	const MemoryStore = require("memorystore")(Session);
+	const MySQLStore = require("express-mysql-session")(Session);
 
 	class Strategy extends OAuth2Strategy {
 		async userProfile (accessToken, done, ...rest) {
@@ -84,7 +85,17 @@
 		secret: crypto.randomBytes(16).toString(), // SESSION_SECRET
 		resave: false,
 		saveUninitialized: false,
-		store: new MemoryStore({ checkPeriod: 36.0e5 }),
+		store: new MySQLStore({
+			database: "supinic.com",
+			schema: {
+				tableName: "Session",
+				columnNames: {
+					session_id: "SID",
+					expires: "Expires",
+					Data: "Data"
+				}
+			}
+		}, sb.Query.pool)
 	}));
 
 	app.use(bodyParser.json());
