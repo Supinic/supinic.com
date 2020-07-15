@@ -86,6 +86,9 @@
 		resave: false,
 		saveUninitialized: false,
 		store: new MySQLStore({
+			user: process.env.MARIA_USER,
+			host: process.env.MARIA_HOST,
+			password: process.env.MARIA_PASSWORD,
 			database: "supinic.com",
 			schema: {
 				tableName: "Session",
@@ -95,7 +98,7 @@
 					data: "Data"
 				}
 			}
-		}, sb.Query.pool)
+		})
 	}));
 
 	app.use(bodyParser.json());
