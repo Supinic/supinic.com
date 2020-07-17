@@ -55,7 +55,6 @@
 	const Passport = require("passport");
 	const { OAuth2Strategy } = require("passport-oauth");
 	const CacheController = require("express-cache-controller");
-	const MemoryStore = require("memorystore")(Session);
 	const MySQLStore = require("express-mysql-session")(Session);
 
 	class Strategy extends OAuth2Strategy {
@@ -81,12 +80,15 @@
 	}
 	
 	const app = Express();
-	app.use(require("cookie-parser"));
+	app.use(require("cookie-parser")());
 	app.use(Session({
-		key: "testingkey123",
-		secret: crypto.randomBytes(16).toString(), // SESSION_SECRET
+		secret: sb.Config.get("WEBSITE_SESSION_SECRET", false),
 		resave: false,
 		saveUninitialized: true,
+		cookie: {
+			secure: false,
+			maxAge: 24 * 60 * 60 * 1000
+		},
 		store: new MySQLStore({
 			user: process.env.MARIA_USER,
 			host: process.env.MARIA_HOST,
