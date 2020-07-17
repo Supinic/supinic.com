@@ -4,6 +4,7 @@
   "description": "Supinic's website project",
   "dependencies": {
     "body-parser": "latest",
+    "cookie-parser": "^1.4.5",
     "express": "latest",
     "express-async-errors": "latest",
     "express-cache-controller": "^1.1.0",
