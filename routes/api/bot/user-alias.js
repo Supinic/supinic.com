@@ -24,7 +24,7 @@ module.exports = (function () {
 	};
 
 	/**
-	 * @api {get} /bot/user/fetch/name/:name Fetch user by username
+	 * @api {get} /bot/user/resolve/name/:name Fetch user by username
 	 * @apiName FetchUserByUsername
 	 * @apiDescription Fetches user identifiers, based on username
 	 * @apiGroup Bot
@@ -33,12 +33,12 @@ module.exports = (function () {
 	 * @apiSuccess {string} name
 	 * @apiError (404) NotFound User was not found
 	 **/
-	Router.get("/fetch/name/:name", async (req, res) => {
+	Router.get("/resolve/name/:name", async (req, res) => {
 		return await fetchUserData(res, "user-name", req.params.name);
 	});
 
 	/**
-	 * @api {get} /bot/user/fetch/ID/:id Fetch user by ID
+	 * @api {get} /bot/user/resolve/ID/:id Fetch user by ID
 	 * @apiName FetchUserByID
 	 * @apiDescription Fetches user identifiers, based on ID
 	 * @apiGroup Bot
@@ -47,7 +47,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} name
 	 * @apiError (404) NotFound User was not found
 	 **/
-	Router.get("/fetch/ID/:id", async (req, res) => {
+	Router.get("/resolve/ID/:id", async (req, res) => {
 		return await fetchUserData(res, "user-id", req.params.id);
 	});
 
