@@ -40,7 +40,9 @@ module.exports = (function () {
 					const alerter = document.getElementById("alert-anchor");
 										
 					try {
-						const { data } = await fetch("/api/bot/user/resolve/name/" + userName).json();
+						const response = await fetch("/api/bot/user/resolve/name/" + userName);
+						const { data } = await response.json();
+						
 						location.replace("/track/favourite/list/user/" + data.ID);
 					}
 					catch (e) {
