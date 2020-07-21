@@ -34,7 +34,7 @@ module.exports = (function () {
 	 * @apiError (404) NotFound User was not found
 	 **/
 	Router.get("/fetch/name/:name", async (req, res) => {
-		return await fetchUserData(res, "user-name", req.params.id);
+		return await fetchUserData(res, "user-name", req.params.name);
 	});
 
 	/**
