@@ -14,7 +14,8 @@ module.exports = (function () {
 		["request-bot", "request-bot.js"],
 		["song-request", "song-request.js"],
 		["text-to-speech", "tts.js"],
-		["top-chatters", "top-chatters.js"]
+		["top-chatters", "top-chatters.js"],
+		["user", "user-alias.js"]
 	];
 
 	for (const [name, link] of subroutes) {
