@@ -65,7 +65,9 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			data: await print(data, "Added"),
 			head: header,
-			pageLength: 25
+			pageLength: 25,
+			sortColumn: 4,
+			sortDirection: "desc"
 		});
 	});
 
