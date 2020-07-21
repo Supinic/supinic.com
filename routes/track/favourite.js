@@ -4,7 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettify = (res, data) => {
+	const prettify = (res, data, userID) => {
 		const printData = data.filter(i => i.active && i.userAlias === userID).map(i => ({
 			Track: `<a href="/track/detail/${i.track}">${i.trackName}</a>`,
 			Created: new sb.Date(i.created).format("Y-m-d H:i:s"),
@@ -66,7 +66,7 @@ module.exports = (function () {
 		}
 
 		const { data } = await sb.Got.instances.Supinic("track/favourite/list").json();
-		return prettify(res, data);
+		return prettify(res, data, userID);
 	});
 
 	Router.get("/list/user/:id", async (req, res) => {
@@ -79,7 +79,7 @@ module.exports = (function () {
 		}
 
 		const { data } = await sb.Got.instances.Supinic(`track/favourite/user/${userID}`).json();
-		return prettify(res, data);
+		return prettify(res, data, userID);
 	});
 
 	return Router;
