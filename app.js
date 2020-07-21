@@ -45,7 +45,6 @@
 	];
 
 	const port = 80;
-	const crypto = require("crypto");
 	const bodyParser = require("body-parser");
 
 	const Express = require("express");
@@ -152,10 +151,8 @@
 				{ name: "Commands", link: "bot/command/list" },
 				{ name: "Commands statistics", link: "bot/command/stats" },
 				{ name: "Emote origins", link: "data/origin/list" },
-				{ name: "Reminders - yours", link: "bot/reminder/list" },
 				{ name: "Slots winners list", link: "bot/slots-winner/list" },
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
-				{ name: "Suggestions - your stats", link: "data/suggestion/stats" }
 			]
 		},
 		{
@@ -171,8 +168,8 @@
 			name: "Music",
 			items: [
 				{ name: "Gachi list", link: "track/gachi/list" },
-				{ name: "Favourites", link: "track/favourite/list" },
 				{ name: "Todo list", link: "track/todo/list" },
+				{ name: "Favourites - find by user", link: "track/favourite/find" },
 
 				{ separator: true },
 
@@ -207,7 +204,12 @@
 	];
 	app.locals.loginItems = [
 		{ name: "Command aliases", link: "user/alias/list" },
+		{ name: "Favourite tracks", link: "track/favourite/list" },
+		{ name: "Reminders", link: "bot/reminder/list" },
+		{ name: "Suggestion stats", link: "data/suggestion/stats" },
+
 		{ separator: true },
+
 		{ name: "Log out", link: "user/logout" },
 	];
 
