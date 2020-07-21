@@ -4,6 +4,11 @@ html
 		block topheader
 		include ./header.pug
 		include ./navigation.pug
+
+		- if (typeof extraScript !== "undefined") {
+		script.
+			!{extraScript}
+		- }
 	body
 		block navigation
 		center

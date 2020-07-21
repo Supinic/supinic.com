@@ -27,6 +27,13 @@ module.exports = (function () {
 				message: `You must be logged in to access this page`
 			});
 		}
+		else if (res.locals.authUser.userData === null) {
+			return res.status(401).render("error", {
+				error: "202 Accepted",
+				message: `Your account is new and has not been setup yet. This page will automatically refresh in 30 seconds.`,
+				extraScript: `window.onload = () => setTimeout(() => location.reload(), 30000);`
+			});
+		}
 
 		next();
 	});
