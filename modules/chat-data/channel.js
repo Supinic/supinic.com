@@ -6,7 +6,7 @@ module.exports = (function () {
 			const [channels, informationSchema] = await Promise.all([
 				sb.Query.getRecordset(rs => rs
 					.select("Channel.ID", "Channel.Name", "Channel.Platform", "Channel.Specific_ID", "Channel.Mode")
-					.select("Channel.Ping", "Channel.Links_Allowed", "Channel.NSFW", "Channel.Banphrase_API_Type")
+					.select("Channel.Mention", "Channel.Links_Allowed", "Channel.NSFW", "Channel.Banphrase_API_Type")
 					.select("Channel.Banphrase_API_URL", "Channel.Banphrase_API_Downtime", "Channel.Message_Limit")
 					.select("Channel.Mirror", "Channel.Description")
 					.select("Platform.Name AS Platform_Name")

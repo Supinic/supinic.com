@@ -19,7 +19,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} platformName
 	 * @apiSuccess {string} [specificID]
 	 * @apiSuccess {string} mode
-	 * @apiSuccess {boolean} ping If true, will attempt to "ping" people when they use commands.
+	 * @apiSuccess {boolean} mention If true, will attempt to mention people when they use commands.
 	 * @apiSuccess {boolean} linksAllowed If false, all links sent in channel will be replaced by placeholder.
 	 * @apiSuccess {boolean} nsfw Channel's NSFW flag
 	 * @apiSuccess {string} [banphraseApiType] Type of external banphrase API

@@ -68,7 +68,7 @@ module.exports = (function () {
 		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
-		const skip = ["static data", "examples", "rollbackable", "system", "read only", "ping", "skip banphrases", "whitelisted", "whitelist response", "code"];
+		const skip = ["static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "whitelist response", "code"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
 

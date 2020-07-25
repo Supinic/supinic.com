@@ -18,14 +18,7 @@ module.exports = (function () {
 	 * @apiSuccess {string[]} [command.aliases]
 	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
-	 * @apiSuccess {boolean} command.rollbackable
-	 * @apiSuccess {boolean} command.skipBanphrases
-	 * @apiSuccess {boolean} command.readOnly
-	 * @apiSuccess {boolean} command.optOutable
-	 * @apiSuccess {boolean} command.blockable
-	 * @apiSuccess {boolean} command.ping
-	 * @apiSuccess {boolean} command.pipeable
-	 * @apiSuccess {boolean} command.whitelisted
+	 * @apiSuccess {object} command.flags
 	 * @apiSuccess {string} [command.whitelistResponse]
 	 */
 	Router.get("/list", async (req, res) => {
