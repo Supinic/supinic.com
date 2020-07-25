@@ -15,7 +15,7 @@ module.exports = (function () {
 				<audio style="height:30px; text-align: center;" controls preload="none">
 					<source
 						type="audio/mp3"
-						src="https://api.streamelements.com/kappa/v2/speech?voice=${i.ID}&text=This+is+a+sample+message."
+						src="https://api.streamelements.com/kappa/v2/speech/?voice=${i.ID}&text=This+is+a+sample+message."
 				    >
 				</audio>`
 			// Sample: `<a target="_blank" href="https://api.streamelements.com/kappa/v2/speech?voice=${i.ID}&text=This+is+a+sample+message.">Sample</a>`
