@@ -126,8 +126,12 @@ module.exports = (function () {
 							const { data } = await fetch("/api/track/resolve/" + ID)
 								.then(i => i.json())
 								.catch(i => i.json());
+							
+							if (!data.link) {
+								return;
+							}
 								
-							console.log(data);
+							window.open(data.link, "_blank");
 						});
 					}
 				}
