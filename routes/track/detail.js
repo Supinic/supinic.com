@@ -85,6 +85,7 @@ module.exports = (function () {
 			Link: `<a href='${trackData.parsedLink}' rel="noopener noreferrer" target="_blank">${trackData.parsedLink}</a>`,
 			"Track type": trackData.trackType || "Unknown",
 			Duration: trackData.duration || "N/A",
+			Favourites: trackData.favourites,
 			Available: String(trackData.available),
 			Published: (trackData.published) ? new sb.Date(trackData.published).sqlDate() : "N/A",
 			Tags: (Array.isArray(trackData.tags))
