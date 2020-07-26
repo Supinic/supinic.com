@@ -24,7 +24,7 @@ module.exports = (function () {
 		}
 		else if (listType === "gachi") {
 			searchParams.set("includeTags", "6");
-			sortColumn = 3;
+			sortColumn = 4;
 		}
 		else {
 			throw new sb.Error({
@@ -48,21 +48,23 @@ module.exports = (function () {
 		)).map(i => [i.ID, i.Name]));
 
 		const data = raw.map(i => {
-			const obj = {
-				"🔁": (i.youtubeReuploads.length > 0)
-					? `<div linkID="${i.youtubeReuploads[0]}" class="reupload">🔗</div>`
-					: "",
-				Name: sb.Utils.tag.trim `					
-					<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>
-				`,
-				Published: {
-					value: (i.published) ? new sb.Date(i.published).format("Y-m-d") : "N/A",
-					dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
-				},
-				Author: (i.authors.length !== 0)
-					? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
-					: "N/A"
+			const obj = {};
+			if (listType !== "todo") {
+				obj["🔁"] = (i.youtubeReuploads.length > 0)
+					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/image/youtube-logo.png>`
+					: "";
+			}
+
+			obj.Name = sb.Utils.tag.trim `					
+				<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>
+			`;
+			obj.Published = {
+				value: (i.published) ? new sb.Date(i.published).format("Y-m-d") : "N/A",
+				dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
 			};
+			obj.Author = (i.authors.length !== 0)
+				? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
+				: "N/A";
 
 			if (listType === "todo") {
 				obj["Added to list"] = {
@@ -90,6 +92,11 @@ module.exports = (function () {
 			sortDirection: "desc",
 			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim`
+				img.reupload {
+					height: 16px;
+					width: 16px;
+					cursor: pointer;
+				}			
 				div.favourite { 					
 				    background-position: center; 
 				    background-repeat: no-repeat;
