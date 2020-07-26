@@ -304,7 +304,9 @@ module.exports = (function () {
 				const track = data[i];
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
-				track.Favourites = track.Fans?.split(",").length ?? 0;
+
+				const uniqueFavourites = track.Fans?.split(",").filter((i, ind, arr) => ind === arr.indexOf(i));
+				track.Favourites = uniqueFavourites?.length ?? 0;
 
 				if (targetUserID !== null) {
 					if (!track.Fans) {
