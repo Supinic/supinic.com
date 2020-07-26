@@ -56,7 +56,7 @@ module.exports = (function () {
 		}
 		else {
 			const favourites = await Favourite.getForTrack(id);
-			trackData.Favourites = favourites.length;
+			trackData.Favourites = favourites.filter(i => i.Active).length;
 
 			return sb.WebUtils.apiSuccess(res, trackData);
 		}
