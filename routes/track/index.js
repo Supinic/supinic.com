@@ -51,7 +51,7 @@ module.exports = (function () {
 			const obj = {};
 			if (listType !== "todo") {
 				obj["🔁"] = (i.youtubeReuploads.length > 0)
-					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/image/youtube-logo.png>`
+					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/image/youtube-logo.png">`
 					: "";
 			}
 
