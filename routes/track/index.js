@@ -51,7 +51,7 @@ module.exports = (function () {
 			const obj = {};
 			if (listType !== "todo") {
 				obj["🔁"] = (i.youtubeReuploads.length > 0)
-					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/image/youtube-logo.png">`
+					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/img/youtube-logo.png">`
 					: "";
 			}
 
@@ -93,8 +93,8 @@ module.exports = (function () {
 			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim`
 				img.reupload {
-					height: 16px;
-					width: 16px;
+					height: 18px;
+					width: 20px;
 					cursor: pointer;
 				}			
 				div.favourite { 					
@@ -121,7 +121,7 @@ module.exports = (function () {
 					
 					const reuploadList = document.getElementsByClassName("reupload");
 					for (const element of reuploadList) {
-						element.parentElement.addEventListener("click", async () => {
+						element.addEventListener("click", async () => {
 							const ID = element.getAttribute("linkID");
 							const { data } = await fetch("/api/track/resolve/" + ID)
 								.then(i => i.json())
