@@ -1,5 +1,12 @@
 append topheader
-	title Supinic
+	- if (typeof title !== "undefined") {
+		title.
+			#{title} - Supinic
+	- }
+	- else {
+		title Supinic
+	- }
+
 	link(rel="icon", type="image/x-icon", href="/public/img/hackerman.gif")
 	meta(name="robots" content="noindex")
 	script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js")

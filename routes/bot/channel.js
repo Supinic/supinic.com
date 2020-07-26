@@ -35,7 +35,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			title: "Supibot - channel list - supinic.com",
+			title: "Supibot - channel list",
 			data: data,
 			head: Object.keys(data[0]),
 			pageLength: 50,
