@@ -165,7 +165,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			title: `Filters - Channel ${channelData.ID} - Supibot`,
+			title: `Filters - Channel ${channelID} - Supibot`,
 			data: printData,
 			head: ["ID", "User", "Command", "Created", "Reason"],
 			pageLength: 10
