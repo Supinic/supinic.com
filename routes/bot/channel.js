@@ -35,7 +35,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			title: "Supibot - channel list",
+			title: "Channel list - Supibot",
 			data: data,
 			head: Object.keys(data[0]),
 			pageLength: 50,
@@ -80,7 +80,10 @@ module.exports = (function () {
 			Filters: `<a href="/bot/channel/${channelData.ID}/filter/list">List of filters</a>`,
 		};
 
-		res.render("generic-detail-table", { data });
+		res.render("generic-detail-table", {
+			title: `Detail - Channel ${channelData.ID} - Supibot`,
+			data
+		});
 	});
 
 	Router.get("/:id/activity", async (req, res) => {
@@ -134,6 +137,7 @@ module.exports = (function () {
 		}
 
 		res.render("channel-activity", {
+			title: `Activity - Channel ${channelData.ID} - Supibot`,
 			minuteData: JSON.stringify(minuteData),
 			hourData: JSON.stringify(hourData),
 			dayData: JSON.stringify(dayData),
@@ -161,6 +165,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
+			title: `Filters - Channel ${channelData.ID} - Supibot`,
 			data: printData,
 			head: ["ID", "User", "Command", "Created", "Reason"],
 			pageLength: 10
