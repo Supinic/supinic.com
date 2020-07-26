@@ -49,8 +49,8 @@ module.exports = (function () {
 
 		const data = raw.map(i => {
 			const obj = {
-				"🔁": (obj.youtubeReuploads.length > 0)
-					? `<div linkID="${obj.youtubeReuploads[0]}" class="reupload">🔗</div>`
+				"🔁": (i.youtubeReuploads.length > 0)
+					? `<div linkID="${i.youtubeReuploads[0]}" class="reupload">🔗</div>`
 					: "",
 				Name: sb.Utils.tag.trim `					
 					<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>
