@@ -210,6 +210,7 @@ module.exports = (function () {
 	 * @apiParam {number} checkUsernameFavourite If set, will check if given user or userID has results songs in their favourites.
 	 * @apiParam {string} checkUserIDFavourite If set, will check if given user or userID has results songs in their favourites.
 	 * @apiParam {boolean} hasLegacyID If true, filters tracks that are also present in the deprecated list
+	 * @apiParam {boolean} includeYoutubeReuploads If true, each track will contain an array with its possible youtube reuploads
 	 * @apiParam {string} name Filter by name
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} track The list of Tracks
@@ -243,7 +244,7 @@ module.exports = (function () {
 			excludeTags,
 			hasLegacyID,
 			name,
-			includeReuploads
+			includeYoutubeReuploads
 		} = req.query;
 
 		const data = await Track.search({
@@ -253,7 +254,7 @@ module.exports = (function () {
 			hasLegacyID,
 			checkUserIDFavourite,
 			checkUsernameFavourite,
-			includeReuploads,
+			includeYoutubeReuploads,
 			authorID: Number(authorID),
 			authorName: authorName,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,

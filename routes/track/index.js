@@ -15,7 +15,7 @@ module.exports = (function () {
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
 	const fetchList = async (req, res, listType) => {
-		let searchParams = new sb.URLParams();
+		let searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
 		let sortColumn = 0;
 
 		if (listType === "todo") {
@@ -49,7 +49,12 @@ module.exports = (function () {
 
 		const data = raw.map(i => {
 			const obj = {
-				Name: `<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>`,
+				"🔁": (obj.youtubeReuploads.length > 0)
+					? `<div linkID="${obj.youtubeReuploads[0]}" class="reupload">🔗</div>`
+					: "",
+				Name: sb.Utils.tag.trim `					
+					<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>
+				`,
 				Published: {
 					value: (i.published) ? new sb.Date(i.published).format("Y-m-d") : "N/A",
 					dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
@@ -102,9 +107,21 @@ module.exports = (function () {
 			`,
 			extraScript: sb.Utils.tag.trim`
 				async function beforeTableInitalize () {
-					const list = document.getElementsByClassName("favourite");
-					for (const element of list) {
+					const favouriteList = document.getElementsByClassName("favourite");
+					for (const element of favouriteList) {
 						element.parentElement.addEventListener("click", () => toggleFavourite(element));
+					}
+					
+					const reuploadList = document.getElementsByClassName("reupload");
+					for (const element of reuploadList) {
+						element.parentElement.addEventListener("click", async () => {
+							const ID = element.getAttribute("linkID");
+							const { data } = await fetch("/api/track/resolve/" + ID)
+								.then(i => i.json())
+								.catch(i => i.json());
+								
+							console.log(data);
+						});
 					}
 				}
 				 				

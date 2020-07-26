@@ -234,17 +234,21 @@ module.exports = (function () {
 				queries.push(rs => rs.where("Legacy_ID IS NOT NULL"));
 			}
 
-			if (options.includeReuploads) {
+			if (options.includeYoutubeReuploads) {
 				queries.push(rs => rs
-					.select("GROUP_CONCAT(Reupload.ID SEPARATOR ',') AS Reuploads")
+					.select("GROUP_CONCAT(Youtube_Reupload.ID SEPARATOR ',') AS Youtube_Reuploads")
 					.leftJoin({
 						toTable: "Track_Relationship",
 						on: "Track_Relationship.Track_To = Track.ID AND Track_Relationship.Relationship = 'Reupload of'"
 					})
 					.leftJoin({
 						toTable: "Track",
-						alias: "Reupload",
-						on: "Track_Relationship.Track_From = Reupload.ID"
+						alias: "Youtube_Reupload",
+						on: sb.Utils.tag.trim `
+							Track_Relationship.Track_From = Youtube_Reupload.ID 
+							AND Youtube_Reupload.Video_Type = 1
+							AND Youtube_Reupload.Available = 1
+						`
 					})
 				);
 			}
@@ -320,8 +324,8 @@ module.exports = (function () {
 					? track.Tags.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
 					: [];
 
-				track.Reuploads = (track.Reuploads)
-					? track.Reuploads.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
+				track.Youtube_Reuploads = (track.Youtube_Reuploads)
+					? track.Youtube_Reuploads.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
 					: [];
 			}
 
