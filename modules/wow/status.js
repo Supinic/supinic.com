@@ -19,7 +19,7 @@ module.exports = (function () {
 			const data = [];
 			for (const item of list) {
 				const statusData = await this.selectCustom(q => q
-					.select("Amount", "Updated")
+					.select("Amount", "Faction", "Updated")
 					.where("Material = %s", item.Name)
 					.where("Server = %s", server)
 					.orderBy("Updated DESC")
