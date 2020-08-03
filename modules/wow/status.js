@@ -7,8 +7,8 @@ module.exports = (function () {
 		for (const item of data) {
 			if (item.Faction === "Both") {
 				list.push(
-					{ Faction: "Alliance", ...item },
-					{ Faction: "Horde", ...item }
+					{  ...item,  Faction: "Alliance" },
+					{  ...item, Faction: "Horde" }
 				);
 			}
 			else {
