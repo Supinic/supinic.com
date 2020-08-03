@@ -36,7 +36,7 @@ module.exports = (function () {
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 50,
-			sortColumn: 1,
+			sortColumn: 5,
 			sortDirection: "desc"
 		});
 	});

@@ -35,7 +35,7 @@ module.exports = (function () {
 				data.push({
 					Last_Update: statusData.Updated,
 					Material: item.Name,
-					Faction: item.Faction,
+					Faction: statusData.Faction,
 					Required: item.Required,
 					Current: statusData.Amount
 				});
