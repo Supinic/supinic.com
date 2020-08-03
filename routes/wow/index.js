@@ -32,7 +32,7 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
-			title: `AQ War Effort - ${sb.Utils.capitalize(serverName)}`,
+			title: `AQ War Effort - ${sb.Utils.capitalize(server)}`,
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 50,
