@@ -12,7 +12,7 @@ module.exports = (function () {
 		if (data.length === 0) {
 			return res.status(404).render("error", {
 				error: "404 Not found",
-				message: "No data for given server has been found"
+				message: "No data found for given server"
 			});
 		}
 
@@ -32,6 +32,7 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
+			title: `AQ War Effort - ${sb.Utils.capitalize(serverName)}`,
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 50,

@@ -27,6 +27,11 @@ module.exports = (function () {
 					.single()
 				);
 
+				// Missing material info - skip
+				if (statusData.length === 0) {
+					continue;
+				}
+
 				data.push({
 					Last_Update: statusData.Updated,
 					Material: item.Name,
