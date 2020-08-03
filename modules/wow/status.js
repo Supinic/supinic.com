@@ -41,7 +41,7 @@ module.exports = (function () {
 				}
 
 				const current = statusData[0];
-				const delta = statusData[0].Current - (statusData[1]?.Current ?? statusData[0].Current)
+				const delta = statusData[0].Amount - (statusData[1]?.Amount ?? statusData[0].Amount);
 
 				data.push({
 					Last_Update: current.Updated,
