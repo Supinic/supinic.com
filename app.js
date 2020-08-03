@@ -41,7 +41,8 @@
 		"stream",
 		"teapot",
 		"track",
-		"user"
+		"user",
+		"wow"
 	];
 
 	const port = 80;
