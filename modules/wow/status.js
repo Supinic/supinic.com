@@ -28,7 +28,7 @@ module.exports = (function () {
 				);
 
 				// Missing material info - skip
-				if (statusData.length === 0) {
+				if (!statusData) {
 					continue;
 				}
 
