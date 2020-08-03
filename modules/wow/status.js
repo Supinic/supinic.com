@@ -5,7 +5,15 @@ module.exports = (function () {
 		.from("wow", "Material")
 	).then(data => {
 		for (const item of data) {
-			list.push(item);
+			if (item.Faction === "Both") {
+				list.push(
+					{ Faction: "Alliance", ...item },
+					{ Faction: "Horder", ...item }
+				);
+			}
+			else {
+				list.push(item);
+			}
 		}
 		listLoadPromise = null;
 	});
@@ -21,6 +29,7 @@ module.exports = (function () {
 				const statusData = await this.selectCustom(q => q
 					.select("Amount", "Faction", "Updated")
 					.where("Material = %s", item.Name)
+					.where("Faction = %s", item.Faction)
 					.where("Server = %s", server)
 					.orderBy("Updated DESC")
 					.limit(1)
