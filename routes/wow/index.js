@@ -23,6 +23,7 @@ module.exports = (function () {
 				Faction: i.Faction,
 				Current: i.Current,
 				Required: i.Required,
+				Delta: i.Delta,
 				"%": {
 					value: `${percent}%`,
 					dataOrder: percent

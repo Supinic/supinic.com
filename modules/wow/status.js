@@ -32,21 +32,24 @@ module.exports = (function () {
 					.where("Faction = %s", item.Faction)
 					.where("Server = %s", server)
 					.orderBy("Updated DESC")
-					.limit(1)
-					.single()
+					.limit(2)
 				);
 
 				// Missing material info - skip
-				if (!statusData) {
+				if (statusData.length === 0) {
 					continue;
 				}
 
+				const current = statusData[0];
+				const delta = statusData[0].Current - (statusData[1]?.Current ?? statusData[0].Current)
+
 				data.push({
-					Last_Update: statusData.Updated,
+					Last_Update: current.Updated,
 					Material: item.Name,
-					Faction: statusData.Faction,
+					Faction: current.Faction,
 					Required: item.Required,
-					Current: statusData.Amount
+					Current: current.Amount,
+					Delta: delta
 				});
 			}
 
