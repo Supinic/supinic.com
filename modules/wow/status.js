@@ -7,7 +7,7 @@ module.exports = (function () {
 		for (const item of data) {
 			if (item.Faction === "Both") {
 				list.push(
-					{  ...item,  Faction: "Alliance" },
+					{  ...item, Faction: "Alliance" },
 					{  ...item, Faction: "Horde" }
 				);
 			}
@@ -27,29 +27,27 @@ module.exports = (function () {
 			const data = [];
 			for (const item of list) {
 				const statusData = await this.selectCustom(q => q
-					.select("Amount", "Faction", "Updated")
+					.select("MIN(Amount) AS Previous", "MAX(Amount) AS Amount", "Faction", "MAX(Updated) AS Updated")
 					.where("Material = %s", item.Name)
 					.where("Faction = %s", item.Faction)
 					.where("Server = %s", server)
+					.where("Updated >= DATE_ADD(Updated, INTERVAL -1 DAY)")
 					.orderBy("Updated DESC")
-					.limit(2)
+					.single()
 				);
 
 				// Missing material info - skip
-				if (statusData.length === 0) {
+				if (!statusData) {
 					continue;
 				}
 
-				const current = statusData[0];
-				const delta = statusData[0].Amount - (statusData[1]?.Amount ?? statusData[0].Amount);
-
 				data.push({
-					Last_Update: current.Updated,
+					Last_Update: statusData.Updated,
 					Material: item.Name,
-					Faction: current.Faction,
+					Faction: statusData.Faction,
 					Required: item.Required,
-					Current: current.Amount,
-					Delta: delta
+					Current: statusData.Amount,
+					Delta: statusData.Amount - statusData.Previous
 				});
 			}
 

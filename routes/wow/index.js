@@ -23,12 +23,15 @@ module.exports = (function () {
 				Faction: i.Faction,
 				Current: i.Current,
 				Required: i.Required,
-				Delta: i.Delta,
+				"24h change": i.Delta,
 				"%": {
 					value: `${percent}%`,
 					dataOrder: percent
 				},
-				Update: i.Last_Update.format("Y-m-d H:i")
+				Updated: {
+					value: sb.Utils.timeDelta(i.Last_Update),
+					dataOrder: i.Last_Update.valueOf()
+				}
 			};
 		});
 
