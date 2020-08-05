@@ -45,5 +45,39 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/aq-effort/:server/material/:faction/:material", async (req, res) => {
+		const { server, faction, material } = req.params;
+		const historyData = await Status.getMaterialHistory({ faction, material, server });
+		if (historyData.length === 0) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "No data found for given material/faction/server combination"
+			});
+		}
+
+		const labels = [];
+		const data = [];
+		for (const historyItem of data) {
+			labels.push(historyItem.Updated.format("m-d H:i"));
+			data.push(historyItem.Amount);
+		}
+
+		res.render("generic-chart", {
+			title: `AQ War Effort - ${sb.Utils.capitalize(server)} - ${material}`,
+			chart: {
+				mainLabel: `${material} (${faction})`,
+				xAxis: {
+					name: "Update",
+					labels: JSON.stringify(labels)
+				},
+				yAxis: {
+					name: "Materials handed in"
+				},
+				dataName: "Material",
+				data: JSON.stringify(data)
+			}
+		});
+	});
+
 	return Router;
 })();

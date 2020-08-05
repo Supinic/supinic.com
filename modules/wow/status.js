@@ -54,6 +54,16 @@ module.exports = (function () {
 			return data;
 		}
 
+		static async getMaterialHistory ({ faction, material, server }) {
+			return await this.selectCustom(q => q
+				.select("Updated", "Amount")
+				.where("Material = %s", material)
+				.where("Faction = %s", faction)
+				.where("Server = %s", server)
+				.orderBy("Updated ASC")
+			);
+		}
+
 		static get name () { return "Status"; }
 		static get database () { return "wow"; }
 		static get table () { return "Status"; }

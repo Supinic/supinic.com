@@ -1,0 +1,74 @@
+doctype html
+html
+    head
+        block topheader
+        include ./header.pug
+        include ./navigation.pug
+
+        script(src="/public/js/Chart.js")
+        script.
+			window.addEventListener("load", async () => {
+				new Chart(document.getElementById("chart").getContext("2d"), {
+					type: "line",
+					data: {
+						labels: !{chart.xAxis.labels},
+						datasets: [
+							{
+								label: "!{chart.dataName}",
+								backgroundColor: "rgba(0, 0, 0, 0)",
+								borderColor: "rgb(200, 0, 0)",
+								data: !{chart.data}
+							}
+						]
+					},
+					options: {
+						legends: {
+							display: false
+						},
+						responsive: true,
+						title: {
+							display: true,
+							text: "!{chart.title}",
+							fontSize: 30,
+							fontFamily: "Arial"
+						},
+						tooltips: {
+							mode: "index",
+							intersect: false,
+						},
+						hover: {
+							mode: "nearest",
+							intersect: true
+						},
+						scales: {
+							xAxes: [
+								{
+									display: true,
+									ticks: {
+										min: 0,
+										minRotation: 45
+									},
+									scaleLabel: {
+										display: true,
+										labelString: "!{chart.xAxis.name}"
+									}
+								}
+							],
+							yAxes: [
+								{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: "!{chart.yAxis.name}"
+									}
+								}
+							]
+						}
+					}
+				});
+			})
+        meta(charset="UTF-8")
+    body
+        block navigation
+        div
+            canvas#chart
