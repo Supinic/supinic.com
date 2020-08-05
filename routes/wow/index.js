@@ -6,8 +6,8 @@ module.exports = (function () {
 
 	const Status = require("../../modules/wow/status.js");
 
-	Router.get("/aq-effort/:serverName", async (req, res) => {
-		const server = req.params.serverName;
+	Router.get("/aq-effort/:server", async (req, res) => {
+		const { server } = req.params;
 		const data = await Status.getAllLatest(server);
 		if (data.length === 0) {
 			return res.status(404).render("error", {
@@ -18,8 +18,10 @@ module.exports = (function () {
 
 		const printData = data.map(i => {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
+			const normal = i.Material.toLowerCase().replace(/ /g, "_");
+
 			return {
-				Material: i.Material,
+				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
 				Faction: i.Faction,
 				Current: i.Current,
 				Required: i.Required,
@@ -46,7 +48,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/aq-effort/:server/material/:faction/:material", async (req, res) => {
-		const { server, faction, material } = req.params;
+		let { server, faction, material } = req.params;
+		server = server.replace(/_/g, " ");
+		material = material.replace(/_/g, " ");
+
 		const historyData = await Status.getMaterialHistory({ faction, material, server });
 		if (historyData.length === 0) {
 			return res.status(404).render("error", {
@@ -65,7 +70,7 @@ module.exports = (function () {
 		res.render("generic-chart", {
 			title: `AQ War Effort - ${sb.Utils.capitalize(server)} - ${material}`,
 			chart: {
-				mainLabel: `${material} (${faction})`,
+				title: `${material} (${faction})`,
 				xAxis: {
 					name: "Update",
 					labels: JSON.stringify(labels)
