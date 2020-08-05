@@ -49,8 +49,9 @@ module.exports = (function () {
 
 	Router.get("/aq-effort/:server/material/:faction/:material", async (req, res) => {
 		let { server, faction, material } = req.params;
-		server = server.replace(/_/g, " ");
-		material = material.replace(/_/g, " ");
+		server = server.replace(/_/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
+		material = material.replace(/_/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
+		faction = sb.Utils.capitalize(faction);
 
 		const historyData = await Status.getMaterialHistory({ faction, material, server });
 		if (historyData.length === 0) {
@@ -63,7 +64,7 @@ module.exports = (function () {
 		const labels = [];
 		const data = [];
 		for (const historyItem of historyData) {
-			labels.push(historyItem.Updated.format("m-d H:i"));
+			labels.push(historyItem.Updated.format("D j.n. H:i"));
 			data.push(historyItem.Amount);
 		}
 
@@ -72,11 +73,11 @@ module.exports = (function () {
 			chart: {
 				title: `${material} (${faction})`,
 				xAxis: {
-					name: "Update",
+					name: "",
 					labels: JSON.stringify(labels)
 				},
 				yAxis: {
-					name: "Materials handed in"
+					name: ""
 				},
 				dataName: "Material",
 				data: JSON.stringify(data)
