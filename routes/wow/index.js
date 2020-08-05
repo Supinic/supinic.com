@@ -57,7 +57,7 @@ module.exports = (function () {
 
 		const labels = [];
 		const data = [];
-		for (const historyItem of data) {
+		for (const historyItem of historyData) {
 			labels.push(historyItem.Updated.format("m-d H:i"));
 			data.push(historyItem.Amount);
 		}
