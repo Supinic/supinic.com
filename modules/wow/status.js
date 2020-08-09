@@ -31,7 +31,7 @@ module.exports = (function () {
 					.where("Material = %s", item.Name)
 					.where("Faction = %s", item.Faction)
 					.where("Server = %s", server)
-					.where("Updated >= DATE_ADD(Updated, INTERVAL -1 DAY)")
+					.where("Updated >= DATE_ADD(NOW(), INTERVAL -1 DAY)")
 					.orderBy("Updated DESC")
 					.single()
 				);
