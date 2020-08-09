@@ -25,7 +25,10 @@ module.exports = (function () {
 				Faction: i.Faction,
 				Current: i.Current,
 				Required: i.Required,
-				"24h change": i.Delta,
+				"24h change": {
+					value: (i.Delta > 0) ? `+${i.Delta}` : i.Delta,
+					dataOrder: i.Delta
+				},
 				"%": {
 					value: `${percent}%`,
 					dataOrder: percent
