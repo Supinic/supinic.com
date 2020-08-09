@@ -60,6 +60,10 @@ html
 									scaleLabel: {
 										display: true,
 										labelString: "!{chart.yAxis.name}"
+									},
+									ticks: {
+										min: !{chart.yAxis.min ?? null},
+										max: !{chart.yAxis.max ?? null}
 									}
 								}
 							]

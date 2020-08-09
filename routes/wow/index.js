@@ -53,6 +53,7 @@ module.exports = (function () {
 		material = material.replace(/_/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
 		faction = sb.Utils.capitalize(faction);
 
+		const materialData = await Status.getMaterialDetail({ faction, material });
 		const historyData = await Status.getMaterialHistory({ faction, material, server });
 		if (historyData.length === 0) {
 			return res.status(404).render("error", {
@@ -77,7 +78,9 @@ module.exports = (function () {
 					labels: JSON.stringify(labels)
 				},
 				yAxis: {
-					name: ""
+					name: "",
+					min: 0,
+					max: materialData.Required
 				},
 				dataName: "Material",
 				data: JSON.stringify(data)

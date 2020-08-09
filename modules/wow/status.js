@@ -54,6 +54,19 @@ module.exports = (function () {
 			return data;
 		}
 
+		static async getMaterialDetail ({ faction, material }) {
+			if (listLoadPromise) {
+				await listLoadPromise;
+			}
+
+			const target = list.find(i => (
+				i.Faction.toLowerCase() === faction.toLowerCase()
+				&& i.Name.toLowerCase() === material.toLowerCase()
+			));
+
+			return target ?? null;
+		}
+
 		static async getMaterialHistory ({ faction, material, server }) {
 			return await this.selectCustom(q => q
 				.select("Updated", "Amount")
