@@ -19,14 +19,15 @@ module.exports = (function () {
 		const printData = data.map(i => {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
 			const normal = i.Material.toLowerCase().replace(/ /g, "_");
+			const delta = sb.Utils.groupDigits(i.Delta);
 
 			return {
 				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
 				Faction: i.Faction,
-				Current: i.Current,
-				Required: i.Required,
+				Current: sb.Utils.groupDigits(i.Current),
+				Required: sb.Utils.groupDigits(i.Required),
 				"24h change": {
-					value: (i.Delta > 0) ? `+${i.Delta}` : i.Delta,
+					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
 				},
 				"%": {
