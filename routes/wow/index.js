@@ -24,8 +24,14 @@ module.exports = (function () {
 			return {
 				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
 				Faction: i.Faction,
-				Current: sb.Utils.groupDigits(i.Current),
-				Required: sb.Utils.groupDigits(i.Required),
+				Current: {
+					value: sb.Utils.groupDigits(i.Current),
+					dataOrder: i.Current
+				},
+				Required: {
+					value: sb.Utils.groupDigits(i.Required),
+					dataOrder: i.Current
+				},
 				"24h change": {
 					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
