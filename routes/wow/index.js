@@ -36,7 +36,7 @@ module.exports = (function () {
 					value: sb.Utils.groupDigits(i.Required - i.Current),
 					dataOrder: (i.Required - i.Current)
 				},
-				"Δ 24h": {
+				"∆ 24h": {
 					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
 				},
