@@ -15,7 +15,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			title: "ytube video request history",
+			title: "Cytube video request history",
 			data: printData,
 			head: Object.keys(printData[0]),
 			pageLength: 50
