@@ -30,7 +30,7 @@ module.exports = (function () {
 				toTable: "User_Alias",
 				on: "Video_Request.User_Alias = User_Alias.ID"
 			})
-			.where("Posted >= DATE_ADD(NOW(), INTERVAL -7 DAY")
+			.where("Posted >= DATE_ADD(NOW(), INTERVAL -7 DAY)")
 		);
 
 		const data = rawData.map(i => ({
