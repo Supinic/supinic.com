@@ -35,6 +35,7 @@
 		"api",
 		"bot",
 		"contact",
+		"cytube",
 		"data",
 		"gachi",
 		"rss",
@@ -185,6 +186,7 @@
 		{
 			name: "Stream",
 			items: [
+				{ name: "Cytube history", link: "cytube/video-request/history" },
 				{ name: "TTS voices", link: "stream/tts" },
 				{ name: "Playsounds", link: "stream/playsound/list" },
 				{ name: "Video request queue", link: "stream/song-request/queue" },

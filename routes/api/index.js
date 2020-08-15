@@ -6,6 +6,7 @@ module.exports = (function () {
 	const subroutes = [
 		["bot", "bot"],
 		["bot-program", "bot-program"],
+		["cytube", "cytube"],
 		["data", "data"],
 		["gachi", "gachi.js"],
 		["text-normalize", "text-normalize.js"],
