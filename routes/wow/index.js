@@ -32,6 +32,10 @@ module.exports = (function () {
 					value: sb.Utils.groupDigits(i.Required),
 					dataOrder: i.Current
 				},
+				Remaining: {
+					value: sb.Utils.groupDigits(i.Required - i.Current),
+					dataOrder: (i.Required - i.Current)
+				},
 				"24h change": {
 					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
