@@ -21,6 +21,9 @@ module.exports = (function () {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
 			const normal = i.Material.toLowerCase().replace(/ /g, "_");
 			const delta = sb.Utils.groupDigits(i.Delta);
+			const timeRemaining = (i.Required === i.Current)
+				? "done"
+				: sb.Utils.timeDelta(sb.Date.now() + (i.Required / i.Delta) * 864e5, true);
 
 			return {
 				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
@@ -41,12 +44,14 @@ module.exports = (function () {
 					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
 				},
-				"Per hour": {
-					value: sb.Utils.groupDigits(sb.Utils.round(i.Delta / 24, 2)),
-					dataOrder: i.Delta / 24
+				"Time left": {
+					value: timeRemaining,
+					dataOrder: (i.Required === i.Current)
+						? 0
+						: ((i.Required / i.Delta) * 864e5)
 				},
 				"%": {
-					value: `${percent}%`,
+					value: `${sb.Utils.round(percent, 0)}%`,
 					dataOrder: percent
 				}
 			};
@@ -63,8 +68,8 @@ module.exports = (function () {
 				window.onload = () => {
 					const navbar = document.getElementById("table_wrapper").previousSibling;
 					navbar.insertAdjacentHTML("afterend", \`
-						<div class="last-update">
-							<h6>Last update: ${lastUpdate}</h6>
+						<div class="last-update text-center pt-2">
+							<h5>Last update: ${lastUpdate}</h5>
 						</div>\`
 					);
 				};			
