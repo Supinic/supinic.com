@@ -23,7 +23,7 @@ module.exports = (function () {
 			const delta = sb.Utils.groupDigits(i.Delta);
 			const timeRemaining = (i.Required === i.Current)
 				? "done"
-				: sb.Utils.timeDelta(sb.Date.now() + (i.Required / i.Delta) * 864e5, true);
+				: sb.Utils.timeDelta(sb.Date.now() + ((i.Required - i.Current) / i.Delta) * 864e5, true);
 
 			return {
 				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
@@ -48,7 +48,7 @@ module.exports = (function () {
 					value: timeRemaining,
 					dataOrder: (i.Required === i.Current)
 						? 0
-						: ((i.Required / i.Delta) * 864e5)
+						: ((i.Required - i.Current) / i.Delta) * 864e5
 				},
 				"%": {
 					value: `${sb.Utils.round(percent, 0)}%`,
