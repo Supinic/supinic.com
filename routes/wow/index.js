@@ -16,6 +16,7 @@ module.exports = (function () {
 			});
 		}
 
+		const lastUpdate = sb.Utils.timeDelta(data[0].Last_Update);
 		const printData = data.map(i => {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
 			const normal = i.Material.toLowerCase().replace(/ /g, "_");
@@ -40,13 +41,13 @@ module.exports = (function () {
 					value: (i.Delta > 0) ? `+${delta}` : delta,
 					dataOrder: i.Delta
 				},
+				"Per hour": {
+					value: sb.Utils.groupDigits(sb.Utils.round(i.Delta / 24, 2)),
+					dataOrder: i.Delta / 24
+				},
 				"%": {
 					value: `${percent}%`,
 					dataOrder: percent
-				},
-				Updated: {
-					value: sb.Utils.timeDelta(i.Last_Update),
-					dataOrder: i.Last_Update.valueOf()
 				}
 			};
 		});
@@ -57,7 +58,17 @@ module.exports = (function () {
 			head: Object.keys(printData[0]),
 			pageLength: 50,
 			sortColumn: 4,
-			sortDirection: "desc"
+			sortDirection: "desc",
+			extraScript: `
+				window.onload = () => {
+					const navbar = document.getElementById("table_wrapper").previousSibling;
+					navbar.insertAdjacentHTML("afterend", \`
+						<div class="last-update">
+							<h6>Last update: ${lastUpdate}</h6>
+						</div>\`
+					);
+				};			
+			`
 		});
 	});
 
