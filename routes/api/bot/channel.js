@@ -12,6 +12,7 @@ module.exports = (function () {
 	 * @apiDescription Posts a list of currently joined channels
 	 * @apiGroup Bot
 	 * @apiPermission any
+	 * @apiParam {string} [platformName] If provided, only returns channels belonging to given platform name
 	 * @apiSuccess {Object[]} data list of channels
 	 * @apiSuccess {number} ID
 	 * @apiSuccess {string} name
@@ -32,11 +33,17 @@ module.exports = (function () {
 	 * @apiSuccess {number} byteLength Size of this channel's logs in bytes
 	 */
 	Router.get("/list", async (req, res) => {
-		const data = (await Channel.list()).map(i => {
-			delete i.Custom_Code;
-			delete i.Data;
+		const platform = (req.query.platformName)
+			? req.query.platformName.toLowerCase()
+			: null;
 
-			return i;
+		const rawData = await Channel.list();
+		const data = rawData.filter(i => {
+			if (!platform) {
+				return true;
+			}
+
+			return (i.Platform_Name.toLowerCase() === platform);
 		});
 
 		return sb.WebUtils.apiSuccess(res, data);
