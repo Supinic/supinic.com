@@ -19,14 +19,14 @@ module.exports = (function () {
 		const lastUpdate = sb.Utils.timeDelta(data[0].Last_Update);
 		const printData = data.map(i => {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
-			const normal = i.Material.toLowerCase().replace(/ /g, "_");
+			const normal = i.Material.toLowerCase().replace(/ /g, "-");
 			const delta = sb.Utils.groupDigits(i.Delta);
 			const timeRemaining = (i.Required === i.Current)
 				? "done"
 				: sb.Utils.timeDelta(sb.Date.now() + ((i.Required - i.Current) / i.Delta) * 864e5, true);
 
 			return {
-				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction}/${normal}">${i.Material}</a>`,
+				Material: `<a href="/wow/aq-effort/${server}/material/${i.Faction.toLowerCase()}/${normal}">${i.Material}</a>`,
 				Faction: i.Faction,
 				Current: {
 					value: sb.Utils.groupDigits(i.Current),
@@ -79,8 +79,8 @@ module.exports = (function () {
 
 	Router.get("/aq-effort/:server/material/:faction/:material", async (req, res) => {
 		let { server, faction, material } = req.params;
-		server = server.replace(/_/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
-		material = material.replace(/_/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
+		server = server.replace(/-/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
+		material = material.replace(/-/g, " ").split(" ").map(i => sb.Utils.capitalize(i)).join(" ");
 		faction = sb.Utils.capitalize(faction);
 
 		const materialData = await Status.getMaterialDetail({ faction, material });
