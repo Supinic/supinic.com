@@ -16,7 +16,8 @@ module.exports = (function () {
 			});
 		}
 
-		const lastUpdate = sb.Utils.timeDelta(data[0].Last_Update);
+		const lastUpdateDate = data.map(i => i.Last_Update).sort((a, b) => b - a).shift();
+		const lastUpdate = sb.Utils.timeDelta(lastUpdateDate);
 		const printData = data.map(i => {
 			const percent = sb.Utils.round(i.Current / i.Required * 100, 2);
 			const normal = i.Material.toLowerCase().replace(/ /g, "-");
