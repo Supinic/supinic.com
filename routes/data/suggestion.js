@@ -8,7 +8,9 @@ module.exports = (function () {
 
 	const prettifyData = (data) => data.map(i => ({
 		Author: i.userName,
-		Text: i.text,
+		Text: (i.text)
+			? sb.Utils.wrapString(sb.Utils.escapeHTML(i.text), 200)
+			: "N/A",
 		Status: i.status,
 		Priority: {
 			value: i.priority ?? "N/A",
@@ -107,7 +109,9 @@ module.exports = (function () {
 				Category: data.category,
 				Status: data.status,
 				Priority: data.priority ?? "N/A",
-				Text: data.text ?? "N/A",
+				Text: (data.text)
+					? sb.Utils.escapeHTML(data.text)
+					: "N/A",
 				Notes: data.notes   ?? "N/A",
 				"Last update": (data.lastUpdate)
 					? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
