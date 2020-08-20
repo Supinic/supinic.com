@@ -51,7 +51,11 @@ module.exports = (function () {
 			const obj = {};
 			if (listType !== "todo") {
 				obj["🔁"] = (i.youtubeReuploads.length > 0)
-					? `<img linkID="${i.youtubeReuploads[0]}" class="reupload" src="/public/img/youtube-logo.png">`
+					? sb.Utils.tag.trim `
+						<a href="/track/redirect/${i.youtubeReuploads[0]}">
+							<img class="reupload" src="/public/img/youtube-logo.png">
+						</a>
+					`
 					: "";
 			}
 
@@ -118,22 +122,6 @@ module.exports = (function () {
 					for (const element of favouriteList) {
 						element.parentElement.addEventListener("click", () => toggleFavourite(element));
 					}
-					
-					const reuploadList = document.getElementsByClassName("reupload");
-					for (const element of reuploadList) {
-						element.addEventListener("click", async () => {
-							const ID = element.getAttribute("linkID");
-							const { data } = await fetch("/api/track/resolve/" + ID)
-								.then(i => i.json())
-								.catch(i => i.json());
-							
-							if (!data.link) {
-								return;
-							}
-								
-							window.open(data.link, "_blank");
-						});
-					}
 				}
 				 				
 				async function toggleFavourite (element) {
@@ -172,7 +160,7 @@ module.exports = (function () {
 	};
 
 	Router.get("/redirect/:id", async (req, res) => {
-		const ID = Number(req.query.id);
+		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
 			return res.status(404).render("error", {
 				error: "404 Not found",
@@ -180,7 +168,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic("/api/track/resolve/" + ID).json();
+		const { data } = await sb.Got.instances.Supinic("track/resolve/" + ID).json();
 		if (!data.link) {
 			return res.status(404).render("error", {
 				error: "404 Not found",
