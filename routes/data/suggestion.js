@@ -112,7 +112,7 @@ module.exports = (function () {
 				Text: (data.text)
 					? sb.Utils.escapeHTML(data.text)
 					: "N/A",
-				Notes: data.notes   ?? "N/A",
+				Notes: data.notes ?? "N/A",
 				"Last update": (data.lastUpdate)
 					? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
 					: "N/A"
