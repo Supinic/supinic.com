@@ -171,6 +171,26 @@ module.exports = (function () {
 		});
 	};
 
+	Router.get("/redirect/:id", async (req, res) => {
+		const ID = Number(req.query.id);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Invalid track ID"
+			});
+		}
+
+		const { data } = await sb.Got.instances.Supinic("/api/track/resolve/" + ID).json();
+		if (!data.link) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "No track data found"
+			});
+		}
+
+		res.redirect(data.link);
+	});
+
 	Router.get("/gachi/list", async (req, res) => {
 		await fetchList(req, res, "gachi");
 	});
