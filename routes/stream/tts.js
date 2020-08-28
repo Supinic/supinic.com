@@ -11,7 +11,6 @@ module.exports = (function () {
 			Language: i.language,
 			Locale: i.locale,
 			Code: i.code,
-			extraCSS: `audio.preview { width: 100%; } `,
 			Sample: sb.Utils.tag.trim `
 				<audio class="preview" style="height:30px; text-align: center;" controls preload="none">
 					<source
@@ -25,7 +24,8 @@ module.exports = (function () {
 			data: renderData,
 			head: Object.keys(renderData[0]),
 			pageLength: 50,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCSS: `audio.preview { width: 100%; } `
 		});
 	});
 
