@@ -8,17 +8,17 @@ module.exports = (function () {
 	Router.get("/readme", async (req, res) => {
 		res.render("generic", {
 			data: sb.Utils.tag.trim `
-				<h5>Make-a-bot program</h5>
-				In this bot program, beginner and advanced programmers are encouraged to create their own chat bot.<br>
-				The idea is that creating a bot is a task that requires multiple areas of knowledge, so that you can learn many things at once.<br>
+				<h5 class="text-center">Make-a-bot program</h5>
+				In this bot program, beginner and advanced programmers alike are encouraged to create their own chat bot.<br>
+				The idea is that creating a bot is a task that requires multiple areas of knowledge, so that you can learn many things at once and connect them together.<br>
 				Also, the project can be expanded ad infinitum until you get bored of it, or something.<br>
 				<br>
 				Bots can gain <a href="/channel-bots/levels">levels</a> and <a href="/channel-bots/badges">badges</a>.<br> 
 				Levels represent basic functionality, and gaining a level requires achieving all previous levels.<br>
 				Badges are like achievments - they are voluntary, but the present little challenges for bot creators.<br>
 				<br>
-				If you would like to enter the bot creators program, you can use the $suggest command in any channel that has Supibot.
-				Alternatively, you can enter <a href="//twitch.tv/supinic">Supinic's Twitch channel</a> and mention your idea to the chatters and discuss it.			
+				If you would like to enter the bot creators program, you can use the $suggest command in any channel that has Supibot.<br>
+				Alternatively, you can enter <a href="//twitch.tv/supinic">Supinic's Twitch channel</a> and mention your idea to the chatters and discuss it.
 			`
 		})
 	});
