@@ -25,7 +25,7 @@ module.exports = (function () {
 			head: Object.keys(renderData[0]),
 			pageLength: 50,
 			specificFiltering: true,
-			extraCSS: `audio.preview { width: 100%; } `
+			extraCSS: `audio.preview { width: 100%; min-width: 250px; }`
 		});
 	});
 
