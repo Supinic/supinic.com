@@ -5,14 +5,15 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/list", async (req, res) => {
+	Router.get("/", async (req, res) => {
 		const { data } = await sb.Got.instances.Supinic("data/tts/google/list").json();
 		const renderData = data.map(i => ({
 			Language: i.language,
 			Locale: i.locale,
 			Code: i.code,
+			extraCSS: `audio.preview { width: 100%; } `,
 			Sample: sb.Utils.tag.trim `
-				<audio style="height:30px; text-align: center;" controls preload="none">
+				<audio class="preview" style="height:30px; text-align: center;" controls preload="none">
 					<source
 						type="audio/mp3"
 						src="http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&ttsspeed=1&q=This+is+a+sample+message&textlen=24&tl=${i.locale}"
