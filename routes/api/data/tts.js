@@ -4,7 +4,12 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/voices/list", async (req, res) => {
+	Router.get("/google/list", async (req, res) => {
+		const data = sb.Config.get("TTS_LOCALE_DATA");
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	Router.get("/streamelements/list", async (req, res) => {
 		const data = sb.Config.get("TTS_VOICE_DATA");
 		for (const record of data) {
 			if (!record.gender) {
