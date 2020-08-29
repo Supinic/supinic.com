@@ -22,7 +22,9 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			data: data,
 			head: Object.keys(data[0]),
-			pageLength: 25
+			pageLength: 25,
+			sortColumn: 0,
+			sortDirection: "desc"
 		});
 	});
 
