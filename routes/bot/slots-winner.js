@@ -8,7 +8,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data: rawData } = await sb.Got.instances.Supinic("/data/slots-winner/list").json();
 
-		const data = rawData.sort((a, b) => b.timestamp - a.timestamp).map(i => ({
+		const data = rawData.sort((a, b) => b.odds - a.odds).map(i => ({
 			"Odds - 1:X" : sb.Utils.round(i.odds, 3),
 			User: i.userName,
 			Channel: i.channelName,
