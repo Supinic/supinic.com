@@ -5,12 +5,10 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const SlotsWinner = require("../../modules/data/slots-winner.js");
-
 	Router.get("/list", async (req, res) => {
 		const { data: rawData } = await sb.Got.instances.Supinic("/data/slots-winner/list").json();
 
-		const data = rawData.map(i => ({
+		const data = rawData.sort((a, b) => b.timestamp - a.timestamp).map(i => ({
 			"Odds - 1:X" : sb.Utils.round(i.odds, 3),
 			User: i.userName,
 			Channel: i.channelName,
