@@ -79,7 +79,13 @@ module.exports = (function () {
 					const values = { ...rawData.valuesObject };
 					values.getStaticData = function () {
 						this.data = {};
-						return eval(this.Static_Data)
+						const resolver = eval(this.Static_Data);
+						if (typeof resolver === "function") {
+							return resolver.apply(this);
+						}
+						else {
+							return resolver;
+						}
 					};
 
 					const fn = eval(value);
