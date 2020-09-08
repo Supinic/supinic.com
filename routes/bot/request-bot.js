@@ -52,6 +52,9 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim `
 				async function submit (element) {
+					const button = document.getElementById("submit-button");
+					button.disabled = true;
+					
 					const channelElement = document.getElementById("channel-name");
 					const descriptionElement = document.getElementById("description");	
 					const response = await fetch("/api/bot/request-bot/", {
@@ -70,6 +73,8 @@ module.exports = (function () {
 					alerter.setAttribute("role", "alert");
 					alerter.classList.remove("alert-success", "alert-danger");
 					alerter.classList.add("alert");
+					
+					button.disabled = false;
 					
 					if (response.status === 200) {
 						const ID = json.data.suggestionID;
