@@ -303,7 +303,7 @@
 	});
 
 	app.use(async (err, req, res, next) => {
-		console.error("Website error", err);
+		console.error("Website error", err, req);
 
 		try {
 			const errorID = await sb.SystemLogger.sendError("Website", err);
