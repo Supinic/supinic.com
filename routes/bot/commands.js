@@ -125,7 +125,7 @@ module.exports = (function () {
 
 		const restrictions = await Filter.selectMultipleCustom(rs => rs
 			.select("User_Alias.Name AS Username")
-			.select("Channel.Name as Channel_Name", "Channel.Mode AS Channel_Mode")
+			.select("IFNULL(Channel.Description, Channel.Name) as Channel_Name", "Channel.Mode AS Channel_Mode")
 			.select("Platform.Name as Platform_Name")
 			.where("Command = %n", ID)
 			.where("Active = %b", true)
