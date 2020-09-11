@@ -16,6 +16,10 @@ html
                 word-break: break-word;
             }
 
+            td.key-column {
+                min-width: 100px;
+            }
+
             #table_wrapper {
                 padding: 10px 40px 0 40px !important;
             }
@@ -27,7 +31,7 @@ html
          table(id="table", class="table table-striped table-bordered")
             for value, key in data
                 tr
-                    td.key
+                    td.key(class="key-column")
                         b #{key}
                     td.value.
                         !{value}
