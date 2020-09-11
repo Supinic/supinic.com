@@ -25,7 +25,12 @@ module.exports = (function () {
 		);
 
 		if (exists) {
-			return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
+			if (exists.Mode === "Inactive") {
+				return sb.WebUtils.apiFail(res, 400, "The bot has been removed from target channel. Contact Supinic to resolve this.");
+			}
+			else {
+				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
+			}
 		}
 		else if (await sb.Utils.getTwitchID(targetChannel) === null) {
 			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
