@@ -237,7 +237,7 @@ module.exports = (function () {
 			code: `// Command code:\n${data.values.Code}`,
 			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
 			dynamicDescription: `// Dynamic description:\n${data.values.Dynamic_Description ?? "// None"}`,
-			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${data.values.Name}/index.js"`
+			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`
 		});
 	});
 
