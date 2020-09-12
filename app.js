@@ -57,6 +57,7 @@
 	const { OAuth2Strategy } = require("passport-oauth");
 	const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
+	const RateLimiter = require("express-rate-limit");
 
 	class Strategy extends OAuth2Strategy {
 		async userProfile (accessToken, done, ...rest) {
@@ -116,6 +117,7 @@
 	}));
 
 	app.use("/api", Express.static(__dirname + "/apidocs/"));
+
 
 	app.use(CacheController({
 		noCache: true
@@ -275,6 +277,13 @@
 	for (const route of subRoutes) {
 		app.use("/" + route, require("./routes/" + route));
 	}
+
+	// Rate limit for API endpoints
+	app.use("/api/", RateLimiter({
+		max: 100,
+		windowMs: 60_000,
+		message: "Flood protection rate limit (100 requests/minute) exceeded!"
+	}));
 
 	// Twitch auth
 	app.get("/auth/twitch", (req, res, next) => {
