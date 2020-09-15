@@ -106,6 +106,11 @@ module.exports = (function () {
 					data[key] = `<ul>${list}</ul>`;
 				}
 			}
+			else if (key === "Last Edit") {
+				data[key] = (value)
+					? `${value.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(value)})`
+					: "N/A";
+			}
 			else if (key === "Aliases" && value !== null) {
 				data[key] = JSON.parse(value).join(", ");
 			}
