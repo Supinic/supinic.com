@@ -4,24 +4,14 @@ module.exports = (function () {
 	class CommandExecution extends TemplateModule {
 		static async hourlyStats () {
 			const data = await super.selectMultipleCustom(rs => rs
-				.select("COUNT(*) AS `Count`")
+				.select("COUNT(*) AS Amount")
 				.groupBy("HOUR(Executed)")
 				.orderBy("HOUR(Executed) ASC")
+				.where("Executed >= DATE_ADD(NOW(), INTERVAL -1 WEEK)")
 			);
 
-			return data.map(i => i.Count);
+			return data.map(i => i.Amount);
 		}
-
-		static first () {
-
-		}
-
-		/*
-		 SELECT Command.Name, COUNT(*)
-		 FROM Command_Execution
-		 JOIN Command ON Command.ID = Command
-		 GROUP BY Command
-		 */
 
 		static get name () { return "command-execution"; }
 		static get database () { return "chat_data"; }
