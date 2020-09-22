@@ -7,7 +7,7 @@ module.exports = (function () {
 				.select("COUNT(*) AS Amount")
 				.groupBy("HOUR(Executed)")
 				.orderBy("HOUR(Executed) ASC")
-				.where("Executed >= DATE_ADD(NOW(), INTERVAL -1 WEEK)")
+				.where("Executed >= DATE_ADD(NOW(), INTERVAL -1 DAY)")
 			);
 
 			return data.map(i => i.Amount);

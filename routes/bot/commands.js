@@ -35,18 +35,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/stats", async (req, res) => {
-		const [statistics, start] = await Promise.all([
-			CommandExecution.hourlyStats(),
-			CommandExecution.selectSingleCustom(rs => rs
-				.orderBy("Executed ASC")
-				.limit(1)
-			)
-		]);
-
+		const statistics = await CommandExecution.hourlyStats();
 		res.render("command-stats", {
 			amount: statistics.reduce((acc, cur) => acc += cur, 0),
-			hourlyStats: JSON.stringify(statistics),
-			start: start.Executed.format("Y-m-d H:i")
+			hourlyStats: JSON.stringify(statistics)
 		});
 	});
 
