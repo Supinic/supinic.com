@@ -30,7 +30,7 @@ module.exports = (function () {
 			searchParams: new sb.URLParams()
 				.set("player", user)
 				.toString()
-		}).text();
+		});
 
 		if (statusCode !== 200) {
 			return sb.WebUtils.apiFail(res, 404, "Player not found");
@@ -72,7 +72,7 @@ module.exports = (function () {
 				});
 			}
 			else {
-				result.skills.push({
+				result.activities.push({
 					name: activity,
 					rank,
 					value
