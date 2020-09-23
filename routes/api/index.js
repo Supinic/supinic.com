@@ -9,6 +9,7 @@ module.exports = (function () {
 		["cytube", "cytube"],
 		["data", "data"],
 		["gachi", "gachi.js"],
+		["osrs", "osrs.js"],
 		["text-normalize", "text-normalize.js"],
 		["track", "track"],
 		["trackData", "trackData.js"],
