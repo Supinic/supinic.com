@@ -78,6 +78,8 @@ module.exports = (function () {
 					value
 				});
 			}
+
+			index++;
 		}
 
 		return sb.WebUtils.apiSuccess(res, result);
