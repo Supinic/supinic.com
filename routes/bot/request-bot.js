@@ -14,6 +14,8 @@ module.exports = (function () {
 			<li>If you change your name (outside of changing lower- and uppercase characters), Supibot will not track your namechange and you must request the bot again. If this is the case, you also must add your previous name to the request.</li>
 			<li>Please refer to Supibot as "the bot" or "Supibot", not as "Supi". "Supi" refers to me (Supinic), and it gets very confusing sometimes 😃</li>
 		</ol>
+		<h6>Warning</h6>
+		<div>The bot will not be added immediately! I evaluate the requests manually. It usually happens within one to seven days from the request.</div>
 	`;
 
 	Router.get("/form", async (req, res) => {
