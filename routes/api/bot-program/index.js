@@ -110,7 +110,7 @@ module.exports = (function () {
 				id: bot.Bot_Alias,
 				name: bot.Bot_Name,
 				prefix: bot.Prefix,
-				hasPrefixSpace: bot.Prefix_Space,
+				has_prefix_space: bot.Prefix_Space,
 				authorID: bot.Author,
 				author_name: userData?.Name ?? "N/A",
 				language: bot.Language,
