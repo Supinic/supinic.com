@@ -50,6 +50,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} bots.ID Bot's internal ID
 	 * @apiSuccess {string} bots.name Bot's name
 	 * @apiSuccess {string} [bots.prefix] Bot's command prefix. Can be null, if none is used (no commands) or unknown
+	 * @apiSuccess {string} [bots.hasPrefixSpace] Whether or not the bot's prefix requires a space afterwards
 	 * @apiSuccess {string} [bots.authorID] Author's ID. Can be null if unknown
 	 * @apiSuccess {string} bots.authorName Author's name. Can be "N/A" if unknown
 	 * @apiSuccess {string} [bots.language] Programming language use to implement the bot. Can be null if unknown.
@@ -109,6 +110,7 @@ module.exports = (function () {
 				id: bot.Bot_Alias,
 				name: bot.Bot_Name,
 				prefix: bot.Prefix,
+				hasPrefixSpace: bot.Prefix_Space,
 				authorID: bot.Author,
 				author_name: userData?.Name ?? "N/A",
 				language: bot.Language,
