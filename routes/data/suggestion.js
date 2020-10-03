@@ -101,22 +101,28 @@ module.exports = (function () {
 			});
 		}
 
+		const renderData = {
+			ID: data.ID,
+			"Created by": data.username,
+			"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
+			Category: data.category,
+			Status: data.status,
+			Priority: data.priority ?? "N/A",
+			Text: (data.text)
+				? sb.Utils.escapeHTML(data.text)
+				: "N/A",
+			Notes: data.notes ?? "N/A",
+			"Last update": (data.lastUpdate)
+				? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
+				: "N/A"
+		};
+
+		if (data.githubLink) {
+			renderData["GitHub issue"] = `<a href="//${data.githubLink}">Issue</a>`;
+		}
+
 		res.render("generic-detail-table", {
-			data: {
-				ID: data.ID,
-				"Created by": data.username,
-				"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
-				Category: data.category,
-				Status: data.status,
-				Priority: data.priority ?? "N/A",
-				Text: (data.text)
-					? sb.Utils.escapeHTML(data.text)
-					: "N/A",
-				Notes: data.notes ?? "N/A",
-				"Last update": (data.lastUpdate)
-					? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
-					: "N/A"
-			}
+			data: renderData
 		});
 	});
 
