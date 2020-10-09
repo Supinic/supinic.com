@@ -118,7 +118,7 @@ module.exports = (function () {
 		};
 
 		if (data.githubLink) {
-			renderData["GitHub issue"] = `<a href="//${data.githubLink}">Issue</a>`;
+			renderData["GitHub reference"] = `<a href="//${data.githubLink}">Link/a>`;
 		}
 
 		res.render("generic-detail-table", {
