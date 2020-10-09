@@ -13,7 +13,7 @@ module.exports = (function () {
 				The idea is that creating a bot is a task that requires multiple areas of knowledge, so that you can learn many things at once and connect them together.<br>
 				Also, the project can be expanded ad infinitum until you get bored of it, or something.<br>
 				<br>
-				Bots can gain <a href="/channel-bots/levels">levels</a> and <a href="/channel-bots/badges">badges</a>.<br> 
+				Bots can gain <a href="/bot/channel-bots/levels">levels</a> and <a href="/bot/channel-bots/badges">badges</a>.<br> 
 				Levels represent basic functionality, and gaining a level requires achieving all previous levels.<br>
 				Badges are like achievments - they are voluntary, but the present little challenges for bot creators.<br>
 				<br>
