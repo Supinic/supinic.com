@@ -170,15 +170,14 @@
 			clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
 			clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
 			callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+			passReqToCallback: true
 		},
-		(access, refresh, profile, done) => {
+		(req, access, refresh, profile, done) => {
 			profile.accessToken = access;
 			profile.refreshToken = refresh;
 			profile.source = "github";
 
-			if (sb.App.cache.githubConnection) {
-				sb.App.cache.githubConnection.profile = profile;
-			}
+			req[Symbol.for("github-profile")] = { profile };
 
 			done(null, profile);
 		}
@@ -328,20 +327,24 @@
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/twitch/callback", Passport.authenticate("twitch", { failureRedirect: "/wcs" }), async (req, res) => {
-		try {
-			const { state } = req.query;
-			const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
-			if (typeof returnTo === "string" && returnTo.startsWith("/")) {
-				return res.redirect(returnTo);
+	app.get("/auth/twitch/callback", Passport.authenticate(
+		"twitch",
+		{ failureRedirect: "/wcs" }),
+		async (req, res) => {
+			try {
+				const { state } = req.query;
+				const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
+				if (typeof returnTo === "string" && returnTo.startsWith("/")) {
+					return res.redirect(returnTo);
+				}
 			}
-		}
-		catch {
-			console.warn("Redirect not applicable", res);
-		}
+			catch {
+				console.warn("Redirect not applicable", res);
+			}
 
-		res.redirect("/contact");
-	});
+			res.redirect("/contact");
+		}
+	);
 
 	app.get("/auth/github", (req, res, next) => {
 		const { userData } = res.locals.authUser ?? {};
@@ -352,44 +355,29 @@
 			});
 		}
 
-		if (sb.App.cache.githubConnection) {
-			return res.status(423).render("error", {
-				message: "423 Locked",
-				error: "Another user's Github connection is being processed, please try again in a moment"
-			});
-		}
-
-		sb.App.cache.githubConnection = { userData };
-
-		const data = { connectedUserName: userData.Name };
-		const state = Buffer.from(JSON.stringify(data)).toString("base64");
-		const authenticator = Passport.authenticate("github", { state });
-
+		const authenticator = Passport.authenticate("github");
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/github/callback", Passport.authenticate("github",
+	app.get("/auth/github/callback", Passport.authenticate(
+		"github",
 		{
 			session: false
 		},
 		async (req, res) => {
-			const { state } = req.query;
-			const { connectedUserName } = JSON.parse(Buffer.from(state, "base64").toString());
-
-			if (!sb.App.cache.githubConnection) {
-				throw new sb.Error({
-					message: "Github connection could not be linked to a user",
-					args: { connectedUserName }
+			const { userData } = res.locals.authUser ?? {};
+			if (!userData) {
+				return res.status(401).render("error", {
+					message: "401 Unauthorized",
+					error: "You must be logged first in order in to link your Github account"
 				});
 			}
 
-			const { profile, userData } = sb.App.cache.githubConnection;
-			sb.App.cache.githubConnection = null;
-
-			if (userData.Name !== connectedUserName) {
+			const { profile } = req[Symbol.for("github-profile")];
+			if (!profile) {
 				throw new sb.Error({
-					message: "Github connection user names were not matched",
-					args: { connectedUserName, name: userData.Name }
+					message: "No github profile available in callback",
+					args: { req }
 				});
 			}
 
@@ -397,7 +385,7 @@
 				return res.render("generic", {
 					data: sb.Utils.tag.trim `
 						<div class="pt-3 text-center">
-							<h5>Your account is already connected 🙂</h5>
+							<h5>Your user profile is already connected to this Github profile 🙂</h5>
 						</div>
 					`
 				});
