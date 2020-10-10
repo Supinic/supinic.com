@@ -248,6 +248,7 @@
 	app.locals.loginItems = [
 		{ name: "Command aliases", link: "user/alias/list" },
 		{ name: "Favourite tracks", link: "track/favourite/list" },
+		{ name: "Github link", link: "auth/github" },
 		{ name: "Reminders", link: "bot/reminder/list" },
 		{ name: "Suggestion stats", link: "data/suggestion/stats" },
 
@@ -383,7 +384,7 @@
 				return res.render("generic", {
 					data: sb.Utils.tag.trim `
 						<div class="pt-3 text-center">
-							<h5>Your user profile is already connected to this Github profile 🙂</h5>
+							<h4>Your user profile is already connected to this Github profile 🙂</h4>
 						</div>
 					`
 				});
@@ -409,7 +410,10 @@
 				data: sb.Utils.tag.trim `
 					<div class="pt-3 text-center">
 						<h4>Github connection completed succesfully!</h4>
-						Connected Twitch user <b>${userData.Name}</b> to Github user <b>${profile.login}</b>.
+						Connected Twitch user
+						<a target="_blank" href="//twitch.tv/${userData.Name}">${userData.Name}</a>
+						to Github user 
+						<a target="_blank" href="//github.com/${profile.login}">${profile.login}</a>						
 						${previousString}
 					</div>
 				`
