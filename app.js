@@ -402,7 +402,7 @@
 			await userData.saveProperty("Data");
 			await sb.WebUtils.invalidateBotCache({
 				type: "user",
-				user: userData.Name
+				username: userData.Name
 			});
 
 			return res.render("generic", {

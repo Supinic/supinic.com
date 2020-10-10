@@ -232,7 +232,7 @@ module.exports = class WebUtils {
 			}
 
 			case "user": {
-				if (typeof options.name !== "string") {
+				if (typeof options.username !== "string") {
 					throw new sb.Error({
 						message: "Name must be passed as options.name to invalidate the user cache",
 						args: { options }
@@ -242,7 +242,7 @@ module.exports = class WebUtils {
 				params = new sb.URLParams()
 					.set("type", "reload")
 					.set("module", "user")
-					.set("username", options.name);
+					.set("username", options.username);
 
 				break;
 			}

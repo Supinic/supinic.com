@@ -46,7 +46,7 @@ module.exports = (function () {
 		await userData.saveProperty("Data", userData.Data);
 		await sb.WebUtils.invalidateBotCache({
 			type: "user",
-			name: userData.Name
+			username: userData.Name
 		});
 
 		res.send(200);
@@ -59,7 +59,7 @@ module.exports = (function () {
 		await userData.saveProperty("Data", userData.Data);
 		await sb.WebUtils.invalidateBotCache({
 			type: "user",
-			name: userData.Name
+			username: userData.Name
 		});
 
 		res.send(200);
