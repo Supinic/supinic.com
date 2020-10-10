@@ -327,9 +327,9 @@
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/twitch/callback", Passport.authenticate(
-		"twitch",
-		{ failureRedirect: "/wcs" }),
+	app.get(
+		"/auth/twitch/callback",
+		Passport.authenticate("twitch", { failureRedirect: "/wcs" }),
 		async (req, res) => {
 			try {
 				const { state } = req.query;
@@ -355,22 +355,15 @@
 			});
 		}
 
-		const data = { name: userData.Name };
-		const state = Buffer.from(JSON.stringify(data)).toString("base64");
-		const authenticator = Passport.authenticate("github", { state });
+		const authenticator = Passport.authenticate("github");
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/github/callback", Passport.authenticate(
-		"github",
-		{
-			session: false
-		},
+	app.get(
+		"/auth/github/callback",
+		Passport.authenticate("github",{ session: false }),
 		async (req, res) => {
-			const { state } = req.query;
-			const { name } = JSON.parse(Buffer.from(state, "base64").toString());
-
-			const userData = await sb.User.get(name);
+			const { userData } = res.locals.authUser ?? {};
 			if (!userData) {
 				return res.status(401).render("error", {
 					message: "401 Unauthorized",
@@ -422,7 +415,7 @@
 				`
 			});
 		}
-	));
+	);
 
 	app.use(async (err, req, res, next) => {
 		console.error("Website error", err, req);
