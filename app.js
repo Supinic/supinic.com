@@ -59,7 +59,7 @@
 	const MySQLStore = require("express-mysql-session")(Session);
 	const RateLimiter = require("express-rate-limit");
 
-	class Strategy extends OAuth2Strategy {
+	class TwitchStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done, ...rest) {
 			const { statusCode, body } = await sb.Got({
 				method: "GET",
@@ -80,7 +80,29 @@
 			}
 		}
 	}
-	
+
+	class GithubStrategy extends OAuth2Strategy {
+		async userProfile (accessToken, done) {
+			const { statusCode, body } = await sb.Got({
+				method: "GET",
+				throwHttpErrors: false,
+				url: "https://api.github.com/user",
+				headers: {
+					Authorization: "token " + accessToken,
+					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
+				},
+				responseType: "json"
+			});
+
+			if (statusCode === 200) {
+				done(null, body);
+			}
+			else {
+				done(body);
+			}
+		}
+	}
+
 	const app = Express();
 	app.use(require("cookie-parser")());
 	app.use(Session({
@@ -128,7 +150,7 @@
 	
 	Passport.serializeUser((user, done) => done(null, user));
 	Passport.deserializeUser((user, done) => done(null, user));
-	Passport.use("twitch", new Strategy(
+	Passport.use("twitch", new TwitchStrategy(
 		{
 			authorizationURL: "https://id.twitch.tv/oauth2/authorize",
 			tokenURL: "https://id.twitch.tv/oauth2/token",
@@ -141,6 +163,21 @@
 			profile.accessToken = access;
 			profile.refreshToken = refresh;
 			// @todo Store user?
+			done(null, profile);
+		}
+	));
+	Passport.use("github", new GithubStrategy(
+		{
+			authorizationURL: "https://github.com/login/oauth/authorize",
+			tokenURL: "https://github.com/login/oauth/access_token",
+			clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
+			clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
+			callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+		},
+
+		(access, refresh, profile, done) => {
+			profile.githubAccessToken = access;
+			profile.githubRefreshToken = refresh;
 			done(null, profile);
 		}
 	));
@@ -285,6 +322,12 @@
 		message: "Flood protection rate limit (100 requests/minute) exceeded!"
 	}));
 
+	app.use("/", RateLimiter({
+		max: 10,
+		windowMs: 10_000,
+		message: "Flood protection rate limit (10 requests/10 seconds) exceeded!"
+	}));
+
 	// Twitch auth
 	app.get("/auth/twitch", (req, res, next) => {
 		const { returnTo } = req.query;
@@ -297,6 +340,31 @@
 	});
 
 	app.get("/auth/twitch/callback", Passport.authenticate("twitch", { failureRedirect: "/wcs" }), async (req, res) => {
+		try {
+			const { state } = req.query;
+			const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
+			if (typeof returnTo === "string" && returnTo.startsWith("/")) {
+				return res.redirect(returnTo);
+			}
+		}
+		catch {
+			console.warn("Redirect not applicable", res);
+		}
+
+		res.redirect("/contact");
+	});
+
+	app.get("/auth/github", (req, res, next) => {
+		const { returnTo } = req.query;
+		const state = (returnTo)
+			? Buffer.from(JSON.stringify({returnTo})).toString("base64")
+			: undefined;
+
+		const authenticator = Passport.authenticate("github", { scope: "", state });
+		authenticator(req, res, next);
+	});
+
+	app.get("/auth/github/callback", Passport.authenticate("github", { failureRedirect: "/wcs" }), async (req, res) => {
 		try {
 			const { state } = req.query;
 			const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
