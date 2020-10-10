@@ -218,7 +218,7 @@ module.exports = class WebUtils {
 		return fullVideoType.Link_Prefix.replace(videoTypePrefix, link);
 	}
 
-	async invalidateBotCache (options = {}) {
+	static async invalidateBotCache (options = {}) {
 		let params = null;
 		switch (options.type) {
 			case "afk": {
