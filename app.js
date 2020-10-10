@@ -162,25 +162,18 @@
 		(access, refresh, profile, done) => {
 			profile.accessToken = access;
 			profile.refreshToken = refresh;
-			// @todo Store user?
-			done(null, profile);
-		}
-	));
-	Passport.use("github", new GithubStrategy(
-		{
-			authorizationURL: "https://github.com/login/oauth/authorize",
-			tokenURL: "https://github.com/login/oauth/access_token",
-			clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
-			clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
-			callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
-		},
+			profile.source = "twitch";
 
-		(access, refresh, profile, done) => {
-			profile.githubAccessToken = access;
-			profile.githubRefreshToken = refresh;
 			done(null, profile);
 		}
 	));
+	Passport.use("github", new GithubStrategy({
+		authorizationURL: "https://github.com/login/oauth/authorize",
+		tokenURL: "https://github.com/login/oauth/access_token",
+		clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
+		clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
+		callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+	}));
 
 	app.locals.navitems = [
 		{
@@ -284,7 +277,7 @@
 			app.locals.currentLocation = req.originalUrl;
 		}
 
-		if (req.session.passport) {
+		if (req.session.passport?.user?.source === "twitch") {
 			const data = req.session.passport.user.data[0];
 
 			sb.User.data.delete(data.login);
@@ -364,20 +357,11 @@
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/github/callback", Passport.authenticate("github", { failureRedirect: "/wcs" }), async (req, res) => {
-		try {
-			const { state } = req.query;
-			const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
-			if (typeof returnTo === "string" && returnTo.startsWith("/")) {
-				return res.redirect(returnTo);
-			}
-		}
-		catch {
-			console.warn("Redirect not applicable", res);
-		}
-
-		res.redirect("/contact");
-	});
+	app.get("/auth/github/callback", Passport.authenticate("github", {
+		session: false,
+		successFlash: "Successfully established a Github connection!",
+		failureFlash: "Could not verify your Github connection!"
+	}));
 
 	app.use(async (err, req, res, next) => {
 		console.error("Website error", err, req);
