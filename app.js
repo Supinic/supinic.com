@@ -167,13 +167,22 @@
 			done(null, profile);
 		}
 	));
-	Passport.use("github", new GithubStrategy({
-		authorizationURL: "https://github.com/login/oauth/authorize",
-		tokenURL: "https://github.com/login/oauth/access_token",
-		clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
-		clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
-		callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
-	}));
+	Passport.use("github", new GithubStrategy(
+		{
+			authorizationURL: "https://github.com/login/oauth/authorize",
+			tokenURL: "https://github.com/login/oauth/access_token",
+			clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
+			clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
+			callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+		},
+		(access, refresh, profile, done) => {
+			profile.accessToken = access;
+			profile.refreshToken = refresh;
+			profile.source = "github";
+
+			done(null, profile);
+		}
+	));
 
 	app.locals.navitems = [
 		{
