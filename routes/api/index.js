@@ -2,6 +2,7 @@ module.exports = (function () {
 	"use strict";
 
 	const Express = require("express");
+	const RateLimiter = require("express-rate-limit");
 	const Router = Express.Router();
 	const subroutes = [
 		["bot", "bot"],
@@ -14,6 +15,13 @@ module.exports = (function () {
 		["track", "track"],
 		["trackData", "trackData.js"],
 	];
+
+	// Rate limit for API endpoints
+	Router.use("/", RateLimiter({
+		max: 100,
+		windowMs: 60_000,
+		message: "Flood protection rate limit (100 requests/minute) exceeded!"
+	}));
 
 	Router.all("/*", (req, res, next) => {
 		res.header("Access-Control-Allow-Origin", "*");
@@ -34,6 +42,8 @@ module.exports = (function () {
 
 		next();
 	});
+
+	Router.use("/", Express.static(`${__dirname}/apidocs/`));
 
 	/**
 	 * @api {get} /endpoints Endpoints - List
@@ -74,7 +84,9 @@ module.exports = (function () {
 		sb.WebUtils.apiSuccess(res, endpoints);
 	});
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [name, link] of subroutes) {
+		Router.use("/" + name, require("./" + link));
+	}
 
 	Router.use(async (err, req, res, next) => {
 		const errorID = await sb.SystemLogger.sendError("Website - API", err);
