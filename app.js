@@ -367,8 +367,10 @@
 			session: false
 		},
 		async (req, res) => {
-			const state = JSON.parse(req.state);
-			const userData = await sb.User.get(state.name);
+			const { state } = req.query;
+			const { name } = JSON.parse(Buffer.from(state, "base64").toString());
+
+			const userData = await sb.User.get(name);
 			if (!userData) {
 				return res.status(401).render("error", {
 					message: "401 Unauthorized",
