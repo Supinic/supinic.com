@@ -217,6 +217,44 @@ module.exports = class WebUtils {
 
 		return fullVideoType.Link_Prefix.replace(videoTypePrefix, link);
 	}
+
+	async invalidateBotCache (options = {}) {
+		let params = null;
+		switch (options.type) {
+			case "afk": {
+				params = new sb.URLParams().set("type", "reload").set("module", "afk");
+				break;
+			}
+
+			case "reminder": {
+				params = new sb.URLParams() .set("type", "reload").set("module", "reminder");
+				break;
+			}
+
+			case "user": {
+				if (typeof options.name !== "string") {
+					throw new sb.Error({
+						message: "Name must be passed as options.name to invalidate the user cache",
+						args: { options }
+					});
+				}
+
+				params = new sb.URLParams()
+					.set("type", "reload")
+					.set("module", "user")
+					.set("username", options.name);
+
+				break;
+			}
+
+			default: throw new sb.Error({
+				message: "Invalid bot cache type provided",
+				args: { options }
+			});
+		}
+
+		await sb.InternalRequest.send(params);
+	};
 };
 
 /**

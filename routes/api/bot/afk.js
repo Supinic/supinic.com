@@ -6,11 +6,6 @@ module.exports = (function () {
 
 	const AFK = require("../../../modules/chat-data/afk.js");
 
-	const reloadBotAFK = async () => {
-		const params = new sb.URLParams().set("type", "reload").set("module", "afk");
-		await sb.InternalRequest.send(params);
-	};
-
 	/**
 	 * @api {get} /bot/afk/list AFK - Get list
 	 * @apiName GetAFK
@@ -211,7 +206,7 @@ module.exports = (function () {
 			Silent: false
 		});
 
-		await reloadBotAFK();
+		await sb.WebUtils.invalidateBotCache({ type: "afk" });
 
 		return sb.WebUtils.apiSuccess(res, {
 			statusID: newStatus.insertId
@@ -248,7 +243,7 @@ module.exports = (function () {
 		}
 
 		await AFK.update(check.ID, { Active: false });
-		await reloadBotAFK();
+		await sb.WebUtils.invalidateBotCache({ type: "afk" });
 
 		return sb.WebUtils.apiSuccess(res, {
 			statusID: newStatus.insertId,

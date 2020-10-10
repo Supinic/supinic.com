@@ -8,11 +8,6 @@ module.exports = (function () {
 	const Filter = require("../../../modules/chat-data/filter.js");
 	const Reminder = require("../../../modules/chat-data/reminder.js");
 
-	const reloadBotReminders = async () => {
-		const params = new sb.URLParams().set("type", "reload").set("module", "reminder");
-		await sb.InternalRequest.send(params);
-	};
-
 	const fetchReminderDetail = async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
@@ -181,7 +176,7 @@ module.exports = (function () {
 			Private_Message: privateReminder
 		});
 
-		await reloadBotReminders();
+		await sb.WebUtils.invalidateBotCache({ type: "reminder" });
 
 		return sb.WebUtils.apiSuccess(res, {
 			reminderID: newReminder.insertId
@@ -243,7 +238,7 @@ module.exports = (function () {
 		row.values.Active = false;
 		await row.save();
 
-		await reloadBotReminders();
+		await sb.WebUtils.invalidateBotCache({ type: "reminder" });
 
 		return sb.WebUtils.apiSuccess(res, {
 			reminderID,

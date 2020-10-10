@@ -4,17 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const UserAlias = require("../../modules/chat-data/user-alias.js");
-
-	const reloadSpecificUserCache = async (username) => {
-		const params = new sb.URLParams()
-			.set("type", "reload")
-			.set("module", "user")
-			.set("username", username);
-
-		await sb.InternalRequest.send(params);
-	};
-
 	const routes = [];
 	for (const [name, link] of routes) {
 		Router.use("/" + name, require("./" + link))
@@ -55,7 +44,10 @@ module.exports = (function () {
 			.digest("hex");
 
 		await userData.saveProperty("Data", userData.Data);
-		await reloadSpecificUserCache(userData.Name);
+		await sb.WebUtils.invalidateBotCache({
+			type: "user",
+			name: userData.Name
+		});
 
 		res.send(200);
 	});
@@ -65,7 +57,10 @@ module.exports = (function () {
 		userData.Data.authKey = null;
 
 		await userData.saveProperty("Data", userData.Data);
-		await reloadSpecificUserCache(userData.Name);
+		await sb.WebUtils.invalidateBotCache({
+			type: "user",
+			name: userData.Name
+		});
 
 		res.send(200);
 	});
