@@ -368,8 +368,8 @@
 
 	app.get("/auth/github/callback", Passport.authenticate("github", {
 		session: false,
-		successFlash: "Successfully established a Github connection!",
-		failureFlash: "Could not verify your Github connection!"
+		successRedirect: "/auth/github/success",
+		failureRedirect: "/auth/github/fail"
 	}));
 
 	app.use(async (err, req, res, next) => {
