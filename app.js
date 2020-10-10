@@ -355,7 +355,9 @@
 			});
 		}
 
-		const authenticator = Passport.authenticate("github");
+		const data = { name: userData.Name };
+		const state = Buffer.from(JSON.stringify(data)).toString("base64");
+		const authenticator = Passport.authenticate("github", { state });
 		authenticator(req, res, next);
 	});
 
@@ -365,7 +367,8 @@
 			session: false
 		},
 		async (req, res) => {
-			const { userData } = res.locals.authUser ?? {};
+			const state = JSON.parse(req.state);
+			const userData = await sb.User.get(state.name);
 			if (!userData) {
 				return res.status(401).render("error", {
 					message: "401 Unauthorized",
