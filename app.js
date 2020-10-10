@@ -176,6 +176,10 @@
 			profile.refreshToken = refresh;
 			profile.source = "github";
 
+			if (sb.App.cache.githubConnection) {
+				sb.App.cache.githubConnection.profile = profile;
+			}
+
 			done(null, profile);
 		}
 	));
@@ -340,20 +344,92 @@
 	});
 
 	app.get("/auth/github", (req, res, next) => {
-		const { returnTo } = req.query;
-		const state = (returnTo)
-			? Buffer.from(JSON.stringify({returnTo})).toString("base64")
-			: undefined;
+		const { userData } = res.locals.authUser ?? {};
+		if (!userData) {
+			return res.status(401).render("error", {
+				message: "401 Unauthorized",
+				error: "You must be logged first in order in to link your Github account"
+			});
+		}
 
-		const authenticator = Passport.authenticate("github", { scope: "", state });
+		if (sb.App.cache.githubConnection) {
+			return res.status(423).render("error", {
+				message: "423 Locked",
+				error: "Another user's Github connection is being processed, please try again in a moment"
+			});
+		}
+
+		sb.App.cache.githubConnection = { userData };
+
+		const data = { connectedUserName: userData.Name };
+		const state = Buffer.from(JSON.stringify(data)).toString("base64");
+		const authenticator = Passport.authenticate("github", { state });
+
 		authenticator(req, res, next);
 	});
 
-	app.get("/auth/github/callback", Passport.authenticate("github", {
-		session: false,
-		successRedirect: "/auth/github/success",
-		failureRedirect: "/auth/github/fail"
-	}));
+	app.get("/auth/github/callback", Passport.authenticate("github",
+		{
+			session: false
+		},
+		async (req, res) => {
+			const { state } = req.query;
+			const { connectedUserName } = JSON.parse(Buffer.from(state, "base64").toString());
+
+			if (!sb.App.cache.githubConnection) {
+				throw new sb.Error({
+					message: "Github connection could not be linked to a user",
+					args: { connectedUserName }
+				});
+			}
+
+			const { profile, userData } = sb.App.cache.githubConnection;
+			sb.App.cache.githubConnection = null;
+
+			if (userData.Name !== connectedUserName) {
+				throw new sb.Error({
+					message: "Github connection user names were not matched",
+					args: { connectedUserName, name: userData.Name }
+				});
+			}
+
+			if (userData.Data.github?.login === profile.login) {
+				return res.render("generic", {
+					data: sb.Utils.tag.trim `
+						<div class="pt-3 text-center">
+							<h5>Your account is already connected 🙂</h5>
+						</div>
+					`
+				});
+			}
+
+			const previousString = (userData.Data.github)
+				? `Your Twitch account was previously connected to ${userData.data.github.login}.`
+				: "";
+
+			userData.Data.github = {
+				created: new sb.Date(profile.created_at).valueOf(),
+				login: profile.login,
+				type: profile.type
+			};
+
+			await userData.saveProperty("Data");
+			await sb.WebUtils.invalidateBotCache({
+				type: "user",
+				user: userData.Name
+			});
+
+			return res.render("generic", {
+				data: sb.Utils.tag.trim `
+					<div class="pt-3 text-center">
+						<h4>Github connection completed succesfully!</h4>
+						Connected Twitch user <b>${userData.Name}</b> to Github user <b>${profile.login}</b>.
+						${previousString}
+					</div>
+				`
+			});
+		}
+	));
 
 	app.use(async (err, req, res, next) => {
 		console.error("Website error", err, req);
