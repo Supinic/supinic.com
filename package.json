@@ -1,7 +1,7 @@
 {
   "name": "supinic.com",
   "version": "1.0.0",
-  "description": "Supinic's website project",
+  "description": "Supinic's personal website project",
   "dependencies": {
     "body-parser": "latest",
     "cookie-parser": "^1.4.5",
@@ -26,5 +26,13 @@
     "start": "node ./app.js --harmony-nullish --harmony-optional-chaining"
   },
   "author": "Supinic",
-  "license": "ISC"
+  "license": "ISC",
+  "apidoc": {
+    "title": "supinic.com API docs",
+    "url": "https://supinic.com/api",
+    "header": {
+      "title": "General info",
+      "filename": "api-header.md"
+    }
+  }
 }
