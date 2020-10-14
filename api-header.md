@@ -34,7 +34,7 @@ When making a request, in your headers, include the following authorization head
 
 Sample `fetch` request:
 ```js
-await fetch("https://supinic.com/api/auth-test", {
+await fetch("https://supinic.com/api/test/auth", {
     headers: {
         Authorization: "Basic 12345:abcde"
     }
@@ -48,5 +48,5 @@ When making any request, along with any other params, include these two:
 
 Sample `fetch` request:
 ```js
-await fetch("https://supinic.com/api/auth-test?auth_user=12345&auth_key=abcde");
+await fetch("https://supinic.com/api/test/auth?auth_user=12345&auth_key=abcde");
 ```

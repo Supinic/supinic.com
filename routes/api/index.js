@@ -11,6 +11,7 @@ module.exports = (function () {
 		["data", "data"],
 		["gachi", "gachi.js"],
 		["osrs", "osrs.js"],
+		["test", "test.js"],
 		["text-normalize", "text-normalize.js"],
 		["track", "track"],
 		["trackData", "trackData.js"],
