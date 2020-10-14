@@ -43,8 +43,6 @@ module.exports = (function () {
 		next();
 	});
 
-	Router.use("/", Express.static("../../apidocs/"));
-
 	/**
 	 * @api {get} /endpoints Endpoints - List
 	 * @apiName ListEndpoints

@@ -136,6 +136,7 @@
 		maxAge: "1 day",
 		lastModified: true
 	}));
+	app.use("/api", Express.static(__dirname + "/apidocs/"));
 
 	app.use(CacheController({
 		noCache: true
