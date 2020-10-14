@@ -17,7 +17,7 @@ module.exports = (function () {
 	];
 
 	// Rate limit for API endpoints
-	Router.use("/", RateLimiter({
+	Router.use("/*", RateLimiter({
 		max: 100,
 		windowMs: 60_000,
 		message: "Flood protection rate limit (100 requests/minute) exceeded!"
@@ -43,7 +43,7 @@ module.exports = (function () {
 		next();
 	});
 
-	Router.use("/", Express.static(`${__dirname}/apidocs/`));
+	Router.use("/", Express.static("../../apidocs/"));
 
 	/**
 	 * @api {get} /endpoints Endpoints - List
