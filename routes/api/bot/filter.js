@@ -16,7 +16,7 @@ module.exports = (function () {
 	 * @apiParam {number} userID Supibot user ID - mutually exclusive with username
 	 * @apiParam {number} commandID Supibot command ID
 	 * @apiSuccess {Object[]} filter List of filters
-	 * @apiSuccess {string} filter.type Opt-out, Blacklist, Whitelist, Block, Unping
+	 * @apiSuccess {string} filter.type Opt-out, Blacklist, Whitelist, Block, Unping, Unmention
 	 * @apiSuccess {string} filter.response Type of response the bot responds with when the filter is encountered.
 	 * @apiSuccess {string} [filter.reason] String of response
 	 * @apiSuccess {string} filter.created ISO date of filter creation
