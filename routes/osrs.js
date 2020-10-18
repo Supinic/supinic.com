@@ -9,7 +9,7 @@ module.exports = (function () {
 		const printData = rawData.map(row => {
 			const { afk, hourly } = row.data;
 			const hourlyExperience = Math.round(Object.values(hourly.out.experience)[0]);
-			const gpxp = sb.Utils.round((hourly.in.price ?? 0 - hourly.out.price ?? 0) / hourlyExperience, 2);
+			const gpxp = sb.Utils.round((hourly.out.price ?? 0 - hourly.in.price ?? 0) / hourlyExperience, 2);
 
 			return {
 				Name: row.name,
