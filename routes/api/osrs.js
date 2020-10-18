@@ -43,7 +43,14 @@ module.exports = (function () {
 
 		const result = {
 			ID: data.item.id,
-			price: data.item.current.price
+			rawPrice: data.item.current.price,
+			price: Number(
+				data.item.current.price
+					.replace(",", "")
+					.replace(/(.*)k$/, (total, price) => price * 1e3)
+					.replace(/(.*)m$/, (total, price) => price * 1e6)
+					.replace(/(.*)b$/, (total, price) => price * 1e9)
+			)
 		};
 
 		// Make sure to set the price data back to sb.Cache for later retrieval
