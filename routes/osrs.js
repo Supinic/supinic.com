@@ -12,7 +12,7 @@ module.exports = (function () {
 			const gpxp = sb.Utils.round((hourly.in.price ?? 0 - hourly.out.price ?? 0) / hourlyExperience, 2);
 
 			return {
-				Name: i.name,
+				Name: row.name,
 				"XP/hr": hourlyExperience,
 				"GP/XP": gpxp,
 				"Capital/hr": (hourly.in.price ?? 0),
