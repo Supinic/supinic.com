@@ -100,12 +100,17 @@ module.exports = (function () {
 				in: { price: 0 },
 				out: { price: 0, experience: {} }
 			},
-			ratio: null
+			ratio: null,
+			afk: {
+				true: 0,
+				false: 0
+			}
 		};
 
 		const { single, hourly } = result;
 		for (const item of data.process) {
 			single.ticks += item.ticks * item.amount;
+			result.afk[item.afk ?? true] += item.ticks * item.amount;
 		}
 
 		result.ratio = oneHourTicks / single.ticks;
@@ -140,7 +145,7 @@ module.exports = (function () {
 			ID: row.values.ID,
 			name: row.values.Name,
 			description: row.values.Description,
-			output: result,
+			data: result,
 			raw: data
 		};
 
@@ -223,7 +228,12 @@ module.exports = (function () {
 		);
 
 		const list = await Promise.all(IDs.map(i => fetchActivityData(i)));
-		return sb.WebUtils.apiSuccess(res, list);
+		if (list.some(i => i.success === false)) {
+			return sb.WebUtils.apiFail(res, item.statusCode, item.message);
+		}
+
+		const data = list.map(i => i.total);
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/activity/detail/:ID", async (req, res) => {
