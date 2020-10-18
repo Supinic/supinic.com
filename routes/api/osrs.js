@@ -27,7 +27,10 @@ module.exports = (function () {
 
 	const fetchItemPrice = async (ID) => {
 		// Check sb.Cache first
-		const cache = await sb.Cache.getByPrefix(itemCachePrefix, { ID });
+		const cache = await sb.Cache.getByPrefix(itemCachePrefix, {
+			keys: { ID }
+		});
+
 		if (cache) {
 			return cache.price;
 		}
@@ -64,7 +67,10 @@ module.exports = (function () {
 
 	const fetchActivityData = async (ID) => {
 		// Check sb.Cache first
-		const cache = await sb.Cache.getByPrefix(activityCachePrefix, { ID });
+		const cache = await sb.Cache.getByPrefix(activityCachePrefix, {
+			keys: { ID }
+		});
+
 		if (cache) {
 			return cache;
 		}
@@ -158,7 +164,7 @@ module.exports = (function () {
 
 		await sb.Cache.setByPrefix(activityCachePrefix, total, {
 			keys: { ID },
-			expiry: 3_600_000
+			expiry: 300_000
 		})
 
 		return { success: true, total };
