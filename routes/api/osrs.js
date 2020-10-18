@@ -36,12 +36,12 @@ module.exports = (function () {
 			url: "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
 			responseType: "json",
 			searchParams: new sb.URLParams()
-				.set("item", String(itemID))
+				.set("item", String(ID))
 				.toString()
 		});
 
 		const result = {
-			id: data.item.id,
+			ID: data.item.id,
 			price: data.item.current.price
 		};
 
@@ -144,7 +144,7 @@ module.exports = (function () {
 
 		const itemPriceData = await Promise.all([...itemIDs].map(itemID => fetchItemPrice(itemID)));
 		const itemPrices = Object.fromEntries(
-			itemPriceData.map(i => [i.item.id, i.item.current.price])
+			itemPriceData.map(i => [i.ID, i.price])
 		);
 
 		const result = {
