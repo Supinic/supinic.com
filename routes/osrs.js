@@ -8,8 +8,8 @@ module.exports = (function () {
 		const { data: rawData } = await sb.Got.instances.Supinic("/osrs/activity/list").json();
 		const printData = rawData.map(row => {
 			const { afk, hourly } = row.data;
-			const hourlyExperience = Math.round(Object.values(hourly.out.experience)[0]);
-			const gpxp = sb.Utils.round((hourly.out.price ?? 0 - hourly.in.price ?? 0) / hourlyExperience, 2);
+			const hourlyExperience = sb.Utils.round(Object.values(hourly.out.experience)[0], 0);
+			const gpxp = sb.Utils.round(((hourly.out.price ?? 0) - (hourly.in.price ?? 0)) / hourlyExperience, 2);
 
 			return {
 				Name: row.name,
@@ -17,12 +17,15 @@ module.exports = (function () {
 					dataOrder: hourlyExperience,
 					value: sb.Utils.groupDigits(hourlyExperience)
 				},
-				"GP/XP": gpxp,
+				"GP/XP": {
+					dataOrder: gpxp,
+					value: gpxp.toFixed(2)
+				},
 				"Capital/hr": {
 					dataOrder: (hourly.in.price ?? 0),
 					value: sb.Utils.groupDigits((hourly.in.price ?? 0))
 				},
-				"AFK %": sb.Utils.round(afk.true / (afk.true + afk.false) * 100, 2) + "%"
+				"AFK %": sb.Utils.round(afk.true / (afk.true + afk.false) * 100, 0) + "%"
 			}
 		});
 
