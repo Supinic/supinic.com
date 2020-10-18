@@ -13,10 +13,16 @@ module.exports = (function () {
 
 			return {
 				Name: row.name,
-				"XP/hr": hourlyExperience,
+				"XP/hr": {
+					dataOrder: hourlyExperience,
+					value: sb.Utils.groupDigits(hourlyExperience)
+				},
 				"GP/XP": gpxp,
-				"Capital/hr": (hourly.in.price ?? 0),
-				"AFK %": sb.Utils.round(afk.true / (afk.true + afk.false), 2) + "%"
+				"Capital/hr": {
+					dataOrder: (hourly.in.price ?? 0),
+					value: sb.Utils.groupDigits((hourly.in.price ?? 0))
+				},
+				"AFK %": sb.Utils.round(afk.true / (afk.true + afk.false) * 100, 2) + "%"
 			}
 		});
 
