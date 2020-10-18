@@ -193,7 +193,13 @@ module.exports = (function () {
 			}
 		}
 
-		return sb.WebUtils.apiSuccess(res, { ...result });
+		return sb.WebUtils.apiSuccess(res, {
+			ID: row.values.ID,
+			name: row.values.Name,
+			description: row.values.Description,
+			output: result,
+			raw: data
+		});
 	});
 
 	return Router;
