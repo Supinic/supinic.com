@@ -39,6 +39,7 @@
 		"cytube",
 		"data",
 		"gachi",
+		"osrs",
 		"rss",
 		"stream",
 		"teapot",
