@@ -16,6 +16,7 @@
 			"singletons/utils",
 			"singletons/internal-request",
 			"singletons/system-log",
+			"singletons/cache",
 
 			"classes/got",
 			"classes/user",
