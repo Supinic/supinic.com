@@ -219,6 +219,7 @@ module.exports = (function () {
 		const IDs = await sb.Query.getRecordset(rs => rs
 		    .select("ID")
 		    .from("osrs", "Activity")
+			.flat("ID")
 		);
 
 		const list = await IDs.map(i => fetchActivityData(i));
