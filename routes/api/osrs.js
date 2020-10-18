@@ -21,6 +21,38 @@ module.exports = (function () {
 		"The Corrupted Gauntlet", "Theatre of Blood", "Thermonuclear Smoke Devil", "TzKal-Zuk", "TzTok-Jad", "Venenatis",
 		"Vet'ion", "Vorkath", "Wintertodt", "Zalcano", "Zulrah"
 	];
+	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
+	const cachePrefix = "osrs-item-price";
+
+	const fetchItemPrice = async (ID) => {
+		// Check sb.Cache first
+		const cache = await sb.Cache.getByPrefix(cachePrefix, { ID });
+		if (cache) {
+			return cache.price;
+		}
+
+		// Fetch item price from OSRS API
+		const { body: data } = await sb.Got({
+			url: "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
+			responseType: "json",
+			searchParams: new sb.URLParams()
+				.set("item", String(itemID))
+				.toString()
+		});
+
+		const result = {
+			id: data.item.id,
+			price: data.item.current.price
+		};
+
+		// Make sure to set the price data back to sb.Cache for later retrieval
+		await sb.Cache.setByPrefix(cachePrefix, result, {
+			keys: { ID },
+			expiry: 3_600_000
+		});
+
+		return result;
+	}
 
 	Router.get("/lookup/:user", async (req, res) => {
 		const user = req.params.user.toLowerCase();
@@ -83,6 +115,85 @@ module.exports = (function () {
 		}
 
 		return sb.WebUtils.apiSuccess(res, result);
+	});
+
+	Router.get("/activity/detail/:ID", async (req, res) => {
+		const ID = Number(req.params.ID);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed activity ID");
+		}
+
+		const row = await sb.Query.getRow("osrs", "Activity");
+		await row.load(ID, true);
+		if (!row.loaded) {
+			return sb.WebUtils.apiFail(res, 404, "No activity found for given ID");
+		}
+
+		const data = {
+			in: JSON.parse(row.values.Input),
+			out: JSON.parse(row.values.Output),
+			process: JSON.parse(row.values.Process)
+		};
+
+		const itemIDs = new Set();
+		for (const item of [...data.in, ...data.out]) {
+			if (item.type === "item") {
+				itemIDs.add(item.ID);
+			}
+		}
+
+		const itemPriceData = await Promise.all([...itemIDs].map(itemID => fetchItemPrice(itemID)));
+		const itemPrices = Object.fromEntries(
+			itemPriceData.map(i => [i.item.id, i.item.current.price])
+		);
+
+		const result = {
+			single: {
+				in: { price: 0 },
+				out: { price: 0, experience: {} },
+				ticks: 0
+			},
+			hourly: {
+				in: { price: 0 },
+				out: { price: 0, experience: {} }
+			},
+			perHourRatio: null
+		};
+
+		const { single, hourly } = result;
+		for (const item of data.process) {
+			single.ticks += item.ticks * item.amount;
+		}
+
+		result.perHourRatio = oneHourTicks / single.ticks;
+
+		for (const item of data.in) {
+			const price = itemPrices[item.ID] * item.amount;
+			single.in.price += price;
+			hourly.in.price += price * result.perHourRatio;
+		}
+
+		for (const item of data.out) {
+			if (item.type === "item") {
+				const price = itemPrices[item.ID] * item.amount;
+				single.out.price += price;
+				hourly.out.price += price * result.perHourRatio;
+			}
+			else if (item.type === "experience") {
+				if (!single.out.experience[item.skill]) {
+					single.out.experience[item.skill] = 0;
+				}
+				if (!hourly.out.experience[item.skill]) {
+					hourly.out.experience[item.skill] = 0;
+				}
+
+				const experience = item.amount * (item.count ?? 1);
+				single.out.experience[item.skill] += experience;
+				hourly.out.experience[item.skill] += experience * result.perHourRatio;
+			}
+		}
+
+		return sb.WebUtils.apiSuccess(res, { ...result });
 	});
 
 	return Router;
