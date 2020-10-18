@@ -222,7 +222,7 @@ module.exports = (function () {
 			.flat("ID")
 		);
 
-		const list = await IDs.map(i => fetchActivityData(i));
+		const list = await Promise.all(IDs.map(i => fetchActivityData(i)));
 		return sb.WebUtils.apiSuccess(res, list);
 	});
 
