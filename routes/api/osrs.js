@@ -22,11 +22,12 @@ module.exports = (function () {
 		"Vet'ion", "Vorkath", "Wintertodt", "Zalcano", "Zulrah"
 	];
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
-	const cachePrefix = "osrs-item-price";
+	const itemCachePrefix = "osrs-item-price";
+	const activityCachePrefix = "osrs-activity";
 
 	const fetchItemPrice = async (ID) => {
 		// Check sb.Cache first
-		const cache = await sb.Cache.getByPrefix(cachePrefix, { ID });
+		const cache = await sb.Cache.getByPrefix(itemCachePrefix, { ID });
 		if (cache) {
 			return cache.price;
 		}
@@ -46,7 +47,7 @@ module.exports = (function () {
 		};
 
 		// Make sure to set the price data back to sb.Cache for later retrieval
-		await sb.Cache.setByPrefix(cachePrefix, result, {
+		await sb.Cache.setByPrefix(itemCachePrefix, result, {
 			keys: { ID },
 			expiry: 3_600_000
 		});
@@ -54,79 +55,21 @@ module.exports = (function () {
 		return result;
 	}
 
-	Router.get("/lookup/:user", async (req, res) => {
-		const user = req.params.user.toLowerCase();
-		const { statusCode, body: rawData } = await sb.Got({
-			throwHttpErrors: false,
-			url: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
-			searchParams: new sb.URLParams()
-				.set("player", user)
-				.toString()
-		});
-
-		if (statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, 404, "Player not found");
-		}
-
-		const data = rawData.split("\n").map(i => i.split(",").map(Number));
-		let index = 0;
-
-		const result = { skills: [], activities: [] };
-		for (const skill of skills) {
-			const [rank, level, experience] = data[index];
-			if (rank === -1) {
-				result.skills.push({
-					name: skill,
-					rank: null,
-					level: null,
-					experience: null
-				});
-			}
-			else {
-				result.skills.push({
-					name: skill,
-					rank,
-					level,
-					experience
-				});
-			}
-
-			index++;
-		}
-
-		for (const activity of activities) {
-			const [rank, value] = data[index];
-			if (rank === -1) {
-				result.activities.push({
-					name: activity,
-					rank: null,
-					value: null
-				});
-			}
-			else {
-				result.activities.push({
-					name: activity,
-					rank,
-					value
-				});
-			}
-
-			index++;
-		}
-
-		return sb.WebUtils.apiSuccess(res, result);
-	});
-
-	Router.get("/activity/detail/:ID", async (req, res) => {
-		const ID = Number(req.params.ID);
-		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed activity ID");
+	const fetchActivityData = async (ID) => {
+		// Check sb.Cache first
+		const cache = await sb.Cache.getByPrefix(activityCachePrefix, { ID });
+		if (cache) {
+			return cache;
 		}
 
 		const row = await sb.Query.getRow("osrs", "Activity");
 		await row.load(ID, true);
 		if (!row.loaded) {
-			return sb.WebUtils.apiFail(res, 404, "No activity found for given ID");
+			return {
+				success: false,
+				statusCode: 404,
+				reason: "No activity found for given ID"
+			};
 		}
 
 		const data = {
@@ -193,13 +136,107 @@ module.exports = (function () {
 			}
 		}
 
-		return sb.WebUtils.apiSuccess(res, {
+		const total = {
 			ID: row.values.ID,
 			name: row.values.Name,
 			description: row.values.Description,
 			output: result,
 			raw: data
+		};
+
+		await sb.Cache.setByPrefix(activityCachePrefix, total, {
+			keys: { ID },
+			expiry: 3_600_000
+		})
+
+		return { success: true, total };
+	}
+
+	Router.get("/lookup/:user", async (req, res) => {
+		const user = req.params.user.toLowerCase();
+		const { statusCode, body: rawData } = await sb.Got({
+			throwHttpErrors: false,
+			url: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
+			searchParams: new sb.URLParams()
+				.set("player", user)
+				.toString()
 		});
+
+		if (statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, 404, "Player not found");
+		}
+
+		const data = rawData.split("\n").map(i => i.split(",").map(Number));
+		let index = 0;
+
+		const result = { skills: [], activities: [] };
+		for (const skill of skills) {
+			const [rank, level, experience] = data[index];
+			if (rank === -1) {
+				result.skills.push({
+					name: skill,
+					rank: null,
+					level: null,
+					experience: null
+				});
+			}
+			else {
+				result.skills.push({
+					name: skill,
+					rank,
+					level,
+					experience
+				});
+			}
+
+			index++;
+		}
+
+		for (const activity of activities) {
+			const [rank, value] = data[index];
+			if (rank === -1) {
+				result.activities.push({
+					name: activity,
+					rank: null,
+					value: null
+				});
+			}
+			else {
+				result.activities.push({
+					name: activity,
+					rank,
+					value
+				});
+			}
+
+			index++;
+		}
+
+		return sb.WebUtils.apiSuccess(res, result);
+	});
+
+	Router.get("/activity/list", async (req, res) => {
+		const IDs = await sb.Query.getRecordset(rs => rs
+		    .select("ID")
+		    .from("osrs", "Activity")
+		);
+
+		const list = await IDs.map(i => fetchActivityData(i));
+		return sb.WebUtils.apiSuccess(res, list);
+	});
+
+	Router.get("/activity/detail/:ID", async (req, res) => {
+		const ID = Number(req.params.ID);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed activity ID");
+		}
+
+		const result = await fetchActivityData(ID);
+		if (result.success === false) {
+			return sb.WebUtils.apiFail(res, result.statusCode, result.message);
+		}
+
+		return sb.WebUtils.apiSuccess(res, result.total);
 	});
 
 	return Router;
