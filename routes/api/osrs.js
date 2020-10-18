@@ -157,7 +157,7 @@ module.exports = (function () {
 				in: { price: 0 },
 				out: { price: 0, experience: {} }
 			},
-			perHourRatio: null
+			ratio: null
 		};
 
 		const { single, hourly } = result;
@@ -165,19 +165,19 @@ module.exports = (function () {
 			single.ticks += item.ticks * item.amount;
 		}
 
-		result.perHourRatio = oneHourTicks / single.ticks;
+		result.ratio = oneHourTicks / single.ticks;
 
 		for (const item of data.in) {
 			const price = itemPrices[item.ID] * item.amount;
 			single.in.price += price;
-			hourly.in.price += price * result.perHourRatio;
+			hourly.in.price += price * result.ratio;
 		}
 
 		for (const item of data.out) {
 			if (item.type === "item") {
 				const price = itemPrices[item.ID] * item.amount;
 				single.out.price += price;
-				hourly.out.price += price * result.perHourRatio;
+				hourly.out.price += price * result.ratio;
 			}
 			else if (item.type === "experience") {
 				if (!single.out.experience[item.skill]) {
@@ -189,7 +189,7 @@ module.exports = (function () {
 
 				const experience = item.amount * (item.count ?? 1);
 				single.out.experience[item.skill] += experience;
-				hourly.out.experience[item.skill] += experience * result.perHourRatio;
+				hourly.out.experience[item.skill] += experience * result.ratio;
 			}
 		}
 
