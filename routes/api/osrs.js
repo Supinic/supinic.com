@@ -34,7 +34,7 @@ module.exports = (function () {
 
 		// Fetch item price from OSRS API
 		const { body: data } = await sb.Got({
-			url: "https://secure.   runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
+			url: "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
 			responseType: "json",
 			searchParams: new sb.URLParams()
 				.set("item", String(ID))
