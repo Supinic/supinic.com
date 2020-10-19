@@ -30,9 +30,8 @@ module.exports = (function () {
 		const cache = await sb.Cache.getByPrefix(itemCachePrefix, {
 			keys: { ID }
 		});
-
 		if (cache) {
-			return cache.price;
+			return cache;
 		}
 
 		// Fetch item price from OSRS API
@@ -72,7 +71,7 @@ module.exports = (function () {
 		});
 
 		if (cache) {
-			return cache;
+			return { success: true, total: cache };
 		}
 
 		const row = await sb.Query.getRow("osrs", "Activity");
