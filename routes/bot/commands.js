@@ -103,6 +103,9 @@ module.exports = (function () {
 					? `${value.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(value)})`
 					: "N/A";
 			}
+			else if (key === "Latest Commit" && value !== null) {
+				data[key] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
+			}
 			else if (key === "Aliases" && value !== null) {
 				data[key] = JSON.parse(value).join(", ");
 			}
