@@ -286,7 +286,7 @@ module.exports = (function () {
 						range.addEventListener("input", () => {
 							label.innerText = range.value;
 							
-							const pointsRestored = Math.floor(Number(range.value) * 4) + 7;	
+							const pointsRestored = Math.floor(Number(range.value) / 4) + 7;	
 							prayerLabel.innerText = pointsRestored;
 							restoreLabel.innerText = pointsRestored + 1;					
 							
