@@ -262,5 +262,68 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, result.total);
 	});
 
+	Router.get("/comparisons", async (req, res) => {
+		const [prayer, restore] = await Promise.all([
+			fetchItemPrice(2434),
+			fetchItemPrice(3024)
+		]);
+
+		res.render("generic", {
+			data: `
+				<script> 
+					function calc (type, level) {
+						if (type === "prayer") {
+							return Math.floor(level * 4) + 7;
+						}
+						else if (type === "restore") {
+							return Math.floor(level * 4) + 8;
+						}
+					}
+					
+					window.onload = () => {
+						const range = document.getElementById("prayer-level");
+						const prayerPrice = document.getElementById("prayer-point-price");
+						const restorePrice = document.getElementById("restore-point-price");
+						
+						range.addEventListener("input", () => {
+							prayerPrice.value = calc("prayer", Number(range.value));
+							restorePrice.value = calc("restore", Number(range.value));
+						});
+					};
+				</script>
+				
+				<div>
+					<input id="prayer-level" type="range" min="1" max="99" ">
+				</div>
+				
+				<br>
+				
+				<div>
+					<a href="//osrs.wiki/Prayer_potion">
+						<img alt="Prayer potion" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=2434">				
+					</a>
+					<div id="prayer-price">
+						${prayer.price} gp
+					</div>
+					<div id="prayer-point-price">
+						N/A
+					</div>
+				</div>
+				
+				<div>
+					<a href="//osrs.wiki/Super_restore">
+						<img alt="Super restore" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=3024">				
+					</a>
+					<div id="restore-price">
+						${restore.price} gp
+					</div>
+					<div id="restore-point-price">
+						N/A
+					</div>
+				</div>			
+			`
+		});
+	});
+
 	return Router;
 })();
