@@ -271,25 +271,35 @@ module.exports = (function () {
 		res.render("generic", {
 			data: `
 				<script> 
+					function round (number, places) {
+						return (Math.round(number * (10 ** places))) / (10 ** places);
+					}
+				
 					window.onload = () => {
 						const range = document.getElementById("prayer-level");
 						const label = document.getElementById("prayer-level-label");
+						const prayerLabel = document.getElementById("prayer-points");
+						const restoreLabel = document.getElementById("restore-points");
 						const prayerPrice = document.getElementById("prayer-points-price");
 						const restorePrice = document.getElementById("restore-points-price");
 						
 						range.addEventListener("input", () => {
 							label.innerText = range.value;
 							
-							const pointsRestored = Math.floor(Number(range.value) * 4) + 7;							
-							prayerPrice.innerText =  (${prayer.price} / 4 / pointsRestored);
-							restorePrice.innerText = (${prayer.price} / 4 / (pointsRestored + 1));
+							const pointsRestored = Math.floor(Number(range.value) * 4) + 7;	
+							prayerLabel.innerText = pointsRestored;
+							restoreLabel.innerText = pointsRestored + 1;					
+							
+							prayerPrice.innerText = round(${prayer.price} / 4 / pointsRestored, 2);
+							restorePrice.innerText = round(${prayer.price} / 4 / (pointsRestored + 1), 2);
 						});
 					};
 				</script>
 				
 				<div>
 					Your prayer level: <label id="prayer-level-label">1</label>
-					<input id="prayer-level" type="range" min="1" max="99" ">
+					<br>
+					<input id="prayer-level" type="range" min="1" max="99">
 				</div>
 				
 				<br>
@@ -308,7 +318,7 @@ module.exports = (function () {
 						<img alt="Super restore" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=3024">				
 					</a>
 					<span id="restore-price">costs ${restore.price} gp</span>
-					<span>restores <span id="restore-points">7</span> prayer points</span>
+					<span>restores <span id="restore-points">8</span> prayer points</span>
 					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
 				</div>			
 			`
