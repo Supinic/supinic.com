@@ -271,28 +271,24 @@ module.exports = (function () {
 		res.render("generic", {
 			data: `
 				<script> 
-					function calc (type, level) {
-						if (type === "prayer") {
-							return Math.floor(level * 4) + 7;
-						}
-						else if (type === "restore") {
-							return Math.floor(level * 4) + 8;
-						}
-					}
-					
 					window.onload = () => {
 						const range = document.getElementById("prayer-level");
-						const prayerPrice = document.getElementById("prayer-point-price");
-						const restorePrice = document.getElementById("restore-point-price");
+						const label = document.getElementById("prayer-level-label");
+						const prayerPrice = document.getElementById("prayer-points-price");
+						const restorePrice = document.getElementById("restore-points-price");
 						
 						range.addEventListener("input", () => {
-							prayerPrice.value = calc("prayer", Number(range.value));
-							restorePrice.value = calc("restore", Number(range.value));
+							label.innerText = range.value;
+							
+							const pointsRestored = Math.floor(Number(range.value) * 4) + 7;							
+							prayerPrice.innerText =  (${prayer.price} / 4 / pointsRestored);
+							restorePrice.innerText = (${prayer.price} / 4 / (pointsRestored + 1));
 						});
 					};
 				</script>
 				
 				<div>
+					Your prayer level: <label id="prayer-level-label">1</label>
 					<input id="prayer-level" type="range" min="1" max="99" ">
 				</div>
 				
@@ -302,24 +298,18 @@ module.exports = (function () {
 					<a href="//osrs.wiki/Prayer_potion">
 						<img alt="Prayer potion" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=2434">				
 					</a>
-					<div id="prayer-price">
-						${prayer.price} gp
-					</div>
-					<div id="prayer-point-price">
-						N/A
-					</div>
+					<span id="prayer-price">costs ${prayer.price} gp</span>
+					<span>restores <span id="prayer-points">7</span> prayer points</span>
+					<span>costs <span id="prayer-points-price">N/A</span> gp per point</span>
 				</div>
 				
 				<div>
 					<a href="//osrs.wiki/Super_restore">
 						<img alt="Super restore" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=3024">				
 					</a>
-					<div id="restore-price">
-						${restore.price} gp
-					</div>
-					<div id="restore-point-price">
-						N/A
-					</div>
+					<span id="restore-price">costs ${restore.price} gp</span>
+					<span>restores <span id="restore-points">7</span> prayer points</span>
+					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
 				</div>			
 			`
 		});
