@@ -226,8 +226,13 @@ module.exports = class WebUtils {
 				break;
 			}
 
+			case "channel": {
+				params = new sb.URLParams().set("type", "reload").set("module", "channel");
+				break;
+			}
+
 			case "reminder": {
-				params = new sb.URLParams() .set("type", "reload").set("module", "reminder");
+				params = new sb.URLParams().set("type", "reload").set("module", "reminder");
 				break;
 			}
 
