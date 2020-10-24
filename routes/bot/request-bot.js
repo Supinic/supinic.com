@@ -50,6 +50,11 @@ module.exports = (function () {
 					name: "Description",
 					type: "memo",
 					placeholder: "Short description on why you'd like the bot added 😊"
+				},
+				{
+					id: "rename",
+					name: "Rename",
+					type: "checkbox"
 				}
 			],
 			script: sb.Utils.tag.trim `
@@ -59,15 +64,30 @@ module.exports = (function () {
 					
 					const channelElement = document.getElementById("channel-name");
 					const descriptionElement = document.getElementById("description");	
+					const renameElement = document.getElementById("rename");
+					
+					let body;
+					if (renameElement.value === true) {
+						body = {
+							renamedChannel: channelElement.value,
+							targetChannel: null,
+							description: null
+						};
+					}
+					else {
+						body = {
+							targetChannel: channelElement.value,
+							renamedChannel: null,
+							description: descriptionElement.value || null
+						};
+					}				
+					
 					const response = await fetch("/api/bot/request-bot/", {
 						method: "POST",
 						headers: {
 						    "Content-Type": "application/json"
 						},
-						body: JSON.stringify({
-							targetChannel: channelElement.value,
-							description: descriptionElement.value || null
-						})
+						body: JSON.stringify(body)
 					});
 					
 					const json = await response.json();
@@ -79,11 +99,16 @@ module.exports = (function () {
 					button.disabled = false;
 					
 					if (response.status === 200) {
-						const ID = json.data.suggestionID;
-						const link = "/data/suggestion/" + ID;
-						alerter.innerHTML = "Success 🙂<hr>Your suggestion can be found here: <a href=" + link + ">" + ID + "</a>"; 
+						if (renameElement.value === true) {
+							alerter.innerHTML = "Success 🙂<hr>Bot has been added to your current channel, and removed from the old one.";							
+						}
+						else {							
+							const ID = json.data.suggestionID;
+							const link = "/data/suggestion/" + ID;
+							alerter.innerHTML = "Success 🙂<hr>Your suggestion can be found here: <a href=" + link + ">" + ID + "</a>";
+						}
+							
 						alerter.classList.add("alert-success");
-						
 						const formWrapper = document.getElementById("form-wrapper");
 						formWrapper.hidden = true;
 					}

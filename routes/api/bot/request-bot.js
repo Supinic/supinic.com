@@ -14,9 +14,52 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 401, "Not logged in");
 		}
 
-		const { description, targetChannel } = req.body;
-		if (!targetChannel) {
-			return sb.WebUtils.apiFail(res, 400, "No target channel provided");
+		const { description, renamedChannel, targetChannel } = req.body;
+		if (!targetChannel && !renamedChannel) {
+			return sb.WebUtils.apiFail(res, 400, "No target or rename channel provided");
+		}
+
+		if (renamedChannel) {
+			const userData = await sb.User.get(userID);
+			const renamed = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
+			if (!renamed) {
+				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
+			}
+			else if (renamed.Mode === "Inactive") {
+				return sb.WebUtils.apiFail(res, 400, "Provided channel has already been deactivated");
+			}
+
+			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
+			const previousChannelID = renamed.Specific_ID;
+			if (currentChannelID !== previousChannelID) {
+				return sb.WebUtils.apiFail(res, 400, "Renaming verification did not pass");
+			}
+
+			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
+			await renamedRow.load(renamed.ID);
+			renamedRow.values.Mode = "Inactive";
+			await renamedRow.save();
+
+			const newRow = await sb.Query.getRow("chat_data", "Channel");
+			newRow.setValues({
+				Name: userData.Name,
+				Platform: 1,
+				Specific_ID: currentChannelID,
+				Mode: "Write"
+			});
+			await newRow.save();
+
+			await sb.WebUtils.invalidateBotCache({ type: "channel" });
+			await sb.InternalRequest.send({
+				type: "join-channel",
+				platform: "twitch",
+				channel: userData.Name
+			});
+
+			return sb.WebUtils.apiSuccess(res, {
+				success: true,
+				suggestionID: null
+			});
 		}
 
 		const exists = await Channel.selectSingleCustom(rs => rs
@@ -26,7 +69,7 @@ module.exports = (function () {
 
 		if (exists) {
 			if (exists.Mode === "Inactive") {
-				return sb.WebUtils.apiFail(res, 400, "The bot has been removed from target channel. Contact Supinic to resolve this.");
+				return sb.WebUtils.apiFail(res, 400, "The bot has been removed from target channel, contact Supinic to resolve this");
 			}
 			else {
 				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
