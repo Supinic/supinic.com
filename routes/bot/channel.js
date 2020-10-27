@@ -109,10 +109,6 @@ module.exports = (function () {
 			Throughput.lastMonth(channelData.ID)
 		]);
 
-		if (typeof sb.App.cache.channelActivity[channelID] === "undefined") {
-			sb.App.cache.channelActivity[channelID] = lastMonthData;
-		}
-
 		let hourData = [];
 		let dayLabels = [];
 		let dayData = [];
