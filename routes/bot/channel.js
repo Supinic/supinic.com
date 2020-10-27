@@ -104,28 +104,18 @@ module.exports = (function () {
 		}
 
 		const channelData = channelRow.valuesObject;
-		if (typeof sb.App.cache.channelActivity === "undefined") {
-			sb.App.cache.channelActivity = {};
-		}
-
-		const [lastHourData, lastDayData, lastMonthData] = await Promise.all([
-			Throughput.lastHour(channelData.ID),
+		const [lastDayData, lastMonthData] = await Promise.all([
 			Throughput.lastDay(channelData.ID),
-			(async () => sb.App.cache.channelActivity[channelID] ?? await Throughput.lastMonth(channelData.ID))()
+			Throughput.lastMonth(channelData.ID)
 		]);
 
 		if (typeof sb.App.cache.channelActivity[channelID] === "undefined") {
 			sb.App.cache.channelActivity[channelID] = lastMonthData;
 		}
 
-		let minuteData = [];
 		let hourData = [];
 		let dayLabels = [];
 		let dayData = [];
-
-		for (const row of lastHourData) {
-			minuteData.push(Number(row.Amount));
-		}
 
 		for (const row of lastDayData) {
 			hourData.push(Number(row.Amount));
@@ -137,8 +127,7 @@ module.exports = (function () {
 		}
 
 		res.render("channel-activity", {
-			title: `Activity - Channel ${channelData.ID} - Supibot`,
-			minuteData: JSON.stringify(minuteData),
+			title: `Activity - Channel ${channelData.ID}`,
 			hourData: JSON.stringify(hourData),
 			dayData: JSON.stringify(dayData),
 			dayLabels: JSON.stringify(dayLabels),

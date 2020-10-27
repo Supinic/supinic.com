@@ -8,16 +8,8 @@ html
 		script(src="/public/js/Chart.js")
 		script.
 			const zf2 = (number) => ("00" + number).slice(-2);
+			const now = new Date();
 
-			let now = new Date();
-			now.setMinutes(now.getMinutes() - 1);
-			const minutes = Array(60).fill(0).map(() => {
-				let val = zf2(now.getHours()) + ":" + zf2(now.getMinutes());
-				now.setMinutes(now.getMinutes() - 1);
-				return val;
-			}).reverse();
-
-			now = new Date();
 			const hours = Array(25).fill(0).map(() => {
 				let val = zf2(now.getHours()) + ":00";
 				now.setHours(now.getHours() - 1);
@@ -64,20 +56,6 @@ html
 							}
 						}]
 					}
-				});
-
-				new Chart(document.getElementById("minute-chart").getContext("2d"), {
-					type: "line",
-					data: {
-						labels: minutes,
-						datasets: [{
-							label: "!{table}",
-							backgroundColor: "rgba(0, 0, 0, 0)",
-							borderColor: "rgb(200, 0, 0)",
-							data: !{minuteData}
-						}]
-					},
-					options: config("Messages per minute")
 				});
 
 				new Chart(document.getElementById("hour-chart").getContext("2d"), {
