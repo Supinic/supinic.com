@@ -16,8 +16,10 @@ module.exports = (function () {
 		</ol>
 		<h6>Warning</h6>
 		<div>The bot will not be added immediately! I evaluate the requests manually. It usually happens within one to seven days from the request.</div>
+		<br>
 		<h6>Rename</h6>
 		<div>If you changed your name, request the bot again, but this time, check the Rename checkbox, and fill in your previous channel name. You can leave the description blank. Supibot should immediately join your renamed channel if it can verify that it is still you.</div>
+		<br>
 	`;
 
 	Router.get("/form", async (req, res) => {
