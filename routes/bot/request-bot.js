@@ -60,6 +60,28 @@ module.exports = (function () {
 				}
 			],
 			script: sb.Utils.tag.trim `
+				let renameMode = false;	
+				window.onload = async () => {
+					const checkbox = document.getElementById("rename");
+					const descriptionMemo = document.getElementById("description");
+					const descriptionPlaceholder = descriptionMemo.placeholder;
+					const channelLabel = document.querySelector("[for='Channel name']");
+					
+					checkbox.addEventListener("click", () => {
+						renameMode = !renameMode;
+						if (renameMode) {
+							descriptionMemo.disabled = true;
+							descriptionMemo.placeholder = "";
+							channelLabel.innerText = "Previous channel name";
+						}
+						else {							
+							descriptionMemo.disabled = false;
+							descriptionMemo.placeholder = descriptionPlaceholder;
+							channelLabel.innerText = "Channel name";
+						}
+					});
+				};
+
 				async function submit (element) {
 					if (renameMode === false) {
 						const result = confirm("By proceeding, you accept the rules and agree to conform by them.");
