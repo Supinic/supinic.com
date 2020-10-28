@@ -61,6 +61,13 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim `
 				async function submit (element) {
+					if (renameMode === false) {
+						const result = confirm("By proceeding, you accept the rules and agree to conform by them.");
+						if (!result) {
+							return;
+						}
+					}
+					
 					const button = document.getElementById("submit-button");
 					button.disabled = true;
 					
