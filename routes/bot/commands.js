@@ -199,6 +199,10 @@ module.exports = (function () {
 			}
 		}).filter(Boolean).join("<br>") || "N/A";
 
+		if (data.Flags.includes("whitelist")) {
+			data.Restrictions = `<b>Only available for these combinations:</b><br><br>${data.Restrictions}`;
+		}
+
 		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
 
 		res.render("generic-detail-table", { data });
