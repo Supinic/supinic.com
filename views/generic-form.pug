@@ -9,8 +9,8 @@ html
             window.addEventListener("DOMContentLoaded", () => {
                 const button = document.getElementById("submit-button");
                 document.addEventListener("keydown", (evt) => {
-                    if (evt.code === "Enter") {
-                    	button.click();
+                    if (evt.key === "Enter") {
+                        button.click();
                     }
                 });
             });
