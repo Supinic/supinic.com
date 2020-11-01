@@ -5,6 +5,16 @@ html
         include ./header.pug
         include ./datatables.pug
 
+        script.
+            window.addEventListener("DOMContentLoaded", () => {
+                const button = document.getElementById("submit-button");
+                document.addEventListener("keydown", (evt) => {
+                    if (evt.code === "Enter") {
+                    	button.click();
+                    }
+                });
+            });
+
         style(type="text/css").
             input, textarea {
                 background-color: rgb(24, 26, 27) !important;
