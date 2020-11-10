@@ -92,10 +92,11 @@ module.exports = (function () {
 
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
+			Text: `Channel: ${targetChannel}\nRequested by: ${userData.Name}\nDescription: ${description ?? "N/A"}`,
 			Category: "Bot addition",
-			Notes: "Requested via website",
-			Priority: 255,
-			Text: `Channel: ${targetChannel}, requested by: ${userData.Name}, description: ${description ?? "N/A"}`
+			Status: "Approved",
+			Priority: 100,
+			Notes: "Requested via website form"
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
