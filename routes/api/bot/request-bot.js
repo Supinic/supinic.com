@@ -28,6 +28,9 @@ module.exports = (function () {
 			else if (renamed.Mode === "Inactive") {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel has already been deactivated");
 			}
+			else if (renamed.Name === userData.Name) {
+				return sb.WebUtils.apiFail(res, 400, "Provided channel is the same as the current one");
+			}
 
 			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
 			const previousChannelID = renamed.Specific_ID;
