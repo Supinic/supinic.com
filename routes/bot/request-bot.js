@@ -145,6 +145,10 @@ module.exports = (function () {
 						const formWrapper = document.getElementById("form-wrapper");
 						formWrapper.hidden = true;
 					}
+					else if (response.status === 500) {
+						alerter.classList.add("alert-danger");
+						alerter.innerHTML = "Internal server error occured!";
+					}
 					else {
 						alerter.classList.add("alert-danger");
 						alerter.innerHTML = json.error.message;
