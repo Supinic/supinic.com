@@ -90,6 +90,16 @@ module.exports = (function () {
 			}
 		}
 
+		const requestPending = await Suggestion.existsCustom(q => q
+			.where("Category = %s", "Bot addition")
+			.where("Status = %s", "Approved")
+			.where("Text %like*", `Channel: ${targetChannel}`)
+		);
+
+		if (requestPending) {
+			return sb.WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
+		}
+
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
 			Text: `Channel: ${targetChannel}\nRequested by: ${userData.Name}\nDescription: ${description ?? "N/A"}`,
