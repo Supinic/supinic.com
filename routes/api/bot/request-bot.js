@@ -43,15 +43,6 @@ module.exports = (function () {
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			const newRow = await sb.Query.getRow("chat_data", "Channel");
-			newRow.setValues({
-				Name: userData.Name,
-				Platform: 1,
-				Specific_ID: currentChannelID,
-				Mode: "Write"
-			});
-			await newRow.save();
-
 			await sb.WebUtils.invalidateBotCache({ type: "channel" });
 			await sb.InternalRequest.send({
 				type: "join-channel",
