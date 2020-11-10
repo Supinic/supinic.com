@@ -100,7 +100,7 @@ module.exports = (function () {
 					const renameElement = document.getElementById("rename");
 					
 					let body;
-					if (renameElement.value === true) {
+					if (renameMode === true) {
 						body = {
 							renamedChannel: channelElement.value,
 							targetChannel: null,
