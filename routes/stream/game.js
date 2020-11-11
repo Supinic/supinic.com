@@ -15,7 +15,7 @@ module.exports = (function () {
 			Status: game.Status,
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
-				value: game.Released ?? "N/A"
+				value: (game.Released) ? new sb.Date(game.Released).format("Y-m-d") : "N/A"
 			},
 			Notes: game.Notes ?? "N/A"
 		}));
