@@ -205,7 +205,10 @@ module.exports = (function () {
 
 		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
 
-		res.render("generic-detail-table", { data });
+		res.render("generic-detail-table", {
+			data,
+			title: `Command detail - ${data.Name}`
+		});
 	});
 
 	Router.get("/:id/code", async (req, res) => {
