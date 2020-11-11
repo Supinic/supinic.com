@@ -232,6 +232,7 @@
 				{ name: "Cytube history", link: "cytube/video-request/history" },
 				{ name: "TTS voices", link: "stream/tts" },
 				{ name: "Playsounds", link: "stream/playsound/list" },
+				{ name: "Stream games", link: "stream/game/list" },
 				{ name: "Video request queue", link: "stream/song-request/queue" },
 				{ name: "Video request history", link: "stream/song-request/history" }
 			]

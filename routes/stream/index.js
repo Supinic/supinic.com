@@ -4,6 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 	const subroutes = [
+		["game", "game.js"],
 		["tts", "tts.js"],
 		["playsound", "playsound.js"],
 		["song-request", "song-request.js"]
