@@ -24,7 +24,8 @@ module.exports = (function () {
 			title: "Supi's stream games",
 			data: printData,
 			head: Object.keys(printData[0]),
-			pageLength: 50
+			pageLength: 25,
+			specificFiltering: true
 		});
 	});
 
