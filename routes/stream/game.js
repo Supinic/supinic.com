@@ -83,7 +83,7 @@ module.exports = (function () {
 		const games = await Game.selectAll();
 
 		const printData = games.map(game => ({
-			Name: `<a href="/stream/game/detail/${game.Name.replace(/\s+/, "_")}">${game.Name}</a>`,
+			Name: `<a href="/stream/game/detail/${game.Name.replace(/\s+/g, "_")}">${game.Name}</a>`,
 			Status: game.Status,
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
