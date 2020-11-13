@@ -7,17 +7,33 @@ module.exports = (function () {
 
 	const Game = require("../../modules/stream/game.js");
 
+	Router.get("/detail/:game", async (req, res) => {
+		const game = Game.selectSingleCustom(q => q
+			.where("Name = %s", req.params.game)
+		);
+
+		if (!game) {
+			return res.status(404).render("error", {
+				error: "404 Not Found",
+				message: "No game found"
+			});
+		}
+
+		res.render("generic-detail-table", {
+			data: game
+		});
+	});
+
 	Router.get("/list", async (req, res) => {
 		const games = await Game.selectAll();
 
 		const printData = games.map(game => ({
-			Name: game.Name,
+			Name: `<a href="/stream/game/detail/${game.Name}">${game.Name}</a>`,
 			Status: game.Status,
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
-				value: (game.Released) ? new sb.Date(game.Released).format("Y-m-d") : "N/A"
-			},
-			Notes: game.Notes ?? "N/A"
+				value: (game.Released) ? new sb.Date(game.Released).format("Y") : "N/A"
+			}
 		}));
 
 		res.render("generic-list-table", {
