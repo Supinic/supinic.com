@@ -9,7 +9,9 @@ module.exports = (function () {
 				.from("stream", "Game_Comment")
 				.join({
 					toDatabase: "chat_data",
-					toTable: "User_Alias"
+					toTable: "User_Alias",
+					fromField: "User_Alias",
+					toField: "ID"
 				})
 			    .from("stream", "Game_Comment")
 				.where("Game = %s", gameIdentifier)
@@ -26,7 +28,6 @@ module.exports = (function () {
 					toTable: "Stream",
 					on: "Stream_Game.Stream = Stream.Video_ID"
 				})
-				.from("stream", "Game_Comment")
 				.where("Game = %s", gameIdentifier)
 			);
 		}
