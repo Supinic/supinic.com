@@ -9,19 +9,73 @@ module.exports = (function () {
 
 	Router.get("/detail/:game", async (req, res) => {
 		const identifier = req.params.game.replace(/_/g, " ");
-		const game = await Game.selectSingleCustom(q => q
+		const gameData = await Game.selectSingleCustom(q => q
 			.where("Name = %s", identifier)
 		);
 
-		if (!game) {
+		if (!gameData) {
 			return res.status(404).render("error", {
 				error: "404 Not Found",
 				message: "No game found"
 			});
 		}
 
+		const printData = {};
+		for (const [rawKey, value] of Object.entries(gameData)) {
+			const key = sb.Utils.capitaliize(rawKey.replace(/_/g, " "));
+
+			if (key === "Released") {
+				printData[key] = (value === null)
+					? "N/A"
+					: new sb.Date(value).format("Y-m-d");
+			}
+			else if (key === "Notes") {
+				printData[key] = (value === null)
+					? "N/A"
+					: value
+			}
+			else {
+				printData[key] = value;
+			}
+		}
+
+		const [comments, streams] = await Promise.all([
+			Game.getComments(gameData.Name),
+			Game.getStreams(gameData.Name)
+		]);
+
+		const commentRows = comments.map(i => `<tr><td>${i.Created}</td><td>${i.Username}</td><td>${i.Text}</td></tr>`);
+		printData.Comments = sb.Utils.tag.trim `
+			<table>
+				<thead>
+					<th>Date</th>
+					<th>Username</th>
+					<th>Text</th>
+				</thead>
+				<tbody>
+					${commentRows}
+				</tbody>
+			</table>		
+		`;
+
+		const streamsRows = streams.map(i => {
+			const link = `<a href="//twitch.tv/videos/${i.Stream_ID}?t=${i.Timestamp}s">${i.Stream_ID}</a>`;
+			return `<tr><td>${link}</td><td>${i.Notes}</td></tr>`;
+		});
+		printData.Streams = sb.Utils.tag.trim `
+			<table>
+				<thead>
+					<th>VOD</th>
+					<th>Notes</th>
+				</thead>
+				<tbody>
+					${streamsRows}
+				</tbody>
+			</table>		
+		`;
+
 		res.render("generic-detail-table", {
-			data: game
+			data: printData
 		});
 	});
 
