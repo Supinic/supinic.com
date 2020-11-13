@@ -77,7 +77,10 @@ module.exports = (function () {
 		`;
 
 		res.render("generic-detail-table", {
-			extraCSS: `table#streams th#video-id { min-width: 70px }`,
+			extraCSS: sb.Utils.tag.trim `
+				table#streams th#video-id { min-width: 70px; }
+				table#streams th#date { min-width: 70px; }
+			`,
 			data: printData
 		});
 	});
