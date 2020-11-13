@@ -24,6 +24,15 @@ html
                 padding: 10px 40px 0 40px !important;
             }
 
+        - if (typeof extraScript !== "undefined") {
+            script.
+                !{extraScript}
+        - }
+        - if (typeof extraCSS !== "undefined") {
+            style(type="text/css").
+                !{extraCSS}
+        - }
+
         include ./navigation.pug
     body
         block navigation
