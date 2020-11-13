@@ -46,7 +46,7 @@ module.exports = (function () {
 
 		const commentRows = comments.map(i => `<tr><td>${i.Created}</td><td>${i.Username}</td><td>${i.Text}</td></tr>`);
 		printData.Comments = sb.Utils.tag.trim `
-			<table>
+			<table id="comments">
 				<thead>
 					<th>Date</th>
 					<th>Username</th>
@@ -63,10 +63,10 @@ module.exports = (function () {
 			return `<tr><td>${link}</td><td>${i.Notes}</td></tr>`;
 		});
 		printData.Streams = sb.Utils.tag.trim `
-			<table>
+			<table id="streams">
 				<thead>
-					<th>VOD</th>
-					<th>Notes</th>
+					<th id="video-id">VOD</th>
+					<th id="notes">Notes</th>
 				</thead>
 				<tbody>
 					${streamsRows}
@@ -75,6 +75,7 @@ module.exports = (function () {
 		`;
 
 		res.render("generic-detail-table", {
+			extraCSS: `table#streams th#video-id { min-width: 70px }`,
 			data: printData
 		});
 	});
