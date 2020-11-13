@@ -22,7 +22,7 @@ module.exports = (function () {
 
 		const printData = {};
 		for (const [rawKey, value] of Object.entries(gameData)) {
-			const key = sb.Utils.capitaliize(rawKey.replace(/_/g, " "));
+			const key = sb.Utils.capitalize(rawKey.replace(/_/g, " "));
 
 			if (key === "Released") {
 				printData[key] = (value === null)
