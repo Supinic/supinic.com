@@ -59,8 +59,9 @@ module.exports = (function () {
 		`;
 
 		const streamsRows = streams.map(i => {
+			const date = new sb.Date(i.Date).format("Y-m-d");
 			const link = `<a href="//twitch.tv/videos/${i.Stream_ID}?t=${i.Timestamp}s">${i.Stream_ID}</a>`;
-			return `<tr><td>${link}</td><td>${i.Notes}</td></tr>`;
+			return `<tr><td>${date}</td><td>${link}</td><td>${i.Notes}</td></tr>`;
 		});
 		printData.Streams = sb.Utils.tag.trim `
 			<table id="streams">
