@@ -8,8 +8,9 @@ module.exports = (function () {
 	const Game = require("../../modules/stream/game.js");
 
 	Router.get("/detail/:game", async (req, res) => {
-		const game = Game.selectSingleCustom(q => q
-			.where("Name = %s", req.params.game)
+		const identifier = req.params.game.replace(/_/g, " ");
+		const game = await Game.selectSingleCustom(q => q
+			.where("Name = %s", identifier)
 		);
 
 		if (!game) {
@@ -28,7 +29,7 @@ module.exports = (function () {
 		const games = await Game.selectAll();
 
 		const printData = games.map(game => ({
-			Name: `<a href="/stream/game/detail/${game.Name}">${game.Name}</a>`,
+			Name: `<a href="/stream/game/detail/${game.Name.replace(/\s+/, "_")}">${game.Name}</a>`,
 			Status: game.Status,
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
