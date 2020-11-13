@@ -66,6 +66,7 @@ module.exports = (function () {
 		printData.Streams = sb.Utils.tag.trim `
 			<table id="streams">
 				<thead>
+					<th id="date">Date</th>
 					<th id="video-id">VOD</th>
 					<th id="notes">Notes</th>
 				</thead>
