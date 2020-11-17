@@ -24,6 +24,15 @@ module.exports = (function () {
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 	const itemCachePrefix = "osrs-item-price";
 	const activityCachePrefix = "osrs-activity";
+	const account = {
+		main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
+		seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.ws",
+		ironman: {
+			regular: "https://secure.runescape.com/m=hiscore_oldschool_ironman/index_lite.ws?",
+			hardcore: "https://secure.runescape.com/m=hiscore_oldschool_hardcore_ironman/index_lite.ws",
+			ultimate: "https://secure.runescape.com/m=hiscore_oldschool_ultimate/index_lite.ws"
+		}
+	};
 
 	const fetchItemPrice = async (ID) => {
 		// Check sb.Cache first
@@ -171,22 +180,56 @@ module.exports = (function () {
 
 	Router.get("/lookup/:user", async (req, res) => {
 		const user = req.params.user.toLowerCase();
+		const url = (req.query.seasonal) ? account.seasonal : account.main;
+		const result = {
+			skills: [],
+			activities: [],
+			seasonal: Boolean(req.query.seasonal),
+			ironman: {
+				regular: false,
+				hardcore: false,
+				ultimate: false
+			}
+		};
+
 		const { statusCode, body: rawData } = await sb.Got({
+			url,
 			throwHttpErrors: false,
-			url: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
 			searchParams: new sb.URLParams()
 				.set("player", user)
 				.toString()
 		});
 
 		if (statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, 404, "Player not found");
+			if (statusCode === 404) {
+				return sb.WebUtils.apiFail(res, 404, "Player not found");
+			}
+			else {
+				return sb.WebUtils.apiFail(res, statusCode, "OSRS API error encountered");
+			}
+		}
+
+		if (!result.seasonal) {
+			const types = ["regular", "hardcore", "ultimate"];
+			for (const type of types) {
+				const { statusCode } = await sb.Got({
+					url: account[type],
+					throwHttpErrors: false,
+					searchParams: new sb.URLParams()
+						.set("player", user)
+						.toString()
+				});
+
+				if (statusCode !== 404) {
+					result.ironman[type] = true;
+					break;
+				}
+			}
 		}
 
 		const data = rawData.split("\n").map(i => i.split(",").map(Number));
 		let index = 0;
 
-		const result = { skills: [], activities: [] };
 		for (const skill of skills) {
 			const [rank, level, experience] = data[index];
 			if (rank === -1) {
