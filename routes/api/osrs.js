@@ -213,7 +213,7 @@ module.exports = (function () {
 			const types = ["regular", "hardcore", "ultimate"];
 			for (const type of types) {
 				const { statusCode } = await sb.Got({
-					url: account[type],
+					url: account.ironman[type],
 					throwHttpErrors: false,
 					searchParams: new sb.URLParams()
 						.set("player", user)
