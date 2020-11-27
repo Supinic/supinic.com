@@ -69,11 +69,12 @@ module.exports = (function () {
 			if (key === "Dynamic Description") {
 				if (value) {
 					const values = { ...rawData.valuesObject };
+					const fakeCommand = {
+						ID: values.ID,
+						getCacheKey: () => sb.Command.prototype.getCacheKey.apply(fakeCommand)
+					};
 
-					values.getCacheData = sb.Command.prototype.getCacheData.bind({
-						getCacheKey: () => sb.Command.getCacheKey(values.ID)
-					});
-
+					values.getCacheData = sb.Command.prototype.getCacheData.bind(fakeCommand);
 					values.getStaticData = function () {
 						this.data = {};
 						const resolver = eval(this.Static_Data);
