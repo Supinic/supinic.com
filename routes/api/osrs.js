@@ -210,7 +210,9 @@ module.exports = (function () {
 		}
 
 		if (!result.seasonal) {
-			const types = ["regular", "hardcore", "ultimate"];
+			// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
+			// and both hardcore and regular if the account is a HCIM. That's why this
+			const types = ["ultimate", "hardcore", "regular"];
 			for (const type of types) {
 				const { statusCode } = await sb.Got({
 					url: account.ironman[type],
