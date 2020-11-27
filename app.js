@@ -21,10 +21,12 @@
 			"classes/got",
 			"classes/user",
 			"classes/cron",
+			"classes/command",
 			"classes/reminder"
 		],
 
 		skipData: [
+			"classes/command",
 			"classes/reminder"
 		]
 	});
