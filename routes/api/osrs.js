@@ -192,7 +192,7 @@ module.exports = (function () {
 			}
 		};
 
-		const { statusCode, body: rawData } = await sb.Got({
+		const response = await sb.Got({
 			url,
 			throwHttpErrors: false,
 			searchParams: new sb.URLParams()
@@ -200,8 +200,8 @@ module.exports = (function () {
 				.toString()
 		});
 
-		if (statusCode !== 200) {
-			if (statusCode === 404) {
+		if (response.statusCode !== 200) {
+			if (response.statusCode === 404) {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
 			}
 			else {
@@ -209,12 +209,13 @@ module.exports = (function () {
 			}
 		}
 
+		let rawData = response.body;
 		if (!result.seasonal) {
 			// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
 			// and both hardcore and regular if the account is a HCIM. That's why this
 			const types = ["ultimate", "hardcore", "regular"];
 			for (const type of types) {
-				const { statusCode } = await sb.Got({
+				const { statusCode, body } = await sb.Got({
 					url: account.ironman[type],
 					throwHttpErrors: false,
 					searchParams: new sb.URLParams()
@@ -223,6 +224,7 @@ module.exports = (function () {
 				});
 
 				if (statusCode !== 404) {
+					rawData = body;
 					result.ironman[type] = true;
 					break;
 				}
