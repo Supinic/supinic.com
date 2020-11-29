@@ -2,7 +2,6 @@ module.exports = (function () {
 	"use strict";
 
 	const TemplateModule = require("../template.js");
-	const UserAlias = require("../chat-data/user-alias.js");
 	const TrackAuthor = require("./track-author.js");
 	const Alias = require("./alias.js");
 
@@ -84,14 +83,6 @@ module.exports = (function () {
 					? i.Prefix.replace("$", i.Identifier)
 					: null
 			}));
-
-			if (row.values.User_Alias) {
-				const userRow = await UserAlias.getRow(row.values.User_Alias);
-				data.User_Alias = {
-					ID: userRow.values.ID,
-					Name: userRow.values.Name
-				};
-			}
 
 			return data;
 		}
