@@ -24,12 +24,7 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const data = await Author.list();
-
-		res.type("application/json")
-			.status(200)
-			.send(JSON.stringify({
-				statusCode: 200, data: sb.Utils.convertCaseObject(data, "snake", "camel")
-			}));
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -88,35 +83,17 @@ module.exports = (function () {
 	 * @apiSuccess {string} tracks.published Track publish date as ISO string
 	 */
 	Router.get("/:id", async (req, res) => {
-		const id = Number(req.params.id);
-		if (!id) {
-			return res.type("application/json")
-				.status(500)
-				.send(JSON.stringify({ statusCode: 500, error: "No ID provided" }));
+		const ID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "No ID provided");
 		}
 
-		let authorData = null;
-		try {
-			authorData = await Author.get(id);
-		}
-		catch (e) {
-			console.error(e);
-			return res.type("application/json")
-				.status(500)
-				.send(JSON.stringify({ statusCode: 500, error: "Cannot load ID" }));
-		}
-
+		const authorData = await Author.get(ID);
 		if (!authorData) {
-			return res.type("application/json")
-				.status(500)
-				.send(JSON.stringify({ statusCode: 500, error: "No data for given ID" }));
+			return sb.WebUtils.apiFail(res, 404, "Author ID does not exist");
 		}
 
-		res.type("application/json")
-			.status(200)
-			.send(JSON.stringify({
-				statusCode: 200, data: sb.Utils.convertCaseObject(authorData, "snake", "camel")
-			}));
+		return sb.WebUtils.apiSuccess(res, authorData);
 	});
 
 	return Router;
