@@ -76,8 +76,9 @@ module.exports = (function () {
 			);
 
 			data.Contacts = contactData.map(i => ({
-				identifier: i.Identifier,
-				name: i.Display_Name ?? null,
+				Name: i.Display_Name ?? i.Identifier,
+				Display_Name: i.Display_Name,
+				Ideentifier: i.Identifier,
 				link: (i.Prefix)
 					? i.Prefix.replace("$", i.Identifier)
 					: null
