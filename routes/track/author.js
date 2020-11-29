@@ -32,40 +32,20 @@ module.exports = (function () {
 	Router.get("/:id", async (req, res) => {
 		const authorID = Number(req.params.id);
 		const { data } = await sb.Got.instances.Supinic("track/author/" + authorID).json();
-
-		let youtubeRefer = "N/A";
-		if (data.youtubeChannelID) {
-			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/channel/${data.youtubeChannelID}">${data.youtubeName}</a>`;
-		}
-		else if (data.youtubeUserID) {
-			youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/user/${data.youtubeUserID}">${data.youtubeName}</a>`;
-		}
+		const contactData = data.contacts.map(i => (
+			`<li>${i.website}: <a target="_blank" rel="noopener noreferrer" href="${i.link}">${i.name}</a></li>`
+		));
 
 		const printData = {
 			Name: data.name,
-			"Also known as": data.aliases
+			"Also known as": (data.aliases.length > 0)
 				? data.aliases.join("<br>")
 				: "N/A",
-			Country: (data.country)
-				? data.country
+			Country: (data.country) ?? "N/A",
+			Contacts: (contactData.length > 0)
+				? `<ul>${contactData.join("")}</ul>`
 				: "N/A",
-			Bilibili: (data.bilibiliID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//space.bilibili.com/${data.bilibiliID}">${data.bilibiliID}</a>`
-				: "N/A",
-			Nicovideo: (data.nicovideoID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//nicovideo.jp/user/${data.nicovideoID}">${data.nicovideoID}</a>`
-				: "N/A",
-			Soundcloud: (data.soundcloudID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//soundcloud.com/${data.soundcloudID}">${data.soundcloudID}</a>`
-				: "N/A",
-			Twitter: (data.twitterID)
-				? `<a target="_blank" rel="noopener noreferrer" href="//www.twitter.com/${data.twitterID}">${data.twitterID}</a>`
-				: "N/A",
-			Twitch: (data.userAlias)
-				? `<a target="_blank" rel="noopener noreferrer" href="//twitch.tv/${data.userAlias.name}">${data.userAlias.name}</a>`
-				: "N/A",
-			Youtube: youtubeRefer,
-			Notes: data.notes || "N/A",
+			Notes: data.notes ?? "N/A",
 			Tracks: [
 				"<table id='authorTracks'>",
 				"<thead><tr><th>Track</th><th>Role</th><th>Published</th></tr></thead>",
