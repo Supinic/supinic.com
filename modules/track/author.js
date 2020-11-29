@@ -66,7 +66,7 @@ module.exports = (function () {
 
 			const contactData = await sb.Query.getRecordset(rs => rs
 				.select("Identifier", "Display_Name")
-				.select("Website.Link_Prefix AS Prefix")
+				.select("Website.Name AS Website", "Website.Link_Prefix AS Prefix")
 				.from("music", "Author_Website")
 				.join({
 					toTable: "Website",
@@ -76,6 +76,7 @@ module.exports = (function () {
 			);
 
 			data.Contacts = contactData.map(i => ({
+				Website: i.Website,
 				Name: i.Display_Name ?? i.Identifier,
 				Display_Name: i.Display_Name,
 				Identifier: i.Identifier,
