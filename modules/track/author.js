@@ -64,6 +64,25 @@ module.exports = (function () {
 				.where("Author = %n", ID)
 			);
 
+			const contactData = await sb.Query.getRecordset(rs => rs
+				.select("Identifier", "Display_Name")
+				.select("Website.Link_Prefix AS Prefix")
+				.from("music", "Author_Website")
+				.join({
+					toTable: "Website",
+					on: "Author_Website.Website = Website.Name"
+				})
+				.where("Author_Website.Author = %n", ID)
+			);
+
+			data.Contacts = contactData.map(i => ({
+				identifier: i.Identifier,
+				name: i.Display_Name ?? null,
+				link: (i.Prefix)
+					? i.Prefix.replace("$", i.Identifier)
+					: null
+			}));
+
 			if (row.values.User_Alias) {
 				const userRow = await UserAlias.getRow(row.values.User_Alias);
 				data.User_Alias = {
