@@ -9,7 +9,7 @@ module.exports = (function () {
 			activeChannels,
 			totalUsers,
 			activeUsers,
-			{ Bytes: chatLineSize, Lines: chatLines },
+			{ Bytes: chatLineSize, Line_Count: chatLines },
 			commands,
 			totalAFKs,
 			activeAFKs,
@@ -33,15 +33,15 @@ module.exports = (function () {
 			sb.Cache.getKeysByPrefix("sb-user-*", {}),
 			sb.Query.getRecordset(rs => rs
 				.select("(SUM(DATA_LENGTH) + SUM(INDEX_LENGTH)) AS Bytes")
-				.select("SUM(AUTO_INCREMENT) AS Lines")
+				.select("SUM(AUTO_INCREMENT) AS Line_Count")
 				.from("INFORMATION_SCHEMA", "TABLES")
 				.where("TABLE_SCHEMA = %s", "chat_line")
 				.single()
 			),
 			sb.Query.getRecordset(rs => rs
 				.select("COUNT(*) AS Total")
-				.from("INFORMATION_SCHEMA", "TABLES")
-				.where("Flags NOT LIKE %*like*", "archived")
+				.from("chat_data", "Command")
+				.where("Flags NOT %*like*", "archived")
 				.single()
 				.flat("Total")
 			),
@@ -86,7 +86,7 @@ module.exports = (function () {
 			},
 			users: {
 				active: activeUsers,
-				total: totalUsers
+				total: totalUsers.length
 			},
 			chatLines: {
 				size: chatLineSize,
