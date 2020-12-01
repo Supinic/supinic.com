@@ -20,10 +20,17 @@ module.exports = (function () {
 
 		const printData = {};
 		for (const [topKey, topValue] of Object.entries(data)) {
-			const prettyKey = topKey.split(/(?=[A-Z])/).join(" ").toLowerCase();
+			const prettyKey = sb.Utils.capitailze(topKey.split(/(?=[A-Z])/).join(" "));
 			for (const [subKey, subValue] of Object.entries(topValue)) {
-				const prettySubKey = sb.Utils.capitalize(subKey);
-				printData[`${prettySubKey} ${prettyKey}`] = subValue;
+				const prettySubKey = subKey.toLowerCase();
+				const resultKey = `${prettyKey} - ${prettySubKey}`;
+
+				if (topKey === "chatLines" && subKey === "size") {
+					printData[resultKey] = sb.Utils.formatByteSize(subValue);
+				}
+				else {
+					printData[resultKey] = sb.Utils.groupDigits(subValue);
+				}
 			}
 		}
 

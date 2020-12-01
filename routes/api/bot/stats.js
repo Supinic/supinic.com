@@ -85,8 +85,8 @@ module.exports = (function () {
 				active: activeChannels
 			},
 			users: {
-				active: activeUsers,
-				total: totalUsers.length
+				active: activeUsers.length,
+				total: totalUsers
 			},
 			chatLines: {
 				size: chatLineSize,
