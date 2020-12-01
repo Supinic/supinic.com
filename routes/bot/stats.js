@@ -25,7 +25,7 @@ module.exports = (function () {
 				const prettySubKey = subKey.toLowerCase();
 				const resultKey = `${prettyKey} - ${prettySubKey}`;
 
-				if (topKey === "chatLines" && subKey === "size") {
+				if (topKey === "chatlines" && subKey === "size") {
 					printData[resultKey] = sb.Utils.formatByteSize(subValue);
 				}
 				else {
