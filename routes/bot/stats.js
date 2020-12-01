@@ -10,7 +10,9 @@ module.exports = (function () {
 	Router.get("/", async (req, res) => {
 		let data = await sb.Cache.getByPrefix(cachePrefix);
 		if (!data) {
-			data = await sb.Got("Supinic", "bot/stats").json();
+			const apiData = await sb.Got("Supinic", "bot/stats").json();
+
+			data = apiData.data;
 			await sb.Cache.setByPrefix(cachePrefix, data, {
 				expiry: 600_000
 			});
