@@ -20,7 +20,7 @@ module.exports = (function () {
 
 		const printData = {};
 		for (const [topKey, topValue] of Object.entries(data)) {
-			const prettyKey = sb.Utils.capitailze(topKey.split(/(?=[A-Z])/).join(" "));
+			const prettyKey = sb.Utils.capitalize(topKey.split(/(?=[A-Z])/).join(" "));
 			for (const [subKey, subValue] of Object.entries(topValue)) {
 				const prettySubKey = subKey.toLowerCase();
 				const resultKey = `${prettyKey} - ${prettySubKey}`;
