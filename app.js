@@ -200,6 +200,8 @@
 				{ name: "Emote origins", link: "data/origin/list" },
 				{ name: "Slots winners list", link: "bot/slots-winner/list" },
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
+				{ separator: true },
+				{ name: "Bot statistics", link: "bot/stats" }
 			]
 		},
 		{

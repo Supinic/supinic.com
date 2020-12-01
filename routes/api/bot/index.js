@@ -12,6 +12,7 @@ module.exports = (function () {
 		["playsound", "playsound.js"],
 		["reminder", "reminder.js"],
 		["request-bot", "request-bot.js"],
+		["stats", "stats.js"],
 		["song-request", "song-request.js"],
 		["text-to-speech", "tts.js"],
 		["top-chatters", "top-chatters.js"],
