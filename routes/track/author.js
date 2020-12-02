@@ -4,21 +4,14 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/", async (req, res) => {
+	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "track/author/list").json();
 		const printData = data.map(row => {
-			let youtubeRefer = "N/A";
-			if (row.youtubeChannelID) {
-				youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/channel/${row.youtubeChannelID}">${row.youtubeName}</a>`;
-			}
-			else if (row.youtubeUserID) {
-				youtubeRefer = `<a target="_blank" rel="noopener noreferrer" href="//www.youtube.com/user/${row.youtubeUserID}">${row.youtubeName}</a>`;
-			}
-
 			return {
-				Detail: `<a target="_blank" href="/track/author/${row.ID}">${row.name}</a>`,
-				Youtube: youtubeRefer,
-				Country: row.country || "N/A"
+				Name: `<a target="_blank" href="/track/author/${row.ID}">${row.name}</a>`,
+				Aliases: (row.aliases.length > 0)
+					? row.aliases.join(", ")
+					: "N/A"
 			};
 		});
 
@@ -31,6 +24,13 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const authorID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(authorID)) {
+			return res.status(404).render("error", {
+				error: "404 Not Found",
+				message: "Invalid ID"
+			});
+		}
+
 		const { data } = await sb.Got("Supinic", "track/author/" + authorID).json();
 		const contactData = data.contacts.map(i => (
 			`<li>${i.website}: <a target="_blank" rel="noopener noreferrer" href="${i.link}">${i.name}</a></li>`
