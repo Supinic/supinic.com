@@ -15,7 +15,7 @@ module.exports = (function () {
 				<br>
 				Bots can gain <a href="/bot/channel-bots/levels">levels</a> and <a href="/bot/channel-bots/badges">badges</a>.<br> 
 				Levels represent basic functionality, and gaining a level requires achieving all previous levels.<br>
-				Badges are like achievments - they are voluntary, but the present little challenges for bot creators.<br>
+				Badges are like achievements - they are voluntary, but the present little challenges for bot creators.<br>
 				<br>
 				If you would like to enter the bot creators program, you can use the $suggest command in any channel that has Supibot.<br>
 				Alternatively, you can enter <a href="//twitch.tv/supinic">Supinic's Twitch channel</a> and mention your idea to the chatters and discuss it.
@@ -24,7 +24,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/list", async (req, res) => {
-		const { data: {bots, badges} } = await sb.Got.instances.Supinic("bot-program/bot/list").json();
+		const { data: {bots, badges} } = await sb.Got("Supinic", "bot-program/bot/list").json();
 		const printData = bots.map(bot => {
 			const botBadges = bot.badges.map(row => {
 				const badge = badges.find(i => i.ID === row.ID);

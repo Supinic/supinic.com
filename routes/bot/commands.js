@@ -10,7 +10,7 @@ module.exports = (function () {
 	const Filter = require("../../modules/chat-data/filter.js");
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("bot/command/list").json();
+		const { data } = await sb.Got("Supinic", "bot/command/list").json();
 
 		const isDeveloper = Boolean(res.locals.authUser?.userData.Data.developer);
 		const printData = data.filter(i => isDeveloper || !i.flags.includes("developer"))

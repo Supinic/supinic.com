@@ -6,7 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data: rawData } = await sb.Got.instances.Supinic("/data/slots-winner/list").json();
+		const { data: rawData } = await sb.Got("Supinic", "/data/slots-winner/list").json();
 
 		const data = rawData.sort((a, b) => b.odds - a.odds).map(i => ({
 			"Odds - 1:X" : sb.Utils.round(i.odds, 3),

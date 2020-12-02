@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/video-request/history", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("cytube/video-request/history").json();
+		const { data } = await sb.Got("Supinic", "cytube/video-request/history").json();
 		const printData = data.map(i => ({
 			ID: i.ID,
 			Link: `<a href="${i.fullLink}">${i.link}</a>`,

@@ -31,7 +31,7 @@ module.exports = (function () {
 	}));
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("data/suggestion/list").json();
+		const { data } = await sb.Got("Supinic", "data/suggestion/list").json();
 		const printData = prettifyData(data);
 
 		res.render("generic-list-table", {
@@ -93,7 +93,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic(`data/suggestion/${suggestionID}`).json();
+		const { data } = await sb.Got("Supinic", `data/suggestion/${suggestionID}`).json();
 		if (!data) {
 			return res.status(404).render("error", {
 				error: "404 Not found",

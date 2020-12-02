@@ -65,7 +65,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic("track/favourite/list").json();
+		const { data } = await sb.Got("Supinic", "track/favourite/list").json();
 		return prettify(res, data, userID);
 	});
 
@@ -78,7 +78,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic("track/favourite/list").json();
+		const { data } = await sb.Got("Supinic", "track/favourite/list").json();
 		return prettify(res, data, userID);
 	});
 

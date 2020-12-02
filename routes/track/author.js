@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("track/author/list").json();
+		const { data } = await sb.Got("Supinic", "track/author/list").json();
 		const printData = data.map(row => {
 			let youtubeRefer = "N/A";
 			if (row.youtubeChannelID) {
@@ -31,7 +31,7 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const authorID = Number(req.params.id);
-		const { data } = await sb.Got.instances.Supinic("track/author/" + authorID).json();
+		const { data } = await sb.Got("Supinic", "track/author/" + authorID).json();
 		const contactData = data.contacts.map(i => (
 			`<li>${i.website}: <a target="_blank" rel="noopener noreferrer" href="${i.link}">${i.name}</a></li>`
 		));

@@ -37,7 +37,7 @@ module.exports = (function () {
 			searchParams.set("checkUserIDFavourite", String(userID));
 		}
 
-		const { data: raw } = await sb.Got.instances.Supinic({
+		const { data: raw } = await sb.Got("Supinic", {
 			url: "track/search",
 			searchParams: searchParams.toString()
 		}).json();
@@ -168,7 +168,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic("track/resolve/" + ID).json();
+		const { data } = await sb.Got("Supinic", "track/resolve/" + ID).json();
 		if (!data.link) {
 			return res.status(404).render("error", {
 				error: "404 Not found",

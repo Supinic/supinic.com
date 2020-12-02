@@ -6,7 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("data/tts/google/list").json();
+		const { data } = await sb.Got("Supinic", "data/tts/google/list").json();
 		const renderData = data.map(i => ({
 			Language: i.language,
 			Locale: i.locale,
@@ -30,7 +30,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/streamelements/list", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("data/tts/streamelements/list").json();
+		const { data } = await sb.Got("Supinic", "data/tts/streamelements/list").json();
 		const renderData = data.map(i => ({
 			Name: i.name,
 			Language: i.lang,

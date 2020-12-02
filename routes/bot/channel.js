@@ -9,7 +9,7 @@ module.exports = (function () {
 	const Throughput = require("../../modules/messages.js");
 
 	Router.get("/list", async (req, res) => {
-		const { data: rawData } = await sb.Got.instances.Supinic("bot/channel/list").json();
+		const { data: rawData } = await sb.Got("Supinic", "bot/channel/list").json();
 
 		// Use all non-Discord channels, and only show Discord channels with a description
 		// Those who aren't are most likely inactive.
@@ -140,7 +140,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got.instances.Supinic(`/bot/filter/channel/${channelID}/list`).json();
+		const { data } = await sb.Got("Supinic", `/bot/filter/channel/${channelID}/list`).json();
 		const printData = data.map(i => ({
 			ID: i.ID,
 			User: i.userName ?? "(all)",

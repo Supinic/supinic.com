@@ -76,7 +76,7 @@ module.exports = (function () {
 		const userData = await sb.User.get(userID);
 		if (userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got.instances.Leppunen("twitch/modsvips/" + escapedChannel).json();
+			const { mods } = await sb.Got("Leppunen", "twitch/modsvips/" + escapedChannel).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {

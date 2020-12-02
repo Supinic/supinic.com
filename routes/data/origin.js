@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got.instances.Supinic("/data/origin/list").json();
+		const { data } = await sb.Got("Supinic", "/data/origin/list").json();
 		const renderData = data.map(i => ({
 			Emote: i.name,
 			Text: i.text

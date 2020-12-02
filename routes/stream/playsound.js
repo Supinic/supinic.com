@@ -6,7 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data: { playsounds } } = await sb.Got.instances.Supinic("bot/playsound/list").json();
+		const { data: { playsounds } } = await sb.Got("Supinic", "bot/playsound/list").json();
 
 		const data = playsounds.map(i => ({
 			Name: i.name,
