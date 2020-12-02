@@ -8,10 +8,11 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "track/author/list").json();
 		const printData = data.map(row => {
 			return {
-				Name: `<a target="_blank" href="/track/author/${row.ID}">${row.name}</a>`,
+				Name: row.name,
 				Aliases: (row.aliases.length > 0)
 					? row.aliases.join(", ")
-					: "N/A"
+					: "N/A",
+				ID: `<a target="_blank" href="/track/author/${row.ID}">${row.ID}</a>`
 			};
 		});
 
