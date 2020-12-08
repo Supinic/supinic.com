@@ -6,6 +6,33 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const cachePrefix = "web/routes/bot/stats";
+	const stringMap = {
+		channels: {
+			active: "Channels Supibot is active in"
+		},
+		users: {
+			active: "Active users in all channels Supibot is in",
+			total: "Total users Supibot encountered so far"
+		},
+		chatLines: {
+			size: "Size the chat line logs take up",
+			total: "Total amount of saved chat lines"
+		},
+		commands: {
+			active: "Amount of commands used since last restart"
+		},
+		afk: {
+			active: "Amount of currently AFK users",
+			total: "Total amount of AFK statuses set overall"
+		},
+		reminders: {
+			active: "Currently pending reminders",
+			total: "Total amount of reminders set overall"
+		},
+		filters: {
+			active: "Amount of bans from Supibot commands, and other filters"
+		}
+	};
 
 	Router.get("/", async (req, res) => {
 		let data = await sb.Cache.getByPrefix(cachePrefix);
@@ -20,10 +47,8 @@ module.exports = (function () {
 
 		const printData = {};
 		for (const [topKey, topValue] of Object.entries(data)) {
-			const prettyKey = sb.Utils.capitalize(topKey.split(/(?=[A-Z])/).join(" "));
 			for (const [subKey, subValue] of Object.entries(topValue)) {
-				const prettySubKey = subKey.toLowerCase();
-				const resultKey = `${prettyKey} - ${prettySubKey}`;
+				const resultKey = stringMap[topKey][subKey];
 
 				if (topKey === "chatlines" && subKey === "size") {
 					printData[resultKey] = sb.Utils.formatByteSize(subValue);
