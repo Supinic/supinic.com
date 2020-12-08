@@ -13,7 +13,9 @@ module.exports = (function () {
 			: "N/A",
 		Status: i.status,
 		Priority: {
-			value: i.priority ?? "N/A",
+			value: (i.priority === 255)
+				? "Not checked"
+				: (i.priority ?? "N/A"),
 			dataOrder: (i.priority === null)
 				? -1
 				: i.priority
