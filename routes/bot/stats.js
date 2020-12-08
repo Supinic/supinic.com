@@ -14,7 +14,7 @@ module.exports = (function () {
 			active: "Active users in all channels Supibot is in",
 			total: "Total users Supibot encountered so far"
 		},
-		chatLines: {
+		chatlines: {
 			size: "Size the chat line logs take up",
 			total: "Total amount of saved chat lines"
 		},
