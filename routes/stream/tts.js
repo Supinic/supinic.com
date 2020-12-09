@@ -15,7 +15,7 @@ module.exports = (function () {
 				<audio class="preview" style="height:30px; text-align: center;" controls preload="none">
 					<source
 						type="audio/mp3"
-						src="https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&ttsspeed=1&q=This+is+a+sample+message&textlen=24&tl=${i.locale}"
+						src="https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&ttspeed=1&q=This+is+a+sample+message&textlen=24&tl=${i.locale}"
 				    >
 				</audio>`
 		}));
