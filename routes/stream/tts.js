@@ -12,12 +12,14 @@ module.exports = (function () {
 			Locale: i.locale,
 			Code: i.code,
 			Sample: sb.Utils.tag.trim `
-				<audio class="preview" style="height:30px; text-align: center;" controls preload="none">
-					<source
-						type="audio/mp3"
-						src="https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&ttspeed=1&q=This+is+a+sample+message&textlen=24&tl=${i.locale}"
-				    >
-				</audio>`
+				<a 
+					href="https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&client=tw-ob&prev=input&ttspeed=1&q=This+is+a+sample+message&textlen=24&tl=${i.locale}"
+					rel="noopener noreferrer"
+					target="_href"
+			    >
+			    Play sample
+			    </a>
+			`
 		}));
 
 		res.render("generic-list-table", {
