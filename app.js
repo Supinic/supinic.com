@@ -8,6 +8,7 @@
 		whitelist: [
 			"objects/date",
 			"objects/error",
+			"objects/errors",
 			"objects/promise",
 			"objects/url-params",
 
