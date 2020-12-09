@@ -82,7 +82,7 @@ module.exports = (function () {
 			ID: trackData.ID,
 			Name: trackData.name || "N/A",
 			Aliases: trackData.aliases.join("<br>") || "N/A",
-			Link: `<a href='${trackData.parsedLink}' rel="noopener noreferrer" target="_blank">${trackData.parsedLink}</a>`,
+			Link: `<a href="${trackData.parsedLink}" rel="noopener noreferrer" target="_blank">${trackData.parsedLink}</a>`,
 			"Track type": trackData.trackType || "Unknown",
 			Duration: trackData.duration || "N/A",
 			Favourites: trackData.favourites,
