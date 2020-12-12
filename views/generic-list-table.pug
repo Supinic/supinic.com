@@ -14,6 +14,9 @@ html
 		- if (typeof specificFiltering === "undefined") {
 		-	specificFiltering = false;
 		- }
+		- if (typeof head === "undefined") {
+		-    head = [];
+		- }
 
 		- if (typeof extraScript !== "undefined") {
 			script.
