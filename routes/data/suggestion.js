@@ -6,6 +6,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const columnList = ["Author", "Text", "Status", "Priority", "Update", "ID"];
 	const prettifyData = (data) => data.map(i => ({
 		Author: i.userName,
 		Text: (i.text)
@@ -38,7 +39,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: printData,
-			head: Object.keys(printData[0]),
+			head: columnList,
 			pageLength: 25,
 			sortColumn: 5,
 			sortDirection: "desc",
@@ -81,7 +82,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: data,
-			head: Object.keys(data[0]),
+			head: ["Status", "Count", "% total", "% yours"],
 			pageLength: 25
 		});
 	});
