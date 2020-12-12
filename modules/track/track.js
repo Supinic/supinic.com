@@ -131,6 +131,7 @@ module.exports = (function () {
 
 			data.Related_Tracks = (await Promise.all([
 				sb.Query.getRecordset(rs => rs
+					.select("Notes")
 					.select("LOWER(Relationship) AS Relationship")
 					.select("Track_From AS From_ID")
 					.select("Target.ID AS To_ID", "Target.Name AS Name")
@@ -141,6 +142,7 @@ module.exports = (function () {
 					.where("Track_From = %n", ID)
 				),
 				sb.Query.getRecordset(rs => rs
+					.select("Notes")
 					.select("LOWER(Relationship) AS Relationship")
 					.select("Track_To AS To_ID")
 					.select("Target.ID AS From_ID", "Target.Name AS Name")
