@@ -44,11 +44,12 @@ module.exports = (function () {
 			await renamedRow.save();
 
 			await sb.WebUtils.invalidateBotCache({ type: "channel" });
-			await sb.InternalRequest.send({
-				type: "join-channel",
-				platform: "twitch",
-				channel: userData.Name
-			});
+			await sb.InternalRequest.send(new sb.URLParams()
+				.set("type", "join-channel")
+				.set("platform", "twitch")
+				.set("channel", userData.Name)
+				.toString()
+			);
 
 			return sb.WebUtils.apiSuccess(res, {
 				success: true,
