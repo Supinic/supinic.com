@@ -48,7 +48,6 @@ module.exports = (function () {
 				.set("type", "join-channel")
 				.set("platform", "twitch")
 				.set("channel", userData.Name)
-				.toString()
 			);
 
 			return sb.WebUtils.apiSuccess(res, {
