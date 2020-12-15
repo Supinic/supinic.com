@@ -6,6 +6,7 @@ module.exports = (function () {
 
 	const subroutes = [
 		["corona", "corona.js"],
+		["faq", "faq.js"],
 		["origin", "origin.js"],
 		["slots-winner", "slots-winner.js"],
 		["suggestion", "suggestion.js"],
