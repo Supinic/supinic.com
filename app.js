@@ -193,6 +193,7 @@
 		{
 			name: "Supibot",
 			items: [
+				{ name: "FAQ", link: "data/faq/list" },
 				{ name: "Request Supibot", link: "bot/request-bot/form" },
 				{ separator: true },
 				{ name: "Channel list", link: "bot/channel/list" },
