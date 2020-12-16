@@ -7,9 +7,17 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "bot/cookie/list").json();
+		const printData = data.map(i => ({
+			User: i.user,
+			Total: i.total,
+			Daily: i.daily,
+			Gifted: i.gifted,
+			Received: i.received
+		}));
+
 		res.render("generic-list-table", {
-			data: data,
-			head: Object.keys(data[0]),
+			data: printData,
+			head: Object.keys(printData[0]),
 			pageLength: 100
 		});
 	});
