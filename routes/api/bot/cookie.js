@@ -86,7 +86,9 @@ module.exports = (function () {
 			};
 		});
 
-		sb.WebUtils.apiSuccess(res, data);
+		// Only return users that have at least eaten, received or gifted a single cookie.
+		const filteredData = data.filter(i => (i.Total !== 0 || i.Gifted !== 0 || i.Received !== 0));
+		sb.WebUtils.apiSuccess(res, filteredData);
 	});
 
 	return Router;
