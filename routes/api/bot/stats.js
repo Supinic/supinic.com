@@ -4,7 +4,14 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const cacheKey = "website-bot-stats";
+
 	Router.get("/", async (req, res) => {
+		const cacheData = await sb.Cache.getByPrefix(cacheKey);
+		if (cacheData) {
+			return sb.WebUtils.apiSuccess(res, cacheData);
+		}
+
 		const [
 			activeChannels,
 			totalUsers,
@@ -107,6 +114,10 @@ module.exports = (function () {
 				active: activeFilters
 			}
 		};
+		await sb.Cache.setByPrefix(cacheKey, data, {
+			expiry: 3_600_000
+		});
+
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
