@@ -115,7 +115,7 @@ module.exports = (function () {
 			}
 		};
 		await sb.Cache.setByPrefix(cacheKey, data, {
-			expiry: 86e5
+			expiry: 3_600_000
 		});
 
 		return sb.WebUtils.apiSuccess(res, data);
