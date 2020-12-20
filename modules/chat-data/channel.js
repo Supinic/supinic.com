@@ -1,7 +1,7 @@
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
-	const cacheKey = "website-bot-stats";
+	const cacheKey = "website-channel-lines";
 
 	class Channel extends TemplateModule {
 		static async list () {
