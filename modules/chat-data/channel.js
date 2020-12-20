@@ -1,6 +1,8 @@
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
+	const cacheKey = "website-bot-stats";
+
 	class Channel extends TemplateModule {
 		static async list () {
 			const [channels, informationSchema] = await Promise.all([
@@ -15,13 +17,7 @@ module.exports = (function () {
 					.where("Mode <> %s", "Inactive")
 					.orderBy("Name ASC")
 				),
-				sb.Query.getRecordset(rs => rs
-					.select("TABLE_NAME AS Channel")
-					.select("(DATA_LENGTH + INDEX_LENGTH) AS Byte_Length")
-					.select("AUTO_INCREMENT AS Max_ID")
-					.from("INFORMATION_SCHEMA", "TABLES")
-					.where("TABLE_SCHEMA = %s", "chat_line")
-				)
+				Channel.getLinesCache()
 			]);
 
 			return channels.map(channel => {
@@ -39,6 +35,27 @@ module.exports = (function () {
 
 				return channel;
 			}).filter(Boolean);
+		}
+
+		static async getLinesCache () {
+			const cacheData = await sb.Cache.getByPrefix(cacheKey);
+			if (cacheData) {
+				return cacheData;
+			}
+
+			const data = await sb.Query.getRecordset(rs => rs
+				.select("TABLE_NAME AS Channel")
+				.select("(DATA_LENGTH + INDEX_LENGTH) AS Byte_Length")
+				.select("AUTO_INCREMENT AS Max_ID")
+				.from("INFORMATION_SCHEMA", "TABLES")
+				.where("TABLE_SCHEMA = %s", "chat_line")
+			)
+
+			await sb.Cache.setByPrefix(cacheKey, data, {
+				expiry: 3_600_000
+			});
+
+			return data;
 		}
 
 		static get name () { return "channel"; }
