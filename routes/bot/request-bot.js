@@ -34,6 +34,9 @@ module.exports = (function () {
 			});
 		}
 
+		const now = sb.Date.now();
+		const isChristmasHoliday = (new sb.Date("2020-12-23") < now && now < new sb.Date("2021-01-04"));
+
 		const userData = await sb.User.get(userID ?? 1);
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
@@ -89,6 +92,13 @@ module.exports = (function () {
 						const result = confirm("By proceeding, you accept the rules and agree to conform by them.");
 						if (!result) {
 							return;
+						}
+						
+						if (${isChristmasHoliday}) {
+							const xmasResult = confirm("Supinic is currently on holiday break. Do you really accept that you are willing to wait up to 3 weeks for the bot to be enabled?");
+							if (!xmasResult) {
+								return;
+							}
 						}
 					}
 					
