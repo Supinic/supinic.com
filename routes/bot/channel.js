@@ -15,21 +15,21 @@ module.exports = (function () {
 		// Those who aren't are most likely inactive.
 		const data = rawData.filter(i => i.platformName !== "Discord" || i.description).map(i => ({
 			Name: (i.platformName === "Discord")
-				? (i.description || "(unnamed discord channel)")
+				? (i.description ?? "(unnamed discord channel)")
 				: i.name,
 			Mode: i.mode,
 			Platform: i.platformName,
 			LineCount: {
-				dataOrder: i.lineCount,
-				value: String(i.lineCount).replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+				dataOrder: i.lineCount ?? 0,
+				value: (i.lineCount)
+					? sb.Utils.groupDigits(i.lineCount)
+					: "N/A"
 			},
 			ByteLength: {
-				dataOrder: i.byteLength,
-				value: (i.byteLength >= 1e9)
-					? (sb.Utils.round(i.byteLength / 1e9, 3) + " GB")
-					: (i.byteLength >= 1e6)
-						? (sb.Utils.round(i.byteLength / 1e6, 3) + " MB")
-						: (sb.Utils.round(i.byteLength / 1e3, 0) + " kB")
+				dataOrder: i.byteLength ?? 0,
+				value: (i.byteLength)
+					? sb.Utils.formatByteSize(i.byteLength)
+					: "N/A"
 			},
 			ID: `<a href="/bot/channel/${i.ID}">${i.ID}</a>`
 		}));
