@@ -48,7 +48,7 @@ module.exports = (function () {
 			)
 
 			await sb.Cache.setByPrefix(cacheKey, data, {
-				expiry: 3_600_000
+				expiry: 24 * 3_600_000
 			});
 
 			return data;
