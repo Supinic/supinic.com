@@ -26,15 +26,11 @@ module.exports = (function () {
 					: `${channel.Platform_Name.toLowerCase()}_${channel.Name}`;
 
 				const infoRow = informationSchema.find(i => i.Channel === databaseName);
-				if (!infoRow) {
-					return null;
-				}
-
-				channel.Line_Count = infoRow.Max_ID;
-				channel.Byte_Length = infoRow.Byte_Length;
+				channel.Line_Count = infoRow?.Max_ID ?? null;
+				channel.Byte_Length = infoRow?.Byte_Length ?? null;
 
 				return channel;
-			}).filter(Boolean);
+			});
 		}
 
 		static async getLinesCache () {
