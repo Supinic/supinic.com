@@ -137,6 +137,16 @@ module.exports = (function () {
 		}
 
 		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "remind"));
+		const banCheck = await Filter.selectSingleCustom(q => q
+			.where("User_Alias = %n", userData.ID)
+			.where("Command = %n", command.ID)
+			.where("Active = %b", true)
+			.where("Type = %s", "Blacklist")
+		);
+		if (banCheck) {
+			return sb.WebUtils.apiFail(res, 403, "You have been banned from the reminder command in at least one instance, and therefore cannot use the API to set reminders");
+		}
+
 		const optoutCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
 			.where("Command = %n", command.ID)

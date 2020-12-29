@@ -5,6 +5,8 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const AFK = require("../../../modules/chat-data/afk.js");
+	const Command = require("../../../modules/chat-data/command.js");
+	const Filter = require("../../../modules/chat-data/filter.js");
 
 	/**
 	 * @api {get} /bot/afk/list AFK - Get list
@@ -122,7 +124,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Both user name and ID provided");
 		}
 
-		let userList = [];
+		let userList;
 		if (username) {
 			userList = username.split(",");
 			if (userList.some(i => i.length < 2)) {
@@ -182,6 +184,17 @@ module.exports = (function () {
 		}
 		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "afk"));
+		const banCheck = await Filter.selectSingleCustom(q => q
+			.where("User_Alias = %n", auth.userID)
+			.where("Command = %n", command.ID)
+			.where("Active = %b", true)
+			.where("Type = %s", "Blacklist")
+		);
+		if (banCheck) {
+			return sb.WebUtils.apiFail(res, 403, "You have been banned from the AFK command in at least one instance, and therefore cannot use the API to set AFK statuses");
 		}
 
 		const check = await AFK.selectSingleCustom(q => q
