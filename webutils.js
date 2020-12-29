@@ -103,6 +103,27 @@ module.exports = class WebUtils {
 	}
 
 	/**
+	 * Determines whether or not a provided user ID has been globally banned from the projects.
+	 * @param {number} userID
+	 * @returns {Promise<boolean>}
+	 */
+	static async checkGlobalUserBan (userID) {
+		const check = await sb.Query.getRecordset(rs => rs
+		    .select("ID")
+		    .from("chat_data", "Filter")
+			.where("User_Alias = %n", userID)
+			.where("Active = %b", true)
+			.where("Command IS NULL")
+			.where("Channel IS NULL")
+			.where("Platform IS NULL")
+			.single()
+			.flat("ID")
+		);
+
+		return Boolean(check);
+	}
+
+	/**
 	 * Parses out user authentication and returns an object containing the level, or an error
 	 * @param {Object} req
 	 * @param {Object} res
