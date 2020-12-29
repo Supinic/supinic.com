@@ -11,7 +11,7 @@ module.exports = (function () {
 	const fetchReminderDetail = async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, 401, auth.error);
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
 		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
@@ -62,7 +62,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, 401, auth.error);
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
 		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
@@ -102,7 +102,7 @@ module.exports = (function () {
 	Router.post("/", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, 401, auth.error);
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
 		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");

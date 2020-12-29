@@ -47,7 +47,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Provided ID is not a valid integer");
 		}
 		else if (auth.error) {
-			return sb.WebUtils.apiFail(res, 401, auth.error);
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
 
 		const trackData = await Track.get(id);
