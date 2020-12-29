@@ -136,7 +136,18 @@ module.exports = class WebUtils {
 				return { error: "User identifier (query) is not valid a valid ID number" };
 			}
 			else if (!userData.Data.authKey || userData.Data.authKey !== req.query.auth_key) {
-				return { error: "Access denied" };
+				return {
+					error: "Access denied",
+					errorCode: 401
+				};
+			}
+
+			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
+			if (banned) {
+				return {
+					error: "Access revoked",
+					errorCode: 403
+				};
 			}
 
 			return {
@@ -147,17 +158,34 @@ module.exports = class WebUtils {
 		else if (req.header("Authorization")) {
 			const [type, key] = req.header("Authorization").split(" ");
 			if (type !== "Basic" || !key) {
-				return { error: "Invalid Authorization header, must use \"Basic (user):(key)\"" };
+				return {
+					error: "Invalid Authorization header, must use \"Basic (user):(key)\"",
+					errorCode: 400
+				};
 			}
 
 			const [userIdentifier, authKey] = key.split(":");
 			const userData = await sb.User.get(Number(userIdentifier));
 
 			if (!userData) {
-				return { error: "User identifier (header) is not a valid ID number" };
+				return {
+					error: "User identifier (header) is not a valid ID number",
+					errorCode: 400
+				};
 			}
 			else if (!authKey || userData.Data.authKey !== authKey) {
-				return { error: "Access denied" };
+				return {
+					error: "Access denied",
+					errorCode: 401
+				};
+			}
+
+			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
+			if (banned) {
+				return {
+					error: "Access revoked",
+					errorCode: 403
+				};
 			}
 
 			return {
@@ -166,7 +194,10 @@ module.exports = class WebUtils {
 			};
 		}
 		else if (!res.locals) {
-			return { error: "Session timed out" };
+			return {
+				error: "Session timed out",
+				errorCode: 440
+			};
 		}
 		else if (!res.locals.authUser || !res.locals.authUser.userData) {
 			return { level: "none", userID: null };
