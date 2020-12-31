@@ -113,6 +113,7 @@ module.exports = class WebUtils {
 		    .from("chat_data", "Filter")
 			.where("User_Alias = %n", userID)
 			.where("Active = %b", true)
+			.where("Type = %s", "Blacklist")
 			.where("Command IS NULL")
 			.where("Channel IS NULL")
 			.where("Platform IS NULL")
