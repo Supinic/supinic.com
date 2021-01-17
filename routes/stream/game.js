@@ -94,6 +94,10 @@ module.exports = (function () {
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
 				value: (game.Released) ? new sb.Date(game.Released).format("Y") : "N/A"
+			},
+			"Game time": {
+				dataOrder: game.Completion_Time ?? 0,
+				value: game.Completion_Time ?? "N/A"
 			}
 		}));
 
