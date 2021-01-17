@@ -97,7 +97,9 @@ module.exports = (function () {
 			},
 			"Game time": {
 				dataOrder: game.Completion_Time ?? 0,
-				value: game.Completion_Time ?? "N/A"
+				value: (game.Completion_Time)
+					? `${game.Completion_Time} hours`
+					: "N/A"
 			}
 		}));
 
