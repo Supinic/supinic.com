@@ -37,7 +37,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} track.favourites
 	 * @apiError (400) InvalidRequest ID is out of range<br>
 	 *     ID is out of bounds (does not exist)
-	 */
+	 **/
 	Router.get("/random", async (req, res) => {
 		const track = await Track.selectCustom(rs => rs
 			.select("ID")
