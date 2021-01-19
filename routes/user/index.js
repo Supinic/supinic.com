@@ -4,8 +4,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyAliasData = (aliases) => Object.values(aliases).map(alias => ({
-		Name: alias.name,
+	const prettifyAliasData = (aliases) => Object.entries(aliases).map(([aliasName, alias]) => ({
+		Name: aliasName,
 		Invocation: alias.invocation + " " + alias.args.join(" "),
 		Created: (alias.created)
 			? new sb.Date(alias.created).format("Y-m-d H:i")
