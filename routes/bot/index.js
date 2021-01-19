@@ -11,7 +11,8 @@ module.exports = (function () {
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
 		["slots-winner", "slots-winner.js"],
-		["stats", "stats.js"]
+		["stats", "stats.js"],
+		["user", "user.js"]
 	];
 
 	Router.get("/", (req, res) => res.sendStatus(200));
