@@ -230,4 +230,4 @@ module.exports = (function () {
 	});
 
 	return Router;
-})();e
+})();
