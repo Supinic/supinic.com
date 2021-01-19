@@ -196,6 +196,7 @@
 				{ name: "FAQ", link: "data/faq/list" },
 				{ name: "Request Supibot", link: "bot/request-bot/form" },
 				{ separator: true },
+				{ name: "Aliases - find by user", link: "user/alias/find" },
 				{ name: "Channel list", link: "bot/channel/list" },
 				{ name: "Commands", link: "bot/command/list" },
 				{ name: "Commands statistics", link: "bot/command/stats" },
