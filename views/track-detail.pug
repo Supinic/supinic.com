@@ -94,6 +94,14 @@ html
 										each track in value
 											tr
 												td !{track.from}
+												- if (track.notes !== null) {
+													td(title=track.notes)
+														u #{track.relationship}
+												- }
+												- else {
+													td #{track.relationship}
+												- }
+
 												td #{track.relationship}
 												td !{track.to}
 						- }

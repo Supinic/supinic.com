@@ -98,7 +98,10 @@ module.exports = (function () {
 				role: sb.Utils.capitalize(i.role)
 			})),
 			"Related tracks": trackData.relatedTracks.map(i => {
-				const obj = { relationship: i.relationship};
+				const obj = {
+					notes: i.notes,
+					relationship: i.relationship
+				};
 
 				if (i.fromID === trackData.ID) {
 					const name = sb.Utils.wrapString(i.name ?? String(i.toID), 50);
