@@ -36,17 +36,15 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim`
 				async function submit (element) {
-					const userName = encodeURIComponent(document.getElementById("user-name").value);
+					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");
 										
-					try {
-						const response = await fetch("/api/bot/user/resolve/name/" + userName);
-						const { data } = await response.json();
-						
+					const response = await fetch("/api/bot/user/resolve/name/" + userName);
+					const { data } = await response.json();
+					if (data) {
 						location.replace("/track/favourite/list/user/" + data.ID);
 					}
-					catch (e) {
-						console.error(e);
+					else {
 						alerter.classList.add("alert");
 						alerter.classList.add("alert-danger");
 						alerter.innerHTML = "User was not found!";

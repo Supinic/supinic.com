@@ -184,15 +184,13 @@ module.exports = (function () {
 				async function submit (element) {
 					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");
-										
-					try {
-						const response = await fetch("/api/bot/user/resolve/name/" + userName);
-						const { data } = await response.json();
 						
+					const response = await fetch("/api/bot/user/resolve/name/" + userName);
+					const { data } = await response.json();
+					if (data) {					
 						location.replace("/user/alias/" + userName + "/list");
 					}
-					catch (e) {
-						console.error(e);
+					else {
 						alerter.classList.add("alert");
 						alerter.classList.add("alert-danger");
 						alerter.innerHTML = "User was not found!";
