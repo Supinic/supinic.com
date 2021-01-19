@@ -37,7 +37,7 @@ module.exports = (function () {
 					const response = await fetch("/api/bot/user/resolve/name/" + userName);
 					const { data } = await response.json();
 					if (data) {					
-						location.replace("/user/alias/" + userName + "/list");
+						location.replace("/bot/user/alias/" + userName + "/list");
 					}
 					else {
 						alerter.classList.add("alert");
