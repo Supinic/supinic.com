@@ -182,7 +182,7 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim`
 				async function submit (element) {
-					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerrCase();
+					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");
 										
 					try {
