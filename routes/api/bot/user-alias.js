@@ -23,6 +23,29 @@ module.exports = (function () {
 		}
 	};
 
+	Router.get("/:name/alias/list", async (req, res) => {
+		const { name } = req.params;
+		const row = await UserAlias.selectSingleCustom(q => q.where("Name = %s", name));
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "User not found");
+		}
+
+		const data = JSON.parse(row.Data ?? "{}");
+		if (!data.aliasedCommands) {
+			return sb.WebUtils.apiSuccess(res, { aliases: [] });
+		}
+		else {
+			const aliases = Object.entries(data.aliasedCommands).map(([name, def]) => ({
+				name,
+				invocation: [def.invocation, ...def.args],
+				created: def.created,
+				lastEdit: def.lastEdit
+			}));
+
+			return sb.WebUtils.apiSuccess(res, { aliases });
+		}
+	});
+
 	/**
 	 * @api {get} /bot/user/resolve/name/:name Fetch user by username
 	 * @apiName FetchUserByUsername
