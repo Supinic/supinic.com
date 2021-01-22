@@ -37,7 +37,7 @@ module.exports = (function () {
 					const response = await fetch("/api/bot/user/resolve/name/" + userName);
 					const { data } = await response.json();
 					if (data) {					
-						location.replace("/bot/user/alias/" + userName + "/list");
+						location.replace("/bot/user/" + userName + "/alias/list");
 					}
 					else {
 						alerter.classList.add("alert");
@@ -49,7 +49,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/alias/:username/list", async (req, res) => {
+	Router.get("/:username/alias/list", async (req, res) => {
 		const { username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
 			url: "bot/user/" + encodeURIComponent(username) + "/alias/list",
