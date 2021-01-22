@@ -51,7 +51,7 @@ module.exports = (function () {
 
 	Router.get("/alias/:username/list", async (req, res) => {
 		const { username } = req.params;
-		const { statusCode, body: data } = await sb.Got("Supinic", {
+		const { statusCode, body } = await sb.Got("Supinic", {
 			url: "bot/user/" + encodeURIComponent(username) + "/alias/list",
 			throwHttpErrors: false
 		});
@@ -59,11 +59,11 @@ module.exports = (function () {
 		if (statusCode !== 200) {
 			return res.status(404).render("error", {
 				error: statusCode,
-				message: data.error.message
+				message: body.error.message
 			});
 		}
 
-		const printData = prettifyAliasData(data.aliases);
+		const printData = prettifyAliasData(body.data.aliases);
 		res.render("generic-list-table", {
 			data: printData,
 			head: ["Name", "Invocation", "Created", "Edited"],
