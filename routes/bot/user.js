@@ -4,9 +4,9 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyAliasData = (aliases) => Object.entries(aliases).map(([aliasName, alias]) => ({
-		Name: aliasName,
-		Invocation: alias.invocation + " " + alias.args.join(" "),
+	const prettifyAliasData = (aliases) => aliases.map(alias => ({
+		Name: alias.name,
+		Invocation: alias.invocation,
 		Created: (alias.created)
 			? new sb.Date(alias.created).format("Y-m-d H:i")
 			: "N/A",
@@ -51,21 +51,19 @@ module.exports = (function () {
 
 	Router.get("/alias/:username/list", async (req, res) => {
 		const { username } = req.params;
-		const userData = await sb.User.get(username);
-		if (!userData) {
+		const { statusCode, body: data } = await sb.Got("Supinic", {
+			url: "bot/user/" + encodeURIComponent(username) + "/alias/list",
+			throwHttpErrors: false
+		});
+
+		if (statusCode !== 200) {
 			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "That user does not exist"
-			});
-		}
-		else if (!userData.Data.aliasedCommands) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "That user has never set up any aliases"
+				error: statusCode,
+				message: data.error.message
 			});
 		}
 
-		const printData = prettifyAliasData(userData.Data.aliasedCommands);
+		const printData = prettifyAliasData(data.aliases);
 		res.render("generic-list-table", {
 			data: printData,
 			head: ["Name", "Invocation", "Created", "Edited"],
