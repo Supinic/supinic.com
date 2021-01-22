@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	const prettifyAliasData = (aliases) => aliases.map(alias => ({
 		Name: alias.name,
-		Invocation: alias.invocation,
+		Invocation: alias.invocation.join(" "),
 		Created: (alias.created)
 			? new sb.Date(alias.created).format("Y-m-d H:i")
 			: "N/A",
