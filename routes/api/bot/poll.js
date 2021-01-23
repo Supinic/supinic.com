@@ -35,7 +35,7 @@ module.exports = (function () {
 			const votesData = {};
 			if (i.End && sb.Date.now() > i.End) {
 				votesData.hidden = false;
-				votesData.results = voteData[i.ID];
+				votesData.results = voteData[i.ID] ?? { yes: 0, no: 0 };
 			}
 			else {
 				votesData.hidden = true;
