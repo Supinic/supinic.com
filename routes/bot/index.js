@@ -8,6 +8,7 @@ module.exports = (function () {
 		["channel", "channel.js"],
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
+		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
 		["slots-winner", "slots-winner.js"],

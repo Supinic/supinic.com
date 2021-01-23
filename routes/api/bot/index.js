@@ -10,6 +10,7 @@ module.exports = (function () {
 		["cookie", "cookie.js"],
 		["filter", "filter.js"],
 		["playsound", "playsound.js"],
+		["poll", "poll.js"],
 		["reminder", "reminder.js"],
 		["request-bot", "request-bot.js"],
 		["stats", "stats.js"],
