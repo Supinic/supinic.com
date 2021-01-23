@@ -4,7 +4,6 @@ module.exports = (function () {
 			const votes = sb.Query.getRecordset(rs => rs
 			    .select("Poll", "Vote AS Type")
 			    .from("chat_data", "Poll_Vote")
-				.where("Poll = %n", ID)
 			);
 
 			const data = {};
