@@ -69,12 +69,22 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /data/suggestion/:id Suggestion - Status - List
-	 * @apiName ListSuggestionsStatuses
-	 * @apiDescription Posts the list of possible suggestions' statuses,
+	 * @api {get} /data/suggestion/:id Suggestion - Detail
+	 * @apiName GetSuggestionDetail
+	 * @apiDescription Posts details for a provided suggestion ID
 	 * @apiGroup Data
 	 * @apiPermission none
-	 * @apiSuccess {string[]} data
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} text
+	 * @apiSuccess {date} date ISO date string of the suggestion creation
+	 * @apiSuccess {string} category
+	 * @apiSuccess {string} status
+	 * @apiSuccess {number} [priority]
+	 * @apiSuccess {string} [notes]
+	 * @apiSuccess {date} lastUpdate
+	 * @apiSuccess {string} [githubLink]
+	 * @apiSuccess {string} username
+	 * @apiSuccess {number} userID
 	 */
 	Router.get("/:id", async (req, res) => {
 		const ID = Number(req.params.id);
