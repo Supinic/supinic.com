@@ -19,7 +19,12 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			data: printData,
 			head: Object.keys(printData[0]),
-			pageLength: 25
+			pageLength: 25,
+			extraCSS: `
+				th[aria-label^="Start"], th[aria-label^="End"] {
+					min-width: 45px;
+				}
+			`
 		});
 	});
 
