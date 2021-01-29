@@ -43,7 +43,7 @@ module.exports = (function () {
 				Scheduled: {
 					dataOrder: (i.Schedule) ? i.Schedule.valueOf() : 0,
 					value: (i.Schedule)
-						? `<div class="hoverable" title="UTC: ${i.Schedule.format("Y-m-d H:i:s")}">${sb.Utils.timeDelta(i.Schedule)}</div>`
+						? `<div class="hoverable" title="UTC: ${i.Schedule.toUTCString()}">${sb.Utils.timeDelta(i.Schedule)}</div>`
 						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
