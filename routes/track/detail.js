@@ -45,7 +45,13 @@ module.exports = (function () {
 			}
 			case 3: {
 				const data = await LinkParser.fetchData(trackData.parsedLink);
-				embed = `<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${data.extra.apiID}&amp;color=0066cc"></iframe>`;
+				if (!data) {
+					embed = `<div>Track not available</div>`
+				}
+				else {
+					embed = `<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${data.extra.apiID}&amp;color=0066cc"></iframe>`;
+				}
+
 				break;
 			}
 			case 4: {
