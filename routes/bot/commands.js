@@ -71,10 +71,10 @@ module.exports = (function () {
 					const values = { ...rawData.valuesObject };
 					const fakeCommand = {
 						ID: values.ID,
-						getCacheKey: () => Object.getPrototypeOf(sb.Command).getCacheKey.apply(fakeCommand)
+						getCacheKey: () => sb.Command.prototype.getCacheKey.apply(fakeCommand)
 					};
 
-					values.getCacheData = Object.getPrototypeOf(sb.Command).getCacheData.bind(fakeCommand);
+					values.getCacheData = sb.Command.prototype.getCacheData.bind(fakeCommand);
 					values.getStaticData = function () {
 						this.data = {};
 						const resolver = eval(this.Static_Data);
