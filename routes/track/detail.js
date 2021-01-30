@@ -1,22 +1,8 @@
 module.exports = (function () {
 	"use strict";
 
-	const LinkParserClass = require("track-link-parser");
 	const Express = require("express");
 	const Router = Express.Router();
-	const LinkParser = new LinkParserClass({
-		youtube: {
-			key: sb.Config.get("API_GOOGLE_YOUTUBE")
-		},
-		bilibili: {
-			appKey: sb.Config.get("BILIBILI_APP_KEY"),
-			token: sb.Config.get("BILIBILI_PRIVATE_TOKEN"),
-			userAgentDescription: sb.Config.get("BILIBILI_USER_AGENT")
-		},
-		soundcloud: {
-			key: sb.Config.get("SOUNDCLOUD_CLIENT_ID")
-		}
-	});
 
 	Router.get("/", async (req, res) => res.sendStatus(200));
 
@@ -44,7 +30,7 @@ module.exports = (function () {
 				break;
 			}
 			case 3: {
-				const data = await LinkParser.fetchData(trackData.parsedLink);
+				const data = await sb.Utils.linkParser.fetchData(trackData.parsedLink);
 				if (!data) {
 					embed = `<div>Track not available</div>`
 				}
