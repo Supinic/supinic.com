@@ -1,4 +1,6 @@
 module.exports = class WebUtils {
+	#localRequests = new Map();
+
 	static get levels () {
 		return {
 			none: 1,
@@ -194,6 +196,39 @@ module.exports = class WebUtils {
 				userID: userData.ID
 			};
 		}
+		else if (req.params.localRequestAuthUser) {
+			const path = req.baseUrl + req.url + ":" + req.params.localRequestAuthUser;
+			if (!WebUtils.#localRequests.get(path)) {
+				console.error("Invalid local request attempt", { req, path });
+				return {
+					error: "Invalid local request attempt",
+					errorCode: 401
+				};
+			}
+
+			WebUtils.#localRequests.delete(path);
+
+			const userData = await sb.User.get(req.params.localRequestAuthUser);
+			if (!userData) {
+				return {
+					level: "none",
+					userID: null
+				};
+			}
+
+			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
+			if (banned) {
+				return {
+					error: "Access revoked",
+					errorCode: 403
+				};
+			}
+
+			return {
+				level: userData.Data.trackLevel || "login",
+				userID: userData.ID
+			};
+		}
 		else if (!res.locals) {
 			return {
 				error: "Session timed out",
@@ -201,7 +236,10 @@ module.exports = class WebUtils {
 			};
 		}
 		else if (!res.locals.authUser || !res.locals.authUser.userData) {
-			return { level: "none", userID: null };
+			return {
+				level: "none",
+				userID: null
+			};
 		}
 		else {
 			return {
@@ -223,6 +261,11 @@ module.exports = class WebUtils {
 		}
 
 		return WebUtils.levels[actual] >= WebUtils.levels[required];
+	}
+
+	static authenticateLocalRequest (req, userID) {
+		const path = req.baseUrl + req.url + ":" + userID;
+		WebUtils.#localRequests.set(path, true);
 	}
 
 	static async apiLogRequest (req) {
