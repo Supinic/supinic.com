@@ -3,7 +3,7 @@ module.exports = (function () {
 	const Result = require("../result.js");
 
 	class Reminder extends TemplateModule {
-		static async listByUser (userIdentifier) {
+		static async listByUser (userIdentifier, type = "all") {
 			if (typeof userIdentifier !== "string" && typeof userIdentifier !== "number") {
 				return new Result(false, "Reminder listByUser: invalid identifier type");
 			}
@@ -37,6 +37,13 @@ module.exports = (function () {
 						on: "Reminder.User_To = RTarget.ID"
 					})
 					.where("RAuthor.ID = %n OR RTarget.ID = %n", userID, userID);
+
+				if (type === "active") {
+					rs.where("Active = %b", true);
+				}
+				else if (type === "inactive") {
+					rs.where("Active = %b", false);
+				}
 
 				return rs;
 			});

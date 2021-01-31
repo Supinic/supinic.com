@@ -261,7 +261,8 @@
 		{ name: "Command aliases", link: "user/alias/list" },
 		{ name: "Favourite tracks", link: "track/favourite/list" },
 		{ name: "Github link", link: "auth/github" },
-		{ name: "Reminders", link: "bot/reminder/list" },
+		{ name: "Reminders - active", link: "bot/reminder/list" },
+		{ name: "Reminders - history", link: "bot/reminder/history" },
 		{ name: "Suggestion stats", link: "data/suggestion/stats" },
 
 		{ separator: true },

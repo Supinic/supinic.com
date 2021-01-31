@@ -6,9 +6,8 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Channel = require("../../modules/chat-data/channel.js");
-	const Reminder = require("../../modules/chat-data/reminder.js");
 
-	Router.get("/list", async (req, res) => {
+	const formatReminderList = async (req, res, target) => {
 		if (!res || !res.locals) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
@@ -23,7 +22,8 @@ module.exports = (function () {
 		}
 
 		const user = res.locals.authUser.login.toLowerCase();
-		const rawData = await Reminder.listByUser(user);
+		const rawData = await sb.Got("Supinic", `bot/reminder/${target}`).json();
+
 		const sortedData = rawData.sort((a, b) => b.ID - a.ID);
 
 		const data = sortedData.map(i => {
@@ -34,7 +34,7 @@ module.exports = (function () {
 				i.Target = "(You)";
 			}
 
-			return {
+			const obj = {
 				Created: i.Created.format("Y-m-d"),
 				Active: (i.Active) ? "Yes" : "No",
 				Sender: i.Author,
@@ -48,13 +48,13 @@ module.exports = (function () {
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
 			};
+
+			return obj;
 		});
 
-		res.render("generic-list-table", {
-			data: data,
-			head: (data[0])
-				? Object.keys(data[0])
-				: ["Created", "Active", "Author", "Target", "Channel", "Text", "Scheduled", "ID"],
+		return res.render("generic-list-table", {
+			data,
+			head: ["Created", "Active", "Author", "Target", "Channel", "Text", "Scheduled", "ID"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "desc",
@@ -65,6 +65,14 @@ module.exports = (function () {
 				}
 			`
 		});
+	};
+
+	Router.get("/list", async (req, res) => {
+		return await formatReminderList(req, res, "list");
+	});
+
+	Router.get("/history", async (req, res) => {
+		return await formatReminderList(req, res, "history");
 	});
 
 	Router.get("/:id", async (req, res) => {
@@ -89,7 +97,7 @@ module.exports = (function () {
 			});
 		}
 
-		const row = await Reminder.getRow(ID);
+		const row = await sb.Got("Supinic", `bot/reminder/${ID}`).json();
 		if (!row) {
 			return res.status(400).render("error", {
 				error: "404 Not Found",

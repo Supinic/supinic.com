@@ -41,25 +41,7 @@ module.exports = (function () {
 		};
 	};
 
-	/**
-	 * @api {get} /bot/reminder/list Reminder - list
-	 * @apiName ListReminders
-	 * @apiDescription Gets the list of all reminders.
-	 * @apiGroup Bot
-	 * @apiPermission login
-	 * @apiSuccess {Object[]} reminder AFK status object
-	 * @apiSuccess {number} reminder.ID Status ID
-	 * @apiSuccess {number} reminder.userFrom Author user of the reminder
-	 * @apiSuccess {number} reminder.userTo Target user of the reminder
-	 * @apiSuccess {number} [reminder.channel] The channel, where the reminder was set up (null if PM'd, or set by API)
-	 * @apiSuccess {number} [reminder.platform] The platfomr of reminder origin (null if set by API)
-	 * @apiSuccess {string} reminder.text The text of reminder itself
-	 * @apiSuccess {string} reminder.created Datetime of reminder creation
-	 * @apiSuccess {string} [reminder.schedule] If scheduled (timed), this is the datetime of reminder trigger
-	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
-	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
-	 */
-	Router.get("/list", async (req, res) => {
+	const fetchReminderList = async (req, res, type = "all") => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
@@ -68,12 +50,57 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const data = await Reminder.selectMultipleCustom(q => q
-			.where("User_From = %n OR User_To = %n", auth.userID, auth.userID)
-			.where("Active = %b", true)
-		);
+		return await Reminder.listByUser(auth.userID, type);
+	}
 
-		return sb.WebUtils.apiSuccess(res, data);
+	/**
+	 * @api {get} /bot/reminder/list Reminder - list active
+	 * @apiName ListActiveReminders
+	 * @apiDescription Gets the list of all active reminders for the authorized user.
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiSuccess {Object[]} reminder AFK status object
+	 * @apiSuccess {number} reminder.ID Status ID
+	 * @apiSuccess {number} reminder.userFrom Author user ID
+	 * @apiSuccess {string} reminder.author Author user name
+	 * @apiSuccess {number} reminder.userTo Target user ID
+	 * @apiSuccess {number} reminder.target Target user namer
+	 * @apiSuccess {number} [reminder.channel] The channel, where the reminder was set up (null if PM'd, or set by API)
+	 * @apiSuccess {string} [reminder.channelName] Channel name
+	 * @apiSuccess {number} [reminder.platform] The platfomr of reminder origin (null if set by API)
+	 * @apiSuccess {string} reminder.text The text of reminder itself
+	 * @apiSuccess {string} reminder.created Datetime of reminder creation
+	 * @apiSuccess {string} [reminder.schedule] If scheduled (timed), this is the datetime of reminder trigger
+	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
+	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
+	 */
+	Router.get("/list", async (req, res) => {
+		return await fetchReminderList(req, res, "active");
+	});
+
+	/**
+	 * @api {get} /bot/reminder/list Reminder - list active
+	 * @apiName ListActiveReminders
+	 * @apiDescription Gets the list of all active reminders for the authorized user.
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiSuccess {Object[]} reminder AFK status object
+	 * @apiSuccess {number} reminder.ID Status ID
+	 * @apiSuccess {number} reminder.userFrom Author user ID
+	 * @apiSuccess {string} reminder.author Author user name
+	 * @apiSuccess {number} reminder.userTo Target user ID
+	 * @apiSuccess {number} reminder.target Target user namer
+	 * @apiSuccess {number} [reminder.channel] The channel, where the reminder was set up (null if PM'd, or set by API)
+	 * @apiSuccess {string} [reminder.channelName] Channel name
+	 * @apiSuccess {number} [reminder.platform] The platfomr of reminder origin (null if set by API)
+	 * @apiSuccess {string} reminder.text The text of reminder itself
+	 * @apiSuccess {string} reminder.created Datetime of reminder creation
+	 * @apiSuccess {string} [reminder.schedule] If scheduled (timed), this is the datetime of reminder trigger
+	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
+	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
+	 */
+	Router.get("/history", async (req, res) => {
+		return await fetchReminderList(req, res, "inactive");
 	});
 
 	/**
@@ -221,7 +248,7 @@ module.exports = (function () {
 			return check;
 		}
 
-		return sb.WebUtils.apiSuccess(res, ...check.row.valuesObject);
+		return sb.WebUtils.apiSuccess(res, check.row.valuesObject);
 	});
 
 	/**
