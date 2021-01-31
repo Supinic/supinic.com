@@ -9,11 +9,17 @@ module.exports = (function () {
 
 	const formatReminderList = async (req, res, target) => {
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);
-		sb.WebUtils.authenticateLocalRequest(req, userID);
+		if (!userID) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "You must be logged in before viewing your reminders"
+			});
+		}
 
+		const searchParams = sb.WebUtils.authenticateLocalRequest(req, userID, null);
 		const { statusCode, body: rawData } = await sb.Got("Supinic", {
 			url: `bot/reminder/${target}`,
-			searchParams: "localRequestAuthUser=" + userID,
+			searchParams: searchParams.toString(),
 			throwHttpErrors: false
 		});
 

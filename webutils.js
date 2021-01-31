@@ -198,8 +198,7 @@ module.exports = class WebUtils {
 		}
 		else if (req.query.localRequestAuthUser) {
 			const userID = req.query.localRequestAuthUser;
-			const path = req.baseUrl + req.route.path + ":" + userID;
-			if (!WebUtils.#localRequests.get(path)) {
+			if (!WebUtils.#localRequests.get(userID)) {
 				console.error("Invalid local request attempt", { req, path });
 				return {
 					error: "Invalid local request attempt",
@@ -207,7 +206,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			WebUtils.#localRequests.delete(path);
+			WebUtils.#localRequests.delete(userID);
 
 			const userData = await sb.User.get(userID);
 			if (!userData) {
@@ -264,9 +263,20 @@ module.exports = class WebUtils {
 		return WebUtils.levels[actual] >= WebUtils.levels[required];
 	}
 
-	static authenticateLocalRequest (req, userID) {
+	static authenticateLocalRequest (req, userID, params) {
 		const path = req.baseUrl + req.url + ":" + userID;
 		WebUtils.#localRequests.set(path, true);
+
+		if (params && !(params instanceof sb.URLParams)) {
+			throw new sb.Error({
+				message: "If provided, params object must be an instance of sb.URLParams"
+			});
+		}
+
+		const resultParams = params ?? new sb.URLParams();
+		resultParams.set("localRequestAuthUser", userID);
+
+		return resultParams;
 	}
 
 	static async apiLogRequest (req) {
