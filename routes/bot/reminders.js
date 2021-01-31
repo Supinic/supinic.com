@@ -17,7 +17,7 @@ module.exports = (function () {
 		}
 
 		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
-		const { statusCode, body: rawData } = await sb.Got("Supinic", {
+		const { statusCode, body } = await sb.Got("Supinic", {
 			url: `bot/reminder/${target}`,
 			searchParams: searchParams.toString(),
 			throwHttpErrors: false
@@ -31,26 +31,26 @@ module.exports = (function () {
 		}
 
 		const user = res.locals.authUser.login.toLowerCase();
-		const sortedData = rawData.sort((a, b) => b.ID - a.ID);
+		const sortedData = body.data.sort((a, b) => b.ID - a.ID);
 
 		const data = sortedData.map(i => {
-			if (i.Author.toLowerCase() === user) {
-				i.Author = "(You)";
+			if (i.author.toLowerCase() === user) {
+				i.author = "(You)";
 			}
-			if (i.Target.toLowerCase() === user) {
-				i.Target = "(You)";
+			if (i.target.toLowerCase() === user) {
+				i.target = "(You)";
 			}
 
 			const obj = {
-				Created: i.Created.format("Y-m-d"),
-				Active: (i.Active) ? "Yes" : "No",
-				Sender: i.Author,
-				Recipient: i.Target,
-				Text: i.Text,
+				Created: i.created.format("Y-m-d"),
+				Active: (i.active) ? "Yes" : "No",
+				Sender: i.author,
+				Recipient: i.target,
+				Text: i.text,
 				Scheduled: {
-					dataOrder: (i.Schedule) ? i.Schedule.valueOf() : 0,
-					value: (i.Schedule)
-						? `<div class="hoverable" title="UTC: ${i.Schedule.toUTCString()}">${sb.Utils.timeDelta(i.Schedule)}</div>`
+					dataOrder: (i.schedule) ? i.schedule.valueOf() : 0,
+					value: (i.schedule)
+						? `<div class="hoverable" title="UTC: ${i.schedule.toUTCString()}">${sb.Utils.timeDelta(i.schedule)}</div>`
 						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`

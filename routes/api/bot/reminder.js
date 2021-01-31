@@ -50,7 +50,8 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		return await Reminder.listByUser(auth.userID, type);
+		const data = await Reminder.listByUser(auth.userID, type);
+		return sb.WebUtils.apiSuccess(res, data);
 	}
 
 	/**
