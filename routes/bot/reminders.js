@@ -13,6 +13,7 @@ module.exports = (function () {
 
 		const { statusCode, body: rawData } = await sb.Got("Supinic", {
 			url: `bot/reminder/${target}`,
+			searchParams: "localRequestAuthUser=" + userID,
 			throwHttpErrors: false
 		});
 

@@ -196,8 +196,9 @@ module.exports = class WebUtils {
 				userID: userData.ID
 			};
 		}
-		else if (req.params.localRequestAuthUser) {
-			const path = req.baseUrl + req.url + ":" + req.params.localRequestAuthUser;
+		else if (req.query.localRequestAuthUser) {
+			const userID = req.query.localRequestAuthUser;
+			const path = req.baseUrl + req.route.path + ":" + userID;
 			if (!WebUtils.#localRequests.get(path)) {
 				console.error("Invalid local request attempt", { req, path });
 				return {
@@ -208,7 +209,7 @@ module.exports = class WebUtils {
 
 			WebUtils.#localRequests.delete(path);
 
-			const userData = await sb.User.get(req.params.localRequestAuthUser);
+			const userData = await sb.User.get(userID);
 			if (!userData) {
 				return {
 					level: "none",
