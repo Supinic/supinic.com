@@ -41,16 +41,17 @@ module.exports = (function () {
 				i.target = "(You)";
 			}
 
+			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			const obj = {
-				Created: i.created.format("Y-m-d"),
+				Created: new sb.Date(i.created).format("Y-m-d"),
 				Active: (i.active) ? "Yes" : "No",
 				Sender: i.author,
 				Recipient: i.target,
 				Text: i.text,
 				Scheduled: {
-					dataOrder: (i.schedule) ? i.schedule.valueOf() : 0,
-					value: (i.schedule)
-						? `<div class="hoverable" title="UTC: ${i.schedule.toUTCString()}">${sb.Utils.timeDelta(i.schedule)}</div>`
+					dataOrder: (schedule) ? schedule.valueOf() : 0,
+					value: (schedule)
+						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
