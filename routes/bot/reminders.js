@@ -8,13 +8,15 @@ module.exports = (function () {
 	const Channel = require("../../modules/chat-data/channel.js");
 
 	const formatReminderList = async (req, res, target) => {
-		if (!res || !res.locals) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "Your session timed out, please log in again"
-			});
-		}
-		else if (!res.locals.authUser) {
+		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		sb.WebUtils.authenticateLocalRequest(req, userID);
+
+		const { statusCode, body: rawData } = await sb.Got("Supinic", {
+			url: `bot/reminder/${target}`,
+			throwHttpErrors: false
+		});
+
+		if (statusCode !== 200) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
 				message: "You must be logged in before viewing your reminders"
@@ -22,8 +24,6 @@ module.exports = (function () {
 		}
 
 		const user = res.locals.authUser.login.toLowerCase();
-		const rawData = await sb.Got("Supinic", `bot/reminder/${target}`).json();
-
 		const sortedData = rawData.sort((a, b) => b.ID - a.ID);
 
 		const data = sortedData.map(i => {
