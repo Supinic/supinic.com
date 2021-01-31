@@ -197,7 +197,7 @@ module.exports = class WebUtils {
 			};
 		}
 		else if (req.query.localRequestAuthUser) {
-			const userID = req.query.localRequestAuthUser;
+			const userID = Number(req.query.localRequestAuthUser);
 			if (!WebUtils.#localRequests.get(userID)) {
 				console.error("Invalid local request attempt", { req, path });
 				return {
@@ -263,9 +263,8 @@ module.exports = class WebUtils {
 		return WebUtils.levels[actual] >= WebUtils.levels[required];
 	}
 
-	static authenticateLocalRequest (req, userID, params) {
-		const path = req.baseUrl + req.url + ":" + userID;
-		WebUtils.#localRequests.set(path, true);
+	static authenticateLocalRequest (userID, params) {
+		WebUtils.#localRequests.set(userID, true);
 
 		if (params && !(params instanceof sb.URLParams)) {
 			throw new sb.Error({
@@ -274,7 +273,7 @@ module.exports = class WebUtils {
 		}
 
 		const resultParams = params ?? new sb.URLParams();
-		resultParams.set("localRequestAuthUser", userID);
+		resultParams.set("localRequestAuthUser", String(userID));
 
 		return resultParams;
 	}

@@ -16,7 +16,7 @@ module.exports = (function () {
 			});
 		}
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(req, userID, null);
+		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
 		const { statusCode, body: rawData } = await sb.Got("Supinic", {
 			url: `bot/reminder/${target}`,
 			searchParams: searchParams.toString(),
