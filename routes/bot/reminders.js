@@ -62,7 +62,7 @@ module.exports = (function () {
 
 		return res.render("generic-list-table", {
 			data,
-			head: ["Created", "Active", "Author", "Target", "Channel", "Text", "Scheduled", "ID"],
+			head: ["Created", "Active", "Sender", "Recipient", "Text", "Scheduled", "ID"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "desc",
