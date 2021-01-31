@@ -1,5 +1,5 @@
 module.exports = class WebUtils {
-	#localRequests = new Map();
+	static #localRequests = new Map();
 
 	static get levels () {
 		return {
