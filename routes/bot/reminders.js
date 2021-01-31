@@ -44,7 +44,6 @@ module.exports = (function () {
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			const obj = {
 				Created: new sb.Date(i.created).format("Y-m-d"),
-				Active: (i.active) ? "Yes" : "No",
 				Sender: i.author,
 				Recipient: i.target,
 				Text: i.text,
@@ -62,7 +61,7 @@ module.exports = (function () {
 
 		return res.render("generic-list-table", {
 			data,
-			head: ["Created", "Active", "Sender", "Recipient", "Text", "Scheduled", "ID"],
+			head: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "desc",
