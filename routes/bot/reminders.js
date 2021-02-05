@@ -59,8 +59,10 @@ module.exports = (function () {
 			return obj;
 		});
 
+		const titleType = (target === "history") ? "historical (inactive)" : "active";
 		return res.render("generic-list-table", {
 			data,
+			title: `Reminder list - ${titleType}`,
 			head: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
 			pageLength: 25,
 			sortColumn: 0,
