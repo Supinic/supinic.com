@@ -168,11 +168,18 @@ module.exports = class WebUtils {
 			}
 
 			const [userIdentifier, authKey] = key.split(":");
-			const userData = await sb.User.get(Number(userIdentifier));
-
-			if (!userData) {
+			const userID = Number(userIdentifier);
+			if (!sb.Utils.isValidInteger(userID)) {
 				return {
 					error: "User identifier (header) is not a valid ID number",
+					errorCode: 400
+				};
+			}
+
+			const userData = await sb.User.get(userID);
+			if (!userData) {
+				return {
+					error: "Authorized user does not exist",
 					errorCode: 400
 				};
 			}
