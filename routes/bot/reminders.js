@@ -85,13 +85,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/:id", async (req, res) => {
-		if (!res || !res.locals) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "Your session timed out, please log in again"
-			});
-		}
-		else if (!res.locals.authUser) {
+		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		if (!userID) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
 				message: "You must be logged in before viewing your reminders"
@@ -101,24 +96,29 @@ module.exports = (function () {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
 			return res.status(400).render("error", {
-				error: "400 Invalid Request",
+				error: sb.WebUtils.formatErrorMessage(400),
 				message: "Malformed reminder ID"
 			});
 		}
 
-		const row = await sb.Got("Supinic", `bot/reminder/${ID}`).json();
-		if (!row) {
-			return res.status(400).render("error", {
-				error: "404 Not Found",
-				message: "Reminder ID does not exist"
+		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		const { statusCode, body } = await sb.Got("Supinic", {
+			url: `bot/reminder/${ID}`,
+			searchParams: searchParams.toString()
+		});
+
+		if (statusCode !== 200) {
+			return res.status(statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(statusCode),
+				message: body.error.message
 			});
 		}
 
-		const rawData = row.valuesObject;
+		const rawData = body.data;
 		const { userData } = res.locals.authUser;
 		if (rawData.User_To !== userData.ID && rawData.User_From !== userData.ID) {
-			return res.status(400).render("error", {
-				error: "403 Access Denied",
+			return res.status(403).render("error", {
+				error: sb.WebUtils.formatErrorMessage(403),
 				message: "This reminder was not created by you or for you"
 			});
 		}
