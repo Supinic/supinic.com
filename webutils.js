@@ -349,7 +349,15 @@ module.exports = class WebUtils {
 		let params = null;
 		switch (options.type) {
 			case "afk": {
-				params = new sb.URLParams().set("type", "reload").set("module", "afk");
+				params = new sb.URLParams().set("module", "afk");
+
+				if (options.specific) {
+					params.set("type", "reload-specific").set("specificID", options.ID);
+				}
+				else {
+					params.set("type", "reload");
+				}
+
 				break;
 			}
 
@@ -359,7 +367,15 @@ module.exports = class WebUtils {
 			}
 
 			case "reminder": {
-				params = new sb.URLParams().set("type", "reload").set("module", "reminder");
+				params = new sb.URLParams().set("type", "reload").set("module", "afk");
+
+				if (options.specific) {
+					params.set("type", "reload-specific").set("specificID", options.ID);
+				}
+				else {
+					params.set("type", "reload");
+				}
+
 				break;
 			}
 
