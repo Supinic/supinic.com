@@ -214,7 +214,11 @@ module.exports = (function () {
 			Private_Message: privateReminder
 		});
 
-		await sb.WebUtils.invalidateBotCache({ type: "reminder" });
+		await sb.WebUtils.invalidateBotCache({
+			type: "reminder",
+			specific: true,
+			ID: newReminder.insertId
+		});
 
 		return sb.WebUtils.apiSuccess(res, {
 			reminderID: newReminder.insertId
@@ -276,7 +280,11 @@ module.exports = (function () {
 		row.values.Active = false;
 		await row.save();
 
-		await sb.WebUtils.invalidateBotCache({ type: "reminder" });
+		await sb.WebUtils.invalidateBotCache({
+			type: "reminder",
+			specific: true,
+			ID: reminderID
+		});
 
 		return sb.WebUtils.apiSuccess(res, {
 			reminderID,

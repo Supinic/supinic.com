@@ -219,7 +219,11 @@ module.exports = (function () {
 			Silent: false
 		});
 
-		await sb.WebUtils.invalidateBotCache({ type: "afk" });
+		await sb.WebUtils.invalidateBotCache({
+			type: "afk",
+			specific: true,
+			ID: newStatus.insertId
+		});
 
 		return sb.WebUtils.apiSuccess(res, {
 			statusID: newStatus.insertId
@@ -256,7 +260,12 @@ module.exports = (function () {
 		}
 
 		await AFK.update(check.ID, { Active: false });
-		await sb.WebUtils.invalidateBotCache({ type: "afk" });
+
+		await sb.WebUtils.invalidateBotCache({
+			type: "afk",
+			specific: true,
+			ID: check.ID
+		});
 
 		return sb.WebUtils.apiSuccess(res, {
 			statusID: newStatus.insertId,
