@@ -1,5 +1,12 @@
 module.exports = class WebUtils {
 	static #localRequests = new Map();
+	static #requestMessages = {
+		400: "Bad Request",
+		401: "Unauthorized",
+		403: "Forbidden",
+		404: "Not Found",
+		500: "Internal Server Error"
+	};
 
 	static get levels () {
 		return {
@@ -102,6 +109,13 @@ module.exports = class WebUtils {
 		obj.deprecation = key;
 
 		res.redirect(`${replacement}?${stringify(obj)}`);
+	}
+
+	static formatErrorMessage (statusCode) {
+		const message = WebUtils.#requestMessages[statusCode];
+		return (message)
+			? `${statusCode} ${message}`
+			: `${statusCode} - other error`
 	}
 
 	/**
