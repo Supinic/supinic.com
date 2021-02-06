@@ -115,36 +115,25 @@ module.exports = (function () {
 		}
 
 		const rawData = body.data;
-		const { userData } = res.locals.authUser;
-		if (rawData.User_To !== userData.ID && rawData.User_From !== userData.ID) {
-			return res.status(403).render("error", {
-				error: sb.WebUtils.formatErrorMessage(403),
-				message: "This reminder was not created by you or for you"
-			});
-		}
-
-		const senderUserData = (rawData.User_From === userData.ID)
-			? userData
-			: await sb.User.get(rawData.User_From);
-
-		const recipientUserData = (rawData.User_To === userData.ID)
-			? userData
-			: await sb.User.get(rawData.User_To);
+		const [senderUserData, recipientUserData] = await Promise.all([
+			sb.User.get(rawData.userFrom),
+			sb.User.get(rawData.userTo),
+		]);
 
 		const data = {
 			ID: rawData.ID,
 			Sender: senderUserData.Name,
 			Recipient: recipientUserData.Name,
-			"Created in channel": (rawData.Channel)
-				? (await Channel.getRow(rawData.Channel)).values.Name
+			"Created in channel": (rawData.channel)
+				? (await Channel.getRow(rawData.channel)).values.Name
 				: "(created in PMs)",
-			Text: rawData.Text,
-			Pending: (rawData.Active) ? "yes" : "no",
-			Created: rawData.Created.format("Y-m-d H:i:s"),
-			Scheduled: (rawData.Schedule)
-				? rawData.Schedule.format("Y-m-d H:i:s")
+			Text: rawData.text,
+			Pending: (rawData.active) ? "yes" : "no",
+			Created: new sb.Date(rawData.created).format("Y-m-d H:i:s"),
+			Scheduled: (rawData.schedule)
+				? new sb.Date(rawData.schedule).format("Y-m-d H:i:s")
 				: "(not scheduled)",
-			Private: (rawData.Private_Message) ? "yes" : "no"
+			Private: (rawData.privateMessage) ? "yes" : "no"
 		};
 
 		res.render("generic-detail-table", { data });
