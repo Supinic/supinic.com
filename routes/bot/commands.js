@@ -245,12 +245,16 @@ module.exports = (function () {
 			});
 		}
 
+		const paramsString = (data.values.Params)
+			? JSON.stringify(JSON.parse(data.value.Params), null, 4)
+			: "// None";
+
 		res.render("code", {
 			header: data.values.Name,
 			code: `// Command code:\n${data.values.Code}`,
 			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
 			dynamicDescription: `// Dynamic description:\n${data.values.Dynamic_Description ?? "// None"}`,
-			params: `// Parameters definition:\n${data.values.Params ?? "// None"}`,
+			params: `// Parameters definition:\n${paramsString}`,
 			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`
 		});
 	});
