@@ -246,7 +246,7 @@ module.exports = (function () {
 		}
 
 		const paramsString = (data.values.Params)
-			? JSON.stringify(JSON.parse(data.value.Params), null, 4)
+			? JSON.stringify(JSON.parse(data.values.Params), null, 4)
 			: "// None";
 
 		res.render("code", {
