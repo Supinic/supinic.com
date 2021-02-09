@@ -60,7 +60,7 @@ module.exports = (function () {
 		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
-		const skip = ["static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "whitelist response", "code"];
+		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "whitelist response", "code"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
 
@@ -250,6 +250,7 @@ module.exports = (function () {
 			code: `// Command code:\n${data.values.Code}`,
 			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
 			dynamicDescription: `// Dynamic description:\n${data.values.Dynamic_Description ?? "// None"}`,
+			params: `// Parameters definition:\n${data.values.Params ?? "// None"}`,
 			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`
 		});
 	});
