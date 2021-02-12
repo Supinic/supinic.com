@@ -89,6 +89,7 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
+			title: `Track ${listType} list`,
 			data: data,
 			head: Object.keys(data[0]),
 			sortColumn,
