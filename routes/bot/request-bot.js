@@ -47,6 +47,16 @@ module.exports = (function () {
 			onSubmit: "submit()",
 			fields: [
 				{
+					id: "platform",
+					name: "Platform",
+					type: "select",
+					value: "twitch",
+					options: [
+						{ value: "cytube", text: "Cytube" },
+						{ value: "twitch", text: "Twitch" }
+					]
+				},
+				{
 					id: "channel-name",
 					name: "Channel name",
 					type: "string",
@@ -68,9 +78,20 @@ module.exports = (function () {
 				let renameMode = false;	
 				window.onload = async () => {
 					const checkbox = document.getElementById("rename");
+					const platform = document.getElementById("platform");
 					const descriptionMemo = document.getElementById("description");
+					const rename = document.getElementById("rename");
 					const descriptionPlaceholder = descriptionMemo.placeholder;
 					const channelLabel = document.querySelector("[for='Channel name']");
+					
+					platform.addEventListener("change", () => {
+						if (platform.value === "cytube") {
+							rename.classList.add(".d-none");
+						}
+						else {
+							rename.classList.remove(".d-none");
+						}
+					});
 					
 					checkbox.addEventListener("click", () => {
 						renameMode = !renameMode;
@@ -105,6 +126,7 @@ module.exports = (function () {
 					const button = document.getElementById("submit-button");
 					button.disabled = true;
 					
+					const platformElement = document.getElementById("platform");
 					const channelElement = document.getElementById("channel-name");
 					const descriptionElement = document.getElementById("description");	
 					const renameElement = document.getElementById("rename");
@@ -112,6 +134,7 @@ module.exports = (function () {
 					let body;
 					if (renameMode === true) {
 						body = {
+							platform: platformElement.value,
 							renamedChannel: channelElement.value,
 							targetChannel: null,
 							description: null
@@ -119,6 +142,7 @@ module.exports = (function () {
 					}
 					else {
 						body = {
+							platform: platformElement.value,
 							targetChannel: channelElement.value,
 							renamedChannel: null,
 							description: descriptionElement.value || null
