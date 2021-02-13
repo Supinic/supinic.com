@@ -6,6 +6,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Channel = require("../../../modules/chat-data/channel.js");
+	const Platform = require("../../../modules/chat-data/platform.js");
 	const Suggestion = require("../../../modules/data/suggestion.js");
 
 	Router.post("/", async (req, res) => {
@@ -14,9 +15,17 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 401, "Not logged in");
 		}
 
-		const { description, renamedChannel, targetChannel } = req.body;
+		const { description, platform, renamedChannel, targetChannel } = req.body;
 		if (!targetChannel && !renamedChannel) {
 			return sb.WebUtils.apiFail(res, 400, "No target or rename channel provided");
+		}
+
+		const platformData = await Platform.selectSingleCustom(q => q
+			.where("Name = %s", platform)
+		);
+
+		if (!platformData) {
+			return sb.WebUtils.apiFail(res, 404, "Provided platform has not been found");
 		}
 
 		if (renamedChannel) {
@@ -58,7 +67,7 @@ module.exports = (function () {
 
 		const exists = await Channel.selectSingleCustom(rs => rs
 			.where("Name = %s", targetChannel)
-			.where("Platform = %n", 1)
+			.where("Platform = %n", platformData.ID)
 		);
 
 		if (exists) {
@@ -74,7 +83,7 @@ module.exports = (function () {
 		}
 
 		const userData = await sb.User.get(userID);
-		if (userData.Name !== targetChannel) {
+		if (platformData.Name === "twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
 			const { mods } = await sb.Got("Leppunen", "twitch/modsvips/" + escapedChannel).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
@@ -88,6 +97,7 @@ module.exports = (function () {
 			.where("Category = %s", "Bot addition")
 			.where("Status = %s", "Approved")
 			.where("Text %like*", `Channel: ${targetChannel}`)
+			.where("Text %like*", `Platform: ${platformData.Name}`)
 		);
 
 		if (requestPending) {
@@ -96,7 +106,7 @@ module.exports = (function () {
 
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
-			Text: `Channel: ${targetChannel}\nRequested by: ${userData.Name}\nDescription: ${description ?? "N/A"}`,
+			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
 			Category: "Bot addition",
 			Status: "Approved",
 			Priority: 100,
