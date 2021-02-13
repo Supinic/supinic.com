@@ -86,10 +86,10 @@ module.exports = (function () {
 					
 					platform.addEventListener("change", () => {
 						if (platform.value === "cytube") {
-							rename.classList.add(".d-none");
+							rename.parentElement.style.display = "none";
 						}
 						else {
-							rename.classList.remove(".d-none");
+							rename.parentElement.style.display = "initial";
 						}
 					});
 					
