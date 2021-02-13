@@ -34,8 +34,20 @@ module.exports = (function () {
 	}));
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/suggestion/list").json();
-		const printData = prettifyData(data);
+		const { username } = req.query;
+
+		let response;
+		if (username) {
+			response = await sb.Got("Supinic", {
+				url: "data/suggestion/list",
+				searchParams: "username=" + encodeURIComponent(username)
+			}).json();
+		}
+		else {
+			response = await sb.Got("Supinic", "data/suggestion/list").json();
+		}
+
+		const printData = prettifyData(response.data);
 
 		res.render("generic-list-table", {
 			data: printData,
