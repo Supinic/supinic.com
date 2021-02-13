@@ -34,13 +34,13 @@ module.exports = (function () {
 	}));
 
 	Router.get("/list", async (req, res) => {
-		const { username } = req.query;
+		const { userName } = req.query;
 
 		let response;
-		if (username) {
+		if (userName) {
 			response = await sb.Got("Supinic", {
 				url: "data/suggestion/list",
-				searchParams: "username=" + encodeURIComponent(username)
+				searchParams: "userName=" + encodeURIComponent(userName)
 			}).json();
 		}
 		else {
