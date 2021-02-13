@@ -54,6 +54,30 @@ html
                         ).
                             !{value.value}
                     - }
+                    - else if (value.type === "select") {
+                        select(
+                            class="form-control"
+                            id=value.id
+                            name=value.name
+                            disabled=value.disabled || false
+                        )
+                            each optionDef in value.options
+                                - if (optionDef.value === value.value) {
+                                    option(
+                                        selected
+                                        id=optionDef.id
+                                        value=optionDef.value
+                                    ).
+                                        #{optionDef.text}
+                                - }
+                                - else {
+                                    option(
+                                        id=optionDef.id
+                                        value=optionDef.value
+                                    ).
+                                        #{optionDef.text}
+                                }
+                    - }
                     - else {
                         input(
                             class="form-control"
