@@ -7,9 +7,9 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/bad-apple/list").json();
 		const renderData = data.map(i => {
-			let detailLink = `<a href="/data/bad-apple/${i.ID}">${i.ID}</a>`;
+			let detailLink = "N/A";
 			if (i.notes) {
-				detailLink += `<div title="More notes available">📝</div>`;
+				detailLink = `<a href="/data/bad-apple/${i.ID}" title="More notes available">📝</a>`;
 			}
 
 			const deviceLink = (i.device && i.link)
