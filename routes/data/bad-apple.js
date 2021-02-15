@@ -24,13 +24,13 @@ module.exports = (function () {
 				Published: (i.published)
 					? new sb.Date(i.published).format("Y-m-d")
 					: "N/A",
-				H: {
-					value: i.height ?? "X",
-					dataOrder: i.height ?? 0
-				},
-				W: {
+				"↔": {
 					value: i.width ?? "X",
 					dataOrder: i.width ?? 0
+				},
+				"↕": {
+					value: i.height ?? "X",
+					dataOrder: i.height ?? 0
 				},
 				FPS: {
 					value: i.fps ?? "N/A",
