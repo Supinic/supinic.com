@@ -4,6 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 	const subroutes = [
+		["bad-apple", "bad-apple.js"],
 		["corona", "corona.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
