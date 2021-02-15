@@ -7,7 +7,8 @@ module.exports = (function () {
 	const BadApple = require("../../../modules/data/bad-apple.js");
 
 	Router.get("/list", async (req, res) => {
-		return await BadApple.selectAll();
+		const data = await BadApple.selectAll();
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/:id", async (req, res) => {
@@ -23,7 +24,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "Provided ID does not exist");
 		}
 
-		return row.valuesObject;
+		return sb.WebUtils.apiSuccess(res, row.valuesObject);
 	});
 
 	return Router;
