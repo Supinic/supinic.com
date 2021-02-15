@@ -74,7 +74,7 @@ module.exports = (function () {
 		};
 
 		res.render("generic-detail-table", {
-			title: `Detail - Channel ${channelData.ID} - Supibot`,
+			title: `${detail.ID} Bad Apple! on ${detail.device}`,
 			data
 		});
 	});
