@@ -25,6 +25,7 @@ module.exports = (function () {
 			activeUsers,
 			{ Bytes: chatLineSize, Line_Count: chatLines },
 			commands,
+			commandsSinceRestart,
 			newCommandExecutions,
 			totalAFKs,
 			activeAFKs,
@@ -66,6 +67,7 @@ module.exports = (function () {
 				.single()
 				.flat("Total")
 			),
+			sb.Runtime.commands,
 			sb.Query.getRecordset(rs => rs
 				.select("COUNT(*) AS Total")
 				.from("chat_data", "Command_Execution")
@@ -128,8 +130,11 @@ module.exports = (function () {
 			},
 			commands: {
 				active: commands,
-				executions: oldCommandExecutions + newCommandExecutions,
-				since: firstCommandExecution
+				executions: {
+					first: firstCommandExecution,
+					total: oldCommandExecutions + newCommandExecutions,
+					sinceRestart: commandsSinceRestart
+				}
 			},
 			afk: {
 				active: activeAFKs,
