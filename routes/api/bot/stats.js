@@ -15,7 +15,9 @@ module.exports = (function () {
 	Router.get("/", async (req, res) => {
 		const cacheData = await sb.Cache.getByPrefix(cacheKey);
 		if (cacheData) {
-			return sb.WebUtils.apiSuccess(res, cacheData);
+			return sb.WebUtils.apiSuccess(res, cacheData, {
+				skipCaseConversion: true
+			});
 		}
 
 		const [
