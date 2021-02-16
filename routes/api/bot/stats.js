@@ -112,17 +112,13 @@ module.exports = (function () {
 		const data = {
 			channels: {
 				active: activeChannels,
-				meta: {
-					size: getSize(tableSizes, "Message_Meta_Channel")
-				}
+				metaSize: getSize(tableSizes, "Message_Meta_Channel")
 			},
 			users: {
 				active: activeUsers.length,
 				total: totalUsers,
 				size: getSize(tableSizes, "User_Alias"),
-				meta: {
-					size: getSize(tableSizes, "Message_Meta_User_Alias")
-				}
+				metaSize: getSize(tableSizes, "Message_Meta_User_Alias")
 			},
 			chatLines: {
 				size: chatLineSize,
@@ -130,11 +126,9 @@ module.exports = (function () {
 			},
 			commands: {
 				active: commands,
-				executions: {
-					first: firstCommandExecution,
-					total: oldCommandExecutions + newCommandExecutions,
-					sinceRestart: commandsSinceRestart
-				}
+				countTotal: oldCommandExecutions + newCommandExecutions,
+				countSinceRestart: commandsSinceRestart,
+				firstExecution: firstCommandExecution
 			},
 			afk: {
 				active: activeAFKs,
