@@ -36,7 +36,7 @@ module.exports = (function () {
 				.select("TABLE_NAME AS Name", "(DATA_LENGTH + INDEX_LENGTH) AS Total")
 				.from("INFORMATION_SCHEMA", "TABLES")
 				.where("TABLE_SCHEMA = %s", "chat_data")
-				.where("TABLE_NAME %s+", fetchSizeTables)
+				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Query.getRecordset(rs => rs
 			    .select("COUNT(*) AS Total")
