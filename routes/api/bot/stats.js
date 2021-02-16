@@ -155,7 +155,9 @@ module.exports = (function () {
 			expiry: 3_600_000
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return sb.WebUtils.apiSuccess(res, data, {
+			skipCaseConversion: true
+		});
 	});
 
 	return Router;
