@@ -51,18 +51,23 @@ module.exports = class WebUtils {
 	 * Returns response in the standardized format for all API successes.
 	 * @param {Express.response} res
 	 * @param {Object} data = {}
+	 * @param {Object} options = {}
+	 * @param {boolean} [options.skipCaseConversion] If true, no data object keys will be case-converted
 	 */
-	static apiSuccess (res, data = {}) {
+	static apiSuccess (res, data = {}, options = {}) {
 		if (!res || typeof res.type !== "function") {
 			throw new TypeError("Argument res must provided and be Express result");
+		}
+
+		let outputData = data;
+		if (outputData && !options.skipCaseConversion) {
+			outputData = sb.Utils.convertCaseObject(data, "snake", "camel");
 		}
 
 		const responseData = {
 			statusCode: 200,
 			timestamp: new Date().valueOf(),
-			data: (data)
-				? sb.Utils.convertCaseObject(data, "snake", "camel")
-				: data,
+			data: outputData,
 			error: null
 		};
 
