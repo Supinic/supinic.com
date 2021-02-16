@@ -40,12 +40,15 @@ module.exports = (function () {
 	};
 
 	Router.get("/", async (req, res) => {
-		const data = await sb.Cache.getByPrefix(cachePrefix);
-
 		const printData = {};
+		const { data } = await sb.Got("Supinic", "bot/stats").json();
+
 		for (const [topKey, topValue] of Object.entries(data)) {
 			for (const [subKey, subValue] of Object.entries(topValue)) {
-				const resultKey = stringMap[topKey][subKey];
+				const resultKey = stringMap[topKey]?.[subKey] ?? null;
+				if (!resultKey) {
+					continue;
+				}
 
 				if (subKey === "size" || subKey === "metaSize") {
 					printData[resultKey] = sb.Utils.formatByteSize(subValue);
