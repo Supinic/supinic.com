@@ -13,7 +13,8 @@ module.exports = (function () {
 		users: {
 			active: "Active users in all channels Supibot is in",
 			total: "Total users Supibot encountered so far",
-			metaSize: "Size of user-related meta-data"
+			size: "Size of all users and their custom data",
+			metaSize: "Size of user-related meta-data (e.g. \"Last seen\")"
 		},
 		chatlines: {
 			size: "Size the chat line logs take up",
