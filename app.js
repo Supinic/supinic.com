@@ -18,6 +18,7 @@
 			"singletons/internal-request",
 			"singletons/system-log",
 			"singletons/cache",
+			"singletons/runtime",
 
 			"classes/got",
 			"classes/user",
