@@ -24,6 +24,7 @@ module.exports = (function () {
 			pageLength: 25,
 			extraCSS: `audio.preview {
 				height: 25px;
+				min-width: 125px;
 		    }`
 		});
 	});
