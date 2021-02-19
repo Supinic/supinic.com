@@ -22,7 +22,9 @@ module.exports = (function () {
 			data: data,
 			head: Object.keys(data[0]),
 			pageLength: 25,
-			extraCSS: `audio.preview { width: 100%; min-width: 250px; }`
+			extraCSS: `audio.preview {
+				height: 25px;
+		    }`
 		});
 	});
 
