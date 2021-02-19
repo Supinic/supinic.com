@@ -14,7 +14,7 @@ module.exports = (function () {
 				dataOrder: i.cooldown,
 				value: (i.cooldown / 1000) + " seconds"
 			},
-			Sample: `<audio class="prewvie" style="width:100%" controls preload="none"><source src="/public/playsound/${i.filename}"></audio>`,
+			Sample: `<audio class="preview" style="width:100%" controls preload="none"><source src="/public/playsound/${i.filename}"></audio>`,
 			Notes: (i.notes) ?? "N/A"
 		}));
 
