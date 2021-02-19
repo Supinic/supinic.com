@@ -14,15 +14,15 @@ module.exports = (function () {
 				dataOrder: i.cooldown,
 				value: (i.cooldown / 1000) + " seconds"
 			},
-			Notes: (i.notes)
-				? i.notes.replace(/\r?\n/g, "<br>")
-				: "N/A"
+			Sample: `<audio class="prewvie" style="width:100%" controls preload="none"><source src="/public/playsound/${i.filename}"></audio>`,
+			Notes: (i.notes) ?? "N/A"
 		}));
 
 		res.render("generic-list-table", {
 			data: data,
 			head: Object.keys(data[0]),
-			pageLength: 100
+			pageLength: 25,
+			extraCSS: `audio.preview { width: 100%; min-width: 250px; }`
 		});
 	});
 

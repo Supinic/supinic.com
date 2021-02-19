@@ -34,6 +34,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} commandCooldown Cooldown of the command itself in milliseconds
 	 * @apiSuccess {Object[]} playsounds List of playsounds
 	 * @apiSuccess {string} playsounds.name Playsound name to trigger
+	 * @apiSuccess {string} playsounds.filename Playsound filename as it appears drive
 	 * @apiSuccess {number} playsounds.cooldown Playsound coolodwn in milliseconds
 	 * @apiSuccess {string} [playsounds.notes] Additional info
 	 */
@@ -47,6 +48,7 @@ module.exports = (function () {
 			commandCooldown: command.Cooldown,
 			playsounds: playsounds.map(i => ({
 				name: i.Name,
+				filename: i.Filename,
 				cooldown: i.Cooldown,
 				notes: i.Notes
 			}))
