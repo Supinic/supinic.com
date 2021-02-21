@@ -178,9 +178,29 @@ module.exports = (function () {
 		return { success: true, total };
 	}
 
+	/**
+	 * @api {get} /osrs/lookup/:user Fetch user scores
+	 * @apiName FetchUserScores
+	 * @apiDescription For a given OSRS account name, fetches its scores
+	 * @apiGroup OSRS
+	 * @apiPermission none
+	 * @apiParam {string} user Account name to check
+	 * @apiParam {boolean} [seasonal] If true, checks the seasonal variant of the account (Leagues, DMM)
+	 * @apiParam {boolean} [forceHardcore] If true, forces to fetch HCIM data, even if the account has lost the HC status.
+	 * @apiSuccess {Object[]} skills
+	 * @apiSuccess {Object[]} activities
+	 * @apiSuccess {Object} ironman
+	 * @apiSuccess {boolean} ironman.regular
+	 * @apiSuccess {boolean} ironman.hardcore
+	 * @apiSuccess {boolean} ironman.ultimate
+	 * @apiSuccess {boolean} ironman.deadHardcore
+	 * @apiSuccess {boolean} seasonal
+	 */
 	Router.get("/lookup/:user", async (req, res) => {
 		const user = req.params.user.toLowerCase();
 		const url = (req.query.seasonal) ? account.seasonal : account.main;
+		const forceHardcore = Boolean(req.query.forceHardcore);
+
 		const result = {
 			skills: [],
 			activities: [],
@@ -188,7 +208,8 @@ module.exports = (function () {
 			ironman: {
 				regular: false,
 				hardcore: false,
-				ultimate: false
+				ultimate: false,
+				deadHardcore: false
 			}
 		};
 
@@ -214,6 +235,8 @@ module.exports = (function () {
 			// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
 			// and both hardcore and regular if the account is a HCIM. That's why this
 			const types = ["ultimate", "hardcore", "regular"];
+			const compare = {};
+
 			for (const type of types) {
 				const { statusCode, body } = await sb.Got({
 					url: account.ironman[type],
@@ -224,9 +247,35 @@ module.exports = (function () {
 				});
 
 				if (statusCode !== 404) {
-					rawData = body;
-					result.ironman[type] = true;
-					break;
+					// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
+					// detect whether the account is alive or not, and adjust the response accordingly.
+					if (type === "ultimate") {
+						result.ironman[type] = true;
+						rawData = body;
+						break;
+					}
+					else {
+						compare[type] = body;
+					}
+				}
+			}
+
+			if (compare.hardcore && compare.regular) {
+				const regularXP = Number(compare.regular.split("\n")[0].split(",")[2]);
+				const hardcoreXP = Number(compare.hardcore.split("\n")[0].split(",")[2]);
+
+				if (regularXP > hardcoreXP) {
+					rawData = (forceHardcore)
+						? compare.hardcore
+						: compare.regular;
+
+					result.ironman.regular = true;
+					result.ironman.deadHardcore = true;
+				}
+				else {
+					rawData = compare.hardcore;
+					result.ironman.hardcore = true;
+					result.ironman.deadHardcore = false;
 				}
 			}
 		}
