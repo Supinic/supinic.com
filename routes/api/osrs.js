@@ -325,7 +325,9 @@ module.exports = (function () {
 			index++;
 		}
 
-		return sb.WebUtils.apiSuccess(res, result);
+		return sb.WebUtils.apiSuccess(res, result, {
+			skipCaseConversion: true
+		});
 	});
 
 	Router.get("/activity/list", async (req, res) => {
