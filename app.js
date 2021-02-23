@@ -40,6 +40,7 @@
 		"api",
 		"bot",
 		"contact",
+		"crypto-game",
 		"cytube",
 		"data",
 		"gachi",
