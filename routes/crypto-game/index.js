@@ -15,7 +15,7 @@ module.exports = (function () {
 			Name: i.name ?? "N/A",
 			Type: i.type ?? "N/A",
 			Price: (i.price !== null)
-				? `${baseline.Code} ${sb.Utils.round(i.price, 9, { direction: "floor" })}`
+				? `${baseline.code} ${sb.Utils.round(i.price, 9, { direction: "floor" })}`
 				: "N/A"
 		}));
 
