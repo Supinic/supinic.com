@@ -9,13 +9,15 @@ module.exports = (function () {
 	    <h6>Rules</h6>
 		<ol>
 			<li>You can only request Supibot in your own channel or someone else's channel if you are a moderator there.</li>
-			<li>Your Twitch channel must not be in follower-only, subscriber-only, or any other mode that prevents people from chatting. If it is, the suggestion will be dropped. Watch out!</li>
+			<li>Your Twitch channel <span class="text-danger">must not be</span> in follower-only, subscriber-only, or any other mode that prevents people from chatting. If it is, the suggestion will be dropped. Watch out!</li>
 			<li>Make sure to not accidentally ban the bot - because when it does, it will automatically leave your channel and will not come back on its own. You can mostly prevent this by modding it - it doesn't do any moderation on its own, and it's generally safe to do so.</li>
 			<li>If you change your name (outside of changing lower- and uppercase characters), Supibot will not track your namechange and you must request the bot again.</li>
 			<li>Please refer to Supibot as "the bot" or "Supibot", not as "Supi". "Supi" refers to me (Supinic), and it gets very confusing sometimes 😃</li>
 		</ol>
 		<h6>Warning</h6>
-		<div>The bot will not be added immediately! I evaluate the requests manually. It usually happens within one to seven days from the request.</div>
+		<div>
+			<span class="text-danger">The bot will not be added immediately!</span>
+			I evaluate the requests manually. Mostly on Tuesday evenings.</div>
 		<br>
 		<h6>Rename</h6>
 		<div>If you changed your name, request the bot again, but this time, check the Rename checkbox, and fill in your previous channel name. You can leave the description blank. Supibot should immediately join your renamed channel if it can verify that it is still you.</div>
