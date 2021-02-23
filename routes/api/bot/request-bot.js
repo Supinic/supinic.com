@@ -96,8 +96,8 @@ module.exports = (function () {
 		const requestPending = await Suggestion.existsCustom(q => q
 			.where("Category = %s", "Bot addition")
 			.where("Status = %s", "Approved")
-			.where("Text %like*", `Channel: ${targetChannel}`)
-			.where("Text %like*", `Platform: ${platformData.Name}`)
+			.where("Text %*like*", `Channel: ${targetChannel}`)
+			.where("Text %*like*", `Platform: ${platformData.Name}`)
 		);
 
 		if (requestPending) {
