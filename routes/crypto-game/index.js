@@ -6,14 +6,16 @@ module.exports = (function () {
 
 	Router.get("/asset/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "crypto-game/asset/list").json();
+
+		const baseline = data.find(i => i.baseline);
 		const printData = data.map(i => ({
 			Code: (i.baseline)
-				? `<b>${i.code}</b>`
+				? `${i.code} (baseline)`
 				: i.code,
 			Name: i.name ?? "N/A",
 			Type: i.type ?? "N/A",
 			Price: (i.price !== null)
-				? i.price.toFixed(9)
+				? `${baseline.Code} ${sb.Utils.round(i.price, 9, { direction: "floor" })}`
 				: "N/A"
 		}));
 
@@ -21,6 +23,7 @@ module.exports = (function () {
 			title: "Crypto-game asset price list",
 			data: printData,
 			head: Object.keys(printData[0]),
+			specificFiltering: true,
 			pageLength: 50
 		});
 	});
