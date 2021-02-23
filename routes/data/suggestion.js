@@ -15,7 +15,7 @@ module.exports = (function () {
 		Status: i.status,
 		Priority: {
 			value: (i.priority === 255)
-				? "Not checked"
+				? "(not checked)"
 				: (i.priority ?? "N/A"),
 			dataOrder: (i.priority === null)
 				? -1
@@ -122,7 +122,9 @@ module.exports = (function () {
 			"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
 			Category: data.category,
 			Status: data.status,
-			Priority: data.priority ?? "N/A",
+			Priority: (data.priority === 255)
+				? "(not checked)"
+				: (data.priority ?? "N/A"),
 			Text: (data.text)
 				? sb.Utils.escapeHTML(data.text)
 				: "N/A",
