@@ -146,7 +146,7 @@ module.exports = (function () {
 					content: `Suggestion ID ${renderData.ID} from ${data.username} (${data.status})`
 				},
 				{
-					property: "descrption",
+					property: "description",
 					content: sb.Utils.wrapString(renderData.Notes, 100)
 				}
 			]
