@@ -7,6 +7,14 @@ append topheader
 		title Supinic
 	- }
 
+	- if (typeof openGraphDefinition !== "undefined")  {
+		each item in openGraphDefinition
+			meta(
+				property = "og:" + item.property
+				content = item.content
+			)
+	- }
+
 	link(rel="icon", type="image/x-icon", href="/public/img/hackerman.gif")
 	meta(name="robots" content="noindex")
 	script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js")
