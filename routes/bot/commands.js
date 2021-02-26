@@ -213,7 +213,17 @@ module.exports = (function () {
 
 		res.render("generic-detail-table", {
 			data,
-			title: `Command detail - ${data.Name}`
+			title: `Command detail - ${data.Name}`,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Command ${data.Name}`
+				},
+				{
+					property: "description",
+					content: data.Decription ?? "(no description available)"
+				}
+			]
 		});
 	});
 
