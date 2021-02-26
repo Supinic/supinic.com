@@ -143,11 +143,15 @@ module.exports = (function () {
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Suggestion ID ${renderData.ID} from ${data.username} (${data.status})`
+					content: `Suggestion ID ${data.ID} from ${data.username} (${data.status})`
 				},
 				{
 					property: "description",
-					content: sb.Utils.wrapString(renderData.Notes, 100)
+					content: sb.Utils.wrapString(renderData.Text, 100)
+				},
+				{
+					property: "url",
+					content: `https://supinic.com/data/suggestion/${data.ID}`
 				}
 			]
 		});
