@@ -147,7 +147,9 @@ module.exports = (function () {
 				},
 				{
 					property: "description",
-					content: sb.Utils.wrapString(renderData.Text, 100)
+					content: (data.text)
+						? sb.Utils.wrapString(data.Text, 200)
+						: "(no description available)"
 				},
 				{
 					property: "url",
