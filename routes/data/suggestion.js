@@ -139,7 +139,17 @@ module.exports = (function () {
 		}
 
 		res.render("generic-detail-table", {
-			data: renderData
+			data: renderData,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Suggestion ID ${renderData.ID} from ${data.username} (${data.status})`
+				},
+				{
+					property: "descrption",
+					content: sb.Utils.wrapString(renderData.Notes, 100)
+				}
+			]
 		});
 	});
 
