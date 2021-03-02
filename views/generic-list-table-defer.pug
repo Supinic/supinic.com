@@ -1,0 +1,65 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug
+		include ./datatables.pug
+
+		- if (typeof sortColumn === "undefined") {
+		-	sortColumn = 0;
+		- }
+		- if (typeof sortDirection === "undefined") {
+		-	sortDirection = "asc";
+		- }
+		- if (typeof extraScript !== "undefined") {
+			script.
+				!{extraScript}
+		- }
+		- if (typeof extraCSS !== "undefined") {
+			style(type="text/css").
+				!{extraCSS}
+		- }
+
+		script.
+			$(document).ready(() => {
+				if (typeof beforeTableInitalize === "function") {
+					beforeTableInitalize();
+				}
+
+				const data = JSON.parse(`!{JSON.stringify(data)}`);
+				const table = $("#table").DataTable({
+					data,
+					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
+					pageLength: #{pageLength},
+					order: [#{sortColumn}, "#{sortDirection}"],
+					deferRender: true
+				});
+			});
+		meta(charset="UTF-8")
+		style(type="text/css").
+			.searchable {
+				display: none;
+			}
+
+			td.searchFooter > input {
+				width: 100%;
+				max-width: 100%;
+				min-width: 50px;
+			}
+
+			td a {
+				display: block;
+			}
+
+			td {
+				word-break: break-word;
+			}
+
+			#table_wrapper {
+				padding: 10px 40px 0 40px !important;
+			}
+
+		include ./navigation.pug
+	body
+		block navigation
+		table(id="table", class="table table-striped table-bordered")
