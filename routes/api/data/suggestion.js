@@ -76,7 +76,7 @@ module.exports = (function () {
 	 * @apiPermission none
 	 **/
 	Router.get("/list/pretty", async (req, res) => {
-		const data = await Suggestion.list({ category, status, userID });
+		const data = await Suggestion.list();
 		const resultData = data.map(i => ({
 			Author: i.User_Name,
 			Text: (i.Text)
@@ -86,8 +86,8 @@ module.exports = (function () {
 			Priority: (i.Priority === 255)
 				? "(not checked)"
 				: (i.Priority ?? "N/A"),
-			Update: (i.lastUpdate)
-				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
+			Update: (i.Last_Update)
+				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
 				: "N/A",
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		}));
