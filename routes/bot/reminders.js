@@ -17,6 +17,11 @@ module.exports = (function () {
 		}
 
 		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		if (target === "lookup") {
+			const IDs = (req.query.IDs ?? "");
+			searchParams.set("IDs", IDs);
+		}
+
 		const { statusCode, body } = await sb.Got("Supinic", {
 			url: `bot/reminder/${target}`,
 			searchParams: searchParams.toString(),
@@ -82,6 +87,10 @@ module.exports = (function () {
 
 	Router.get("/history", async (req, res) => {
 		return await formatReminderList(req, res, "history");
+	});
+
+	Router.get("/lookup", async (req, res) => {
+		return await formatReminderList(req, res, "lookup");
 	});
 
 	Router.get("/:id", async (req, res) => {
