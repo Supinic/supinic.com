@@ -225,6 +225,16 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/lookup", async (req, res) => {
+		const { IDs } = req.query;
+		const numberIDs = IDs.split(",").map(Number);
+		if (!numberIDs.some(sb.Utils.isValidInteger)) {
+			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+		}
+
+		return await fetchReminderList(req, res, "specific", numberIDs);
+	});
+
 	/**
 	 * @api {get} /bot/reminder/<id> Reminder - check
 	 * @apiName GetReminder
@@ -254,16 +264,6 @@ module.exports = (function () {
 		}
 
 		return sb.WebUtils.apiSuccess(res, check.row.valuesObject);
-	});
-
-	Router.get("/lookup", async (req, res) => {
-		const { IDs } = req.query;
-		const numberIDs = IDs.split(",").map(Number);
-		if (!numberIDs.some(sb.Utils.isValidInteger)) {
-			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
-		}
-
-		return await fetchReminderList(req, res, "specific", numberIDs);
 	});
 
 	/**
