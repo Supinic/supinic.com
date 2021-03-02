@@ -62,6 +62,7 @@ module.exports = (function () {
 
 	Router.get("/list/pretty", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
+		const objectColumns = JSON.stringify(data.columns.map(i => ({ data: i })));
 
 		res.render("generic-list-table-defer", {
 			head: data.columns,
@@ -77,6 +78,7 @@ module.exports = (function () {
 							dataType: "json",
 							dataSrc: (response) => response.data
 						},
+						columns: ${objectColumns},
 						pageLength: 25,
 						order: [0, "asc"],
 				        processing: true,
