@@ -49,7 +49,7 @@ module.exports = (function () {
 
 		const printData = prettifyData(response.data);
 
-		res.render("generic-list-table", {
+		res.render("generic-list-table-defer", {
 			data: printData,
 			head: columnList,
 			pageLength: 25,
