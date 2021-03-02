@@ -37,6 +37,8 @@ module.exports = (function () {
 			return await super.selectCustom(q => q
 				.select("COUNT(*) AS Count")
 				.where("Status <> %s", "Quarantined")
+				.single()
+				.flat("Count")
 			);
 		}
 
