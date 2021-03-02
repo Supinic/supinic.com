@@ -55,7 +55,8 @@ module.exports = (function () {
 			pageLength: 25,
 			sortColumn: 5,
 			sortDirection: "desc",
-			specificFiltering: true
+			specificFiltering: true,
+			deferRender: true
 		});
 	});
 
