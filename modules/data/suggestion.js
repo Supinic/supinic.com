@@ -33,6 +33,13 @@ module.exports = (function () {
 			});
 		}
 
+		static async count () {
+			return await super.selectCustom(q => q
+				.select("COUNT(*) AS Count")
+				.where("Status <> %s", "Quarantined")
+			);
+		}
+
 		static get name () { return "track"; }
 		static get database () { return "data"; }
 		static get table () { return "Suggestion"; }
