@@ -29,9 +29,9 @@ module.exports = (function () {
 		});
 
 		if (statusCode !== 200) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "You must be logged in before viewing your reminders"
+			return res.status(statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(statusCode),
+				message: body.error.message
 			});
 		}
 
