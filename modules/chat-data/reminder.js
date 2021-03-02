@@ -45,7 +45,7 @@ module.exports = (function () {
 					rs.where("Active = %b", false);
 				}
 				else if (type === "specific") {
-					rs.where("ID IN %n+", specific);
+					rs.where("Reminder.ID IN %n+", specific);
 				}
 
 				return rs;
