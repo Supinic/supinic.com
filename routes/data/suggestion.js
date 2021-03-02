@@ -77,7 +77,7 @@ module.exports = (function () {
 							dataType: "json",
 							datSrc: (response) => response.data
 						},
-						pageLength: 25,ee
+						pageLength: 25,
 						order: [0, "asc"],
 				        processing: true,
 				        serverSide: true,
