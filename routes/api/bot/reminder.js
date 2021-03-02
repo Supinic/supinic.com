@@ -41,7 +41,7 @@ module.exports = (function () {
 		};
 	};
 
-	const fetchReminderList = async (req, res, type = "all") => {
+	const fetchReminderList = async (req, res, type = "all", specific = []) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
@@ -50,7 +50,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const data = await Reminder.listByUser(auth.userID, type);
+		const data = await Reminder.listByUser(auth.userID, type, specific);
 		return sb.WebUtils.apiSuccess(res, data);
 	}
 
@@ -254,6 +254,16 @@ module.exports = (function () {
 		}
 
 		return sb.WebUtils.apiSuccess(res, check.row.valuesObject);
+	});
+
+	Router.get("/lookup", async (req, res) => {
+		const { IDs } = req.query;
+		const numberIDs = IDs.split(",").map(Number);
+		if (!numberIDs.some(sb.Utils.isValidInteger)) {
+			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+		}
+
+		return await fetchReminderList(req, res, "specific", numberIDs);
 	});
 
 	/**
