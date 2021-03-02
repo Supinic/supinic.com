@@ -96,6 +96,18 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/suggestion/list Suggestion - Count
+	 * @apiName CountSuggestions
+	 * @apiDescription Posts the total amount of suggestions
+	 * @apiGroup Data
+	 * @apiPermission none
+	 **/
+	Router.get("/count", async (req, res) => {
+		const count = await Suggestion.count();
+		return sb.WebUtils.apiSuccess(res, { count });
+	});
+
+	/**
 	 * @api {get} /data/suggestion/:id Suggestion - Detail
 	 * @apiName GetSuggestionDetail
 	 * @apiDescription Posts details for a provided suggestion ID
