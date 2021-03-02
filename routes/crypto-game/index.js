@@ -18,7 +18,7 @@ module.exports = (function () {
 			[priceColumn]: {
 				dataOrder: i.price ?? 0,
 				value: (i.price !== null)
-					? `${sb.Utils.round(i.price, 9, { direction: "floor" })}`
+					? `${sb.Utils.round(i.price, 9, { direction: "floor" }).toFixed(9)}`
 					: "N/A"
 			}
 		}));
