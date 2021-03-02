@@ -7,6 +7,12 @@ module.exports = (function () {
 
 	const Channel = require("../../modules/chat-data/channel.js");
 
+	const columns = {
+		list: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
+		history: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
+		lookup: ["Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "ID"]
+	};
+
 	const formatReminderList = async (req, res, target) => {
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);
 		if (!userID) {
@@ -47,7 +53,12 @@ module.exports = (function () {
 			}
 
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
-			const obj = {
+			const obj = {};
+			if (target === "lookup") {
+				obj.Active = i.active ? "Yes" : "No";
+			}
+
+			Object.assign(obj, {
 				Created: new sb.Date(i.created).format("Y-m-d"),
 				Sender: i.author,
 				Recipient: i.target,
@@ -59,7 +70,7 @@ module.exports = (function () {
 						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
-			};
+			});
 
 			return obj;
 		});
@@ -68,7 +79,7 @@ module.exports = (function () {
 		return res.render("generic-list-table", {
 			data,
 			title: `Reminder list - ${titleType}`,
-			head: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
+			head: columns[target],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "desc",
