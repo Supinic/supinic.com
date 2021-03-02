@@ -17,6 +17,11 @@ html
 		- if (typeof head === "undefined") {
 		-    head = [];
 		- }
+		- if (typeof deferRender === "undefined") {
+		-    deferRender = false;
+		- }
+
+		deferRender:    true,
 
 		- if (typeof extraScript !== "undefined") {
 			script.
@@ -37,7 +42,8 @@ html
 				const table = $("#table").DataTable({
 					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
 					pageLength: #{pageLength},
-					order: [#{sortColumn}, "#{sortDirection}"]
+					order: [#{sortColumn}, "#{sortDirection}"],
+					deferRender: #{deferRender}
 				});
 
 				if (#{specificFiltering}) {
