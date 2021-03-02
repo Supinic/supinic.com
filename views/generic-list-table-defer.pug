@@ -20,21 +20,6 @@ html
 				!{extraCSS}
 		- }
 
-		script.
-			$(document).ready(() => {
-				if (typeof beforeTableInitalize === "function") {
-					beforeTableInitalize();
-				}
-
-				const data = JSON.parse(`!{JSON.stringify(data)}`);
-				const table = $("#table").DataTable({
-					data,
-					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
-					pageLength: #{pageLength},
-					order: [#{sortColumn}, "#{sortDirection}"],
-					deferRender: true
-				});
-			});
 		meta(charset="UTF-8")
 		style(type="text/css").
 			.searchable {
