@@ -53,9 +53,9 @@ module.exports = (function () {
 	Router.get("/:id", async (req, res) => {
 		const { statusCode, body } = await sb.Got("Supinic", "/data/bad-apple/" + req.params.id);
 		if (statusCode !== 200) {
-			res.status(statusCode).render("error", {
+			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),
-				message: body.data.error.message
+				message: body.error.message
 			});
 		}
 
