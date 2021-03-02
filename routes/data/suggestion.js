@@ -75,7 +75,7 @@ module.exports = (function () {
 							url: "https://supinic.com/api/data/suggestion/list/pretty",
 							type: "GET",
 							dataType: "json",
-							datSrc: (response) => response.data
+							dataSrc: (response) => response.data
 						},
 						pageLength: 25,
 						order: [0, "asc"],
