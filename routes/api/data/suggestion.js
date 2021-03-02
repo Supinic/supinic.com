@@ -69,6 +69,33 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/suggestion/list Suggestion - List - Pretty
+	 * @apiName PrettyListSuggestions
+	 * @apiDescription Posts a "pretty" list of suggestions - for internal use only
+	 * @apiGroup Data
+	 * @apiPermission none
+	 **/
+	Router.get("/list/pretty", async (req, res) => {
+		const data = await Suggestion.list({ category, status, userID });
+		const resultData = data.map(i => ({
+			Author: i.User_Name,
+			Text: (i.Text)
+				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
+				: "N/A",
+			Status: i.Status,
+			Priority: (i.Priority === 255)
+				? "(not checked)"
+				: (i.Priority ?? "N/A"),
+			Update: (i.lastUpdate)
+				? sb.Utils.timeDelta(new sb.Date(i.lastUpdate))
+				: "N/A",
+			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
+		}));
+
+		return sb.WebUtils.apiSuccess(res, resultData);
+	});
+
+	/**
 	 * @api {get} /data/suggestion/:id Suggestion - Detail
 	 * @apiName GetSuggestionDetail
 	 * @apiDescription Posts details for a provided suggestion ID
