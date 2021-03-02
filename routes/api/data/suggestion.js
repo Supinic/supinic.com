@@ -92,7 +92,7 @@ module.exports = (function () {
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		}));
 
-		return sb.WebUtils.apiSuccess(res, resultData);
+		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	/**
