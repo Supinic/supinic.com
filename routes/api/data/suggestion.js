@@ -96,15 +96,16 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /data/suggestion/list Suggestion - Count
-	 * @apiName CountSuggestions
-	 * @apiDescription Posts the total amount of suggestions
+	 * @api {get} /data/suggestion/list Suggestion - Meta
+	 * @apiName SuggestionsMeta
+	 * @apiDescription Posts metadata about suggestions - internal use only
 	 * @apiGroup Data
 	 * @apiPermission none
 	 **/
-	Router.get("/count", async (req, res) => {
+	Router.get("/meta", async (req, res) => {
+		const columns = ["Author", "Text", "Status", "Priority", "Update", "ID"];
 		const count = await Suggestion.count();
-		return sb.WebUtils.apiSuccess(res, { count });
+		return sb.WebUtils.apiSuccess(res, { columns, count });
 	});
 
 	/**

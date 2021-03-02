@@ -61,9 +61,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/list/pretty", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/suggestion/count").json();
-		
+		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
+
 		res.render("generic-list-table-defer", {
+			head: data.columns,
 			script: `
 				$(document).ready(async () => {
 					const response = await fetch("https://supinic.com/api/data/suggestion/list/pretty");
@@ -76,7 +77,7 @@ module.exports = (function () {
 							dataType: "json",
 							datSrc: (response) => response.data
 						},
-						pageLength: 25,
+						pageLength: 25,ee
 						order: [0, "asc"],
 				        processing: true,
 				        serverSide: true,
