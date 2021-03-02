@@ -8,15 +8,19 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "crypto-game/asset/list").json();
 
 		const baseline = data.find(i => i.baseline);
+		const priceColumn = `Price (${baseline.code})`;
 		const printData = data.map(i => ({
 			Code: (i.baseline)
 				? `${i.code} (baseline)`
 				: i.code,
 			Name: i.name ?? "N/A",
 			Type: i.type ?? "N/A",
-			Price: (i.price !== null)
-				? `${baseline.code} ${sb.Utils.round(i.price, 9, { direction: "floor" })}`
-				: "N/A"
+			[priceColumn]: {
+				dataOrder: i.price ?? 0,
+				value: (i.price !== null)
+					? `${sb.Utils.round(i.price, 9, { direction: "floor" })}`
+					: "N/A"
+			}
 		}));
 
 		res.render("generic-list-table", {
