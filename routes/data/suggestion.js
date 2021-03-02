@@ -60,6 +60,27 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/list/pretty", async (req, res) => {
+		res.render("generic-list-table-defer", {
+			head: columnList,
+			pageLength: 25,
+			sortColumn: 5,
+			sortDirection: "desc",
+			extraScript: `
+				$(document).ready(async () => {
+					const response = await fetch("https://supinic.com/api/data/suggestion/list/pretty");
+					const json = await response.json();					
+					
+					const table = $("#table").DataTable({
+						data: json.data,
+						lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
+						deferRender: true
+					});
+				});
+			`
+		});
+	});
+
 	Router.get("/stats", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
