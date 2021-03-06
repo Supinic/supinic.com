@@ -33,7 +33,10 @@ module.exports = (function () {
 					value: i.fps ?? "N/A",
 					dataOrder: i.fps ?? 0
 				},
-				ID: detailLink
+				ID: {
+					value: detailLink,
+					dataOrder: i.ID
+				}
 			};
 		});
 
