@@ -7,11 +7,8 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/bad-apple/list").json();
 		const renderData = data.map(i => {
-			let detailLink = "N/A";
-			if (i.notes) {
-				detailLink = `<a href="/data/bad-apple/${i.ID}" title="More notes available">📝</a>`;
-			}
-
+			const notesString = (i.notes) ? " 📝" : "";
+			const detailLink = `<a href="/data/bad-apple/${i.ID}">${i.ID}${notesString}</a>`;
 			const deviceLink = (i.device && i.link)
 				? `<a href="${i.link}">${i.device}</a>`
 				: (i.device)
@@ -36,7 +33,7 @@ module.exports = (function () {
 					value: i.fps ?? "N/A",
 					dataOrder: i.fps ?? 0
 				},
-				Notes: detailLink
+				ID: detailLink
 			};
 		});
 
@@ -61,6 +58,7 @@ module.exports = (function () {
 
 		const detail = body.data;
 		const data = {
+			ID: detail.ID,
 			Device: detail.device,
 			Link: `<a href="${detail.link}">${detail.link}</a>`,
 			Type: detail.type ?? "N/A",
