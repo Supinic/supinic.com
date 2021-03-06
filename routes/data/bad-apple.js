@@ -9,8 +9,10 @@ module.exports = (function () {
 		const renderData = data.map(i => {
 			const notesString = (i.notes) ? " 📝" : "";
 			const detailLink = `<a href="/data/bad-apple/${i.ID}">${i.ID}${notesString}</a>`;
+
+			const timestamp = (i.timestamp) ? `?t=${i.timestamp}` : "";
 			const deviceLink = (i.device && i.link)
-				? `<a href="${i.link}">${i.device}</a>`
+				? `<a href="https://youtu.be/${i.link}${timestamp}">${i.device}</a>`
 				: (i.device)
 					? i.device
 					: "N/A"
