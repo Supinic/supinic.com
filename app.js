@@ -280,10 +280,6 @@
 		res.send("User-agent: Googlebot\nAllow: /\nUser-Agent: *\nDisallow: /");
 	});
 
-	app.get("/favicon.ico", (req, res) => {
-		res.redirect("/public/img/hackerman.gif");
-	});
-
 	await app.all("*", async (req, res, next) => {
 		if (!req.originalUrl.includes("api")) {
 			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
