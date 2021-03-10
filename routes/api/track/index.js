@@ -121,6 +121,7 @@ module.exports = (function () {
 		Published: row.Published,
 		Legacy_ID: row.Legacy_ID,
 		Tags: row.Tags,
+		Authors: row.Authors,
 		Favourites: row.Favourites
 	}));
 
