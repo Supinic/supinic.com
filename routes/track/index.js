@@ -14,37 +14,7 @@ module.exports = (function () {
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
-	const formatListItem = (row, obj, authors = [], listType) => {
-		obj.Name = sb.Utils.tag.trim `					
-			<a rel="noopener noreferrer" target="_href" href="${row.parsedLink}">${row.name ?? row.link}</a>
-		`;
-		obj.Published = {
-			value: (row.published) ? new sb.Date(row.published).format("Y-m-d") : "N/A",
-			dataOrder: (row.published) ? new sb.Date(row.published).valueOf() : 0
-		};
-		obj.Author = (row.authors && row.authors.length !== 0)
-			? row.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
-			: "N/A";
-
-		if (listType === "todo") {
-			obj["Added to list"] = {
-				value: (row.addedOn) ? new sb.Date(row.addedOn).format("Y-m-d H:i") : "N/A",
-				dataOrder: (row.addedOn) ? new sb.Date(row.addedOn).valueOf() : 0
-			};
-		}
-
-		let imageClass = "";
-		if (typeof row.isFavourite === "boolean") {
-			imageClass = (row.isFavourite) ? "favourite active" : "favourite inactive";
-		}
-
-		obj.Favs = `<div class="${imageClass}">${row.favourites}</div>`;
-		obj.ID = `<a target="_href" href="/track/detail/${row.ID}">${row.ID}</a>`;
-
-		return obj;
-	};
-
-	const fetchList = async (req, res, listType) => {
+	const fetchList = async (req, res, listType, inputData = {}) => {
 		let searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
 		let sortColumn = 0;
 
@@ -54,6 +24,10 @@ module.exports = (function () {
 		}
 		else if (listType === "gachi") {
 			searchParams.set("includeTags", "6");
+			sortColumn = 4;
+		}
+		else if (listType === "lookup") {
+			searchParams.set("specificIDs", inputData.specificIDs);
 			sortColumn = 4;
 		}
 		else {
@@ -89,7 +63,33 @@ module.exports = (function () {
 					: "";
 			}
 
-			return formatListItem(i, obj, authors, listType);
+			obj.Name = sb.Utils.tag.trim `					
+				<a rel="noopener noreferrer" target="_href" href="${i.parsedLink}">${i.name ?? i.link}</a>
+			`;
+			obj.Published = {
+				value: (i.published) ? new sb.Date(i.published).format("Y-m-d") : "N/A",
+				dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
+			};
+			obj.Author = (i.authors.length !== 0)
+				? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
+				: "N/A";
+
+			if (listType === "todo") {
+				obj["Added to list"] = {
+					value: (i.addedOn) ? new sb.Date(i.addedOn).format("Y-m-d H:i") : "N/A",
+					dataOrder: (i.addedOn) ? new sb.Date(i.addedOn).valueOf() : 0
+				};
+			}
+
+			let imageClass = "";
+			if (typeof i.isFavourite === "boolean") {
+				imageClass = (i.isFavourite) ? "favourite active" : "favourite inactive";
+			}
+
+			obj.Favs = `<div class="${imageClass}">${i.favourites}</div>`;
+			obj.ID = `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`;
+
+			return obj;
 		});
 
 		res.render("generic-list-table", {
@@ -165,28 +165,9 @@ module.exports = (function () {
 	};
 
 	Router.get("/lookup", async (req, res) => {
-		const list = (typeof req.query.ID === "string")
-			? [req.query.ID]
-			: req.query.ID;
-
-		const { data } = await sb.Got("Supinic", {
-			url: "track/lookup",
-			searchParams: list.map(i => `ID=${i}`).join("&")
-		}).json();
-
-		const authorIDs = new Set(data.map(i => i.authors).flat());
-		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
-			.where("ID IN %n+", Array.from(authorIDs))
-		)).map(i => [i.ID, i.Name]));
-
-		const printData = data.map(i => formatListItem(i, {}, authors, null));
-		res.render("generic-list-table", {
-			title: `Lookup track list`,
-			data: printData,
-			head: ["Name", "Published", "Author", "Favs", "ID"],
-			sortColumn: 4,
-			pageLength: 25,
-			sortDirection: "asc"
+		const list = (typeof req.query.ID === "string") ? [req.query.ID] : req.query.ID;
+		await fetchList(req, res, "lookup", {
+			specificIDs: list
 		});
 	});
 

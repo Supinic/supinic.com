@@ -263,6 +263,10 @@ module.exports = (function () {
 				);
 			}
 
+			if (options.specificIDs) {
+				queries.push(rs => rs.where("Track.ID IN %n+", options.specificIDs));
+			}
+
 			const data = await Track.selectMultipleCustom(rs => {
 				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")

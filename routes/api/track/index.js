@@ -199,33 +199,6 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /track/lookup/ Track - Lookup
-	 * @apiName LookupTrackList
-	 * @apiDescription Fetches a modified list of Tracks
-	 * @apiGroup Track-Lookup
-	 * @apiPermission any
-	 * @apiSuccess {Object[]} track The list of Tracks, exactly the same as in the GetTrackList endpoint
-	 */
-	Router.get("/lookup", async (req, res) => {
-		const { ID } = req.query;
-		if (!ID) {
-			return sb.WebUtils.apiSuccess(res, []);
-		}
-
-		const numberIDs = (typeof ID === "string")
-			? [ID].map(Number)
-			: ID.map(Number);
-
-		if (!numberIDs.some(sb.Utils.isValidInteger)) {
-			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
-		}
-
-		const rawData = await Track.list(numberIDs);
-		const list = formatListResponse(rawData);
-		return sb.WebUtils.apiSuccess(res, list);
-	});
-
-	/**
 	 * @api {get} /track/search Track - Search
 	 * @apiName SearchTrackList
 	 * @apiDescription Fetches a filtered list of Tracks based on query
@@ -240,6 +213,7 @@ module.exports = (function () {
 	 * @apiParam {string} checkUserIDFavourite If set, will check if given user or userID has results songs in their favourites.
 	 * @apiParam {boolean} hasLegacyID If true, filters tracks that are also present in the deprecated list
 	 * @apiParam {boolean} includeYoutubeReuploads If true, each track will contain an array with its possible youtube reuploads
+	 * @apiParam {string[]} specificIDs If provided, only given IDs will be searched
 	 * @apiParam {string} name Filter by name
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} track The list of Tracks
@@ -273,7 +247,8 @@ module.exports = (function () {
 			excludeTags,
 			hasLegacyID,
 			name,
-			includeYoutubeReuploads
+			includeYoutubeReuploads,
+			specificIDs
 		} = req.query;
 
 		const data = await Track.search({
@@ -284,6 +259,7 @@ module.exports = (function () {
 			checkUserIDFavourite,
 			checkUsernameFavourite,
 			includeYoutubeReuploads,
+			specificIDs,
 			authorID: Number(authorID),
 			authorName: authorName,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
