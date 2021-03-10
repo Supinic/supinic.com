@@ -78,7 +78,7 @@ module.exports = (function () {
 		};
 
 		res.render("generic-detail-table", {
-			title: `${detail.ID} Bad Apple! on ${detail.device}`,
+			title: `Bad Apple! ${detail.device} (ID ${detail.ID})`,
 			data
 		});
 	});
