@@ -14,7 +14,7 @@ module.exports = (function () {
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
-	const formatListItem = (row, obj, authors = []) => {
+	const formatListItem = (row, obj, authors = [], listType) => {
 		obj.Name = sb.Utils.tag.trim `					
 			<a rel="noopener noreferrer" target="_href" href="${row.parsedLink}">${row.name ?? row.link}</a>
 		`;
@@ -89,7 +89,7 @@ module.exports = (function () {
 					: "";
 			}
 
-			return formatListItem(i, obj, authors);
+			return formatListItem(i, obj, authors, listType);
 		});
 
 		res.render("generic-list-table", {
@@ -174,12 +174,12 @@ module.exports = (function () {
 			searchParams: list.map(i => `ID=${i}`).join("&")
 		}).json();
 
-		const authorIDs = new Set(raw.map(i => i.authors).flat());
+		const authorIDs = new Set(data.map(i => i.authors).flat());
 		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
 			.where("ID IN %n+", Array.from(authorIDs))
 		)).map(i => [i.ID, i.Name]));
 
-		const printData = data.map(i => formatListItem(i, {}, authors));
+		const printData = data.map(i => formatListItem(i, {}, authors, null));
 		res.render("generic-list-table", {
 			title: `Lookup track list`,
 			data: printData,
