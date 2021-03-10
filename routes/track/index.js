@@ -184,9 +184,9 @@ module.exports = (function () {
 			title: `Lookup track list`,
 			data: printData,
 			head: ["Name", "Published", "Author", "Favs", "ID"],
-			sortColumn,
+			sortColumn: 4,
 			pageLength: 25,
-			sortDirection: "desc"
+			sortDirection: "asc"
 		});
 	});
 
