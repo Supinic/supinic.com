@@ -74,7 +74,7 @@ module.exports = (function () {
 			Height: detail.height ?? "N/A",
 			Width: detail.width ?? "N/A",
 			FPS: detail.fps ?? "N/A",
-			Notes: detail.notes ?? "N/A"
+			Notes: (detail.notes) ? detail.notes.replace(/\n/g, "<br>") : "N/A"
 		};
 
 		res.render("generic-detail-table", {
