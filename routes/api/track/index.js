@@ -259,9 +259,9 @@ module.exports = (function () {
 			checkUserIDFavourite,
 			checkUsernameFavourite,
 			includeYoutubeReuploads,
-			specificIDs,
 			authorID: Number(authorID),
 			authorName: authorName,
+			specificIDs: (specificIDs) ? specificIDs.split(",").map(Number) : null,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
 			excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null,
 		});
