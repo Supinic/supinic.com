@@ -27,7 +27,9 @@ module.exports = (function () {
 			sortColumn = 4;
 		}
 		else if (listType === "lookup") {
-			searchParams.set("specificIDs", inputData.specificIDs);
+			for (const ID of inputData.specificIDs) {
+				searchParams.set("ID", ID);
+			}
 			sortColumn = 4;
 		}
 		else {
