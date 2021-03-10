@@ -110,6 +110,20 @@ module.exports = (function () {
 		}
 	};
 
+	const formatListResponse = (data) => data.map(row => ({
+		ID: row.ID,
+		Link: row.Link,
+		Parsed_Link: row.Parsed_Link,
+		Video_Type: row.Video_Type,
+		Track_Type: row.Track_Type,
+		Duration: row.Duration,
+		Available: row.Available,
+		Published: row.Published,
+		Legacy_ID: row.Legacy_ID,
+		Tags: row.Tags,
+		Favourites: row.Favourites
+	}));
+
 	Router.get("/", (req, res) => res.sendStatus(200));
 
 	/**
@@ -179,20 +193,31 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const rawData = await Track.list();
-		const list = rawData.map(row => ({
-			ID: row.ID,
-			Link: row.Link,
-			Parsed_Link: row.Parsed_Link,
-			Video_Type: row.Video_Type,
-			Track_Type: row.Track_Type,
-			Duration: row.Duration,
-			Available: row.Available,
-			Published: row.Published,
-			Legacy_ID: row.Legacy_ID,
-			Tags: row.Tags,
-			Favourites: row.Favourites
-		}));
+		const list = formatListResponse(rawData);
+		return sb.WebUtils.apiSuccess(res, list);
+	});
 
+	/**
+	 * @api {get} /track/lookup/ Track - Lookup
+	 * @apiName LookupTrackList
+	 * @apiDescription Fetches a modified list of Tracks
+	 * @apiGroup Track-Lookup
+	 * @apiPermission any
+	 * @apiSuccess {Object[]} track The list of Tracks, exactly the same as in the GetTrackList endpoint
+	 */
+	Router.get("/lookup", async (req, res) => {
+		const { ID } = req.query;
+		if (!ID) {
+			return sb.WebUtils.apiSuccess(res, []);
+		}
+
+		const numberIDs = IDs.map(Number);
+		if (!numberIDs.some(sb.Utils.isValidInteger)) {
+			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+		}
+
+		const rawData = await Track.list(numberIDs);
+		const list = formatListResponse(rawData);
 		return sb.WebUtils.apiSuccess(res, list);
 	});
 
