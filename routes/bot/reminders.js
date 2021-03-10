@@ -62,7 +62,13 @@ module.exports = (function () {
 				Created: new sb.Date(i.created).format("Y-m-d"),
 				Sender: i.author,
 				Recipient: i.target,
-				Text: i.text,
+			});
+
+			if (target !== "inactive") {
+				obj.Text = i.text;
+			}
+
+			Object.assign(obj, {
 				Scheduled: {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
 					value: (schedule)
@@ -75,10 +81,10 @@ module.exports = (function () {
 			return obj;
 		});
 
-		const titleType = (target === "history") ? "historical (inactive)" : "active";
+		const titleType = (target === "history") ? "inactive" : (target === "lookup") ? "lookup" : "active";
 		return res.render("generic-list-table", {
 			data,
-			title: `Reminder list - ${titleType}`,
+			title: `Your reminder list - ${titleType}`,
 			head: columns[target],
 			pageLength: 25,
 			sortColumn: 0,
