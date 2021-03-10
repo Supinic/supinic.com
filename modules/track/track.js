@@ -55,7 +55,7 @@ module.exports = (function () {
 					.groupBy("Track.ID");
 
 				if (specificIDs) {
-					q.where("ID IN %n+", specificIDs);
+					rs.where("ID IN %n+", specificIDs);
 				}
 
 				return rs;

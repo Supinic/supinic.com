@@ -211,7 +211,10 @@ module.exports = (function () {
 			return sb.WebUtils.apiSuccess(res, []);
 		}
 
-		const numberIDs = ID.map(Number);
+		const numberIDs = (typeof ID === "string")
+			? [ID].map(Number)
+			: ID.map(Number);
+
 		if (!numberIDs.some(sb.Utils.isValidInteger)) {
 			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
 		}
