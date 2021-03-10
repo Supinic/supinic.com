@@ -27,7 +27,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
 		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
-			return sb.WebUtils.apiFail(res, 403, "Reminder was not created by you and you aren't its target");
+			return sb.WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
 
 		return {
