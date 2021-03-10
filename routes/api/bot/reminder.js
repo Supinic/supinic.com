@@ -29,9 +29,6 @@ module.exports = (function () {
 		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
 			return sb.WebUtils.apiFail(res, 403, "Reminder was not created by you and you aren't its target");
 		}
-		else if (!row.values.Active) {
-			return sb.WebUtils.apiFail(res, 400, "Reminder is not active");
-		}
 
 		return {
 			success: true,
