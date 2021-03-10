@@ -12,7 +12,7 @@ module.exports = (function () {
 
 			const timestamp = (i.timestamp) ? `?t=${i.timestamp}` : "";
 			const deviceLink = (i.device && i.link)
-				? `<a href="https://youtu.be/${i.link}${timestamp}">${i.device}</a>`
+				? `<a href="//youtu.be/${i.link}${timestamp}">${i.device}</a>`
 				: (i.device)
 					? i.device
 					: "N/A"
@@ -62,10 +62,11 @@ module.exports = (function () {
 		}
 
 		const detail = body.data;
+		const timestamp = (detail.timestamp) ? `?t=${detail.timestamp}` : "";
 		const data = {
 			ID: detail.ID,
 			Device: detail.device,
-			Link: `<a href="${detail.link}">${detail.link}</a>`,
+			Link: `<a href="//youtu.be/${detail.link}${timestamp}">${detail.link}</a>`,
 			Type: detail.type ?? "N/A",
 			Published: (detail.published)
 				? new sb.Date(detail.published).format("Y-m-d")
