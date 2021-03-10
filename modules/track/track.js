@@ -14,46 +14,54 @@ module.exports = (function () {
 	const UserAlias = require("../chat-data/user-alias.js");
 
 	class Track extends TemplateModule {
-		static async list () {
-			return (await super.selectMultipleCustom(rs => rs
-				.select("Video_Type.Link_Prefix AS Prefix")
-				.select("Gachi.ID AS Legacy_ID")
-				.select("COUNT(User_Favourite.Track) AS Favourites")
-				.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
-				.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
-				.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
-				.leftJoin({
-					toDatabase: "music",
-					toTable: "User_Favourite",
-					on: "User_Favourite.Track = Track.ID"
-				})
-				.leftJoin({
-					toDatabase: "music",
-					toTable: "Track_Author",
-					on: "Track_Author.Track = Track.ID"
-				})
-				.leftJoin({
-					toDatabase: "data",
-					toTable: "Gachi",
-					on: "Gachi.Link = Track.Link"
-				})
-				.leftJoin({
-					toDatabase: "data",
-					toTable: "Video_Type",
-					on: "Track.Video_Type = Video_Type.ID"
-				})
-				.leftJoin({
-					toDatabase: "music",
-					toTable: "Track_Tag",
-					on: "Track_Tag.Track = Track.ID"
-				})
-				.leftJoin({
-					toDatabase: "music",
-					toTable: "Alias",
-					on: "Alias.Target_Table = 'Track' AND Alias.Target_ID = Track.ID"
-				})
-				.groupBy("Track.ID")
-			)).map(row => {
+		static async list (specificIDs) {
+			const rawData = await super.selectMultipleCustom(rs => {
+				rs.select("Video_Type.Link_Prefix AS Prefix")
+					.select("Gachi.ID AS Legacy_ID")
+					.select("COUNT(User_Favourite.Track) AS Favourites")
+					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
+					.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
+					.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
+					.leftJoin({
+						toDatabase: "music",
+						toTable: "User_Favourite",
+						on: "User_Favourite.Track = Track.ID"
+					})
+					.leftJoin({
+						toDatabase: "music",
+						toTable: "Track_Author",
+						on: "Track_Author.Track = Track.ID"
+					})
+					.leftJoin({
+						toDatabase: "data",
+						toTable: "Gachi",
+						on: "Gachi.Link = Track.Link"
+					})
+					.leftJoin({
+						toDatabase: "data",
+						toTable: "Video_Type",
+						on: "Track.Video_Type = Video_Type.ID"
+					})
+					.leftJoin({
+						toDatabase: "music",
+						toTable: "Track_Tag",
+						on: "Track_Tag.Track = Track.ID"
+					})
+					.leftJoin({
+						toDatabase: "music",
+						toTable: "Alias",
+						on: "Alias.Target_Table = 'Track' AND Alias.Target_ID = Track.ID"
+					})
+					.groupBy("Track.ID");
+
+				if (specificIDs) {
+					q.where("ID IN %n+", specificIDs);
+				}
+
+				return rs;
+			});
+
+			return rawData.map(row => {
 				if (row.Link) {
 					row.Parsed_Link = row.Prefix.replace(videoTypePrefix, row.Link);
 				}
