@@ -223,8 +223,12 @@ module.exports = (function () {
 	});
 
 	Router.get("/lookup", async (req, res) => {
-		const { IDs } = req.query;
-		const numberIDs = IDs.split(",").map(Number);
+		const { ID } = req.query;
+		if (!ID) {
+			return sb.WebUtils.apiSuccess(res, []);
+		}
+
+		const numberIDs = IDs.map(Number);
 		if (!numberIDs.some(sb.Utils.isValidInteger)) {
 			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
 		}
