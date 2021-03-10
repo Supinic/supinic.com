@@ -4,7 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	// const Author = require("../../modules/track/author.js");
+	const Author = require("../../modules/track/author.js");
 
 	const subroutes = [
 		["author", "author.js"],
@@ -14,7 +14,7 @@ module.exports = (function () {
 
 	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
 
-	const formatListItem = (row, obj) => {
+	const formatListItem = (row, obj, authors = []) => {
 		obj.Name = sb.Utils.tag.trim `					
 			<a rel="noopener noreferrer" target="_href" href="${row.parsedLink}">${row.name ?? row.link}</a>
 		`;
@@ -22,7 +22,7 @@ module.exports = (function () {
 			value: (row.published) ? new sb.Date(row.published).format("Y-m-d") : "N/A",
 			dataOrder: (row.published) ? new sb.Date(row.published).valueOf() : 0
 		};
-		obj.Author = (row.authors.length !== 0)
+		obj.Author = (row.authors && row.authors.length !== 0)
 			? row.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
 			: "N/A";
 
@@ -72,10 +72,10 @@ module.exports = (function () {
 			searchParams: searchParams.toString()
 		}).json();
 
-		// const authorIDs = new Set(raw.map(i => i.authors).flat());
-		// const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
-		// 	.where("ID IN %n+", Array.from(authorIDs))
-		// )).map(i => [i.ID, i.Name]));
+		const authorIDs = new Set(raw.map(i => i.authors).flat());
+		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
+			.where("ID IN %n+", Array.from(authorIDs))
+		)).map(i => [i.ID, i.Name]));
 
 		const data = raw.map(i => {
 			const obj = {};
@@ -89,7 +89,7 @@ module.exports = (function () {
 					: "";
 			}
 
-			return formatListItem(i, obj);
+			return formatListItem(i, obj, authors);
 		});
 
 		res.render("generic-list-table", {
@@ -169,18 +169,21 @@ module.exports = (function () {
 			? [req.query.ID]
 			: req.query.ID;
 
-		const data = await sb.Got("Supinic", {
+		const { data } = await sb.Got("Supinic", {
 			url: "track/lookup",
-			searchParams: {
-				ID: list
-			}
+			searchParams: list.map(i => `ID=${i}`).join("&")
 		}).json();
 
-		const printData = data.map(i => formatListItem(i, {}));
+		const authorIDs = new Set(raw.map(i => i.authors).flat());
+		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
+			.where("ID IN %n+", Array.from(authorIDs))
+		)).map(i => [i.ID, i.Name]));
+
+		const printData = data.map(i => formatListItem(i, {}, authors));
 		res.render("generic-list-table", {
 			title: `Lookup track list`,
 			data: printData,
-			head: Object.keys(printData[0]),
+			head: ["Name", "Published", "Author", "Favs", "ID"],
 			sortColumn,
 			pageLength: 25,
 			sortDirection: "desc"
