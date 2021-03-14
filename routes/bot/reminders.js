@@ -125,7 +125,7 @@ module.exports = (function () {
 					element.classList.add("loading");
 					element.textContent = "";
 					
-					const { data } = await fetch("/api/reminder/" + ID, { method: "DELETE" })
+					const { data } = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
 						.catch(i => i.json());
 					
