@@ -163,7 +163,8 @@ module.exports = (function () {
 							activeElement.textContent = "No";
 						}
 						
-						row.classList.add("unset");						
+						row.classList.add("deactivated");
+						element.classList.add("inactive");					
 						console.log(response.data.message + "!");
 					}
 				}
