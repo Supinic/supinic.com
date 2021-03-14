@@ -90,10 +90,16 @@ module.exports = (function () {
 				div.clickable {
 					cursor: pointer;
 				}
-				div.unset-reminder { 					
+				div.unset-reminder.active { 					
 				    background-position: center; 
 				    background-repeat: no-repeat;
 				    background-size: contain;
+			    }
+				div.unset-reminder.active:before { 
+					content: "❌"
+			    }
+			    div.unset-reminder.inactive:before { 
+					content: "✅"
 			    }
 			    div.unset-reminder.loading {
 			        background-image: url("/public/img/ppCircle.gif");
@@ -104,9 +110,11 @@ module.exports = (function () {
 					const unsetList = document.getElementsByClassName("unset-reminder");
 					for (const element of unsetList) {
 						if (element.textContent === "N/A") {
+							element.classList.add("inactive");
 							continue;
 						}
 						
+						element.classList.add("active");
 						element.classList.add("clickable");
 						element.parentElement.addEventListener("click", () => unsetReminder(element));
 					}
@@ -124,6 +132,8 @@ module.exports = (function () {
 					confirm("Do you really want to unset this reminder? (ID " + ID + ")");
 					
 					const previousContent = element.textContent;
+					element.classList.remove("active");
+					element.classList.remove("clickable");
 					element.classList.add("loading");
 					element.textContent = "";
 					
@@ -135,9 +145,13 @@ module.exports = (function () {
 					element.textContent = previousContent;
 					
 					if (response.statusCode === 403) {
+						element.classList.add("active");
+						element.classList.add("clickable");
 						alert("Your session expired! Please log in again.");
 					}
 					else if (response.statusCode !== 200) {
+						element.classList.add("active");
+						element.classList.add("clickable");
 						alert("An unknown error occured!");
 					}
 					else {
@@ -148,6 +162,7 @@ module.exports = (function () {
 						
 						element.textContent = "✔";	
 						element.classList.remove("clickable");
+						element.classList.add("inactive");
 						console.log(response.data.message + "!");
 					}
 				}
