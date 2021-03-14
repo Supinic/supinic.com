@@ -132,7 +132,10 @@ module.exports = (function () {
 					const row = element.parentElement.parentElement;
 					const ID = Array.from(row.children).find(i => i.getAttribute("field") === "ID").textContent;	
 					
-					confirm("Do you really want to unset this reminder? (ID " + ID + ")");
+					const approved = confirm("Do you really want to unset this reminder? (ID " + ID + ")");
+					if (!approved) {
+						return;
+					}
 					
 					const previousContent = element.textContent;
 					element.classList.remove("active");
