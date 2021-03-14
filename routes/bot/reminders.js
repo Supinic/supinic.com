@@ -24,8 +24,8 @@ module.exports = (function () {
 
 		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
 		if (target === "lookup") {
-			const IDs = (req.query.IDs ?? "");
-			searchParams.set("IDs", IDs);
+			const ID = (req.query.ID ?? "");
+			searchParams.set("ID", ID);
 		}
 
 		const { statusCode, body } = await sb.Got("Supinic", {
