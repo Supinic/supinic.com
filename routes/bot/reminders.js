@@ -8,9 +8,9 @@ module.exports = (function () {
 	const Channel = require("../../modules/chat-data/channel.js");
 
 	const columns = {
-		list: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
+		list: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID", "Unset"],
 		history: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
-		lookup: ["Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "ID"]
+		lookup: ["Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "ID", "Unset"]
 	};
 
 	const formatReminderList = async (req, res, target) => {
@@ -91,7 +91,10 @@ module.exports = (function () {
 			sortColumn: 0,
 			sortDirection: "desc",
 			specificFiltering: true,
-			extraCSS: sb.Utils.tag.trim `			
+			extraCSS: sb.Utils.tag.trim `	
+				div.hoverable {
+					text-decoration: underline dotted;
+				}		
 				div.unset-reminder { 					
 				    background-position: center; 
 				    background-repeat: no-repeat;
