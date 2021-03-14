@@ -75,7 +75,8 @@ module.exports = (function () {
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A",
 				},
-				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`
+				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
+				Unset: `<div class="unset-reminder">${i.active ? "❌" : "N/A"}</div>`
 			});
 
 			return obj;
@@ -90,9 +91,54 @@ module.exports = (function () {
 			sortColumn: 0,
 			sortDirection: "desc",
 			specificFiltering: true,
-			extraCSS: `
-				div.hoverable {
-					text-decoration: underline dotted;
+			extraCSS: sb.Utils.tag.trim `			
+				div.unset-reminder { 					
+				    background-position: center; 
+				    background-repeat: no-repeat;
+				    background-size: contain;
+			    }
+			    div.unset-reminder.loading {
+			        background-image: url("/public/img/ppCircle.gif");
+			    }
+			`,
+			extraScript: sb.Utils.tag.trim  `
+				function beforeTableInitalize () {
+					const unsetList = document.getElementsByClassName("unset-reminder");
+					for (const element of unsetList) {
+						if (element.textContent === "N/A") {
+							continue;
+						}
+						
+						element.parentElement.addEventListener("click", () => unsetReminder(element));
+					}
+				}
+				 				
+				async function unsetReminder (element) {
+					if (element.classList.contains("loading")) {
+						console.log("Aborted requested, previous is still pending");
+						return;
+					}
+					
+					const row = element.parentElement.parentElement;
+					const ID = Array.from(row.children).find(i => i.getAttribute("field") === "ID").textContent;	
+					
+					const previousContent = element.textContent;
+					element.classList.add("loading");
+					element.textContent = "";
+					
+					const { data } = await fetch("/api/reminder" + ID, { method: "DELETE" })
+						.then(i => i.json())
+						.catch(i => i.json());
+					
+					element.classList.remove("loading");
+					element.textContent = previousContent;
+					
+					if (data.statusCode === 403) {
+						alert("Your session expired! Please log in again.");
+					}
+					else {
+						alert(data.message);
+					}
 				}
 			`
 		});
