@@ -140,9 +140,12 @@ module.exports = (function () {
 					}
 					else {
 						const activeElement = Array.from(row.children).find(i => i.getAttribute("field") === "Active");
-						activeElement.textContent = "No";
+						if (activeElement) {
+							activeElement.textContent = "No";
+						}
 						
-						element.textContent = "✔";
+						element.textContent = "✔";	
+						element.classList.remove("clickable");
 						alert(response.data.message + "!");
 					}
 				}
