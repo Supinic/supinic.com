@@ -125,17 +125,17 @@ module.exports = (function () {
 					element.classList.add("loading");
 					element.textContent = "";
 					
-					const { data } = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
+					const response = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
 						.catch(i => i.json());
 					
 					element.classList.remove("loading");
 					element.textContent = previousContent;
 					
-					if (data.statusCode === 403) {
+					if (response.statusCode === 403) {
 						alert("Your session expired! Please log in again.");
 					}
-					else if (data.statusCode !== 200) {
+					else if (response.statusCode !== 200) {
 						alert("An unknown error occured!");
 					}
 					else {
@@ -143,7 +143,7 @@ module.exports = (function () {
 						activeElement.textContent = "No";
 						
 						element.textContent = "✔";
-						alert(data.message + "!");
+						alert(response.data.message + "!");
 					}
 				}
 			`
