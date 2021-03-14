@@ -86,7 +86,10 @@ module.exports = (function () {
 			extraCSS: sb.Utils.tag.trim `	
 				div.hoverable {
 					text-decoration: underline dotted;
-				}		
+				}
+				div.clickable {
+					cursor: pointer;
+				}
 				div.unset-reminder { 					
 				    background-position: center; 
 				    background-repeat: no-repeat;
@@ -104,7 +107,7 @@ module.exports = (function () {
 							continue;
 						}
 						
-						element.classList.add("hoverable");
+						element.classList.add("clickable");
 						element.parentElement.addEventListener("click", () => unsetReminder(element));
 					}
 				}
@@ -122,7 +125,7 @@ module.exports = (function () {
 					element.classList.add("loading");
 					element.textContent = "";
 					
-					const { data } = await fetch("/api/reminder" + ID, { method: "DELETE" })
+					const { data } = await fetch("/api/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
 						.catch(i => i.json());
 					
