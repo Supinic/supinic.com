@@ -121,6 +121,8 @@ module.exports = (function () {
 					const row = element.parentElement.parentElement;
 					const ID = Array.from(row.children).find(i => i.getAttribute("field") === "ID").textContent;	
 					
+					confirm("Do you really want to unset this reminder? (ID " + ID + ")");
+					
 					const previousContent = element.textContent;
 					element.classList.add("loading");
 					element.textContent = "";
@@ -146,7 +148,7 @@ module.exports = (function () {
 						
 						element.textContent = "✔";	
 						element.classList.remove("clickable");
-						alert(response.data.message + "!");
+						console.log(response.data.message + "!");
 					}
 				}
 			`
