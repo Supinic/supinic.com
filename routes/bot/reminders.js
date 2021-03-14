@@ -135,8 +135,15 @@ module.exports = (function () {
 					if (data.statusCode === 403) {
 						alert("Your session expired! Please log in again.");
 					}
+					else if (data.statusCode !== 200) {
+						alert("An unknown error occured!");
+					}
 					else {
-						alert(data.message);
+						const activeElement = Array.from(row.children).find(i => i.getAttribute("field") === "Active");
+						activeElement.textContent = "No";
+						
+						element.textContent = "✔";
+						alert(data.message + "!");
 					}
 				}
 			`
