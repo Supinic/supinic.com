@@ -53,6 +53,7 @@ module.exports = (function () {
 			}
 
 			const created = new sb.Date(i.created);
+			const classes = (i.active) ? "active clickable" : "inactive";
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			return {
 				Active: (i.active) ? "Yes" : "No",
@@ -70,7 +71,7 @@ module.exports = (function () {
 						: "N/A",
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
-				Unset: `<div class="unset-reminder">${i.active ? "❌" : "N/A"}</div>`
+				Unset: `<div class="unset-reminder ${classes}"></div>`
 			};
 		});
 
@@ -110,11 +111,9 @@ module.exports = (function () {
 					const unsetList = document.getElementsByClassName("unset-reminder");
 					for (const element of unsetList) {
 						if (element.textContent === "N/A") {
-							element.classList.add("inactive");
 							continue;
 						}
 						
-						element.classList.add("active");
 						element.classList.add("clickable");
 						element.parentElement.addEventListener("click", () => unsetReminder(element));
 					}
@@ -160,7 +159,6 @@ module.exports = (function () {
 							activeElement.textContent = "No";
 						}
 						
-						element.textContent = "✔";	
 						element.classList.remove("clickable");
 						element.classList.add("inactive");
 						console.log(response.data.message + "!");
