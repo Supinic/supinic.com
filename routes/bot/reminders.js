@@ -84,7 +84,11 @@ module.exports = (function () {
 			sortColumn: 1,
 			sortDirection: "desc",
 			specificFiltering: true,
-			extraCSS: sb.Utils.tag.trim `	
+			extraCSS: sb.Utils.tag.trim `
+				tr.deactivated {
+					color: #666 !important;
+					text-decoration: line-through !important;
+				}
 				div.hoverable {
 					text-decoration: underline dotted;
 				}
@@ -100,7 +104,7 @@ module.exports = (function () {
 					content: "❌"
 			    }
 			    div.unset-reminder.inactive:before { 
-					content: "✅"
+					content: "N/A"
 			    }
 			    div.unset-reminder.loading {
 			        background-image: url("/public/img/ppCircle.gif");
@@ -159,8 +163,7 @@ module.exports = (function () {
 							activeElement.textContent = "No";
 						}
 						
-						element.classList.remove("clickable");
-						element.classList.add("inactive");
+						row.classList.add("unset");						
 						console.log(response.data.message + "!");
 					}
 				}
