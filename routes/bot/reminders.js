@@ -8,9 +8,9 @@ module.exports = (function () {
 	const Channel = require("../../modules/chat-data/channel.js");
 
 	const columns = {
-		list: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID", "Unset"],
-		history: ["Created", "Sender", "Recipient", "Text", "Scheduled", "ID"],
-		lookup: ["Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "ID", "Unset"]
+		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
+		history: ["ID", "Created", "Sender", "Recipient", "Scheduled"],
+		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"]
 	};
 
 	const formatReminderList = async (req, res, target) => {
@@ -52,23 +52,17 @@ module.exports = (function () {
 				i.target = "(You)";
 			}
 
+			const created = new sb.Date(i.created);
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
-			const obj = {};
-			if (target === "lookup") {
-				obj.Active = i.active ? "Yes" : "No";
-			}
-
-			Object.assign(obj, {
-				Created: new sb.Date(i.created).format("Y-m-d"),
+			return {
+				Active: (i.active) ? "Yes" : "No",
+				Created: {
+					dataOrder: created.valueOf(),
+					value: created.format("Y-m-d")
+				},
 				Sender: i.author,
 				Recipient: i.target,
-			});
-
-			if (target !== "inactive") {
-				obj.Text = i.text;
-			}
-
-			Object.assign(obj, {
+				Text: i.text,
 				Scheduled: {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
 					value: (schedule)
@@ -77,9 +71,7 @@ module.exports = (function () {
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `<div class="unset-reminder">${i.active ? "❌" : "N/A"}</div>`
-			});
-
-			return obj;
+			};
 		});
 
 		const titleType = (target === "history") ? "inactive" : (target === "lookup") ? "lookup" : "active";
@@ -88,7 +80,7 @@ module.exports = (function () {
 			title: `Your reminder list - ${titleType}`,
 			head: columns[target],
 			pageLength: 25,
-			sortColumn: 0,
+			sortColumn: 1,
 			sortDirection: "desc",
 			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim `	
@@ -112,6 +104,7 @@ module.exports = (function () {
 							continue;
 						}
 						
+						element.classList.add("hoverable");
 						element.parentElement.addEventListener("click", () => unsetReminder(element));
 					}
 				}
