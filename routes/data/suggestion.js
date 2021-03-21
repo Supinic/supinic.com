@@ -14,9 +14,9 @@ module.exports = (function () {
 			: "N/A",
 		Status: i.status ?? "(pending)",
 		Priority: {
-			value: (i.priority === 255 || i.priority === null)
+			value: (i.priority === 255)
 				? "(pending)"
-				: (i.priority),
+				: (i.priority ?? "N/A"),
 			dataOrder: (i.priority === null)
 				? 255
 				: i.priority
@@ -148,15 +148,21 @@ module.exports = (function () {
 			});
 		}
 
+		let priorityString = String(data.priority);
+		if (data.category === "Void") {
+			priorityString = "N/A";
+		}
+		else if (!data.category || data.priority === 255 || data.priority === null) {
+			priorityString = "(pending review)";
+		}
+
 		const renderData = {
 			ID: data.ID,
 			"Created by": data.username,
 			"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
-			Category: data.category ?? "Pending review",
-			Status: data.status ?? "Pending review",
-			Priority: (data.priority === 255 || data.priority === null)
-				? "Pending review"
-				: data.priority,
+			Category: data.category ?? "(pending review)",
+			Status: data.status ?? "(pending review)",
+			Priority: priorityString,
 			Text: (data.text)
 				? sb.Utils.escapeHTML(data.text)
 				: "N/A",
