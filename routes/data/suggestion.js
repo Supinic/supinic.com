@@ -12,13 +12,13 @@ module.exports = (function () {
 		Text: (i.text)
 			? sb.Utils.wrapString(sb.Utils.escapeHTML(i.text), 200)
 			: "N/A",
-		Status: i.status,
+		Status: i.status ?? "(pending)",
 		Priority: {
-			value: (i.priority === 255)
-				? "(not checked)"
-				: (i.priority ?? "N/A"),
+			value: (i.priority === 255 || i.priority === null)
+				? "(pending)"
+				: (i.priority),
 			dataOrder: (i.priority === null)
-				? -1
+				? 255
 				: i.priority
 		},
 		Update: (i.lastUpdate)
@@ -152,11 +152,11 @@ module.exports = (function () {
 			ID: data.ID,
 			"Created by": data.username,
 			"Created on": new sb.Date(data.date).format("Y-m-d H:i:s"),
-			Category: data.category,
-			Status: data.status,
-			Priority: (data.priority === 255)
-				? "(not checked)"
-				: (data.priority ?? "N/A"),
+			Category: data.category ?? "Pending review",
+			Status: data.status ?? "Pending review",
+			Priority: (data.priority === 255 || data.priority === null)
+				? "Pending review"
+				: data.priority,
 			Text: (data.text)
 				? sb.Utils.escapeHTML(data.text)
 				: "N/A",
