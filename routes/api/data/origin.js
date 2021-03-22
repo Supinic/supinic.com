@@ -13,16 +13,17 @@ module.exports = (function () {
 	 * @apiGroup Data
 	 * @apiPermission none
 	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} [emoteID]
 	 * @apiSuccess {string} name
-	 * @apiSuccess {string} text
-	 * @apiSuccess {string} platform
+	 * @apiSuccess {number} [tier]
+	 * @apiSuccess {string} [raffle] ISO date string - raffle date
+	 * @apiSuccess {string} [text]
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
 	 * @apiSuccess {string} [notes] Custom notes
 	 **/
 	Router.get("/list", async (req, res) => {
 		const data = await Origin.selectCustom(rs => rs
-			.select("ID", "Name", "Text", "Type", "Emote_Added", "Notes")
-			.orderBy("Name ASC")
+			.select("ID", "Emote_ID", "Name", "Tier", "Raffle", "Text", "Emote_Added", "Notes")
 		);
 
 		return sb.WebUtils.apiSuccess(res, data);
