@@ -16,6 +16,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [emoteID]
 	 * @apiSuccess {string} name
 	 * @apiSuccess {number} [tier]
+	 * @apiSuccess {string} type Emote type - twitch, ffz, bttv, ...
 	 * @apiSuccess {string} [raffle] ISO date string - raffle date
 	 * @apiSuccess {string} [text]
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
@@ -23,7 +24,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/list", async (req, res) => {
 		const data = await Origin.selectCustom(rs => rs
-			.select("ID", "Emote_ID", "Name", "Tier", "Raffle", "Text", "Emote_Added", "Notes")
+			.select("ID", "Emote_ID", "Name", "Tier", "Type", "Raffle", "Text", "Emote_Added", "Notes")
 		);
 
 		return sb.WebUtils.apiSuccess(res, data);
