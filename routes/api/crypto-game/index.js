@@ -35,7 +35,7 @@ module.exports = (function () {
 	 * @apiSuccess {Object[]} portfolio
 	 **/
 	Router.get("/portfolio/list", async (req, res) => {
-		const data = await Portfolio.selectAll();
+		const data = await Portfolio.getList();
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
