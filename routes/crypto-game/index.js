@@ -34,11 +34,14 @@ module.exports = (function () {
 
 	Router.get("/portfolio/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "crypto-game/portfolio/list").json();
-		const printData = data.map(i => ({
-			Owner: (i.ownerName),
-			Total: "€ " + sb.Utils.round(i.convertedTotal, 3),
-			Created: new sb.Date(i.created).format("Y-m-d")
-		}));
+		const printData = data
+			.sort((a, b) => b.convertedTotal - a.convertedTotal)
+			.map((i, index) => ({
+				Rank: index + 1,
+				Owner: (i.ownerName),
+				Total: "€ " + sb.Utils.round(i.convertedTotal, 3),
+				Created: new sb.Date(i.created).format("Y-m-d")
+			}));
 
 		res.render("generic-list-table", {
 			title: "Crypto-game portfolio list",
