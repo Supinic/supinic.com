@@ -7,7 +7,7 @@ module.exports = (function () {
 		static async getList () {
 			return await super.selectMultipleCustom(q => q
 				.select("User_Alias.Name AS Owner_Name")
-				.select("GET_PORTFOLIO_TOTAL_PRICE(Portfolio.ID) AS Converted_Total")
+				.select("crypto_game.GET_PORTFOLIO_TOTAL_PRICE(Portfolio.ID) AS Converted_Total")
 				.where("Active = %b", true)
 				.join({
 					toDatabase: "chat_data",
