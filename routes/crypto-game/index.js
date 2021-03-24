@@ -36,12 +36,18 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "crypto-game/portfolio/list").json();
 		const printData = data
 			.sort((a, b) => b.convertedTotal - a.convertedTotal)
-			.map((i, index) => ({
-				Rank: index + 1,
-				Owner: (i.ownerName),
-				Total: "€ " + sb.Utils.round(i.convertedTotal, 3),
-				Created: new sb.Date(i.created).format("Y-m-d")
-			}));
+			.map((i, index) => {
+				const created = new sb.Date(i.created);
+				return {
+					Rank: index + 1,
+					Owner: (i.ownerName),
+					Total: "€ " + sb.Utils.round(i.convertedTotal, 3),
+					Created: {
+						value: created.format("Y-m-d"),
+						dataOrder: created.valueOf()
+					}
+				};
+			});
 
 		res.render("generic-list-table", {
 			title: "Crypto-game portfolio list",
