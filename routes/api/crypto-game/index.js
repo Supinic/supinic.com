@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Asset = require("../../../modules/crypto-game/asset.js");
+	const Portfolio = require("../../../modules/crypto-game/portfolio.js");
 
 	/**
 	 * @api {get} /crypto-game/asset/list Crypto-game asset list with prices
@@ -22,6 +23,19 @@ module.exports = (function () {
 	 **/
 	Router.get("/asset/list", async (req, res) => {
 		const data = await Asset.selectAll();
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /crypto-game/asset/list Crypto-game active portfolio list
+	 * @apiName GetCryptoGamePortfolioList
+	 * @apiDescription Gets the full list of active portfolios, along with their owners and converted totals
+	 * @apiGroup CryptoGame
+	 * @apiPermission none
+	 * @apiSuccess {Object[]} portfolio
+	 **/
+	Router.get("/portfolio/list", async (req, res) => {
+		const data = await Portfolio.selectAll();
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
