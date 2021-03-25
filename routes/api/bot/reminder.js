@@ -229,7 +229,7 @@ module.exports = (function () {
 		}
 
 		const numberIDs = (typeof ID === "string")
-			? [ID].map(Number)
+			? ID.split(",").map(Number)
 			: ID.map(Number);
 
 		if (!numberIDs.some(sb.Utils.isValidInteger)) {
