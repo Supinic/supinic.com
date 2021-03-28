@@ -108,8 +108,8 @@ module.exports = (function () {
 			User_Alias: userData.ID,
 			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
 			Category: "Bot addition",
-			Status: "Approved",
-			Priority: 100,
+			Status: null,
+			Priority: null,
 			Notes: "Requested via website form"
 		});
 
