@@ -181,7 +181,7 @@ module.exports = (function () {
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Suggestion ID ${data.ID} from ${data.username} (${data.status})`
+					content: `Suggestion ID ${data.ID} from ${data.username} (${data.status ?? "pending"})`
 				},
 				{
 					property: "description",
