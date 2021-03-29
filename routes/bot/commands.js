@@ -221,7 +221,7 @@ module.exports = (function () {
 				},
 				{
 					property: "description",
-					content: data.Decription ?? "(no description available)"
+					content: data.Description ?? "(no description available)"
 				}
 			]
 		});
