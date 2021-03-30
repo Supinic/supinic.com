@@ -402,7 +402,7 @@
 			}
 
 			const previousString = (userData.Data.github)
-				? `Your Twitch account was previously connected to ${userData.data.github.login}.`
+				? `Your Twitch account was previously connected to ${userData.Data.github.login}.`
 				: "";
 
 			userData.Data.github = {
