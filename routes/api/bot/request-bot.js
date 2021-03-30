@@ -34,9 +34,6 @@ module.exports = (function () {
 			if (!renamed) {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
 			}
-			else if (renamed.Mode === "Inactive") {
-				return sb.WebUtils.apiFail(res, 400, "Provided channel has already been deactivated");
-			}
 			else if (renamed.Name === userData.Name) {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel is the same as the current one");
 			}
