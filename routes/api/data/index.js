@@ -9,6 +9,7 @@ module.exports = (function () {
 		["corona", "corona.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
+		["other", "other.js"],
 		["slots-winner", "slots-winner.js"],
 		["suggestion", "suggestion.js"],
 		["tts", "tts.js"]
