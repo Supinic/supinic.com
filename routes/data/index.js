@@ -8,6 +8,7 @@ module.exports = (function () {
 		["corona", "corona.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
+		["other", "other.js"],
 		["suggestion", "suggestion.js"]
 	];
 
