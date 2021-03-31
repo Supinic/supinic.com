@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	Router.get("/markov/words", async (req, res) => {
 		const words = await sb.Cache.getByPrefix("markov-word-list");
-		res.set("Content-Type", "text/html");
+		res.set("Content-Type", "text/plain");
 		res.send(words.join("\n"));
 	});
 
