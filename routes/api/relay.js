@@ -18,7 +18,14 @@ module.exports = (function () {
 		const crypto = require("crypto");
 		const hash = crypto.createHash("md4");
 
-		const digest = hash.update(url).digest().toString("hex").slice(0, 16);
+		const digest = hash
+			.update(url)
+			.digest()
+			.toString("base64")
+			.replace(/\+/g, "_")
+			.replace(/\//g, "-")
+			.slice(0, 8);
+
 		const exists = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));
 		if (exists) {
 			return sb.WebUtils.apiSuccess(res, {
@@ -28,7 +35,7 @@ module.exports = (function () {
 			});
 		}
 
-		const row = await LinkRelay.insert({
+		await LinkRelay.insert({
 			Hash: digest,
 			Link: url,
 			Type: "Local"
