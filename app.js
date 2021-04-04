@@ -45,6 +45,7 @@
 		"data",
 		"gachi",
 		"osrs",
+		"relay",
 		"rss",
 		"stream",
 		"teapot",
