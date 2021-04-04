@@ -18,7 +18,7 @@ module.exports = (function () {
 		const crypto = require("crypto");
 		const hash = crypto.createHash("md4");
 
-		const digest = hash.update(url).digest();
+		const digest = hash.update(url).digest().toString("hex").slice(0, 16);
 		const exists = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));
 		if (exists) {
 			return sb.WebUtils.apiSuccess(res, {
