@@ -18,7 +18,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { link } = response.body;
+		const { link } = response.body.data;
 		res.redirect(link);
 	});
 
