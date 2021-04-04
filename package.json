@@ -11,7 +11,7 @@
     "express-mysql-session": "^2.1.4",
     "express-rate-limit": "^5.1.3",
     "express-session": "latest",
-    "memorystore": "latest",
+    "memorystore": "^1.6.6",
     "passport": "latest",
     "passport-oauth": "latest",
     "pug": "^3.0.1",
