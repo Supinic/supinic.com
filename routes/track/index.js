@@ -100,7 +100,7 @@ module.exports = (function () {
 			pageLength: 25,
 			sortDirection: "desc",
 			specificFiltering: true,
-			extraCSS: sb.Utils.tag.trim`
+			extraCSS: sb.Utils.tag.trim `
 				img.reupload {
 					height: 18px;
 					width: 20px;
@@ -121,7 +121,7 @@ module.exports = (function () {
 			        background-image: url("/public/img/ppCircle.gif");
 			    }
 			`,
-			extraScript: sb.Utils.tag.trim`
+			extraScript: sb.Utils.tag.trim `
 				async function beforeTableInitalize () {
 					const favouriteList = document.getElementsByClassName("favourite");
 					for (const element of favouriteList) {
@@ -160,7 +160,17 @@ module.exports = (function () {
 						element.classList.add("inactive");
 					}
 				}
-			`
+			`,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Track lookup - ${data.length} tracks`
+				},
+				{
+					property: "url",
+					content: `https://supinic.com/track/lookup`
+				}
+			]
 		});
 	};
 
