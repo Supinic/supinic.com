@@ -21,19 +21,11 @@ module.exports = (function () {
 	 * @apiSuccess {string} [text] Emote origin description
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
 	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
+	 * @apiSuccess {string} [url] Proper emote URL - either original, or a backup, or none
 	 * @apiSuccess {string} [notes] Custom notes
 	 **/
 	Router.get("/list", async (req, res) => {
-		const rawData = await Origin.selectCustom(rs => rs
-			.select("ID", "Emote_ID", "Name", "Tier", "Type", "Raffle")
-			.select("Available", "Text", "Emote_Added", "Notes")
-		);
-
-		const data = rawData.map(i => ({
-			...i,
-			Parsed_Link: Origin.parseURL(i.Type, i.Emote_ID)
-		}));
-
+		const data = await Origin.fetchAll();
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
