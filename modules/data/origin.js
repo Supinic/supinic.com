@@ -24,6 +24,7 @@ module.exports = (function () {
 			}
 
 			const ID = item.Emote_ID;
+			const type = item.Type;
 			if (type === "Twitch - Bits") {
 				return `https://static-cdn.jtvnw.net/emoticons/v1/${ID}/3.0`;
 			}
