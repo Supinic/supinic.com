@@ -30,6 +30,7 @@ module.exports = (function () {
 				toTable: "User_Alias",
 				on: "Video_Request.User_Alias = User_Alias.ID"
 			})
+			.where("Channel = %n", 49)
 			.where("Posted >= DATE_ADD(NOW(), INTERVAL -7 DAY)")
 		);
 
