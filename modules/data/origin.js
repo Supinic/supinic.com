@@ -5,7 +5,7 @@ module.exports = (function () {
 
 	class Origin extends TemplateModule {
 		static async fetchAll () {
-			const rawData = await super.getAll();
+			const rawData = await super.selectAll();
 			return rawData.map(i => ({
 				...i,
 				url: Origin.parseURL(i)
