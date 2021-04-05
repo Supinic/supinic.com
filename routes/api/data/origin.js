@@ -12,20 +12,27 @@ module.exports = (function () {
 	 * @apiDescription Fetches a list of all emote origins
 	 * @apiGroup Data
 	 * @apiPermission none
-	 * @apiSuccess {number} ID
-	 * @apiSuccess {string} [emoteID]
+	 * @apiSuccess {number} ID Internal emote list ID
+	 * @apiSuccess {string} [emoteID] Emote ID used in their respective types
 	 * @apiSuccess {string} name
 	 * @apiSuccess {number} [tier]
 	 * @apiSuccess {string} type Emote type - twitch, ffz, bttv, ...
 	 * @apiSuccess {string} [raffle] ISO date string - raffle date
-	 * @apiSuccess {string} [text]
+	 * @apiSuccess {string} [text] Emote origin description
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
+	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
 	 * @apiSuccess {string} [notes] Custom notes
 	 **/
 	Router.get("/list", async (req, res) => {
-		const data = await Origin.selectCustom(rs => rs
-			.select("ID", "Emote_ID", "Name", "Tier", "Type", "Raffle", "Text", "Emote_Added", "Notes")
+		const rawData = await Origin.selectCustom(rs => rs
+			.select("ID", "Emote_ID", "Name", "Tier", "Type", "Raffle")
+			.select("Available", "Text", "Emote_Added", "Notes")
 		);
+
+		const data = rawData.map(i => ({
+			...i,
+			Parsed_Link: Origin.parseURL(i.Type, i.Emote_ID)
+		}));
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});
