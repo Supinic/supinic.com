@@ -7,11 +7,8 @@ module.exports = (function () {
 	const prettifyAliasData = (aliases) => aliases.map(alias => ({
 		Name: alias.name,
 		Invocation: alias.invocation.join(" "),
-		Created: (alias.created)
-			? new sb.Date(alias.created).format("Y-m-d H:i")
-			: "N/A",
-		Edited: (alias.lastEdit)
-			? new sb.Date(alias.lastEdit).format("Y-m-d H:i")
+		Description: (alias.description)
+			? `<div class="hoverable" title="${alias.description}">(hover)</div>`
 			: "N/A"
 	}));
 
@@ -70,7 +67,13 @@ module.exports = (function () {
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
-			specificFiltering: true
+			specificFiltering: true,
+			extraCss: `
+				div.hoverable {
+					cursor: pointer;
+					text-decoration: underline dotted;
+				}
+			`
 		});
 	});
 
