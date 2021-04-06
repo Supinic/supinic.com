@@ -68,7 +68,7 @@ module.exports = (function () {
 			sortColumn: 0,
 			sortDirection: "asc",
 			specificFiltering: true,
-			extraCss: `
+			extraCSS: `
 				div.hoverable {
 					cursor: pointer;
 					text-decoration: underline dotted;
