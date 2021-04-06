@@ -463,7 +463,6 @@
 	app.listen(port, () => console.log("Listening..."));
 
 	sb.App = app;
-	sb.App.cache = {};
 	sb.App.data = {
 		/** @type {Map<string, Object>} */
 		deprecation: new Map()
