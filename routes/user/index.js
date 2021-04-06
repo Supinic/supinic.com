@@ -4,21 +4,10 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyAliasData = (aliases) => Object.entries(aliases).map(([aliasName, alias]) => ({
-		Name: aliasName,
-		Invocation: alias.invocation + " " + alias.args.join(" "),
-		Created: (alias.created)
-			? new sb.Date(alias.created).format("Y-m-d H:i")
-			: "N/A",
-		Edited: (alias.lastEdit)
-			? new sb.Date(alias.lastEdit).format("Y-m-d H:i")
-			: "N/A"
-	}));
-
-	const routes = [];
-	for (const [name, link] of routes) {
-		Router.use("/" + name, require("./" + link))
-	}
+	// const routes = [];
+	// for (const [name, link] of routes) {
+	// 	Router.use("/" + name, require("./" + link))
+	// }
 
 	Router.use("/", async (req, res, next) => {
 		if (!res.locals.authUser) {
@@ -153,17 +142,7 @@ module.exports = (function () {
 
 	Router.get("/alias/list", async (req, res) => {
 		const { userData } = res.locals.authUser;
-		const aliases = userData.Data.aliasedCommands ?? {};
-
-		const printData = prettifyAliasData(aliases);
-		res.render("generic-list-table", {
-			data: printData,
-			head: ["Name", "Invocation", "Created", "Edited"],
-			pageLength: 25,
-			sortColumn: 0,
-			sortDirection: "asc",
-			specificFiltering: true
-		});
+		res.redirect(`/bot/user/${userData.Name}/alias/list`);
 	});
 
 	return Router;
