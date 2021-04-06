@@ -39,7 +39,8 @@ module.exports = (function () {
 				name,
 				invocation: [def.invocation, ...def.args],
 				created: def.created,
-				lastEdit: def.lastEdit
+				lastEdit: def.lastEdit,
+				description: def.desc ?? null
 			}));
 
 			return sb.WebUtils.apiSuccess(res, { aliases });
