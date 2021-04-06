@@ -63,7 +63,7 @@ module.exports = (function () {
 		const printData = prettifyAliasData(body.data.aliases);
 		res.render("generic-list-table", {
 			data: printData,
-			head: ["Name", "Invocation", "Created", "Edited"],
+			head: ["Name", "Invocation", "Description"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
