@@ -87,7 +87,7 @@ module.exports = (function () {
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
-			Notes: i.notes ?? "N/A",
+			Notes: data.notes ?? "N/A",
 		};
 
 		res.render("generic-detail-table", {
