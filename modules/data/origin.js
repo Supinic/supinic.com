@@ -4,8 +4,37 @@ module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
 	class Origin extends TemplateModule {
-		static async fetchAll () {
-			const rawData = await super.selectAll();
+		static async fetch (...IDs) {
+			const rawData = await super.selectCustom(q => q
+				.select("Origin.ID", "Emote_ID", "Origin.Name", "Tier", "Raffle", "Todo", "Approved")
+				.select("Emote_Added", "Record_Added", "Notes")
+				.select("Author.Name AS Author")
+				.select("Reporter.Name AS Reporter")
+				.select("Raffle_Winner.Name AS Raffle_Winner")
+				.leftJoin({
+					alias: "Author",
+					toDatabase: "chat_data",
+					toTable: "User_Alias",
+					on: "Origin.Author = User_Alias.ID"
+				})
+				.leftJoin({
+					alias: "Reporter",
+					toDatabase: "chat_data",
+					toTable: "User_Alias",
+					on: "Origin.Added_By = User_Alias.ID"
+				})
+				.leftJoin({
+					alias: "Raffle_Winner",
+					toDatabase: "chat_data",
+					toTable: "User_Alias",
+					on: "Origin.Raffle_Winner = User_Alias.ID"
+				})
+				.where(
+					{ condition: (IDs.length !== 0) },
+					"Origin.ID IN %n+", IDs
+				)
+			);
+
 			return rawData.map(i => ({
 				...i,
 				url: Origin.parseURL(i)
