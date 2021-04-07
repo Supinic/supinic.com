@@ -89,7 +89,7 @@ module.exports = (function () {
 			"Emote ID": (data.detailUrl)
 				? `<a href="${data.detailUrl}">${data.emoteID}</a>`
 				: data.emoteID ?? "N/A",
-			Tier: data.Tier ? `Tier ${data.tier}` : "N/A",
+			Tier: (data.tier) ? `Tier ${data.tier}` : "N/A",
 			Description: data.text ?? "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
