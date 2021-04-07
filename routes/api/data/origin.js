@@ -14,19 +14,60 @@ module.exports = (function () {
 	 * @apiPermission none
 	 * @apiSuccess {number} ID Internal emote list ID
 	 * @apiSuccess {string} [emoteID] Emote ID used in their respective types
-	 * @apiSuccess {string} name
-	 * @apiSuccess {number} [tier]
-	 * @apiSuccess {string} type Emote type - twitch, ffz, bttv, ...
-	 * @apiSuccess {string} [raffle] ISO date string - raffle date
+	 * @apiSuccess {string} name Emote name
+	 * @apiSuccess {number} [tier] Tiering of emote - usually concerning Twitch: Tiers 1,2,3
+	 * @apiSuccess {string} type Emote type - twitch (global/sub/bit), ffz, bttv, discord, other
 	 * @apiSuccess {string} [text] Emote origin description
+	 * @apiSuccess {string} [raffle] ISO date string - raffle date
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
+	 * @apiSuccess {string} [recordAdded] ISO date string - when the emote origin was added
 	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
-	 * @apiSuccess {string} [url] Proper emote URL - either original, or a backup, or none
+	 * @apiSuccess {string} [author] User name of whoever created the emote
+	 * @apiSuccess {string} [raffleWinner] User name of whoever won the emote raffle for this emote
+	 * @apiSuccess {string} [reporter] User name of whoever added the emote origin
+	 * @apiSuccess {string} [url] Priority emote image URL - original first, then a backup link, or null if none exist
 	 * @apiSuccess {string} [notes] Custom notes
 	 **/
 	Router.get("/list", async (req, res) => {
-		const data = await Origin.fetchAll();
+		const data = await Origin.fetch();
 		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /data/origin/list Origin - Detail
+	 * @apiName GetEmoteOriginDetail
+	 * @apiDescription Fetches a single emote's origin
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {number} ID Internal emote list ID
+	 * @apiSuccess {string} [emoteID] Emote ID used in their respective types
+	 * @apiSuccess {string} name Emote name
+	 * @apiSuccess {number} [tier] Tiering of emote - usually concerning Twitch: Tiers 1,2,3
+	 * @apiSuccess {string} type Emote type - twitch (global/sub/bit), ffz, bttv, discord, other
+	 * @apiSuccess {string} [text] Emote origin description
+	 * @apiSuccess {string} [raffle] ISO date string - raffle date
+	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
+	 * @apiSuccess {string} [recordAdded] ISO date string - when the emote origin was added
+	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
+	 * @apiSuccess {string} [author] User name of whoever created the emote
+	 * @apiSuccess {string} [raffleWinner] User name of whoever won the emote raffle for this emote
+	 * @apiSuccess {string} [reporter] User name of whoever added the emote origin
+	 * @apiSuccess {string} [url] Priority emote image URL - original first, then a backup link, or null if none exist
+	 * @apiSuccess {string} [notes] Custom notes
+	 **/
+	Router.get("/detail/:id", async (req, res) => {
+		const { id } = req.params;
+		const originID = Number(id);
+		if (!sb.Utils.isValidInteger(originID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
+		}
+
+		const row = await Origin.fetch(originID);
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "No origin exists for provided ID");
+		}
+
+		return sb.WebUtils.apiSuccess(res, row.valuesObject);
 	});
 
 	return Router;
