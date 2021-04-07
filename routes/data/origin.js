@@ -21,7 +21,12 @@ module.exports = (function () {
 			pageLength: 25,
 			sortColumn: 1,
 			sortDirection: "asc",
-			extraCSS: "img.list-emote { max-height: 32px; }",
+			extraCSS: sb.Utils.tag.trim `
+				img.list-emote { 
+					max-height: 32px;
+					max-width: 128px;
+			 	}
+			`,
 			openGraphDefinition: [
 				{
 					property: "title",
