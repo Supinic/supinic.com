@@ -15,19 +15,19 @@ module.exports = (function () {
 					alias: "Author",
 					toDatabase: "chat_data",
 					toTable: "User_Alias",
-					on: "Origin.Author = User_Alias.ID"
+					on: "Origin.Author = Author.ID"
 				})
 				.leftJoin({
 					alias: "Reporter",
 					toDatabase: "chat_data",
 					toTable: "User_Alias",
-					on: "Origin.Added_By = User_Alias.ID"
+					on: "Origin.Added_By = Reporter.ID"
 				})
 				.leftJoin({
 					alias: "Raffle_Winner",
 					toDatabase: "chat_data",
 					toTable: "User_Alias",
-					on: "Origin.Raffle_Winner = User_Alias.ID"
+					on: "Origin.Raffle_Winner = Raffle_Winner.ID"
 				})
 				.where(
 					{ condition: (IDs.length !== 0) },
