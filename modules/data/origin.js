@@ -38,12 +38,14 @@ module.exports = (function () {
 
 			return rawData.map(i => {
 				const url = Origin.parseURL(i);
+				const detailUrl = Origin.getEmoteDetailURL(i);
 
 				delete i.Available;
 				delete i.Backup_Link;
 
 				return {
 					...i,
+					Detail_URL: detailUrl,
 					url
 				};
 			});
@@ -76,6 +78,23 @@ module.exports = (function () {
 			}
 			else if (type === "Discord") {
 				return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
+			}
+
+			return null;
+		}
+
+		static getEmoteDetailURL (item) {
+			const ID = item.Emote_ID;
+			const type = item.Type;
+
+			if (type === "Twitch - Global" || type === "Twitch - Sub") {
+				return `https://twitchemotes.com/emotes/${ID}`;
+			}
+			else if (type === "BTTV") {
+				return `https://betterttv.com/emotes/${ID}`;
+			}
+			else if (type === "FFZ") {
+				return `https://www.frankerfacez.com/emoticon/${ID}`;
 			}
 
 			return null;
