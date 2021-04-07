@@ -94,7 +94,11 @@ module.exports = (function () {
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
-			Notes: data.notes ?? "N/A",
+			Notes: (data.notes)
+				? data.notes
+					.replace(/\r?\n/g, "<br>")
+					.replace(/\b(https?:\/\/.+?)\b/gi, `<a href="$1">$1</a>`)
+				: "N/A"
 		};
 
 		res.render("generic-detail-table", {
