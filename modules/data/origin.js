@@ -21,7 +21,7 @@ module.exports = (function () {
 					alias: "Reporter",
 					toDatabase: "chat_data",
 					toTable: "User_Alias",
-					on: "Origin.Added_By = Reporter.ID"
+					on: "Origin.User_Alias = Reporter.ID"
 				})
 				.leftJoin({
 					alias: "Raffle_Winner",
