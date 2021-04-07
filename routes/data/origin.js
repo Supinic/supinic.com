@@ -92,8 +92,8 @@ module.exports = (function () {
 			Tier: data.Tier ? `Tier ${data.tier}` : "N/A",
 			Description: data.text ?? "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
-			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
+			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: data.notes ?? "N/A",
 		};
 
