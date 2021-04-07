@@ -74,7 +74,7 @@ module.exports = (function () {
 				return `https://cdn.betterttv.net/emote/${ID}/3x`;
 			}
 			else if (type === "FFZ") {
-				return `https://cdn.betterttv.net/emote/${ID}/3x`;
+				return `https://cdn.frankerfacez.com/emote/${ID}/4`;
 			}
 			else if (type === "Discord") {
 				return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
