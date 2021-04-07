@@ -6,21 +6,23 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/origin/list").json();
-		const renderData = data.map(i => ({
-			Emote: (i.url)
-				? `<img class="list-emote" src="${i.url}"/>`
-				: "N/A",
-			Name: i.name,
-			Type: i.type ?? "N/A",
-			Details: `<a href="/data/origin/detail/${i.ID}">${i.ID}</a>`
-		}));
+		const renderData = data.map(i => {
+			const emote = (i.url) ? `<img class="list-emote" src="${i.url}"/>` : "N/A";
+			return {
+				Emote: `<a href="/data/origin/detail/${i.ID}">${emote}</a>`,
+				Name: i.name,
+				Type: i.type ?? "N/A",
+				Details: ``
+			};
+		});
 
 		res.render("generic-list-table", {
 			data: renderData,
 			head: Object.keys(renderData[0]),
-			pageLength: 25,
+			pageLength: 10,
 			sortColumn: 1,
 			sortDirection: "asc",
+			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim `
 				img.list-emote { 
 					max-height: 32px;
