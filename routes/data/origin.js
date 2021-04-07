@@ -24,7 +24,7 @@ module.exports = (function () {
 			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim `
 				img.list-emote { 
-					max-height: 32px;
+					height: 32px;
 					max-width: 128px;
 			 	}
 			`,
