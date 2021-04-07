@@ -7,7 +7,7 @@ module.exports = (function () {
 		static async fetch (...IDs) {
 			const rawData = await super.selectCustom(q => q
 				.select("Origin.ID", "Emote_ID", "Origin.Name", "Tier", "Raffle", "Todo", "Approved")
-				.select("Text", "Emote_Added", "Record_Added", "Notes")
+				.select("Type", "Text", "Emote_Added", "Record_Added", "Notes")
 				.select("Available", "Backup_Link")
 				.select("Author.Name AS Author")
 				.select("Reporter.Name AS Reporter")
