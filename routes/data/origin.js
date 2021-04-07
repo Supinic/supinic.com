@@ -11,8 +11,7 @@ module.exports = (function () {
 			return {
 				Emote: `<a href="/data/origin/detail/${i.ID}">${emote}</a>`,
 				Name: i.name,
-				Type: i.type ?? "N/A",
-				Details: ``
+				Type: i.type ?? "N/A"
 			};
 		});
 
