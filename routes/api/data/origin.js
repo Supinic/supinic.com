@@ -62,12 +62,12 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
 		}
 
-		const row = await Origin.fetch(originID);
-		if (!row) {
+		const items = await Origin.fetch(originID);
+		if (items.length === 0) {
 			return sb.WebUtils.apiFail(res, 404, "No origin exists for provided ID");
 		}
 
-		return sb.WebUtils.apiSuccess(res, row.valuesObject);
+		return sb.WebUtils.apiSuccess(res, items[0]);
 	});
 
 	return Router;
