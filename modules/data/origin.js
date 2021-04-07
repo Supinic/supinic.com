@@ -8,6 +8,7 @@ module.exports = (function () {
 			const rawData = await super.selectCustom(q => q
 				.select("Origin.ID", "Emote_ID", "Origin.Name", "Tier", "Raffle", "Todo", "Approved")
 				.select("Text", "Emote_Added", "Record_Added", "Notes")
+				.select("Available", "Backup_Link")
 				.select("Author.Name AS Author")
 				.select("Reporter.Name AS Reporter")
 				.select("Raffle_Winner.Name AS Raffle_Winner")
@@ -35,10 +36,17 @@ module.exports = (function () {
 				)
 			);
 
-			return rawData.map(i => ({
-				...i,
-				url: Origin.parseURL(i)
-			}));
+			return rawData.map(i => {
+				const url = Origin.parseURL(i);
+
+				delete i.Available;
+				delete i.Backup_Link;
+
+				return {
+					...i,
+					url
+				};
+			});
 		}
 
 		static parseURL (item) {
