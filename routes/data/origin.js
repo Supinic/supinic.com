@@ -73,7 +73,7 @@ module.exports = (function () {
 
 		const raffleDetails = [];
 		if (data.raffle) {
-			const addedOn = new sb.Date(data.recordAdded).format("Y-m-d")
+			const addedOn = new sb.Date(data.raffle).format("Y-m-d")
 			raffleDetails.push(`raffled on ${addedOn}`);
 		}
 		if (data.raffleWinner) {
