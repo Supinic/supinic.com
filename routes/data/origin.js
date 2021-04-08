@@ -86,7 +86,7 @@ module.exports = (function () {
 				? `<img class="detail-emote" src="${data.url}"/>`
 				: "N/A",
 			Name: data.name,
-			"Emote ID": (data.detailUrl)
+			"Emote ID": (data.detailUrl && data.emoteID)
 				? `<a href="${data.detailUrl}">${data.emoteID}</a>`
 				: data.emoteID ?? "N/A",
 			Tier: (data.tier) ? `Tier ${data.tier}` : "N/A",
@@ -96,14 +96,17 @@ module.exports = (function () {
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)
 				? data.notes
+					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a target="_href" href="$1">$1</a>$2`)
 					.replace(/\r?\n/g, "<br>")
-					.replace(/\b(https?:\/\/.+?)\b/gi, `<a href="$1">$1</a>`)
 				: "N/A"
 		};
 
 		res.render("generic-detail-table", {
 			data: renderData,
-			extraCSS: "img.detail-emote { max-height: 128px; }",
+			extraCSS: sb.Utils.tag.trim `
+				img.detail-emote { max-height: 128px; }
+				table td { width: 100px; }
+			`,
 			openGraphDefinition: [
 				{
 					property: "title",
