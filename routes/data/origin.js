@@ -105,7 +105,7 @@ module.exports = (function () {
 			data: renderData,
 			extraCSS: sb.Utils.tag.trim `
 				img.detail-emote { max-height: 128px; }
-				table td { width: 100px; }
+				td.key { width: 100px; }
 			`,
 			openGraphDefinition: [
 				{
