@@ -7,7 +7,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/origin/list").json();
 		const renderData = data.map(i => {
-			const emote = (i.url) ? `<img loading="lazy" class="list-emote" src="${i.url}"/>` : "N/A";
+			const emote = (i.url) ? `<img alt="${i.name}" loading="lazy" class="list-emote" src="${i.url}"/>` : "N/A";
 			return {
 				Emote: `<a target="_blank" href="/data/origin/detail/${i.ID}">${emote}</a>`,
 				Name: i.name,
@@ -84,7 +84,7 @@ module.exports = (function () {
 		const renderData = {
 			ID: data.ID,
 			Image: (data.url)
-				? `<img class="detail-emote" src="${data.url}"/>`
+				? `<img alt="${data.name}" class="detail-emote" src="${data.url}"/>`
 				: "N/A",
 			Name: data.name,
 			"Emote ID": (data.detailUrl && data.emoteID)
