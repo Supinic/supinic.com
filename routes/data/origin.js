@@ -9,7 +9,7 @@ module.exports = (function () {
 		const renderData = data.map(i => {
 			const emote = (i.url) ? `<img class="list-emote" src="${i.url}"/>` : "N/A";
 			return {
-				Emote: `<a href="/data/origin/detail/${i.ID}">${emote}</a>`,
+				Emote: `<a target="_blank" href="/data/origin/detail/${i.ID}">${emote}</a>`,
 				Name: i.name,
 				Type: i.type ?? "N/A"
 			};
@@ -97,7 +97,7 @@ module.exports = (function () {
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)
 				? data.notes
-					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a target="_href" href="$1">$1</a>$2`)
+					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a target="_blank" href="$1">$1</a>$2`)
 					.replace(/\r?\n/g, "<br>")
 				: "N/A"
 		};
