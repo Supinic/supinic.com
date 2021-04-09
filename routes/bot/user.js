@@ -4,13 +4,19 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyAliasData = (aliases) => aliases.map(alias => ({
-		Name: (alias.name)
-			? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
-			: alias.name,
-		Invocation: alias.invocation.join(" "),
-		Created: new sb.Date(alias.created).format("Y-m-d")
-	}));
+	const prettifyAliasData = (aliases) => aliases.map(alias => {
+		const created = (alias.created) ? new sb.Date(alias.created) : null;
+		return {
+			Name: (alias.name)
+				? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
+				: alias.name,
+			Invocation: alias.invocation.join(" "),
+			Created: {
+				dataOrder: created ?? 0,
+				value: (created) ? created.format("Y-m-d") : "N/A"
+			}
+		};
+	});
 
 	Router.get("/alias/find", async (req, res) => {
 		res.render("generic-form", {
