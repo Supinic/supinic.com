@@ -42,7 +42,7 @@ module.exports = (function () {
 		const userData = await sb.User.get(userID ?? 1);
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
-				<h5 class="pt-3 text-center">Request Supibot in a Twitch channel</h5>
+				<h5 class="pt-3 text-center">Request Supibot</h5>
        			<div id="alert-anchor"></div>
        			${rules}
 			`,
