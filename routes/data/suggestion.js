@@ -7,31 +7,28 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const columnList = ["Author", "Text", "Status", "Priority", "Update", "ID"];
-	const prettifyData = (data) => data.map(i => ({
-		Author: i.userName,
-		Text: (i.text)
-			? sb.Utils.wrapString(sb.Utils.escapeHTML(i.text), 200)
-			: "N/A",
-		Status: i.status ?? "(pending)",
-		Priority: {
-			value: (i.priority === 255)
-				? "(pending)"
-				: (i.priority ?? "N/A"),
-			dataOrder: (i.priority === null)
-				? 255
-				: i.priority
-		},
-		Update: (i.lastUpdate)
-			? {
-				value: sb.Utils.timeDelta(new sb.Date(i.lastUpdate)),
-				dataOrder: new sb.Date(i.lastUpdate).valueOf()
-			}
-			: {
-				value: "N/A",
-				dataOrder: 0
+	const prettifyData = (data) => data.map(i => {
+		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
+		const trimmedText = sb.Utils.wrapString(text, 200);
+		const update = (i.lastUpdate) ? new sb.Date(i.lastUpdate) : null;
+
+		return {
+			Author: i.userName,
+			Text: (i.text)
+				? `<div title="${text}">${trimmedText}</div>`
+				: "N/A",
+			Status: i.status ?? "(pending)",
+			Priority: {
+				value: (i.priority === 255) ? "(pending)" : (i.priority ?? "N/A"),
+				dataOrder: (i.priority === null) ? 255 : i.priority
 			},
-		ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
-	}));
+			Update: {
+				value: (update) ? sb.Utils.timeDelta(update) : "N/A",
+				dataOrder: update ?? 0
+			},
+			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
+		};
+	});
 
 	Router.get("/list", async (req, res) => {
 		const { userName } = req.query;
