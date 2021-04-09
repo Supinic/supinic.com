@@ -14,9 +14,9 @@ module.exports = (function () {
 
 		return {
 			Author: i.userName,
-			Text: (i.text)
+			Text: (i.text.length > 200)
 				? `<div title="${text}">${trimmedText}</div>`
-				: "N/A",
+				: text,
 			Status: i.status ?? "(pending)",
 			Priority: {
 				value: (i.priority === 255) ? "(pending)" : (i.priority ?? "N/A"),
