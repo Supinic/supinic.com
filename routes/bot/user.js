@@ -5,11 +5,11 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const prettifyAliasData = (aliases) => aliases.map(alias => ({
-		Name: alias.name,
+		Name: (alias.name)
+			? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
+			: alias.name,
 		Invocation: alias.invocation.join(" "),
-		Description: (alias.description)
-			? `<div class="hoverable" title="${alias.description}">(hover)</div>`
-			: "N/A"
+		Created: new sb.Date(alias.created).format("Y-m-d")
 	}));
 
 	Router.get("/alias/find", async (req, res) => {
@@ -63,7 +63,7 @@ module.exports = (function () {
 		const printData = prettifyAliasData(body.data.aliases);
 		res.render("generic-list-table", {
 			data: printData,
-			head: ["Name", "Invocation", "Description"],
+			head: ["Name", "Invocation", "Created"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
