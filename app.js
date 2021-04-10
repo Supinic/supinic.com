@@ -327,8 +327,8 @@
 	});
 
 	app.get("/", (req, res) => res.render("index"));
-	for (const [route, file] of subroutes) {
-		app.use("/" + route, require("./" + file));
+	for (const route of subroutes) {
+		app.use("/" + route, require("./routes/" + route));
 	}
 
 	// Twitch auth
