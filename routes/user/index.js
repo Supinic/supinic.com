@@ -4,11 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	// const routes = [];
-	// for (const [name, link] of routes) {
-	// 	Router.use("/" + name, require("./" + link))
-	// }
-
 	Router.use("/", async (req, res, next) => {
 		if (!res.locals.authUser) {
 			return res.status(401).render("error", {

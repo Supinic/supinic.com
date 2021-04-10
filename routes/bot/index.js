@@ -8,6 +8,7 @@ module.exports = (function () {
 		["channel", "channel.js"],
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
+		["cytube", "cytube.js"],
 		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
@@ -16,10 +17,8 @@ module.exports = (function () {
 		["user", "user.js"]
 	];
 
-	Router.get("/", (req, res) => res.sendStatus(200));
-
-	for (const [name, link] of subroutes) {
-		Router.use(`/${name}`, require(`./${link}`));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
 	}
 
 	return Router;

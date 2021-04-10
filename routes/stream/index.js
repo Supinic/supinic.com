@@ -10,7 +10,9 @@ module.exports = (function () {
 		["song-request", "song-request.js"]
 	];
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
+	}
 
 	return Router;
 })();

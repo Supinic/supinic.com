@@ -36,7 +36,7 @@
 	// Todo move WebUtils into globals package
 	sb.WebUtils = require("./webutils");
 
-	const subRoutes = [
+	const subroutes = [
 		"api",
 		"bot",
 		"contact",
@@ -50,8 +50,7 @@
 		"stream",
 		"teapot",
 		"track",
-		"user",
-		"wow"
+		"user"
 	];
 
 	const port = 80;
@@ -282,6 +281,9 @@
 	});
 
 	await app.all("*", async (req, res, next) => {
+		const routeType = (req.originalUrl.includes("api")) ? "API" : "Frontend";
+		await sb.WebUtils.logRequest(req, routeType);
+
 		if (!req.originalUrl.includes("api")) {
 			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
 			if (columnValues.length !== 0) {
@@ -325,8 +327,8 @@
 	});
 
 	app.get("/", (req, res) => res.render("index"));
-	for (const route of subRoutes) {
-		app.use("/" + route, require("./routes/" + route));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
 	}
 
 	// Twitch auth

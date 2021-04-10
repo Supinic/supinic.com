@@ -30,7 +30,6 @@ module.exports = (function () {
 		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		res.header("Access-Control-Allow-Methods", "GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONS,TRACE,PATCH");
 
-		sb.WebUtils.logRequest(req, "API");
 		next();
 	});
 
@@ -84,8 +83,8 @@ module.exports = (function () {
 		sb.WebUtils.apiSuccess(res, endpoints);
 	});
 
-	for (const [name, link] of subroutes) {
-		Router.use("/" + name, require("./" + link));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
 	}
 
 	// next param is required - Express recognizes four parameters functions as middlewares

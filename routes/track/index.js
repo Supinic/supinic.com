@@ -12,7 +12,9 @@ module.exports = (function () {
 		["favourite", "favourite.js"]
 	];
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
+	}
 
 	const fetchList = async (req, res, listType, inputData = {}) => {
 		let searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");

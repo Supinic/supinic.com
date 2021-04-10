@@ -12,7 +12,9 @@ module.exports = (function () {
 		["suggestion", "suggestion.js"]
 	];
 
-	subroutes.forEach(([name, link]) => Router.use("/" + name, require("./" + link)));
+	for (const [route, file] of subroutes) {
+		Router.use("/" + route, require("./" + file));
+	}
 
 	return Router;
 })();
