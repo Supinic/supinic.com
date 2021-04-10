@@ -39,7 +39,7 @@ module.exports = (function () {
 		if (!banWavePartPermissions) {
 			return sb.WebUtils.apiFail(res, 401, "Endpoint requires banwave-part permissions");
 		}
-		else if (!banWavePartPermissions.includes(channel.Name)) {
+		else if (!banWavePartPermissions.includes(channel.ID)) {
 			return sb.WebUtils.apiFail(res, 401, "You don't have banwave-part permission for this channel");
 		}
 
