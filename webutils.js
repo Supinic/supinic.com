@@ -305,7 +305,7 @@ module.exports = class WebUtils {
 	}
 
 	static async logRequest (req, route) {
-		const row = await sb.Query.getRow("api", "Log");
+		const row = await sb.Query.getRow("supinic.com", "Log");
 		row.setValues({
 			Method: req.method,
 			Route: route,
