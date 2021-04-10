@@ -174,7 +174,8 @@ module.exports = class WebUtils {
 
 			return {
 				level: userData.Data.trackLevel || "login",
-				userID: userData.ID
+				userID: userData.ID,
+				userData
 			};
 		}
 		else if (req.header("Authorization")) {
@@ -219,7 +220,8 @@ module.exports = class WebUtils {
 
 			return {
 				level: userData.Data.trackLevel || "login",
-				userID: userData.ID
+				userID: userData.ID,
+				userData
 			};
 		}
 		else if (req.query.localRequestAuthUser) {
@@ -252,7 +254,8 @@ module.exports = class WebUtils {
 
 			return {
 				level: userData.Data.trackLevel || "login",
-				userID: userData.ID
+				userID: userData.ID,
+				userData
 			};
 		}
 		else if (!res.locals) {
@@ -264,13 +267,15 @@ module.exports = class WebUtils {
 		else if (!res.locals.authUser || !res.locals.authUser.userData) {
 			return {
 				level: "none",
-				userID: null
+				userID: null,
+				userData: null
 			};
 		}
 		else {
 			return {
 				level: res.locals.authUser.userData.Data.trackLevel || "login",
-				userID: res.locals.authUser.userData.ID
+				userID: res.locals.authUser.userData.ID,
+				userData: res.locals.authUser.userData
 			};
 		}
 	}
