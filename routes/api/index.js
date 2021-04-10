@@ -89,6 +89,8 @@ module.exports = (function () {
 		Router.use("/" + name, require("./" + link));
 	}
 
+	// next param is required - Express recognizes four parameters functions as middlewares
+	// noinspection JSUnusedLocalSymbols
 	Router.use(async (err, req, res, next) => {
 		const errorID = await sb.SystemLogger.sendError("Website - API", err);
 		return sb.WebUtils.apiFail(res, 500, err.message, { ID: errorID });
