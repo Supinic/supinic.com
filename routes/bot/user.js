@@ -40,7 +40,7 @@ module.exports = (function () {
 					const response = await fetch("/api/bot/user/resolve/name/" + userName);
 					const { data } = await response.json();
 					if (data) {					
-						location.replace("/bot/user/" + userName + "/alias/list");
+						location.href = "/bot/user/" + userName + "/alias/list";
 					}
 					else {
 						alerter.classList.add("alert");

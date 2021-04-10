@@ -42,7 +42,7 @@ module.exports = (function () {
 					const response = await fetch("/api/bot/user/resolve/name/" + userName);
 					const { data } = await response.json();
 					if (data) {
-						location.replace("/track/favourite/list/user/" + data.ID);
+						location.href = "/track/favourite/list/user/" + data.ID;
 					}
 					else {
 						alerter.classList.add("alert");
