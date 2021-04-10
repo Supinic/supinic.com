@@ -278,7 +278,7 @@
 	// robots.txt - disallow everything
 	app.get("/robots.txt", (req, res) => {
 		res.type("text/plain");
-		res.send("User-agent: Googlebot\nAllow: /\nUser-Agent: *\nDisallow: /");
+		res.send("User-agent: * Disallow: /");
 	});
 
 	await app.all("*", async (req, res, next) => {
