@@ -304,10 +304,11 @@ module.exports = class WebUtils {
 		return resultParams;
 	}
 
-	static async logApiRequest (req) {
+	static async logRequest (req, route) {
 		const row = await sb.Query.getRow("api", "Log");
 		row.setValues({
 			Method: req.method,
+			Route: route,
 			Endpoint: req.baseUrl + req.url,
 			Source_IP: req.header("X-Forwarded-For") + " (" + req.connection.remoteAddress + ")",
 			User_Agent: req.header("User-Agent") || null,
