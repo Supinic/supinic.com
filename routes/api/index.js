@@ -14,7 +14,6 @@ module.exports = (function () {
 		["osrs", "osrs.js"],
 		["relay", "relay.js"],
 		["test", "test.js"],
-		["text-normalize", "text-normalize.js"],
 		["track", "track"],
 		["trackData", "trackData.js"],
 	];
