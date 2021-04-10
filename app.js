@@ -281,7 +281,7 @@
 	});
 
 	await app.all("*", async (req, res, next) => {
-		const routeType = (req.originalUrl.includes("api")) ? "API" : "Frontend";
+		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		await sb.WebUtils.logRequest(req, routeType);
 
 		if (!req.originalUrl.includes("api")) {
