@@ -304,7 +304,7 @@ module.exports = class WebUtils {
 		return resultParams;
 	}
 
-	static async apiLogRequest (req) {
+	static async logApiRequest (req) {
 		const row = await sb.Query.getRow("api", "Log");
 		row.setValues({
 			Method: req.method,
