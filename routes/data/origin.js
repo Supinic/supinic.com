@@ -45,8 +45,8 @@ module.exports = (function () {
 		const id = Number(req.params.id);
 		const response = await sb.Got("Supinic", "/data/origin/detail/" + id);
 		if (response.statusCode !== 200) {
-			return res.status(statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(statusCode),
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
 				message: response.body.error.message
 			});
 		}
