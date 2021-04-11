@@ -7,7 +7,7 @@ module.exports = (function () {
 	const prettifyAliasData = (aliases) => aliases.map(alias => {
 		const created = (alias.created) ? new sb.Date(alias.created) : null;
 		return {
-			Name: (alias.name)
+			Name: (alias.description)
 				? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
 				: alias.name,
 			Invocation: alias.invocation.join(" "),
