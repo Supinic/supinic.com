@@ -248,6 +248,12 @@
 			]
 		},
 		{
+			name: "Other",
+			items: [
+				{ name: "Bad Apple!!", link: "data/bad-apple/list" },
+			]
+		},
+		{
 			name: "API",
 			items: [
 				{ name: "Documentation", link: "api" },
