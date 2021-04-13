@@ -64,8 +64,8 @@ module.exports = (function () {
 	 * @apiGroup ProxyBot
 	 * @apiDescription Parts provided channel due to a banwave commencing.
 	 * @apiPermission login + banwave permission
-	 * @apiQuery {string} [channelID] Twitch channel - ID
-	 * @apiQuery {string} [channelName] Twitch channel Name
+	 * @apiParam (body) {string} [channelID] Twitch channel - ID
+	 * @apiParam (body) {string} [channelName] Twitch channel Name
 	 **/
 	Router.post("/banwave/part", async (req, res) => {
 		return await partOrJoin("part", req, res);
@@ -77,8 +77,8 @@ module.exports = (function () {
 	 * @apiGroup ProxyBot
 	 * @apiDescription (Re)joins provided channel due to a banwave finishing.
 	 * @apiPermission login + banwave permission
-	 * @apiQuery {string} [channelID] Twitch channel - ID
-	 * @apiQuery {string} [channelName] Twitch channel Name
+	 * @apiParam (body) {string} [channelID] Twitch channel - ID
+	 * @apiParam (body) {string} [channelName] Twitch channel Name
 	 **/
 	Router.post("/banwave/join", async (req, res) => {
 		return await partOrJoin("join", req, res);
