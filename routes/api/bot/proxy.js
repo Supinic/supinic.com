@@ -59,7 +59,7 @@ module.exports = (function () {
 	};
 
 	/**
-	 * @api {get} /bot/proxy/banwave/part Part channel - banwave
+	 * @api {post} /bot/proxy/banwave/part Part channel - banwave
 	 * @apiName ProxyBanwavePartChannel
 	 * @apiGroup ProxyBot
 	 * @apiDescription Parts provided channel due to a banwave commencing.
@@ -72,7 +72,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/proxy/banwave/join Join channel - banwave
+	 * @api {post} /bot/proxy/banwave/join Join channel - banwave
 	 * @apiName ProxyBanwaveJoinChannel
 	 * @apiGroup ProxyBot
 	 * @apiDescription (Re)joins provided channel due to a banwave finishing.
