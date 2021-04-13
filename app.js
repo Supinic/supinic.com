@@ -65,8 +65,10 @@
 	const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
 
+	// methods `userProfile` is called internally to resolve the auth
+	// noinspection JSUnusedGlobalSymbols
 	class TwitchStrategy extends OAuth2Strategy {
-		async userProfile (accessToken, done, ...rest) {
+		async userProfile (accessToken, done) {
 			const { statusCode, body } = await sb.Got({
 				method: "GET",
 				throwHttpErrors: false,
@@ -87,6 +89,8 @@
 		}
 	}
 
+	// methods `userProfile` is called internally to resolve the auth
+	// noinspection JSUnusedGlobalSymbols
 	class GithubStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
 			const { statusCode, body } = await sb.Got({
@@ -441,6 +445,8 @@
 		}
 	);
 
+	// 4 params are required (next is unused) - express needs this to recognize the callback as middleware
+	// noinspection JSUnusedLocalSymbols
 	app.use(async (err, req, res, next) => {
 		console.error("Website error", err, req);
 
