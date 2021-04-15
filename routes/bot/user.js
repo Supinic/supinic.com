@@ -55,7 +55,7 @@ module.exports = (function () {
 		const printData = body.data.aliases.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
 			const name = (alias.description)
-				? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
+				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
 				: alias.name;
 
 			return {
