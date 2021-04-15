@@ -83,5 +83,53 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/:username/alias/:alias", async (req, res) => {
+		const { alias, username } = req.params;
+		const { statusCode, body } = await sb.Got("Supinic", {
+			url: "bot/user/" + encodeURIComponent(username) + "/alias/" + alias,
+			throwHttpErrors: false
+		});
+
+		if (statusCode !== 200) {
+			return res.status(404).render("error", {
+				error: statusCode,
+				message: body.error.message
+			});
+		}
+
+		const aliasData = body.data;
+		res.render("generic-detail-table", {
+			title: `Alias ${alias} of user ${username}`,
+			data: {
+				User: username,
+				Alias: aliasData.name,
+				Created: new sb.Data(aliasData.created).format("Y-m-d"),
+				"Last edit": (aliasData.lastEdit)
+					? new sb.Data(aliasData.created).format("Y-m-d")
+					: "N/A",
+				Invocation: aliasData.invocation.join(" ") ?? "N/A",
+				Description: aliasData.description ?? "N/A"
+			},
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Alias ${alias} of user ${username}`
+				},
+				{
+					property: "description",
+					content: aliasData.description ?? aliasData.invocation ?? "N/A"
+				},
+				{
+					property: "author",
+					content: username
+				},
+				{
+					property: "url",
+					content: `https://supinic.com/bot/user/${username}/alias/${alias}`
+				}
+			]
+		});
+	});
+
 	return Router;
 })();
