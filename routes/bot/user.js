@@ -114,7 +114,7 @@ module.exports = (function () {
 					? sb.Utils.escapeHTML(aliasData.description)
 					: "N/A",
 				Invocation: (aliasData.invocation)
-					? `<code>${invocation}</code>`
+					? `<code>${sb.Utils.escapeHTML(invocation)}</code>`
 					: "N/A"
 			},
 			openGraphDefinition: [
