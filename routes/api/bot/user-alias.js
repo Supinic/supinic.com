@@ -65,7 +65,7 @@ module.exports = (function () {
 		}
 
 		return sb.WebUtils.apiSuccess(res, {
-			name: aliasData.Name,
+			name: aliasData.name,
 			invocation: [aliasData.invocation, ...aliasData.args],
 			created: aliasData.created,
 			lastEdit: aliasData.lastEdit,
