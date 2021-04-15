@@ -4,20 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const prettifyAliasData = (aliases) => aliases.map(alias => {
-		const created = (alias.created) ? new sb.Date(alias.created) : null;
-		return {
-			Name: (alias.description)
-				? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
-				: alias.name,
-			Invocation: alias.invocation.join(" "),
-			Created: {
-				dataOrder: created ?? 0,
-				value: (created) ? created.format("Y-m-d") : "N/A"
-			}
-		};
-	});
-
 	Router.get("/alias/find", async (req, res) => {
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
@@ -66,7 +52,22 @@ module.exports = (function () {
 			});
 		}
 
-		const printData = prettifyAliasData(body.data.aliases);
+		const printData = body.data.aliases.map(alias => {
+			const created = (alias.created) ? new sb.Date(alias.created) : null;
+			const name = (alias.description)
+				? `<div class="hoverable" title="${alias.description}">${alias.name}</div>`
+				: alias.name;
+
+			return {
+				Name: `<a href="/bot/user/${username}/alias/${alias.name}>${name}</a>`,
+				Invocation: sb.Utils.escapeHTML(alias.invocation.join(" ")),
+				Created: {
+					dataOrder: created ?? 0,
+					value: (created) ? created.format("Y-m-d") : "N/A"
+				}
+			};
+		});
+
 		res.render("generic-list-table", {
 			data: printData,
 			head: ["Name", "Invocation", "Created"],
@@ -100,6 +101,7 @@ module.exports = (function () {
 		const aliasData = body.data;
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
 		const edited = (aliasData.lastEdit) ? new sb.Date(aliasData.lastEdit).format("Y-m-d") : "N/A";
+		const invocation = (aliasData.invocation) ? aliasData.invocation.join(" ") : "N/A";
 
 		res.render("generic-detail-table", {
 			title: `Alias ${alias} of user ${username}`,
@@ -108,8 +110,12 @@ module.exports = (function () {
 				Alias: aliasData.name,
 				Created: created,
 				"Last edit": edited,
-				Description: aliasData.description ?? "N/A",
-				Invocation: "<code>" + (aliasData.invocation.join(" ") ?? "N/A") + "</code>"
+				Description: (aliasData.description)
+					? sb.Utils.escapeHTML(aliasData.description)
+					: "N/A",
+				Invocation: (aliasData.invocation)
+					? `<code>${invocation}</code>`
+					: "N/A"
 			},
 			openGraphDefinition: [
 				{
