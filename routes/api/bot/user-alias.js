@@ -47,6 +47,32 @@ module.exports = (function () {
 		}
 	});
 
+	Router.get("/:name/alias/:alias", async (req, res) => {
+		const { name, alias } = req.params;
+		const row = await UserAlias.selectSingleCustom(q => q.where("Name = %s", name));
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "User not found");
+		}
+
+		const data = JSON.parse(row.Data ?? "{}");
+		if (!data.aliasedCommands) {
+			return sb.WebUtils.apiFail(res, 404, "User has no aliases");
+		}
+
+		const aliasData = data.aliasedCommands[alias];
+		if (!aliasData) {
+			return sb.WebUtils.apiFail(res, 404, "User has no such alias");
+		}
+
+		return sb.WebUtils.apiSuccess(res, {
+			name: aliasData.Name,
+			invocation: [aliasData.invocation, ...aliasData.args],
+			created: aliasData.created,
+			lastEdit: aliasData.lastEdit,
+			description: aliasData.desc ?? null
+		});
+	});
+
 	/**
 	 * @api {get} /bot/user/resolve/name/:name Fetch user by username
 	 * @apiName FetchUserByUsername
