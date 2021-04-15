@@ -59,7 +59,7 @@ module.exports = (function () {
 				: alias.name;
 
 			return {
-				Name: `<a href="/bot/user/${username}/alias/${alias.name}>${name}</a>`,
+				Name: `<a href="/bot/user/${username}/alias/${alias.name}">${name}</a>`,
 				Invocation: sb.Utils.escapeHTML(alias.invocation.join(" ")),
 				Created: {
 					dataOrder: created ?? 0,
