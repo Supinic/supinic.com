@@ -98,17 +98,18 @@ module.exports = (function () {
 		}
 
 		const aliasData = body.data;
+		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
+		const edited = (aliasData.lastEdit) ? new sb.Date(aliasData.lastEdit).format("Y-m-d") : "N/A";
+
 		res.render("generic-detail-table", {
 			title: `Alias ${alias} of user ${username}`,
 			data: {
 				User: username,
 				Alias: aliasData.name,
-				Created: new sb.Data(aliasData.created).format("Y-m-d"),
-				"Last edit": (aliasData.lastEdit)
-					? new sb.Data(aliasData.created).format("Y-m-d")
-					: "N/A",
-				Invocation: aliasData.invocation.join(" ") ?? "N/A",
-				Description: aliasData.description ?? "N/A"
+				Created: created,
+				"Last edit": edited,
+				Description: aliasData.description ?? "N/A",
+				Invocation: "<code>" + (aliasData.invocation.join(" ") ?? "N/A") + "</code>"
 			},
 			openGraphDefinition: [
 				{
