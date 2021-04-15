@@ -124,7 +124,7 @@ module.exports = (function () {
 				},
 				{
 					property: "description",
-					content: aliasData.description ?? aliasData.invocation ?? "N/A"
+					content: aliasData.description ?? invocation ?? "N/A"
 				},
 				{
 					property: "author",
