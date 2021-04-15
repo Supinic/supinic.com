@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Suggestion = require("../../../modules/data/suggestion.js");
-	const Columns = require("../../../modules/information-schema/columns.js");
+	const Columns = require("../../../modules/internal/columns.js");
 
 	const nonAdminStatuses = ["Dismissed by author"];
 	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
