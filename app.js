@@ -294,6 +294,12 @@
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		await sb.WebUtils.logRequest(req, routeType);
 
+		if (req.headers?.["user-agent"].includes("paloaltonetworks.com")) {
+			const message = "If you would like this site to be included in your scans, please send IP addresses/domains to: supinic@pm.me";
+			res.status(403).send(message);
+			return;
+		}
+
 		if (!req.originalUrl.includes("api")) {
 			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
 			if (columnValues.length !== 0) {
