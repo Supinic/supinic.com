@@ -118,13 +118,10 @@ module.exports = (function () {
 			else if (key === "Cooldown") {
 				data[key] = (value / 1000) + " seconds";
 			}
-			else if (skip.includes(key.toLowerCase())) {
-				continue;
-			}
 			else if (value === null) {
 				data[key] = "N/A";
 			}
-			else {
+			else if (!skip.includes(key.toLowerCase())) {
 				data[key] = value;
 			}
 		}
