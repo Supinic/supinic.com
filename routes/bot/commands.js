@@ -13,23 +13,24 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "bot/command/list").json();
 
 		const isDeveloper = Boolean(res.locals.authUser?.userData.Data.developer);
-		const printData = data.filter(i => isDeveloper || !i.flags.includes("developer"))
+		const printData = data
+			.filter(i => isDeveloper || !i.flags.includes("developer"))
+			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
-				Name: i.name,
-				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "(none)",
-				Cooldown: {
-					value: (i.cooldown / 1000) + " seconds",
-					dataOrder: (i.cooldown / 1000)
-				},
-				Whitelisted: (i.flags.includes("whitelist")) ? "Yes" : "No",
-				Description: i.description || "N/A",
-				ID: `<a href="/bot/command/${i.ID}">${i.ID}</a>`
-			}))
-			.sort((a, b) => a.Name.localeCompare(b.Name));
+				Name: `<a href="/bot/command/${i.ID}">${i.name}</a>`,
+				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "-",
+				"🚫": (i.flags.includes("opt-out")) ? "Yes" : "No",
+				"⛔": (i.flags.includes("block")) ? "Yes" : "No",
+				Description: i.description || "N/A"
+			}));
 
 		res.render("generic-list-table", {
 			data: printData,
 			head: Object.keys(printData[0]),
+			headerDescriptions: {
+				"🚫": "Can you opt out from this command?",
+				"⛔": "Can you block a specific user from this command?"
+			},
 			pageLength: 250
 		});
 	});
