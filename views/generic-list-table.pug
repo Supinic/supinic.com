@@ -94,8 +94,8 @@ html
 			thead
 				tr
 					each key in head
-						- if (typeof headerDescription !== "undefined" && headerDescription[key]) {
-							th(title=headerDescription[key]) #{key}
+						- if (typeof headerDescriptions !== "undefined" && headerDescription[key]) {
+							th(title=headerDescriptions[key]) #{key}
 						- }
 						- else {
 							th #{key}
