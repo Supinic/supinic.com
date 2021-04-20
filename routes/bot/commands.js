@@ -18,19 +18,25 @@ module.exports = (function () {
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
 				Name: `<a href="/bot/command/${i.ID}">${i.name}</a>`,
-				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "-",
+				Description: i.description || "N/A",
+				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "",
 				"🚫": (i.flags.includes("opt-out")) ? "Yes" : "No",
-				"⛔": (i.flags.includes("block")) ? "Yes" : "No",
-				Description: i.description || "N/A"
+				"⛔": (i.flags.includes("block")) ? "Yes" : "No"
 			}));
 
 		res.render("generic-list-table", {
+			title: "Supibot command list",
 			data: printData,
 			head: Object.keys(printData[0]),
 			headerDescriptions: {
 				"🚫": "Can you opt out from this command?",
 				"⛔": "Can you block a specific user from this command?"
 			},
+			extraCSS: `
+				th[aria-label^="Name"] {
+					min-width: 105px;
+				}
+			`,
 			pageLength: 250
 		});
 	});
