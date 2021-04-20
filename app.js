@@ -456,6 +456,19 @@
 	app.use(async (err, req, res, next) => {
 		console.error("Website error", err, req);
 
+		// managing URIErrors caused by malformed path params
+		if (err instanceof URIError) {
+			if (req.path.includes("/api")) {
+				return sb.WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
+			}
+			else {
+				return res.status(400).render("error", {
+					message: "404 Not found",
+					error: "Malformed URI - endpoint was not found"
+				});
+			}
+		}
+
 		try {
 			const errorID = await sb.SystemLogger.sendError("Website", err);
 			return res.status(500).render("error", {
