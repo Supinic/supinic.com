@@ -23,7 +23,7 @@ html
 				!{extraScript}
 		- }
 		- if (typeof extraCSS !== "undefined") {
-			style(type="text/css").
+			style.
 				!{extraCSS}
 		- }
 
@@ -64,7 +64,7 @@ html
 				}
 			});
 		meta(charset="UTF-8")
-		style(type="text/css").
+		style.
 			.searchable {
 				display: none;
 			}
@@ -94,7 +94,12 @@ html
 			thead
 				tr
 					each key in head
-						th #{key}
+						- if (typeof headerDescription !== "undefined" && headerDescription[key]) {
+							th(title=headerDescription[key]) #{key}
+						- }
+						- else {
+							th #{key}
+						- }
 			each row in data
 				tr
 					each key in head
