@@ -70,7 +70,7 @@ html
 				text-decoration: underline dotted;
 			}
 
-			.searchable {
+			.searchables {
 				display: none;
 			}
 
@@ -105,7 +105,7 @@ html
 						- else {
 							th #{key}
 						- }
-					th.searchable Searchables
+					th.searchables Searchables
 			each row in data
 				tr
 					each key in head
@@ -115,7 +115,7 @@ html
 						- else {
 							td(field=key) !{row[key]}
 						- }
-					td.searchable #{row.searchable || ""}
+					td.searchables #{row.searchables || ""}
 
 			- if (specificFiltering) {
 				tfoot
