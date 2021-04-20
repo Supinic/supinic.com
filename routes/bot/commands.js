@@ -31,6 +31,7 @@ module.exports = (function () {
 			title: "Supibot command list",
 			data: printData,
 			head: ["Name", "Description", "👤", "🚫", "⛔"],
+			pageLength: 250,
 			headerDescriptions: {
 				"👤": "Does this command have any aliases? (hover for a list)",
 				"🚫": "Can you opt out from this command?",
@@ -41,15 +42,35 @@ module.exports = (function () {
 					min-width: 105px;
 				}
 			`,
-			pageLength: 250
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Supibot command list`
+				},
+				{
+					property: "description",
+					content: "This is a list of all Supibot commands available."
+				}
+			]
 		});
 	});
 
 	Router.get("/stats", async (req, res) => {
 		const statistics = await CommandExecution.hourlyStats();
 		res.render("command-stats", {
+			title: "Hourly stats of Supibot commands",
 			amount: statistics.reduce((acc, cur) => acc += cur, 0),
-			hourlyStats: JSON.stringify(statistics)
+			hourlyStats: JSON.stringify(statistics),
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Hourly Supibot command stats`
+				},
+				{
+					property: "description",
+					content: "Shows how many times Supibot commands are used in each hour of a day, for the previous 24 hours."
+				}
+			]
 		});
 	});
 
@@ -268,12 +289,19 @@ module.exports = (function () {
 			: "// None";
 
 		res.render("code", {
+			title: `${data.values.Name} - Supibot command code`,
 			header: data.values.Name,
 			code: `// Command code:\n${data.values.Code}`,
 			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
 			dynamicDescription: `// Dynamic description:\n${data.values.Dynamic_Description ?? "// None"}`,
 			params: `// Parameters definition:\n${paramsString}`,
-			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`
+			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Code of Supibot command ${data.values.Name}`
+				}
+			]
 		});
 	});
 
