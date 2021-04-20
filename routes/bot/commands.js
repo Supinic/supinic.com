@@ -30,7 +30,7 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			title: "Supibot command list",
 			data: printData,
-			head: ["Name", "Description", "Aliases", "🚫", "⛔"],
+			head: ["Name", "Description", "👤", "🚫", "⛔"],
 			headerDescriptions: {
 				"👤": "Does this command have any aliases? (hover for a list)",
 				"🚫": "Can you opt out from this command?",
