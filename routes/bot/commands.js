@@ -19,16 +19,20 @@ module.exports = (function () {
 			.map(i => ({
 				Name: `<a href="/bot/command/${i.ID}">${i.name}</a>`,
 				Description: i.description || "N/A",
-				Aliases: (i.aliases.length > 0) ? i.aliases.join(", ") : "",
+				"👤": (i.aliases.length > 0)
+					? `<div class="hoverable" title="Aliases: ${i.aliases.join(", ")}">Yes</div>`
+					: "No",
 				"🚫": (i.flags.includes("opt-out")) ? "Yes" : "No",
-				"⛔": (i.flags.includes("block")) ? "Yes" : "No"
+				"⛔": (i.flags.includes("block")) ? "Yes" : "No",
+				searchables: (i.aliases.length > 0) ? i.aliases.join(" ") : "",
 			}));
 
 		res.render("generic-list-table", {
 			title: "Supibot command list",
 			data: printData,
-			head: Object.keys(printData[0]),
+			head: ["Name", "Description", "Aliases", "🚫", "⛔"],
 			headerDescriptions: {
+				"👤": "Does this command have any aliases? (hover for a list)",
 				"🚫": "Can you opt out from this command?",
 				"⛔": "Can you block a specific user from this command?"
 			},
