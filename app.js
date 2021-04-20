@@ -454,9 +454,8 @@
 	// 4 params are required (next is unused) - express needs this to recognize the callback as middleware
 	// noinspection JSUnusedLocalSymbols
 	app.use(async (err, req, res, next) => {
-		console.error("Website error", err, req);
-
-		// managing URIErrors caused by malformed path params
+		// first - manage URIErrors caused by malformed path params
+		// this is not an error, so no error will be printed.
 		if (err instanceof URIError) {
 			if (req.path.includes("/api")) {
 				return sb.WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
@@ -469,6 +468,7 @@
 			}
 		}
 
+		console.error("Website error", { err, req, res });
 		try {
 			const errorID = await sb.SystemLogger.sendError("Website", err);
 			return res.status(500).render("error", {
