@@ -100,7 +100,7 @@ html
 				tr
 					each key in head
 						- if (typeof headerDescriptions !== "undefined" && headerDescriptions[key]) {
-							th(title=headerDescriptions[key]) #{key}
+							th(class="hoverable" title=headerDescriptions[key]) #{key}
 						- }
 						- else {
 							th #{key}
