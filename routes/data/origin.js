@@ -97,7 +97,7 @@ module.exports = (function () {
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)
 				? data.notes
-					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a target="_blank" href="$1">$1</a>$2`)
+					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
 					.replace(/\r?\n/g, "<br>")
 				: "N/A"
 		};
