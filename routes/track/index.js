@@ -12,6 +12,11 @@ module.exports = (function () {
 		["favourite", "favourite.js"]
 	];
 
+	const columns = {
+		gachi: ["🔁", "Name", "Published", "Author", "Favs", "ID"],
+		todo: ["Name", "Published", "Author", "Added to list", "ID"]
+	};
+
 	for (const [route, file] of subroutes) {
 		Router.use("/" + route, require("./" + file));
 	}
@@ -99,7 +104,7 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			title: `${sb.Utils.capitalize(listType)} track list`,
 			data: data,
-			head: Object.keys(data[0]),
+			head: columns[listType],
 			sortColumn,
 			pageLength: 25,
 			sortDirection: "desc",
