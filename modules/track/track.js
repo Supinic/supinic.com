@@ -250,8 +250,8 @@ module.exports = (function () {
 					.reference({
 						fromTable: "Track",
 						referenceTable: "Track_Relationship",
-						referenceFieldSource: "Track_From",
-						referenceFieldTarget: "Track_To",
+						referenceFieldSource: "Track_To",
+						referenceFieldTarget: "Track_From",
 						targetTable: "Track",
 						targetAlias: "Youtube_Reupload",
 						collapseOn: "Track_ID",
