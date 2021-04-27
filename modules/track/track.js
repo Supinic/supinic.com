@@ -286,7 +286,7 @@ module.exports = (function () {
 						fields: ["Author_ID", "Author_Name"]
 					})
 					.reference({
-						alias: "Fan",
+						targetAlias: "Fan",
 						sourceTable: "Track",
 						targetDatabase: "chat_data",
 						targetTable: "User_Alias",
