@@ -269,7 +269,7 @@ module.exports = (function () {
 				rs.select("Track.ID AS Track_ID")
 					.select("Tag.Name AS Tag_Name")
 					.select("Author.ID AS Author_ID", "Author.Name AS Author_Name")
-					.select("User_Alias.ID AS User_Alias_ID")
+					.select("Fan.ID AS Fan_ID")
 					.select("Alias.Name AS Alias_Name")
 					.reference({
 						sourceTable: "Track",
@@ -292,7 +292,7 @@ module.exports = (function () {
 						targetTable: "User_Alias",
 						referenceTable: "User_Favourite",
 						collapseOn: "Track_ID",
-						fields: ["User_Alias_ID"]
+						fields: ["Fan_ID"]
 					})
 					.reference({
 						sourceTable: "Track",
