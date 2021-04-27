@@ -335,10 +335,10 @@ module.exports = (function () {
 
 				if (targetUserID !== null) {
 					if (!track.Fans) {
-						track.Is_Favourite = false;
+						track.Is_Favourite = null;
 					}
 					else {
-						track.Is_Favourite = track.Favourites.includes(targetUserID);
+						track.Is_Favourite = track.Fan.includes(targetUserID);
 					}
 				}
 			}
