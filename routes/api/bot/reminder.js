@@ -217,9 +217,24 @@ module.exports = (function () {
 			ID: newReminder.insertId
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
-			reminderID: newReminder.insertId
+		const ID = newReminder.insertId;
+		const { body, statusCode } = await sb.Got("Supibot", {
+			url: "reminder/reloadSpecific",
+			searchParams: { ID }
 		});
+
+		if (statusCode !== 200 || !body.data.available.includes(ID)) {
+			return sb.WebUtils.apiSuccess(res, {
+				reminderID: ID,
+				botResult: body,
+				message: "Reminder set successfully - but the bot failed to reload"
+			});
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, {
+				reminderID: ID
+			});
+		}
 	});
 
 	Router.get("/lookup", async (req, res) => {
@@ -290,28 +305,26 @@ module.exports = (function () {
 			return check;
 		}
 
-		const { reminderID, row } = check;
+		const { reminderID: ID, row } = check;
 		row.values.Active = false;
 		await row.save();
 
-		const response = await sb.Got("Supibot", {
+		const { body, statusCode } = await sb.Got("Supibot", {
 			url: "reminder/reloadSpecific",
-			searchParams: {
-				ID: reminderID
-			}
+			searchParams: { ID }
 		});
 
-		if (response.statusCode !== 200) {
+		if (statusCode !== 200) {
 			return sb.WebUtils.apiSuccess(res, {
-				reminderID,
-				botResult: response.body,
+				reminderID: ID,
+				botResult: body,
 				message: "Reminder unset successfully - but the bot failed to reload"
 			});
 		}
 		else {
 			return sb.WebUtils.apiSuccess(res, {
-				reminderID,
-				botResult: response.body,
+				reminderID: ID,
+				botResult: body,
 				message: "Reminder unset successfully"
 			});
 		}
