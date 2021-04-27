@@ -325,7 +325,7 @@ module.exports = (function () {
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 
-				track.Favourites = track.Fan.map(i => i.ID);
+				track.Favourites = track.Fan?.length ?? 0;
 				track.Authors = track.Author.map(i => i.ID);
 				track.Tags = track.Tag.map(i => i.Name);
 				track.Aliases = track.Alias.map(i => i.Name);
