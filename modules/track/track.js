@@ -273,10 +273,6 @@ module.exports = (function () {
 					.select("GROUP_CONCAT(User_Favourite.User_Alias SEPARATOR ',') AS Fans")
 					.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
 					.leftJoin({
-						toTable: "Alias",
-						on: "Alias.Target_Table = 'Track' AND Alias.Target_ID = Track.ID"
-					})
-					.leftJoin({
 						toTable: "User_Favourite",
 						on: "User_Favourite.Track = Track.ID AND User_Favourite.Active = 1"
 					})
