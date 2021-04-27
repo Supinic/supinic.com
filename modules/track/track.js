@@ -253,10 +253,11 @@ module.exports = (function () {
 						referenceFieldSource: "Track_From",
 						referenceFieldTarget: "Track_To",
 						targetTable: "Track",
-						condition: "Video_Type = 1 AND Available = 1",
 						targetAlias: "Youtube_Reupload",
 						collapseOn: "Track_ID",
-						fields: ["Reupload_ID"]
+						fields: ["Reupload_ID"],
+						referenceCondition: "Relationship = 'Reupload of'",
+						targetCodition: "Video_Type = 1 AND Available = 1"
 					})
 				);
 			}
