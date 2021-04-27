@@ -294,16 +294,27 @@ module.exports = (function () {
 		row.values.Active = false;
 		await row.save();
 
-		await sb.WebUtils.invalidateBotCache({
-			type: "reminder",
-			specific: true,
-			ID: reminderID
+		const response = await sb.Got("Supibot", {
+			url: "reminder/reloadSpecific",
+			searchParams: {
+				ID: reminderID
+			}
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
-			reminderID,
-			message: "Reminder unset successfully"
-		});
+		if (response.statusCode !== 200) {
+			return sb.WebUtils.apiSuccess(res, {
+				reminderID,
+				botResult: response.body,
+				message: "Reminder unset successfully - but the bot failed to reload"
+			});
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, {
+				reminderID,
+				botResult: response.body,
+				message: "Reminder unset successfully"
+			});
+		}
 	});
 
 	return Router;
