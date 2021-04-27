@@ -91,6 +91,8 @@ module.exports = (function () {
 			obj.Favs = `<div class="${imageClass}">${i.favourites}</div>`;
 			obj.ID = `<a target="_href" href="/track/detail/${i.ID}">${i.ID}</a>`;
 
+			obj.searchables = (i.aliases.length > 0) ? i.aliases.join(" ") : "";
+
 			return obj;
 		});
 

@@ -271,6 +271,11 @@ module.exports = (function () {
 				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
 					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
 					.select("GROUP_CONCAT(User_Favourite.User_Alias SEPARATOR ',') AS Fans")
+					.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
+					.leftJoin({
+						toTable: "Alias",
+						on: "Alias.Target_Table = 'Track' AND Alias.Target_ID = Track.ID"
+					})
 					.leftJoin({
 						toTable: "User_Favourite",
 						on: "User_Favourite.Track = Track.ID AND User_Favourite.Active = 1"
@@ -342,6 +347,10 @@ module.exports = (function () {
 
 				track.Youtube_Reuploads = (track.Youtube_Reuploads)
 					? track.Youtube_Reuploads.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
+					: [];
+
+				track.Aliases = (track.Aliases)
+					? track.Aliases.split(",")
 					: [];
 			}
 
