@@ -246,19 +246,17 @@ module.exports = (function () {
 
 			if (options.includeYoutubeReuploads) {
 				queries.push(rs => rs
-					.select("GROUP_CONCAT(Youtube_Reupload.ID SEPARATOR ',') AS Youtube_Reuploads")
-					.leftJoin({
-						toTable: "Track_Relationship",
-						on: "Track_Relationship.Track_To = Track.ID AND Track_Relationship.Relationship = 'Reupload of'"
-					})
-					.leftJoin({
-						toTable: "Track",
-						alias: "Youtube_Reupload",
-						on: sb.Utils.tag.trim `
-							Track_Relationship.Track_From = Youtube_Reupload.ID 
-							AND Youtube_Reupload.Video_Type = 1
-							AND Youtube_Reupload.Available = 1
-						`
+					.select("Youtube_Reupload.ID AS Reupload_ID")
+					.reference({
+						fromTable: "Track",
+						referenceTable: "Track_Relationship",
+						referenceFieldSource: "Track_From",
+						referenceFieldTarget: "Track_To",
+						targetTable: "Track",
+						condition: "Video_Type = 1 AND Available = 1",
+						targetAlias: "Youtube_Reupload",
+						collapseOn: "Track_ID",
+						fields: ["Reupload_ID"]
 					})
 				);
 			}
@@ -268,35 +266,42 @@ module.exports = (function () {
 			}
 
 			const data = await Track.selectMultipleCustom(rs => {
-				rs.select("GROUP_CONCAT(Track_Author.Author SEPARATOR ',') AS Authors")
-					.select("GROUP_CONCAT(Track_Tag.Tag SEPARATOR ',') AS Tags")
-					.select("GROUP_CONCAT(User_Favourite.User_Alias SEPARATOR ',') AS Fans")
-					.select("GROUP_CONCAT(Alias.Name SEPARATOR ',') AS Aliases")
-					.leftJoin({
-						toTable: "User_Favourite",
-						on: "User_Favourite.Track = Track.ID AND User_Favourite.Active = 1"
+				rs.select("Track.ID AS Track_ID")
+					.select("Tag.Name AS Tag_Name")
+					.select("Author.ID AS Author_ID", "Author.Name AS Author_Name")
+					.select("User_Alias.ID AS User_Alias_ID")
+					.select("Alias.Name AS Alias_Name")
+					.reference({
+						sourceTable: "Track",
+						targetTable: "Tag",
+						referenceTable: "Track_Tag",
+						collapseOn: "Track_ID",
+						fields: ["Tag_Name"]
 					})
-					.leftJoin({
-						toTable: "Track_Tag",
-						on: "Track_Tag.Track = Track.ID"
+					.reference({
+						sourceTable: "Track",
+						targetTable: "Author",
+						referenceTable: "Track_Author",
+						collapseOn: "Track_ID",
+						fields: ["Author_ID", "Author_Name"]
 					})
-					.leftJoin({
-						toTable: "Tag",
-						on: "Track_Tag.Tag = Tag.ID"
+					.reference({
+						alias: "Fans",
+						sourceTable: "Track",
+						targetDatabase: "chat_data",
+						targetTable: "User_Alias",
+						referenceTable: "User_Favourite",
+						collapseOn: "Track_ID",
+						fields: ["User_Alias_ID"]
 					})
-					.leftJoin({
-						toTable: "Track_Author",
-						on: "Track_Author.Track = Track.ID"
+					.reference({
+						sourceTable: "Track",
+						targetTable: "Alias",
+						targetField: "Target_ID",
+						collapseOn: "Track_ID",
+						fields: ["Alias_Name"],
+			            condition: "Alias.Target_Table = 'Track'"
 					})
-					.leftJoin({
-						toTable: "Author",
-						on: "Track_Author.Author = Author.ID"
-					})
-					.leftJoin({
-						toTable: "Alias",
-						on: `Alias.Target_Table = "Track" AND Alias.Target_ID = Track.ID`
-					})
-					.groupBy("Track.ID");
 
 				for (const query of queries) {
 					query(rs);
@@ -319,6 +324,8 @@ module.exports = (function () {
 				const track = data[i];
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
+
+				track.Favourites = track.Fans.map(i => i.User_Alias)
 
 				const uniqueFavourites = track.Fans?.split(",").filter((i, ind, arr) => ind === arr.indexOf(i));
 				track.Favourites = uniqueFavourites?.length ?? 0;
