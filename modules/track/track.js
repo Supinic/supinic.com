@@ -286,7 +286,7 @@ module.exports = (function () {
 						fields: ["Author_ID", "Author_Name"]
 					})
 					.reference({
-						alias: "Fans",
+						alias: "Fan",
 						sourceTable: "Track",
 						targetDatabase: "chat_data",
 						targetTable: "User_Alias",
@@ -301,7 +301,7 @@ module.exports = (function () {
 						collapseOn: "Track_ID",
 						fields: ["Alias_Name"],
 			            condition: "Alias.Target_Table = 'Track'"
-					})
+					});
 
 				for (const query of queries) {
 					query(rs);
@@ -325,36 +325,22 @@ module.exports = (function () {
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 
-				track.Favourites = track.Fans.map(i => i.User_Alias)
-
-				const uniqueFavourites = track.Fans?.split(",").filter((i, ind, arr) => ind === arr.indexOf(i));
-				track.Favourites = uniqueFavourites?.length ?? 0;
+				track.Favourites = track.Fan.map(i => i.ID);
+				track.Authors = track.Author.map(i => i.ID);
+				track.Tags = track.Tag.map(i => i.Name);
+				track.Aliases = track.Alias.map(i => i.Name);
+				track.Youtube_Reuploads = (track.Youtube_Reupload)
+					? track.Youtube_Reupload.map(i => i.Reupload_ID)
+					: null;
 
 				if (targetUserID !== null) {
 					if (!track.Fans) {
 						track.Is_Favourite = false;
 					}
 					else {
-						track.Is_Favourite = track.Fans.split(",").map(Number).includes(targetUserID);
+						track.Is_Favourite = track.Favourites.includes(targetUserID);
 					}
 				}
-
-				// @todo Remove these filters and make it so the above recordset uses reference table methods when they're implemented
-				track.Authors = (track.Authors)
-					? track.Authors.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
-					: [];
-
-				track.Tags = (track.Tags)
-					? track.Tags.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
-					: [];
-
-				track.Youtube_Reuploads = (track.Youtube_Reuploads)
-					? track.Youtube_Reuploads.split(",").map(Number).filter((i, ind, arr) => arr.indexOf(i) === ind)
-					: [];
-
-				track.Aliases = (track.Aliases)
-					? track.Aliases.split(",")
-					: [];
 			}
 
 			return data;
