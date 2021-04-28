@@ -269,7 +269,7 @@ module.exports = (function () {
 			const data = await Track.selectMultipleCustom(rs => {
 				rs.select("Track.ID AS Track_ID")
 					.select("Tag.Name AS Tag_Name")
-					.select("Author.ID AS Author_ID", "Author.Name AS Author_Name")
+					.select("Author.ID AS Author_ID", "Author.Name AS Author_Name", "Author.Normalized_Name AS Author_Normalized_Name")
 					.select("Fan.ID AS Fan_ID")
 					.select("Alias.Name AS Alias_Name")
 					.reference({
@@ -284,7 +284,7 @@ module.exports = (function () {
 						targetTable: "Author",
 						referenceTable: "Track_Author",
 						collapseOn: "Track_ID",
-						fields: ["Author_ID", "Author_Name"]
+						fields: ["Author_ID", "Author_Name", "Author_Normalized_Name"]
 					})
 					.reference({
 						targetAlias: "Fan",
@@ -327,7 +327,7 @@ module.exports = (function () {
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 
 				track.Favourites = track.Fan?.length ?? 0;
-				track.Authors = track.Author.map(i => i.ID);
+				track.Authors = [...track.Author];
 				track.Tags = track.Tag.map(i => i.Name);
 				track.Aliases = track.Alias.map(i => i.Name);
 				track.Youtube_Reuploads = (track.Youtube_Reupload)
