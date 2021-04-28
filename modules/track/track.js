@@ -332,7 +332,7 @@ module.exports = (function () {
 						track.Is_Favourite = null;
 					}
 					else {
-						track.Is_Favourite = track.Fan.includes(targetUserID);
+						track.Is_Favourite = track.Fan.some(i => i.ID === targetUserID);
 					}
 				}
 
