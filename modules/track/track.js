@@ -326,22 +326,33 @@ module.exports = (function () {
 
 				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
 
-				track.Favourites = track.Fan?.length ?? 0;
-				track.Authors = [...track.Author];
-				track.Tags = track.Tag.map(i => i.Name);
-				track.Aliases = track.Alias.map(i => i.Name);
-				track.Youtube_Reuploads = (track.Youtube_Reupload)
-					? track.Youtube_Reupload.map(i => i.Reupload_ID)
-					: null;
-
 				if (targetUserID !== null) {
-					if (!track.Fans) {
+					if (!track.Fan) {
 						track.Is_Favourite = null;
 					}
 					else {
 						track.Is_Favourite = track.Fan.includes(targetUserID);
 					}
 				}
+
+				track.Favourites = track.Fan?.length ?? 0;
+				delete track.Fan;
+
+				track.Authors = [...track.Author];
+				delete track.Author;
+
+				track.Tags = track.Tag.map(i => i.Name);
+				delete track.Tag;
+
+				track.Aliases = track.Alias.map(i => i.Name);
+				delete track.alias;
+
+				track.Youtube_Reuploads = (track.Youtube_Reupload)
+					? track.Youtube_Reupload.map(i => i.Reupload_ID)
+					: null;
+				delete track.Youtube_Reupload;
+
+
 			}
 
 			return data;
