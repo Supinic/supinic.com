@@ -345,7 +345,7 @@ module.exports = (function () {
 				delete track.Tag;
 
 				track.Aliases = track.Alias.map(i => i.Name);
-				delete track.alias;
+				delete track.Alias;
 
 				track.Youtube_Reuploads = (track.Youtube_Reupload)
 					? track.Youtube_Reupload.map(i => i.Reupload_ID)
