@@ -351,8 +351,6 @@ module.exports = (function () {
 					? track.Youtube_Reupload.map(i => i.Reupload_ID)
 					: null;
 				delete track.Youtube_Reupload;
-
-
 			}
 
 			return data;
