@@ -293,7 +293,8 @@ module.exports = (function () {
 						targetTable: "User_Alias",
 						referenceTable: "User_Favourite",
 						collapseOn: "Track_ID",
-						fields: ["Fan_ID"]
+						fields: ["Fan_ID"],
+						targetCondition: "User_Favourite.Active = 1"
 					})
 					.reference({
 						sourceTable: "Track",
