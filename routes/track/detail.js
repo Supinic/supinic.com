@@ -126,7 +126,7 @@ module.exports = (function () {
 		}
 
 		res.render("track-detail", {
-			title: `Track ${trackData.ID} - ${trackData.name}`,
+			title: `Track ${trackData.ID} - ${trackData.name ?? "(no name)"}`,
 			favourite,
 			ID: trackData.ID,
 			data: data
