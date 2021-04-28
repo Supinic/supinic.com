@@ -4,8 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Author = require("../../modules/track/author.js");
-
 	const subroutes = [
 		["author", "author.js"],
 		["detail", "detail.js"],
@@ -54,11 +52,6 @@ module.exports = (function () {
 			searchParams: searchParams.toString()
 		}).json();
 
-		const authorIDs = new Set(raw.map(i => i.authors).flat());
-		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
-			.where("ID IN %n+", Array.from(authorIDs))
-		)).map(i => [i.ID, i.Name]));
-
 		const data = raw.map(i => {
 			const obj = {};
 			if (listType !== "todo") {
@@ -79,7 +72,7 @@ module.exports = (function () {
 				dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
 			};
 			obj.Author = (i.authors.length !== 0)
-				? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
+				? i.authors.map(author => `<a href="/track/author/${author.ID}">${author.name}</a>`).join(" ")
 				: "N/A";
 
 			if (listType === "todo") {
