@@ -14,6 +14,7 @@ module.exports = (function () {
 
 	const columns = {
 		gachi: ["🔁", "Name", "Published", "Author", "Favs", "ID"],
+		lookup: ["🔁", "Name", "Published", "Author", "Favs", "ID"],
 		todo: ["Name", "Published", "Author", "Added to list", "ID"]
 	};
 
