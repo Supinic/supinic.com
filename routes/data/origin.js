@@ -4,6 +4,10 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const linkify = (string) => (
+		string.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2"><img loading="lazy" alt="$1" title="$1" src="/api/origin/image/$1"/></a>`)
+	);
+
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/origin/list").json();
 		const renderData = data.map(i => {
@@ -92,15 +96,14 @@ module.exports = (function () {
 				: data.emoteID ?? "N/A",
 			Type: `${tier} ${data.type}`,
 			Description: (data.text)
-				? data.text.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2">$1</a>`)
+				? linkify(data.text)
 				: "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)
-				? data.notes
+				? linkify(data.notes)
 					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
-					.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2">$1</a>`)
 					.replace(/\r?\n/g, "<br>")
 				: "N/A"
 		};
