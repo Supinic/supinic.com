@@ -70,5 +70,21 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, items[0]);
 	});
 
+	Router.get("/image/:id", async (req, res) => {
+		const { id } = req.params;
+		const originID = Number(id);
+		if (!sb.Utils.isValidInteger(originID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
+		}
+
+		const row = await Origin.getRow(originID);
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "Emote not found");
+		}
+
+		const url = Origin.parseURL(row.valuesObject);
+		return sb.WebUtils.apiSuccess(res, { url });
+	});
+
 	return Router;
 })();
