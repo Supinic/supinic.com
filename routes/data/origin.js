@@ -7,7 +7,7 @@ module.exports = (function () {
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
 			<a href="/data/origin/detail/$2">
-				<img class="linked-emote" loading="lazy" alt="$1" title="$1" src="/api/data/origin/image/$1"/>
+				<img class="linked-emote" loading="lazy" alt="$1" title="$1" src="/api/data/origin/image/$2"/>
 			</a>
 		`)
 	);
