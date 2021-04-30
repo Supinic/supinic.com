@@ -116,8 +116,8 @@ module.exports = (function () {
 			data: renderData,
 			extraCSS: sb.Utils.tag.trim `
 				img.linked-emote { 
-					height: 32px;
-					max-width: 128px;
+					height: 28px;
+					max-width: 64px;
 				}
 				img.detail-emote { max-height: 128px; }
 				td.key { width: 100px; }
