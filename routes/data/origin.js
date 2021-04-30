@@ -91,13 +91,16 @@ module.exports = (function () {
 				? `<a href="${data.detailUrl}">${data.emoteID}</a>`
 				: data.emoteID ?? "N/A",
 			Type: `${tier} ${data.type}`,
-			Description: data.text ?? "N/A",
+			Description: (data.text)
+				? data.text.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2">$1</a>`)
+				: "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)
 				? data.notes
 					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
+					.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2">$1</a>`)
 					.replace(/\r?\n/g, "<br>")
 				: "N/A"
 		};
