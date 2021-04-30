@@ -5,7 +5,11 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const linkify = (string) => (
-		string.replace(/\[(.+?)]\((\d+)\)/g, `<a href="/data/origin/detail/$2"><img loading="lazy" alt="$1" title="$1" src="/api/origin/image/$1"/></a>`)
+		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
+			<a href="/data/origin/detail/$2">
+				<img class="linked-emote" loading="lazy" alt="$1" title="$1" src="/api/origin/image/$1"/>
+			</a>
+		`)
 	);
 
 	Router.get("/list", async (req, res) => {
@@ -111,6 +115,10 @@ module.exports = (function () {
 		res.render("generic-detail-table", {
 			data: renderData,
 			extraCSS: sb.Utils.tag.trim `
+				img.linked-emote { 
+					height: 32px;
+					max-width: 128px;
+				}
 				img.detail-emote { max-height: 128px; }
 				td.key { width: 100px; }
 			`,
