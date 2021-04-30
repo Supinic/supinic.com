@@ -83,7 +83,7 @@ module.exports = (function () {
 		}
 
 		const url = Origin.parseURL(row.valuesObject);
-		res.setHeaders("Cache-Control", "max-age=86400");
+		res.set("Cache-Control", "max-age=86400");
 		res.redirect(url);
 	});
 
