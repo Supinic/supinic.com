@@ -83,7 +83,7 @@ module.exports = (function () {
 		}
 
 		const url = Origin.parseURL(row.valuesObject);
-		return sb.WebUtils.apiSuccess(res, { url });
+		res.redirect(url);
 	});
 
 	return Router;
