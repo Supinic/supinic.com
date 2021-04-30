@@ -149,9 +149,9 @@
 	}));
 	app.use("/api", Express.static(__dirname + "/apidocs/"));
 
-	app.use(CacheController({
-		noCache: true
-	}));
+	// app.use(CacheController({
+	// 	noCache: true
+	// }));
 
 	app.use(Passport.initialize());
 	app.use(Passport.session());
