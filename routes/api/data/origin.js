@@ -30,7 +30,13 @@ module.exports = (function () {
 	 **/
 	Router.get("/list", async (req, res) => {
 		const data = await Origin.fetch();
-		return sb.WebUtils.apiSuccess(res, data);
+		if (req.query.skipReplacedEmotes) {
+			const filtered = data.filter(i => !i.Replaced);
+			return sb.WebUtils.apiSuccess(res, filtered);
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, data);
+		}
 	});
 
 	/**
