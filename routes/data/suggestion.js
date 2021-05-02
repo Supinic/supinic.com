@@ -115,7 +115,7 @@ module.exports = (function () {
 
 		const userCount = rawData.reduce((acc, cur) => acc += cur.Amount, 0);
 		const data = rawData.map(i => ({
-			Status: i.Status,
+			Status: i.Status ?? "Pending review",
 			Count: i.Amount,
 			"% total": sb.Utils.round(i.Amount / totalCount * 100, 2),
 			"% yours": sb.Utils.round(i.Amount / userCount * 100, 2)
