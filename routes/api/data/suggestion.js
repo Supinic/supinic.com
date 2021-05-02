@@ -69,6 +69,28 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/suggestion/stats Suggestion - user stats
+	 * @apiName GetUSerSuggestionStatistics
+	 * @apiDescription Posts a summary of a single users's suggestions statistics
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {number} globalTotal Total amount of all suggestions
+	 * @apiSuccess {number} userTotal Total amount of given user's suggestions
+	 * @apiSuccess {Object[]} statuses Data for each status
+	 * @apiSuccess {number} stat.globalAmount Total amount of suggestions with given status
+	 * @apiSuccess {number} stat.userAmount Total amount of given user's suggestions with given status
+	 **/
+	Router.get("/stats/user/:user", async (req, res) => {
+		const userData = await sb.User.get(req.query.user);
+		if (!userData) {
+			return sb.WebUtils.apiFail(res, 404, "User not found");
+		}
+
+		const data = await Suggestion.userStats(userData.ID);
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
 	 * @api {get} /data/suggestion/list Suggestion - List
 	 * @apiName ListSuggestions
 	 * @apiDescription Posts a list of suggestions

@@ -119,27 +119,36 @@ module.exports = (function () {
 			});
 		}
 
-		const {Count: totalCount} = (await Suggestion.selectSingleCustom(rs => rs
-			.select("COUNT(*) AS Count")
-		));
+		const name = auth.userData.Name;
+		res.redirect(`/data/suggestion/stats/user/${name}`);
+	});
 
-		const rawData = await Suggestion.selectMultipleCustom(rs => rs
-			.select("COUNT(*) AS Amount")
-			.where("User_Alias = %n", auth.userID)
-			.groupBy("Status")
-		);
+	Router.get("/stats/user/:user", async (req, res) => {
+		const escaped = encodeURIComponent(req.params.user);
+		const response = await sb.Got("Supinic", `/data/suggestion/stats/user/${escaped}`).json();
 
-		const userCount = rawData.reduce((acc, cur) => acc += cur.Amount, 0);
-		const data = rawData.map(i => ({
-			Status: i.Status ?? "Pending review",
-			Count: i.Amount,
-			"% total": sb.Utils.round(i.Amount / totalCount * 100, 2),
-			"% yours": sb.Utils.round(i.Amount / userCount * 100, 2)
-		}));
+		const data = response.body.data;
+		const printData = data.map(i => {
+			const percentTotal = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
+			const percentUser = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
+
+			return {
+				Status: i.Status ?? "Pending review",
+				Count: i.userAmount,
+				"% of all": {
+					dataOrder: percentTotal,
+					value: percentTotal + "%"
+				},
+				"% of user": {
+					dataOrder: percentUser,
+					value: percentUser + "%"
+				}
+			};
+		});
 
 		res.render("generic-list-table", {
-			data: data,
-			head: ["Status", "Count", "% total", "% yours"],
+			data: printData,
+			head: ["Status", "Count", "% of all", "% of user"],
 			pageLength: 25
 		});
 	});

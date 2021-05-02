@@ -58,6 +58,29 @@ module.exports = (function () {
 			);
 		}
 
+		static async userStats (userID) {
+			const data = await Suggestion.selectMultipleCustom(rs => rs
+				.select("Status", "COUNT(*) AS Global_Amount")
+				.select(sb.Utils.tag.trim `
+					(
+						SELECT COUNT(*) 
+						FROM data.Suggestion AS X
+						WHERE X.User_Alias = ${userID} AND X.Status = Suggestion.Status
+					) AS User_Amount
+				`)
+				.join("chat_data", "User_Alias")
+				.groupBy("Status")
+			);
+
+			const userTotal = data.reduce((acc, cur) => acc + cur.User_Amount, 0);
+			const globalTotal = data.reduce((acc, cur) => acc + cur.Total_Amount, 0);
+			return {
+				globalTotal,
+				userTotal,
+				statuses: data
+			};
+		}
+
 		static get name () { return "track"; }
 		static get database () { return "data"; }
 		static get table () { return "Suggestion"; }
