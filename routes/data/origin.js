@@ -139,7 +139,7 @@ module.exports = (function () {
 				{
 					property: "description",
 					content: (data.text)
-						? sb.Utils.wrapString(removeReferences(data.text), 250)
+						? sb.Utils.wrapString(removeReferences(data.text), 300)
 						: "(no text available)"
 				},
 				{

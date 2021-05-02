@@ -183,7 +183,7 @@ module.exports = (function () {
 				{
 					property: "description",
 					content: (data.text)
-						? sb.Utils.wrapString(data.text, 200)
+						? sb.Utils.wrapString(data.text, 300)
 						: "(no description available)"
 				},
 				{
