@@ -37,6 +37,38 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/suggestion/stats Suggestion - stats
+	 * @apiName GetSuggestionStatistics
+	 * @apiDescription Posts a summary of suggestions' statistics
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiParam {number} [limit] limits the response to given amount of rows
+	 * @apiSuccess {Object[]} stat
+	 * @apiSuccess {number} stat.userID
+	 * @apiSuccess {string} stat.userName
+	 * @apiSuccess {number} stat.total Amount of suggestions the user has made
+	 * @apiSuccess {number} stat.accepted Suggestions in accepted states (aggregate across more statuses)
+	 * @apiSuccess {number} stat.refused Suggestions in refused states (aggregate across more statuses)
+	 **/
+	Router.get("/stats", async (req, res) => {
+		let limit;
+		if (req.query.limit) {
+			limit = Number(req.query.limit);
+			if (!sb.Utils.isValidInteger(limit)) {
+				return sb.WebUtils.apiFail(res, 400, "Invalid integer provided as limit");
+			}
+		}
+
+		const data = await Suggestion.stats();
+		if (limit) {
+			return sb.WebUtils.apiSuccess(res, data.slice(0, limit));
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, data);
+		}
+	});
+
+	/**
 	 * @api {get} /data/suggestion/list Suggestion - List
 	 * @apiName ListSuggestions
 	 * @apiDescription Posts a list of suggestions

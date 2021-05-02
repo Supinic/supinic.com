@@ -88,6 +88,22 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/stats", async (req, res) => {
+		const rawData = await sb.Got("Supinic", "/data/suggestion/stats").json();
+		const data = rawData.map(i => ({
+			User: i.userName,
+			Total: i.total,
+			Accepted: sb.Utils.groupDigits(i.accepted),
+			Refused: sb.Utils.groupDigits(i.refused)
+		}));
+
+		res.render("generic-list-table", {
+			data: data,
+			head: ["User", "Total", "Accepted", "Refused"],
+			pageLength: 25
+		});
+	});
+
 	Router.get("/user/stats", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {

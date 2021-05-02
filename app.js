@@ -211,7 +211,8 @@
 				{ name: "Slots winners list", link: "bot/slots-winner/list" },
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
 				{ separator: true },
-				{ name: "Bot statistics", link: "bot/stats" }
+				{ name: "Bot stats", link: "bot/stats" },
+				{ name: "Suggestion stats", link: "data/suggestion/stats" },
 			]
 		},
 		{
