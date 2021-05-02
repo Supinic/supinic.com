@@ -153,6 +153,8 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: printData,
+			sortColumn: 1,
+			sortDirection: "desc",
 			head: ["Status", "Count", "% of all", "% of user"],
 			pageLength: 25
 		});
