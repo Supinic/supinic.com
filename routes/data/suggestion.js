@@ -138,7 +138,7 @@ module.exports = (function () {
 			const percentUser = sb.Utils.round(i.userAmount / body.data.userTotal * 100, 2);
 
 			return {
-				Status: i.Status ?? "Pending review",
+				Status: i.status ?? "Pending review",
 				Count: i.userAmount,
 				"% of all": {
 					dataOrder: percentTotal,

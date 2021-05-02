@@ -72,7 +72,7 @@ module.exports = (function () {
 				.groupBy("Status")
 			);
 
-			const userTotal = data.reduce((acc, cur) => acc + cur.User_Amount, 0);
+			const userTotal = data.reduce((acc, cur) => acc + cur.Global_Amount, 0);
 			const globalTotal = data.reduce((acc, cur) => acc + cur.Total_Amount, 0);
 			return {
 				Global_Total: globalTotal,
