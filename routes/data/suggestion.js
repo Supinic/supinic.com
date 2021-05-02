@@ -1,7 +1,5 @@
 module.exports = (function () {
 	"use strict";
-	
-	const Suggestion = require("../../modules/data/suggestion.js");
 
 	const Express = require("express");
 	const Router = Express.Router();
@@ -89,8 +87,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/stats", async (req, res) => {
-		const rawData = await sb.Got("Supinic", "/data/suggestion/stats").json();
-		const data = rawData.map(i => ({
+		const { data } = await sb.Got("Supinic", "/data/suggestion/stats").json();
+		const printData = data.map(i => ({
 			User: i.userName,
 			Total: i.total,
 			Accepted: sb.Utils.groupDigits(i.accepted),
@@ -98,7 +96,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			data: data,
+			data: printData,
 			head: ["User", "Total", "Accepted", "Refused"],
 			pageLength: 25
 		});
