@@ -4,6 +4,9 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
+
+	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
 			<a href="/data/origin/detail/$2">
@@ -145,7 +148,7 @@ module.exports = (function () {
 				},
 				{
 					property: "image",
-					content: data.url ?? "unknown"
+					content: data.url ?? IMAGE_NOT_FOUND_URL
 				},
 				{
 					property: "url",
