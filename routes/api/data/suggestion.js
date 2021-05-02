@@ -81,13 +81,13 @@ module.exports = (function () {
 	 * @apiSuccess {number} stat.userAmount Total amount of given user's suggestions with given status
 	 **/
 	Router.get("/stats/user/:user", async (req, res) => {
-		const userData = await sb.User.get(req.query.user);
+		const userData = await sb.User.get(req.params.user);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
 		const data = await Suggestion.userStats(userData.ID);
-		return sb.WebUtils.apiSuccess(res, data);
+		return sb.WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
 	});
 
 	/**

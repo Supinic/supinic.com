@@ -125,10 +125,15 @@ module.exports = (function () {
 
 	Router.get("/stats/user/:user", async (req, res) => {
 		const escaped = encodeURIComponent(req.params.user);
-		const response = await sb.Got("Supinic", `/data/suggestion/stats/user/${escaped}`).json();
+		const { statusCode, body } = await sb.Got("Supinic", `/data/suggestion/stats/user/${escaped}`);
+		if (statusCode !== 200) {
+			return res.status(statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(statusCode),
+				message: body.error.message
+			});
+		}
 
-		const data = response.body.data;
-		const printData = data.map(i => {
+		const printData = body.data.statuses.map(i => {
 			const percentTotal = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
 			const percentUser = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
 

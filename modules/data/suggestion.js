@@ -59,7 +59,7 @@ module.exports = (function () {
 		}
 
 		static async userStats (userID) {
-			const data = await Suggestion.selectMultipleCustom(rs => rs
+			const data = await Suggestion.selectCustom(rs => rs
 				.select("Status", "COUNT(*) AS Global_Amount")
 				.select(sb.Utils.tag.trim `
 					(
