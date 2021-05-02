@@ -275,7 +275,7 @@
 		{ name: "Github link", link: "auth/github" },
 		{ name: "Reminders - active", link: "bot/reminder/list" },
 		{ name: "Reminders - history", link: "bot/reminder/history" },
-		{ name: "Suggestion stats", link: "data/suggestion/stats" },
+		{ name: "Suggestion stats", link: "data/suggestion/user/stats" },
 
 		{ separator: true },
 

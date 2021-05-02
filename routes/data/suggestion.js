@@ -88,7 +88,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/stats", async (req, res) => {
+	Router.get("/user/stats", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return res.status(401).render("error", {
