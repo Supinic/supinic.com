@@ -144,6 +144,10 @@ module.exports = (function () {
 					content: data.author ?? "unknown"
 				},
 				{
+					property: "image",
+					content: data.url ?? "unknown"
+				},
+				{
 					property: "url",
 					content: `https://supinic.com/data/origin/detail/${data.ID}`
 				}
