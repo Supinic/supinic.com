@@ -75,9 +75,9 @@ module.exports = (function () {
 			const userTotal = data.reduce((acc, cur) => acc + cur.User_Amount, 0);
 			const globalTotal = data.reduce((acc, cur) => acc + cur.Total_Amount, 0);
 			return {
-				globalTotal,
-				userTotal,
-				statuses: data
+				Global_Total: globalTotal,
+				User_Total: userTotal,
+				Statuses: data
 			};
 		}
 

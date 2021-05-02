@@ -87,7 +87,7 @@ module.exports = (function () {
 		}
 
 		const data = await Suggestion.userStats(userData.ID);
-		return sb.WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	/**

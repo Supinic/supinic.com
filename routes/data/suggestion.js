@@ -134,8 +134,8 @@ module.exports = (function () {
 		}
 
 		const printData = body.data.statuses.map(i => {
-			const percentTotal = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
-			const percentUser = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
+			const percentTotal = sb.Utils.round(i.userAmount / body.data.globalTotal * 100, 2);
+			const percentUser = sb.Utils.round(i.userAmount / body.data.userTotal * 100, 2);
 
 			return {
 				Status: i.Status ?? "Pending review",
