@@ -88,12 +88,14 @@ module.exports = (function () {
 
 	Router.get("/stats", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/suggestion/stats").json();
-		const printData = data.map(i => ({
-			User: i.userName,
-			Total: i.total,
-			Accepted: sb.Utils.groupDigits(i.accepted),
-			Refused: sb.Utils.groupDigits(i.refused)
-		}));
+		const printData = data
+			.filter(i => i.total >= 10)
+			.map(i => ({
+				User: i.userName,
+				Total: i.total,
+				Accepted: sb.Utils.groupDigits(i.accepted),
+				Refused: sb.Utils.groupDigits(i.refused)
+			}));
 
 		res.render("generic-list-table", {
 			data: printData,
