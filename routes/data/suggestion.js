@@ -93,15 +93,15 @@ module.exports = (function () {
 			.map(i => ({
 				User: i.userName,
 				Total: {
-					datOrder: i.total,
+					dataOrder: i.total,
 					value: sb.Utils.groupDigits(i.total)
 				},
 				Accepted: {
-					datOrder: i.accepted,
+					dataOrder: i.accepted,
 					value: sb.Utils.groupDigits(i.accepted)
 				},
 				Refused: {
-					datOrder: i.refused,
+					dataOrder: i.refused,
 					value: sb.Utils.groupDigits(i.refused)
 				}
 			}));
