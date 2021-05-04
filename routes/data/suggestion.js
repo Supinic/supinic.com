@@ -92,9 +92,18 @@ module.exports = (function () {
 			.filter(i => i.total >= 10)
 			.map(i => ({
 				User: i.userName,
-				Total: i.total,
-				Accepted: sb.Utils.groupDigits(i.accepted),
-				Refused: sb.Utils.groupDigits(i.refused)
+				Total: {
+					datOrder: i.total,
+					value: sb.Utils.groupDigits(i.total)
+				},
+				Accepted: {
+					datOrder: i.accepted,
+					value: sb.Utils.groupDigits(i.accepted)
+				},
+				Refused: {
+					datOrder: i.refused,
+					value: sb.Utils.groupDigits(i.refused)
+				}
 			}));
 
 		res.render("generic-list-table", {
