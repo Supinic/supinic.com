@@ -24,7 +24,7 @@ module.exports = (function () {
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 	const itemCachePrefix = "osrs-item-price";
 	const activityCachePrefix = "osrs-activity";
-	const account = {
+	const apiURLs = {
 		main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
 		seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.ws",
 		ironman: {
@@ -198,7 +198,7 @@ module.exports = (function () {
 	 */
 	Router.get("/lookup/:user", async (req, res) => {
 		const user = req.params.user.toLowerCase();
-		const url = (req.query.seasonal) ? account.seasonal : account.main;
+		const url = (req.query.seasonal) ? apiURLs.seasonal : apiURLs.main;
 		const forceHardcore = Boolean(req.query.forceHardcore);
 
 		const result = {
@@ -239,18 +239,17 @@ module.exports = (function () {
 
 			for (const type of types) {
 				const { statusCode, body } = await sb.Got({
-					url: account.ironman[type],
+					url: apiURLs.ironman[type],
 					throwHttpErrors: false,
-					searchParams: new sb.URLParams()
-						.set("player", user)
-						.toString()
+					searchParams: { player: user }
 				});
 
 				if (statusCode !== 404) {
+					result.ironman[type] = true;
+
 					// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
 					// detect whether the account is alive or not, and adjust the response accordingly.
 					if (type === "ultimate") {
-						result.ironman[type] = true;
 						rawData = body;
 						break;
 					}
@@ -260,6 +259,8 @@ module.exports = (function () {
 				}
 			}
 
+			// Figuring out if a HCIM has died. If their total XP in the ironman leaderboard is higher than the total XP
+			// in HCIM leaderboard, this means that they have lost the HCIM status.
 			if (compare.hardcore && compare.regular) {
 				const regularXP = Number(compare.regular.split("\n")[0].split(",")[2]);
 				const hardcoreXP = Number(compare.hardcore.split("\n")[0].split(",")[2]);
