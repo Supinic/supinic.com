@@ -47,7 +47,7 @@ module.exports = (function () {
 		}
 	});
 
-	Router.get("/:name/alias/:alias", async (req, res) => {
+	Router.get("/:name/alias/detail/:alias", async (req, res) => {
 		const { name, alias } = req.params;
 		const row = await UserAlias.selectSingleCustom(q => q.where("Name = %s", name));
 		if (!row) {

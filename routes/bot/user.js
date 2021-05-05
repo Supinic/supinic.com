@@ -87,7 +87,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:username/alias/:alias", async (req, res) => {
+	Router.get("/:username/alias/detail/:alias", async (req, res) => {
 		const { alias, username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
 			url: "bot/user/" + encodeURIComponent(username) + "/alias/" + alias,
