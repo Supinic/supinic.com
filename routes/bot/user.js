@@ -60,7 +60,7 @@ module.exports = (function () {
 
 			return {
 				Name: {
-					value: `<a href="/bot/user/${username}/alias/${alias.name}">${name}</a>`,
+					value: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`,
 					dataOrder: alias.name
 				},
 				Invocation: sb.Utils.escapeHTML(alias.invocation.join(" ")),
@@ -90,7 +90,7 @@ module.exports = (function () {
 	Router.get("/:username/alias/detail/:alias", async (req, res) => {
 		const { alias, username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
-			url: "bot/user/" + encodeURIComponent(username) + "/alias/" + alias,
+			url: `bot/user/${encodeURIComponent(username)}/alias/detail/${alias}`,
 			throwHttpErrors: false
 		});
 
