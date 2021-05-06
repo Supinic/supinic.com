@@ -245,8 +245,6 @@ module.exports = (function () {
 				});
 
 				if (statusCode !== 404) {
-					result.ironman[type] = true;
-
 					// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
 					// detect whether the account is alive or not, and adjust the response accordingly.
 					if (type === "ultimate") {
@@ -278,6 +276,12 @@ module.exports = (function () {
 					result.ironman.hardcore = true;
 					result.ironman.deadHardcore = false;
 				}
+			}
+			else if (compare.hardcore) {
+				result.ironman.hardcore = true;
+			}
+			else if (compare.regular) {
+				result.ironman.regular = true;
 			}
 		}
 
