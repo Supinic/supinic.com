@@ -223,11 +223,11 @@ module.exports = (function () {
 			searchParams: { ID }
 		});
 
-		if (statusCode !== 200 || !body.data.available.includes(ID)) {
+		if (statusCode !== 200 || !body.data.active.includes(ID)) {
 			return sb.WebUtils.apiSuccess(res, {
 				reminderID: ID,
 				botResult: body,
-				message: "Reminder set successfully - but the bot failed to reload"
+				message: "Warning - reminder created successfully, but bot failed to reload reminders"
 			});
 		}
 		else {
