@@ -17,10 +17,11 @@ module.exports = (function () {
 		"Chaos Elemental", "Chaos Fanatic", "Commander Zilyana", "Corporeal Beast", "Crazy Archaeologist",
 		"Dagannoth Prime", "Dagannoth Rex", "Dagannoth Supreme", "Deranged Archaeologist", "General Graardor",
 		"Giant Mole", "Grotesque Guardians", "Hespori", "Kalphite Queen", "King Black Dragon", "Kraken", "Kree'Arra",
-		"K'ril Tsutsaroth", "Mimic", "Nightmare", "Obor", "Sarachnis", "Scorpia", "Skotizo", "The Gauntlet",
+		"K'ril Tsutsaroth", "Mimic", "Nightmare", "Obor", "Sarachnis", "Scorpia", "Skotizo", "Tempoross", "The Gauntlet",
 		"The Corrupted Gauntlet", "Theatre of Blood", "Thermonuclear Smoke Devil", "TzKal-Zuk", "TzTok-Jad", "Venenatis",
 		"Vet'ion", "Vorkath", "Wintertodt", "Zalcano", "Zulrah"
 	];
+
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 	const itemCachePrefix = "osrs-item-price";
 	const activityCachePrefix = "osrs-activity";
