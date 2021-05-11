@@ -30,8 +30,31 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
 
+		const data = await Reminder.selectSingleCustom(q => q
+			.select("Channel.Name AS Channel_Name")
+			.select("Platform.Name AS Platform_Name")
+			.select("Author.Name AS Author_Name")
+			.select("Target.Name AS Target_Name")
+			.where("Reminder.ID = %n", reminderID)
+			.leftJoin("chat_data", "Channel")
+			.leftJoin("chat_data", "Platform")
+			.join({
+				alias: "Author",
+				fromField: "User_From",
+				toTable: "User_Alias",
+				toField: "ID"
+			})
+			.join({
+				alias: "Target",
+				fromField: "User_To",
+				toTable: "User_Alias",
+				toField: "ID"
+			})
+		);
+
 		return {
 			success: true,
+			data,
 			auth,
 			row,
 			reminderID
@@ -261,10 +284,11 @@ module.exports = (function () {
 	 * @apiGroup Bot
 	 * @apiPermission login
 	 * @apiSuccess {number} ID
-	 * @apiSuccess {number} userFrom
-	 * @apiSuccess {number} userTo
-	 * @apiSuccess {number} [channel]
-	 * @apiSuccess {number} [platform]
+	 * @apiSuccess {string} userFrom
+	 * @apiSuccess {string} userTo
+	 * @apiSuccess {string} [channel]
+	 * @apiSuccess {number} [channelID]
+	 * @apiSuccess {string} [platform]
 	 * @apiSuccess {string} [text]
 	 * @apiSuccess {date} created
 	 * @apiSuccess {date} [schedule]
@@ -282,7 +306,20 @@ module.exports = (function () {
 			return check;
 		}
 
-		return sb.WebUtils.apiSuccess(res, check.row.valuesObject);
+		const { data } = check;
+		return sb.WebUtils.apiSuccess(res, ({
+			ID: data.ID,
+			User_From: data.Author_Name,
+			User_To: data.Target_Name,
+			Channel_ID: data.Channel,
+			Channel: data.Channel_Name,
+			Platform: data.Platform_Name,
+			Text: data.Text,
+			Created: data.Created,
+			Schedule: data.Schedule,
+			Active: data.Active,
+			Private_Message: data.Private_Message
+		}));
 	});
 
 	/**
@@ -296,6 +333,7 @@ module.exports = (function () {
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
 	 * If both id and name were used at the same time<br>
 	 * If target user does not exist
+	 * If the reminder has already been unset
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
@@ -306,6 +344,10 @@ module.exports = (function () {
 		}
 
 		const { reminderID: ID, row } = check;
+		if (row.values.Active === false) {
+			return sb.WebUtils.apiFail(res, 400, "Reminder has been unset already");
+		}
+
 		row.values.Active = false;
 		await row.save();
 
