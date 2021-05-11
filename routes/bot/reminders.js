@@ -5,8 +5,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Channel = require("../../modules/chat-data/channel.js");
-
 	const columns = {
 		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
 		history: ["ID", "Created", "Sender", "Recipient", "Scheduled"],
@@ -217,29 +215,22 @@ module.exports = (function () {
 			});
 		}
 
-		const rawData = body.data;
-		const [senderUserData, recipientUserData] = await Promise.all([
-			sb.User.get(rawData.userFrom),
-			sb.User.get(rawData.userTo),
-		]);
-
-		const data = {
-			ID: rawData.ID,
-			Sender: senderUserData.Name,
-			Recipient: recipientUserData.Name,
-			"Created in channel": (rawData.channel)
-				? (await Channel.getRow(rawData.channel)).values.Name
-				: "(created in PMs)",
-			Text: rawData.text,
-			Pending: (rawData.active) ? "yes" : "no",
-			Created: new sb.Date(rawData.created).format("Y-m-d H:i:s"),
-			Scheduled: (rawData.schedule)
-				? new sb.Date(rawData.schedule).format("Y-m-d H:i:s")
+		const data = body.data;
+		const printData = {
+			ID: data.ID,
+			Sender: data.sender,
+			Recipient: data.Recipient,
+			"Created in channel": data.channel,
+			Text: data.text,
+			Pending: (data.active) ? "yes" : "no",
+			Created: new sb.Date(data.created).format("Y-m-d H:i:s"),
+			Scheduled: (data.schedule)
+				? new sb.Date(data.schedule).format("Y-m-d H:i:s")
 				: "(not scheduled)",
-			Private: (rawData.privateMessage) ? "yes" : "no"
+			Private: (data.privateMessage) ? "yes" : "no"
 		};
 
-		res.render("generic-detail-table", { data });
+		res.render("generic-detail-table", { data: printData });
 	});
 
 	return Router;
