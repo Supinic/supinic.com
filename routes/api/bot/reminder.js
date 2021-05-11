@@ -33,19 +33,19 @@ module.exports = (function () {
 		const data = await Reminder.selectSingleCustom(q => q
 			.select("Channel.Name AS Channel_Name")
 			.select("Platform.Name AS Platform_Name")
-			.select("Author.Name AS Author_Name")
-			.select("Target.Name AS Target_Name")
+			.select("Sender.Name AS Sender_Name")
+			.select("Recipient.Name AS Recipient_Name")
 			.where("Reminder.ID = %n", reminderID)
 			.leftJoin("chat_data", "Channel")
 			.leftJoin("chat_data", "Platform")
 			.join({
-				alias: "Author",
+				alias: "Sender",
 				fromField: "User_From",
 				toTable: "User_Alias",
 				toField: "ID"
 			})
 			.join({
-				alias: "Target",
+				alias: "Recipient",
 				fromField: "User_To",
 				toTable: "User_Alias",
 				toField: "ID"
@@ -284,8 +284,8 @@ module.exports = (function () {
 	 * @apiGroup Bot
 	 * @apiPermission login
 	 * @apiSuccess {number} ID
-	 * @apiSuccess {string} userFrom
-	 * @apiSuccess {string} userTo
+	 * @apiSuccess {string} sender
+	 * @apiSuccess {string} recipient
 	 * @apiSuccess {string} [channel]
 	 * @apiSuccess {number} [channelID]
 	 * @apiSuccess {string} [platform]
@@ -309,8 +309,8 @@ module.exports = (function () {
 		const { data } = check;
 		return sb.WebUtils.apiSuccess(res, ({
 			ID: data.ID,
-			User_From: data.Author_Name,
-			User_To: data.Target_Name,
+			Sender: data.Sender_Name,
+			Recipient: data.Recipient_Name,
 			Channel_ID: data.Channel,
 			Channel: data.Channel_Name,
 			Platform: data.Platform_Name,
