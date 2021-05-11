@@ -222,12 +222,12 @@ module.exports = (function () {
 			Recipient: data.recipient,
 			"Created in channel": data.channel,
 			Text: data.text,
-			Pending: (data.active) ? "yes" : "no",
+			Pending: (data.active) ? "✔" : "❌",
 			Created: new sb.Date(data.created).format("Y-m-d H:i:s"),
 			Scheduled: (data.schedule)
 				? new sb.Date(data.schedule).format("Y-m-d H:i:s")
 				: "(not scheduled)",
-			Private: (data.privateMessage) ? "yes" : "no"
+			Private: (data.privateMessage) ? "✔" : "❌"
 		};
 
 		res.render("generic-detail-table", { data: printData });
