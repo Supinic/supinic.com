@@ -219,7 +219,7 @@ module.exports = (function () {
 		const printData = {
 			ID: data.ID,
 			Sender: data.sender,
-			Recipient: data.Recipient,
+			Recipient: data.recipient,
 			"Created in channel": data.channel,
 			Text: data.text,
 			Pending: (data.active) ? "yes" : "no",
