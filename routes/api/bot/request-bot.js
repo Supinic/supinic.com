@@ -49,7 +49,6 @@ module.exports = (function () {
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			await sb.WebUtils.invalidateBotCache({ type: "channel" });
 			sb.Got("Supibot", {
 				url: "channel/add",
 				searchParams: {

@@ -432,9 +432,11 @@
 			};
 
 			await userData.saveProperty("Data");
-			await sb.WebUtils.invalidateBotCache({
-				type: "user",
-				username: userData.Name
+			await sb.Got("Supibot", {
+				url: "user/invalidateCache",
+				searchParams: {
+					name: userData.Name
+				}
 			});
 
 			return res.render("generic", {

@@ -355,65 +355,6 @@ module.exports = class WebUtils {
 
 		return fullVideoType.Link_Prefix.replace(videoTypePrefix, link);
 	}
-
-	static async invalidateBotCache (options = {}) {
-		let params = null;
-		switch (options.type) {
-			case "afk": {
-				params = new sb.URLParams().set("module", "afk");
-
-				if (options.specific) {
-					params.set("type", "reload-specific").set("specificID", options.ID);
-				}
-				else {
-					params.set("type", "reload");
-				}
-
-				break;
-			}
-
-			case "channel": {
-				params = new sb.URLParams().set("type", "reload").set("module", "channel");
-				break;
-			}
-
-			case "reminder": {
-				params = new sb.URLParams().set("type", "reload").set("module", "afk");
-
-				if (options.specific) {
-					params.set("type", "reload-specific").set("specificID", options.ID);
-				}
-				else {
-					params.set("type", "reload");
-				}
-
-				break;
-			}
-
-			case "user": {
-				if (typeof options.username !== "string") {
-					throw new sb.Error({
-						message: "Name must be passed as options.name to invalidate the user cache",
-						args: { options }
-					});
-				}
-
-				params = new sb.URLParams()
-					.set("type", "reload")
-					.set("module", "user")
-					.set("username", options.username);
-
-				break;
-			}
-
-			default: throw new sb.Error({
-				message: "Invalid bot cache type provided",
-				args: { options }
-			});
-		}
-
-		await sb.InternalRequest.send(params);
-	};
 };
 
 /**

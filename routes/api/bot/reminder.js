@@ -234,10 +234,11 @@ module.exports = (function () {
 			Private_Message: privateReminder
 		});
 
-		await sb.WebUtils.invalidateBotCache({
-			type: "reminder",
-			specific: true,
-			ID: newReminder.insertId
+		await sb.Got("Supibot", {
+			url: "reminder/reloadSpecific",
+			searchParams: {
+				ID: newReminder.insertId
+			}
 		});
 
 		const ID = newReminder.insertId;
