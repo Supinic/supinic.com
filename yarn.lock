@@ -1591,7 +1591,7 @@ strip-ansi@^6.0.0:
 
 "supi-core@github:supinic/supi-core":
   version "2.1.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/80a01699416ec34269212a298e85384f439cd539"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/e1b7223ee39dd0c6978239b175ffa22c2c4c6bed"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.5"
