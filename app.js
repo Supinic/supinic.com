@@ -296,8 +296,7 @@
 		await sb.WebUtils.logRequest(req, routeType);
 
 		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
-			const message = "If you would like this site to be included in your scans, please send IP addresses/domains to: supinic@pm.me";
-			res.status(403).send(message);
+			res.status(418).send("NOT OK");
 			return;
 		}
 
