@@ -44,10 +44,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/lookup", async (req, res) => {
-		const searchParams = new sb.URLParams().set("ID", req.query.ID ?? "").toString();
+		const params = (req.query.ID ?? []).map(i => `ID=${i}`).join("&");
 		const { data } = await sb.Got("Supinic", {
 			url: "/data/changelog/lookup",
-			searchParams
+			searchParams: params
 		}).json();
 
 		formatChangelogList(req, res, data);
