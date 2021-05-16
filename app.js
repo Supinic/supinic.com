@@ -62,7 +62,7 @@
 	const Session = require("express-session");
 	const Passport = require("passport");
 	const { OAuth2Strategy } = require("passport-oauth");
-	const CacheController = require("express-cache-controller");
+	// const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
 
 	// methods `userProfile` is called internally to resolve the auth
@@ -292,9 +292,11 @@
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
+	const requestLogSymbol = Symbol("request-log-id");
 	await app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
-		await sb.WebUtils.logRequest(req, routeType);
+		const log = await sb.WebUtils.logRequest(req, routeType);
+		req[requestLogSymbol] = log.insertId;
 
 		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
 			res.status(418).send("NOT OK");
@@ -472,11 +474,20 @@
 		}
 
 		console.error("Website error", { err, req, res });
+
 		try {
-			const errorID = await sb.SystemLogger.sendError("Website", err);
+			const requestID = req[requestLogSymbol] ?? null;
+			const row = await sb.Query.getRow("supinic.com", "Error");
+			row.setValues({
+				Request_ID: requestID,
+				Message: err.message ?? null,
+				Stack: err.stack ?? null
+			});
+
+			const { insertId } = await row.save();
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
-				message: `Internal error encountered (ID ${errorID})`
+				message: `Internal server error encountered (error ID ${insertId})`
 			});
 		}
 		catch (e) {
