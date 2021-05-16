@@ -53,7 +53,7 @@ module.exports = (function () {
 			ID: detail.ID,
 			Type: detail.type,
 			Title: detail.title,
-			Created: new sb.Date(detail.created).format("Y-m-d h:i:s"),
+			Created: new sb.Date(detail.created).format("Y-m-d H:i:s"),
 			Description: detail.description ?? "N/A",
 			Suggestion: (detail.suggestion)
 				? `<a href="/data/suggestion/${detail.suggestion}">${detail.suggestion}</a>`
