@@ -11,7 +11,7 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
-	Router.get("/:id", async (req, res) => {
+	Router.get("/detail/:id", async (req, res) => {
 		const { id } = req.params;
 		const appleID = Number(id);
 

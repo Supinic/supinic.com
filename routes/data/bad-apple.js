@@ -8,7 +8,7 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "/data/bad-apple/list").json();
 		const renderData = data.map(i => {
 			const notesString = (i.notes) ? " 📝" : "";
-			const detailLink = `<a href="/data/bad-apple/${i.ID}">${i.ID}${notesString}</a>`;
+			const detailLink = `<a href="/data/bad-apple/detail/${i.ID}">${i.ID}${notesString}</a>`;
 
 			const timestamp = (i.timestamp) ? `?t=${i.timestamp}` : "";
 			const deviceLink = (i.device && i.link)
@@ -52,8 +52,8 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", "/data/bad-apple/" + req.params.id);
+	Router.get("/detail/:id", async (req, res) => {
+		const { statusCode, body } = await sb.Got("Supinic", "/data/bad-apple/detail/" + req.params.id);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),
