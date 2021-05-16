@@ -4,8 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/changelog/list").json();
+	const formatChangelogList = (req, res, data) => {
 		const renderData = data.map(i => {
 			const created = new sb.Date(i.created)
 			return {
@@ -37,6 +36,21 @@ module.exports = (function () {
 				}
 			]
 		});
+	};
+
+	Router.get("/list", async (req, res) => {
+		const { data } = await sb.Got("Supinic", "/data/changelog/list").json();
+		formatChangelogList(req, res, data);
+	});
+
+	Router.get("/lookup", async (req, res) => {
+		const searchParams = new sb.URLParams().set("ID", req.query.ID ?? "").toString();
+		const { data } = await sb.Got("Supinic", {
+			url: "/data/changelog/lookup",
+			searchParams
+		}).json();
+
+		formatChangelogList(req, res, data);
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
