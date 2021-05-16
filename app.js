@@ -212,6 +212,7 @@
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
 				{ separator: true },
 				{ name: "Bot stats", link: "bot/stats" },
+				{ name: "Changelog", link: "data/changelog/list" },
 				{ name: "Suggestion stats", link: "data/suggestion/stats" },
 			]
 		},
