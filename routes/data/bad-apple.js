@@ -66,6 +66,7 @@ module.exports = (function () {
 		const data = {
 			ID: detail.ID,
 			Device: detail.device,
+			Status: detail.status,
 			Link: `<a href="//youtu.be/${detail.link}${timestamp}">${detail.link}</a>`,
 			Type: detail.type ?? "N/A",
 			Published: (detail.published)
