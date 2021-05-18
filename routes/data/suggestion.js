@@ -4,7 +4,48 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const columnList = ["Author", "Text", "Status", "Priority", "Update", "ID"];
+	const url = {
+		all: "data/suggestion/list",
+		active: "data/suggestion/list/active",
+		resolved: "data/suggestion/list/resolved"
+	};
+	const columns = {
+		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
+		active: ["ID", "Text", "Status", "Priority", "Update"],
+		resolved: ["ID", "Text", "Status", "Priority", "Update"]
+	};
+	const sortColumn = {
+		all: 5,
+		active: 4,
+		resolved: 4,
+	};
+
+	const fetchSuggestionList = async (req, res, type) => {
+		const { userName } = req.query;
+
+		let response;
+		if (userName) {
+			response = await sb.Got("Supinic", {
+				url: url[type],
+				searchParams: "userName=" + encodeURIComponent(userName)
+			}).json();
+		}
+		else {
+			response = await sb.Got("Supinic", url[type]).json();
+		}
+
+		const printData = prettifyData(response.data);
+		res.render("generic-list-table", {
+			data: printData,
+			head: columns[type],
+			pageLength: 25,
+			sortColumn: sortColumn[type],
+			sortDirection: "desc",
+			specificFiltering: true,
+			deferRender: true
+		});
+	}
+
 	const prettifyData = (data) => data.map(i => {
 		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
 		const trimmedText = sb.Utils.wrapString(text, 200);
@@ -27,37 +68,6 @@ module.exports = (function () {
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		};
 	});
-	const url = {
-		all: "data/suggestion/list",
-		active: "data/suggestion/list/active",
-		resolved: "data/suggestion/list/resolved"
-	};
-
-	const fetchSuggestionList = async (req, res, type) => {
-		const { userName } = req.query;
-
-		let response;
-		if (userName) {
-			response = await sb.Got("Supinic", {
-				url: url[type],
-				searchParams: "userName=" + encodeURIComponent(userName)
-			}).json();
-		}
-		else {
-			response = await sb.Got("Supinic", url[type]).json();
-		}
-
-		const printData = prettifyData(response.data);
-		res.render("generic-list-table", {
-			data: printData,
-			head: columnList,
-			pageLength: 25,
-			sortColumn: 5,
-			sortDirection: "desc",
-			specificFiltering: true,
-			deferRender: true
-		});
-	}
 
 	const redirect = async (req, res, urlCallback) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
