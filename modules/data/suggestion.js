@@ -20,13 +20,39 @@ module.exports = (function () {
 					.orderBy("Suggestion.ID DESC");
 
 				if (options.category) {
-					q.where("Category = %s", options.category);
+					if (Array.isArray(options.category)) {
+						const includesNull = options.category.includes(null);
+						if (includesNull) {
+							q.where("Category IN %s+ OR Category IS NULL", options.category.filter(i => i !== null));
+						}
+						else {
+							q.where("Category IN %s+", options.category);
+						}
+					}
+					else {
+						q.where("Category = %s", options.category);
+					}
 				}
 				if (options.status) {
-					q.where("Status = %s", options.status);
+					if (Array.isArray(options.status)) {
+						const includesNull = options.status.includes(null);
+						if (includesNull) {
+							q.where("Status IN %s+ OR Status IS NULL", options.status.filter(i => i !== null));
+						}
+						else {
+							q.where("Status IN %s+", options.status);
+						}
+					}
+					else {
+						q.where("Status = %s", options.status);
+					}
 				}
+
 				if (Number(options.userID)) {
 					q.where("User_Alias = %n", Number(options.userID));
+				}
+				else if (Array.isArray(options.userID) && options.userID.every(i => typeof i === "number")) {
+					q.where("User_Alias IN %n+", options.userID);
 				}
 
 				return q;

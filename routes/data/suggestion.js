@@ -27,23 +27,27 @@ module.exports = (function () {
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		};
 	});
+	const url = {
+		all: "data/suggestion/list",
+		active: "data/suggestion/list/active",
+		resolved: "data/suggestion/list/resolved"
+	};
 
-	Router.get("/list", async (req, res) => {
+	const fetchSuggestionList = async (req, res, type) => {
 		const { userName } = req.query;
 
 		let response;
 		if (userName) {
 			response = await sb.Got("Supinic", {
-				url: "data/suggestion/list",
+				url: url[type],
 				searchParams: "userName=" + encodeURIComponent(userName)
 			}).json();
 		}
 		else {
-			response = await sb.Got("Supinic", "data/suggestion/list").json();
+			response = await sb.Got("Supinic", url[type]).json();
 		}
 
 		const printData = prettifyData(response.data);
-
 		res.render("generic-list-table", {
 			data: printData,
 			head: columnList,
@@ -53,6 +57,37 @@ module.exports = (function () {
 			specificFiltering: true,
 			deferRender: true
 		});
+	}
+
+	const redirect = async (req, res, urlCallback) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "Your session timed out, please log in again"
+			});
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "You must be logged in before viewing your suggestion statistics"
+			});
+		}
+
+		const name = encodeURIComponent(auth.userData.Name);
+		res.redirect(urlCallback(name));
+	}
+
+	Router.get("/list", async (req, res) => {
+		return await fetchSuggestionList(req, res, "all");
+	});
+
+	Router.get("/list/active", async (req, res) => {
+		return await fetchSuggestionList(req, res, "active");
+	});
+
+	Router.get("/list/resolved", async (req, res) => {
+		return await fetchSuggestionList(req, res, "resolved");
 	});
 
 	Router.get("/list/pretty", async (req, res) => {
@@ -115,23 +150,16 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/user/stats", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
-		if (auth.error) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "Your session timed out, please log in again"
-			});
-		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "You must be logged in before viewing your suggestion statistics"
-			});
-		}
+	Router.get("/user/list/active", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/list/active?userName=${name}`);
+	});
 
-		const name = auth.userData.Name;
-		res.redirect(`/data/suggestion/stats/user/${name}`);
+	Router.get("/user/list/resolved", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/list/resolved?userName=${name}`);
+	});
+
+	Router.get("/user/stats", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/stats/user/${name}`);
 	});
 
 	Router.get("/stats/user/:user", async (req, res) => {
