@@ -154,7 +154,7 @@ module.exports = (function () {
 		const userID = await fetchUserID(req);
 		const data = await Suggestion.list({
 			userID,
-			status: [null, "Approved"]
+			status: [null, "Approved", "Blocked"]
 		});
 
 		return sb.WebUtils.apiSuccess(res, data);
