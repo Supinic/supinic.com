@@ -149,7 +149,7 @@ module.exports = (function () {
 						- Aliases: ${(trackData.aliases.length > 0) ? trackData.aliases.join(", ") : "(none)" }
 						- Authors: ${(trackData.authors.length > 0) ? trackData.authors.map(i => i.name).join(", ") : "(none)" }
 						- Tags: ${(trackData.tags.length > 0) ? trackData.tags.join(", ") : "(none)" }
-						- Related tracks: ${archives} archives, ${reuploads} reuploads
+						- Related tracks: ${archives.length} archives, ${reuploads.length} reuploads
 					`
 				},
 				{
