@@ -13,9 +13,8 @@ module.exports = (function () {
 			});
 		}
 
-		const words = await sb.Cache.getByPrefix({
-			channelID,
-			type: "markov-word-list"
+		const words = await sb.Cache.getByPrefix("markov-word-list", {
+			keys: { channelID }
 		});
 
 		if (!words) {
