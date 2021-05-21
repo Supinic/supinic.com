@@ -465,9 +465,11 @@
 		// this is not an error, so no error will be printed.
 		if (err instanceof URIError) {
 			if (req.path.includes("/api")) {
+				res.set("Content-Type", "application/json");
 				return sb.WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
 			}
 			else {
+				res.set("Content-Type", "text/html");
 				return res.status(400).render("error", {
 					message: "404 Not found",
 					error: "Malformed URI - endpoint was not found"
@@ -487,6 +489,8 @@
 			});
 
 			const { insertId } = await row.save();
+
+			res.set("Content-Type", "text/html");
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
 				message: `Internal server error encountered (error ID ${insertId})`
@@ -494,6 +498,8 @@
 		}
 		catch (e) {
 			console.error("Error while trying to save error", e);
+
+			res.set("Content-Type", "text/html");
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
 				message: `Internal server error`
