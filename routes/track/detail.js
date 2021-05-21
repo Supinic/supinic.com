@@ -22,6 +22,7 @@ module.exports = (function () {
 		}
 
 		let embed = "N/A";
+		let contentType = "video";
 		const trackData = body.data;
 
 		switch (trackData.videoType) {
@@ -31,6 +32,7 @@ module.exports = (function () {
 			}
 			case 3: {
 				const data = await sb.Utils.linkParser.fetchData(trackData.parsedLink);
+				contentType = "audio";
 				if (!data) {
 					embed = `<div>Track not available</div>`
 				}
@@ -61,6 +63,7 @@ module.exports = (function () {
 				break;
 			}
 			case 23: {
+				contentType = "audio";
 				embed = `<audio style="width:100%" controls><source src="${trackData.parsedLink}"></audio>`;
 				break;
 			}
@@ -125,11 +128,39 @@ module.exports = (function () {
 			favourite = (data?.active) ? "active" : "inactive";
 		}
 
+		const archives = trackData.relatedTrack.filter(i => i.relationship === "archive of");
+		const reuploads = trackData.relatedTrack.filter(i => i.relationship === "reupload of");
+
 		res.render("track-detail", {
-			title: `Track ${trackData.ID} - ${trackData.name ?? "(no name)"}`,
+			title: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`,
 			favourite,
 			ID: trackData.ID,
-			data: data
+			data: data,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`,
+				},
+				{
+					property: "description",
+					content: sb.Utils.tag.trim `
+						Length: ${(trackData.duration) ? sb.Utils.formatTime(trackData.duration) : "(N/A)" }
+						- Published on: ${(trackData.published) ? new sb.Date(trackData.published).format("Y-m-d") : "(N/A)" }
+						- Aliases: ${(trackData.aliases.length > 0) ? trackData.aliases.join(", ") : "(none)" }
+						- Authors: ${(trackData.authors.length > 0) ? trackData.authors.map(i => i.name).join(", ") : "(none)" }
+						- Tags: ${(trackData.tags.length > 0) ? trackData.tags.join(", ") : "(none)" }
+						- Related tracks: ${archives} archives, ${reuploads} reuploads
+					`
+				},
+				{
+					property: "url",
+					content: trackData.parsedLink
+				},
+				{
+					property: contentType,
+					content: trackData.parsedLink
+				}
+			]
 		});
 	});
 

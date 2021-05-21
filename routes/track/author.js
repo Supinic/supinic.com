@@ -17,9 +17,20 @@ module.exports = (function () {
 		});
 
 		res.render("generic-list-table", {
+			title: "List of authors in the Track List",
 			data: printData,
 			head: Object.keys(printData[0]),
-			pageLength: 25
+			pageLength: 25,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `List of authors in the Track List`
+				},
+				{
+					property: "description",
+					content: "Here you can find a conclusive list of all authors that have been assigned in the Track List as author, uploaders and other roles."
+				}
+			]
 		});
 	});
 
@@ -65,7 +76,18 @@ module.exports = (function () {
 		};
 
 		res.render("author", {
-			data: printData
+			title: `Detail of track author ${data.name}`,
+			data: printData,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Detail of track author ${data.name}`
+				},
+				{
+					property: "description",
+					content: `Author's aliases: ${(data.aliases.length > 0) ? data.aliases.join(", ") : "(none)"}`
+				}
+			]
 		});
 	});
 
