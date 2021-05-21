@@ -128,8 +128,8 @@ module.exports = (function () {
 			favourite = (data?.active) ? "active" : "inactive";
 		}
 
-		const archives = trackData.relatedTrack.filter(i => i.relationship === "archive of");
-		const reuploads = trackData.relatedTrack.filter(i => i.relationship === "reupload of");
+		const archives = trackData.relatedTracks.filter(i => i.relationship === "archive of");
+		const reuploads = trackData.relatedTracks.filter(i => i.relationship === "reupload of");
 
 		res.render("track-detail", {
 			title: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`,
