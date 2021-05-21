@@ -29,7 +29,7 @@ module.exports = (function () {
 		else {
 			return res.set("Content-Type", "text/plain").send(words.join("\n"));
 		}
-	});w
+	});
 
 	return Router;
 })();
