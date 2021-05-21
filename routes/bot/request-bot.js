@@ -77,27 +77,25 @@ module.exports = (function () {
 				}
 			],
 			script: sb.Utils.tag.trim `
-				let renameMode = false;	
 				window.onload = async () => {
 					const checkbox = document.getElementById("rename");
 					const platform = document.getElementById("platform");
 					const descriptionMemo = document.getElementById("description");
-					const rename = document.getElementById("rename");
 					const descriptionPlaceholder = descriptionMemo.placeholder;
 					const channelLabel = document.querySelector("[for='Channel name']");
+					const renameElement = document.getElementById("rename");
 					
 					platform.addEventListener("change", () => {
 						if (platform.value === "cytube") {
-							rename.parentElement.style.display = "none";
+							renameElement.parentElement.style.display = "none";
 						}
 						else {
-							rename.parentElement.style.display = "initial";
+							renameElement.parentElement.style.display = "initial";
 						}
 					});
 					
-					checkbox.addEventListener("click", () => {
-						renameMode = !renameMode;
-						if (renameMode) {
+					checkbox.addEventListener("click", () => {	
+						if (renameElement.checked) {
 							descriptionMemo.disabled = true;
 							descriptionMemo.placeholder = "";
 							channelLabel.innerText = "Previous channel name";
@@ -110,8 +108,9 @@ module.exports = (function () {
 					});
 				};
 
-				async function submit (element) {
-					if (renameMode === false) {
+				async function submit () {
+					const renameElement = document.getElementById("rename");
+					if (!renameElement.checked) {
 						const result = confirm("By proceeding, you accept the rules and agree to conform by them.");
 						if (!result) {
 							return;
@@ -131,10 +130,9 @@ module.exports = (function () {
 					const platformElement = document.getElementById("platform");
 					const channelElement = document.getElementById("channel-name");
 					const descriptionElement = document.getElementById("description");	
-					const renameElement = document.getElementById("rename");
 					
 					let body;
-					if (renameMode === true) {
+					if (renameElement.checked) {
 						body = {
 							platform: platformElement.value,
 							renamedChannel: channelElement.value,
@@ -168,7 +166,7 @@ module.exports = (function () {
 					button.disabled = false;
 					
 					if (response.status === 200) {
-						if (renameElement.value === true) {
+						if (renameElement.checked === true) {
 							alerter.innerHTML = "Success 🙂<hr>Bot has been added to your current channel, and removed from the old one.";							
 						}
 						else {							
