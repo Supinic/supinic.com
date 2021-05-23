@@ -10,6 +10,7 @@ module.exports = (function () {
 			const { afk, hourly } = row.data;
 			const hourlyExperience = sb.Utils.round(Object.values(hourly.out.experience)[0], 0);
 			const gpxp = sb.Utils.round(((hourly.out.price ?? 0) - (hourly.in.price ?? 0)) / hourlyExperience, 2);
+			const afkPercent = sb.Utils.round(afk.true / (afk.true + afk.false) * 100, 0);
 
 			return {
 				Name: row.name,
@@ -25,7 +26,7 @@ module.exports = (function () {
 					dataOrder: (hourly.in.price ?? 0),
 					value: sb.Utils.groupDigits((hourly.in.price ?? 0))
 				},
-				"AFK %": sb.Utils.round(afk.true / (afk.true + afk.false) * 100, 0) + "%"
+				"AFK %": `${afkPercent}%`
 			}
 		});
 
