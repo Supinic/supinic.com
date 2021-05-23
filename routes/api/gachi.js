@@ -10,12 +10,13 @@ module.exports = (function () {
 			.send(JSON.stringify({ statusCode: 500, error: data }));
 	};
 
+	/*
 	Router.post("/edit", async (req, res) => {
 		return fail(res, "Not yet tested");
 
 		const fields = Gachi.fields;
 		const id = Number(req.params.id) || null;
-		let data = {};
+		const data = {};
 
 		for (const field of fields) {
 			const name = field.name;
@@ -55,6 +56,7 @@ module.exports = (function () {
 			success: true
 		}));
 	});
+	*/
 
 	Router.get("/list", async (req, res) => {
 		const rawData = await Gachi.getAll();
@@ -74,7 +76,7 @@ module.exports = (function () {
 			statusCode: 200,
 			deprecated: true,
 			list: sendData
-		}))
+		}));
 	});
 
 	Router.get("/todo/:filter*?", async (req, res) => {
@@ -96,7 +98,7 @@ module.exports = (function () {
 				rawLink: row.Link,
 				link: row.Link_Prefix.replace("$", row.Link),
 				videoType: row.Type,
-				status: status,
+				status,
 				resultID: row.Result || null,
 				reupload: (status === "completed")
 					? Boolean(row.Rejected && row.Result)
@@ -119,12 +121,10 @@ module.exports = (function () {
 			status: 200,
 			length: sendData.length,
 			list: sendData
-		}))
+		}));
 	});
 
-	Router.get("/get/:id", async (req, res) => {
-		return fail(res, "Not yet implemented");
-	});
+	Router.get("/get/:id", async (req, res) => fail(res, "Not yet implemented"));
 
 	return Router;
 })();

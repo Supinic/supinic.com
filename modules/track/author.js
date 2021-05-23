@@ -38,7 +38,7 @@ module.exports = (function () {
 				return null;
 			}
 
-			const data = Object.assign({}, row.valuesObject);
+			const data = { ...row.valuesObject };
 			if (row.values.Country) {
 				data.Country = (await sb.Query.getRecordset(rs => rs
 					.select("Name")
@@ -91,7 +91,7 @@ module.exports = (function () {
 			if (!sb.Utils.isValidInteger(authorID) || typeof alias !== "string" || !alias) {
 				throw new sb.Error({
 					message: "Missing or invalid options",
-					args: arguments
+					args: { authorID, alias }
 				});
 			}
 
@@ -109,7 +109,7 @@ module.exports = (function () {
 		}
 
 		static async convertExistingToAlias (options = {}) {
-			const {removeAuthorID, existingAuthorID} = options;
+			const { removeAuthorID, existingAuthorID } = options;
 			if (!sb.Utils.isValidInteger(removeAuthorID) || !sb.Utils.isValidInteger(existingAuthorID)) {
 				throw new sb.Error({
 					message: "Missing or invalid mandatory options",

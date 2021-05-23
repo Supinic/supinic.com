@@ -5,11 +5,11 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Author = require("../../../modules/track/author.js");
-	const Config = require("../../../modules/data/config.js");
+	// const Config = require("../../../modules/data/config.js");
 	const Tag = require("../../../modules/track/tag.js");
 	const Track = require("../../../modules/track/track.js");
 	const TrackAuthor = require("../../../modules/track/track-author.js");
-	const VideoType = require("../../../modules/data/video-type.js");
+	// const VideoType = require("../../../modules/data/video-type.js");
 	// const TrackTag = require("../../../modules/track/track-tag.js");
 	// const UserAlias = require("../../../modules/chat-data/user-alias.js");
 
@@ -34,7 +34,7 @@ module.exports = (function () {
 		["detail", "detail.js"],
 		["favourite", "favourite.js"],
 		["gachi", "gachi.js"],
-		["tag", "tag.js"],
+		["tag", "tag.js"]
 		// ["todo", "todo.js"],
 		// ["reupload", "reupload.js"],
 	];
@@ -52,10 +52,10 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Required parameters: trackID, targetTable, targetID");
 		}
 		else if (!allowedConnectTables.includes(targetTable)) {
-			return sb.WebUtils.apiFail(res, 400, "targetTable must be one of: " + allowedConnectTables.join(", "));
+			return sb.WebUtils.apiFail(res, 400, `targetTable must be one of: ${allowedConnectTables.join(", ")}`);
 		}
 		else if (targetTable === "Author" && (!role || !allowedAuthorTypes.includes(role))) {
-			return sb.WebUtils.apiFail(res, 400, "For Author, role must be provided and be one of: " + allowedAuthorTypes.join(", "));
+			return sb.WebUtils.apiFail(res, 400, `For Author, role must be provided and be one of: ${allowedAuthorTypes.join(", ")}`);
 		}
 
 		const trackID = Number(rawTrackID);
@@ -73,9 +73,11 @@ module.exports = (function () {
 		}
 
 		let targetExists = false;
-		switch (targetTable) {
-			case "Author": targetExists = await Author.exists(targetID); break;
-			case "Tag": targetExists = await Tag.exists(targetID); break;
+		if (targetTable === "Author") {
+			targetExists = await Author.exists(targetID);
+		}
+		else if (targetTable === "Tag") {
+			targetExists = await Tag.exists(targetID);
 		}
 
 		if (targetExists === false) {
@@ -102,7 +104,7 @@ module.exports = (function () {
 		if (result.success) {
 			return sb.WebUtils.apiSuccess(res, {
 				success: true,
-				type: type
+				type
 			});
 		}
 		else {
@@ -150,7 +152,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
 		}
 
-		const {link, type = "Single"} = req.query;
+		const { link } = req.query;
 		const result = await Track.add({
 			link, addedBy: auth.userID, skipAuthorCheck: true
 		});
@@ -162,7 +164,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiSuccess(res, {
 				trackID: result.data.ID,
 				message: result.toString()
-			})
+			});
 		}
 	});
 
@@ -260,10 +262,10 @@ module.exports = (function () {
 			checkUsernameFavourite,
 			includeYoutubeReuploads,
 			authorID: Number(authorID),
-			authorName: authorName,
+			authorName,
 			specificIDs: (specificIDs) ? specificIDs.split(",").map(Number) : null,
 			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
-			excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null,
+			excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null
 		});
 
 		return sb.WebUtils.apiSuccess(res, data);
@@ -304,7 +306,7 @@ module.exports = (function () {
 			Video_Type: videoType,
 			raw: {
 				link: row.values.Link,
-				Video_Type: row.values.Video_Type,
+				Video_Type: row.values.Video_Type
 			}
 		});
 	});
@@ -339,8 +341,8 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, {
 			present: Boolean(presentTrack),
 			ID: (presentTrack) ? presentTrack.ID : null,
-			link: link,
-			parsedLink: parsedLink,
+			link,
+			parsedLink
 		});
 	});
 
@@ -367,9 +369,7 @@ module.exports = (function () {
 	 * @apiError (401) Unauthorized Session timed out<br>
 	 *     Not logged in
 	 */
-	Router.post("/connect", async (req, res) => {
-		return await linkOrUnlink("link", req, res);
-	});
+	Router.post("/connect", async (req, res) => await linkOrUnlink("link", req, res));
 
 	/**
 	 * @api {delete} /track/connect/ Track - Disconnect
@@ -422,9 +422,7 @@ module.exports = (function () {
 	 * @apiError (401) (TODO: not working yet) Not logged in
 	 */
 	Router.post("/reupload", async (req, res) => {
-
-
-		let {reuploadID, reuploadLink, existingID} = req.query;
+		let { reuploadID, reuploadLink, existingID } = req.query;
 		existingID = Number(existingID);
 		reuploadID = Number(reuploadID);
 
@@ -496,7 +494,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
 		}
 
-		const {url} = req.query;
+		const { url } = req.query;
 		if (!url) {
 			return sb.WebUtils.apiFail(res, 400, "No url provided");
 		}
@@ -515,7 +513,7 @@ module.exports = (function () {
 		}
 	});
 
-	subroutes.forEach(([name, link]) =>  Router.use("/" + name, require("./" + link)));
+	subroutes.forEach(([name, link]) => Router.use(`/${name}`, require(`./${link}`)));
 
 	return Router;
 })();

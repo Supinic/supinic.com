@@ -4,7 +4,7 @@ module.exports = (function () {
 	class Game extends TemplateModule {
 		static async getComments (gameIdentifier) {
 			return await sb.Query.getRecordset(rs => rs
-			    .select("User_Alias", "Created", "Text")
+				.select("User_Alias", "Created", "Text")
 				.select("User_Alias.Name AS Username")
 				.from("stream", "Game_Comment")
 				.join({
@@ -15,7 +15,7 @@ module.exports = (function () {
 					toTable: "User_Alias",
 					toField: "ID"
 				})
-			    .from("stream", "Game_Comment")
+				.from("stream", "Game_Comment")
 				.where("Game = %s", gameIdentifier)
 			);
 		}

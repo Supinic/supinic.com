@@ -40,13 +40,11 @@ module.exports = (function () {
 	 * @apiSuccess {string} [lastSeen] If the bot verifies, this is the date of last verification - as ISO string
 	 * @apiSuccess {number} [lastSeenTimestamp] If the bot verifies, this is the date of last verification - as timestamp
 	 **/
-	Router.get("/active", async (req, res) => {
-		return sb.WebUtils.apiDeprecated(req, res, {
-			original: "/api/bot/active",
-			replacement: "/api/bot-program/bot/list",
-			timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()
-		});
-	});
+	Router.get("/active", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+		original: "/api/bot/active",
+		replacement: "/api/bot-program/bot/list",
+		timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()
+	}));
 
 	/**
 	 * @api {put} /bot/active Set channel bot activity
@@ -59,13 +57,11 @@ module.exports = (function () {
 	 * @apiError (401) Unauthorized Authorization failed
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
-	Router.put("/active", async (req, res) => {
-		return sb.WebUtils.apiDeprecated(req, res, {
-			original: "/api/bot/active",
-			replacement: "/api/bot-program/bot/active",
-			timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()
-		});
-	});
+	Router.put("/active", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+		original: "/api/bot/active",
+		replacement: "/api/bot-program/bot/active",
+		timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()
+	}));
 
 	return Router;
 })();

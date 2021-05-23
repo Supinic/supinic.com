@@ -60,7 +60,7 @@ module.exports = (function () {
 
 	Router.get("/detail/:id", async (req, res) => {
 		const id = Number(req.params.id);
-		const response = await sb.Got("Supinic", "/data/origin/detail/" + id);
+		const response = await sb.Got("Supinic", `/data/origin/detail/${id}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
@@ -75,7 +75,7 @@ module.exports = (function () {
 			authorDetails.push(`by ${data.author}`);
 		}
 		if (data.emoteAdded) {
-			const addedOn = new sb.Date(data.emoteAdded).format("Y-m-d")
+			const addedOn = new sb.Date(data.emoteAdded).format("Y-m-d");
 			authorDetails.push(`on ${addedOn}`);
 		}
 
@@ -84,13 +84,13 @@ module.exports = (function () {
 			originAddDetails.push(`by ${data.reporter}`);
 		}
 		if (data.recordAdded) {
-			const addedOn = new sb.Date(data.recordAdded).format("Y-m-d")
+			const addedOn = new sb.Date(data.recordAdded).format("Y-m-d");
 			originAddDetails.push(`on ${addedOn}`);
 		}
 
 		const raffleDetails = [];
 		if (data.raffle) {
-			const addedOn = new sb.Date(data.raffle).format("Y-m-d")
+			const addedOn = new sb.Date(data.raffle).format("Y-m-d");
 			raffleDetails.push(`raffled on ${addedOn}`);
 		}
 		if (data.raffleWinner) {

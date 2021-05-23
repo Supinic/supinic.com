@@ -25,7 +25,7 @@ module.exports = (function () {
 			dataOrder: i.newDeaths,
 			value: pretty(i.newDeaths)
 		},
-		Recoveries:{
+		Recoveries: {
 			dataOrder: i.allRecoveries,
 			value: pretty(i.allRecoveries)
 		},

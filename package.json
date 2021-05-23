@@ -22,7 +22,9 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js --harmony-nullish --harmony-optional-chaining"
+    "start": "node ./app.js --harmony-nullish --harmony-optional-chaining",
+    "lint": "eslint . --ignore-path .gitignore",
+    "lint:fix": "eslint . --fix --ignore-path .gitignore"
   },
   "author": "Supinic",
   "license": "ISC",
@@ -33,5 +35,10 @@
       "title": "General info",
       "filename": "api-header.md"
     }
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.27.0",
+    "eslint-plugin-unicorn": "^32.0.1"
   }
 }

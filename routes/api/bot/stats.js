@@ -42,8 +42,8 @@ module.exports = (function () {
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Query.getRecordset(rs => rs
-			    .select("COUNT(*) AS Total")
-			    .from("chat_data", "Channel")
+				.select("COUNT(*) AS Total")
+				.from("chat_data", "Channel")
 				.where("Mode <> %s", "Inactive")
 				.single()
 				.flat("Total")

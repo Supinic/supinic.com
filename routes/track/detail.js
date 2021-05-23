@@ -12,7 +12,7 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const trackID = Number(req.params.id);
-		const { statusCode, body } = await sb.Got("Supinic", "track/detail/" + trackID);
+		const { statusCode, body } = await sb.Got("Supinic", `track/detail/${trackID}`);
 
 		if (statusCode !== 200 || body.data === null) {
 			return res.status(404).render("error", {
@@ -34,7 +34,7 @@ module.exports = (function () {
 				const data = await sb.Utils.linkParser.fetchData(trackData.parsedLink);
 				contentType = "audio";
 				if (!data) {
-					embed = `<div>Track not available</div>`
+					embed = `<div>Track not available</div>`;
 				}
 				else {
 					embed = `<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${data.extra.apiID}&amp;color=0066cc"></iframe>`;
@@ -55,7 +55,7 @@ module.exports = (function () {
 				let link = trackData.link;
 				if (trackData.link.includes("/?p=")) {
 					const number = link.match(/\/\?p=(\d+)$/)[1];
-					suffix = "&page=" + number;
+					suffix = `&page=${number}`;
 					link = trackData.link.replace(/\/\?p=\d+/, "");
 				}
 
@@ -135,20 +135,20 @@ module.exports = (function () {
 			title: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`,
 			favourite,
 			ID: trackData.ID,
-			data: data,
+			data,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`,
+					content: `Track detail "${trackData.name ?? "(no name)"}" (ID ${trackData.ID})`
 				},
 				{
 					property: "description",
 					content: sb.Utils.tag.trim `
-						Length: ${(trackData.duration) ? sb.Utils.formatTime(trackData.duration) : "(N/A)" }
-						- Published on: ${(trackData.published) ? new sb.Date(trackData.published).format("Y-m-d") : "(N/A)" }
-						- Aliases: ${(trackData.aliases.length > 0) ? trackData.aliases.join(", ") : "(none)" }
-						- Authors: ${(trackData.authors.length > 0) ? trackData.authors.map(i => i.name).join(", ") : "(none)" }
-						- Tags: ${(trackData.tags.length > 0) ? trackData.tags.join(", ") : "(none)" }
+						Length: ${(trackData.duration) ? sb.Utils.formatTime(trackData.duration) : "(N/A)"}
+						- Published on: ${(trackData.published) ? new sb.Date(trackData.published).format("Y-m-d") : "(N/A)"}
+						- Aliases: ${(trackData.aliases.length > 0) ? trackData.aliases.join(", ") : "(none)"}
+						- Authors: ${(trackData.authors.length > 0) ? trackData.authors.map(i => i.name).join(", ") : "(none)"}
+						- Tags: ${(trackData.tags.length > 0) ? trackData.tags.join(", ") : "(none)"}
 						- Related tracks: ${archives.length} archives, ${reuploads.length} reuploads
 					`
 				},

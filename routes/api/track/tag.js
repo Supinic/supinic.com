@@ -12,7 +12,7 @@ module.exports = (function () {
 			.status(200)
 			.send(JSON.stringify({
 				statusCode: 200,
-				data: data
+				data
 			}));
 	});
 
@@ -32,7 +32,7 @@ module.exports = (function () {
 			.status(200)
 			.send(JSON.stringify({
 				statusCode: 200,
-				data: data
+				data
 			}));
 	});
 

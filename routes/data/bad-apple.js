@@ -13,9 +13,9 @@ module.exports = (function () {
 			const timestamp = (i.timestamp) ? `?t=${i.timestamp}` : "";
 			const deviceLink = (i.device && i.link)
 				? `<a href="//youtu.be/${i.link}${timestamp}">${i.device}</a>`
-				: (i.device)
+				: ((i.device)
 					? i.device
-					: "N/A"
+					: "N/A");
 
 			return {
 				Device: deviceLink,
@@ -53,7 +53,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", "/data/bad-apple/detail/" + req.params.id);
+		const { statusCode, body } = await sb.Got("Supinic", `/data/bad-apple/detail/${req.params.id}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),

@@ -17,11 +17,11 @@ module.exports = (function () {
 	};
 
 	for (const [route, file] of subroutes) {
-		Router.use("/" + route, require("./" + file));
+		Router.use(`/${route}`, require(`./${file}`));
 	}
 
 	const fetchList = async (req, res, listType, inputData = {}) => {
-		let searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
+		const searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
 		let sortColumn = 0;
 
 		if (listType === "todo") {
@@ -38,7 +38,7 @@ module.exports = (function () {
 		}
 		else {
 			throw new sb.Error({
-				message: "Unrecognized internal list type " + listType
+				message: `Unrecognized internal list type ${listType}`
 			});
 		}
 
@@ -97,7 +97,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			title: `${sb.Utils.capitalize(listType)} track list`,
-			data: data,
+			data,
 			head: columns[listType],
 			sortColumn,
 			pageLength: 25,
@@ -197,7 +197,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", "track/resolve/" + ID).json();
+		const { data } = await sb.Got("Supinic", `track/resolve/${ID}`).json();
 		if (!data.link) {
 			return res.status(404).render("error", {
 				error: "404 Not found",

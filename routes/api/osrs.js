@@ -4,24 +4,94 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	// eslint-disable array-element-newline
 	const skills = [
-		"Overall", "Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting",
-		"Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving",
-		"Slayer", "Farming", "Runecrafting", "Hunter", "Construction"
+		"Overall",
+		"Attack",
+		"Defence",
+		"Strength",
+		"Hitpoints",
+		"Ranged",
+		"Prayer",
+		"Magic",
+		"Cooking",
+		"Woodcutting",
+		"Fletching",
+		"Fishing",
+		"Firemaking",
+		"Crafting",
+		"Smithing",
+		"Mining",
+		"Herblore",
+		"Agility",
+		"Thieving",
+		"Slayer",
+		"Farming",
+		"Runecrafting",
+		"Hunter",
+		"Construction"
 	];
 	const activities = [
-		"League Points", "Bounty Hunter - Hunter", "Bounty Hunter - Rogue", "Clue Scrolls (all)",
-		"Clue Scrolls (beginner)", "Clue Scrolls (easy)", "Clue Scrolls (medium)", "Clue Scrolls (hard)",
-		"Clue Scrolls (elite)", "Clue Scrolls (master)", "LMS - Rank", "Soul Wars Zeal",
+		"League Points",
+		"Bounty Hunter - Hunter",
+		"Bounty Hunter - Rogue",
+		"Clue Scrolls (all)",
+		"Clue Scrolls (beginner)",
+		"Clue Scrolls (easy)",
+		"Clue Scrolls (medium)",
+		"Clue Scrolls (hard)",
+		"Clue Scrolls (elite)",
+		"Clue Scrolls (master)",
+		"LMS - Rank",
+		"Soul Wars Zeal",
 
-		"Abyssal Sire", "Alchemical Hydra", "Barrows Chests", "Bryophyta", "Callisto", "Cerberus", "Chambers of Xeric",
-		"Chambers of Xeric: Challenge Mode", "Chaos Elemental", "Chaos Fanatic", "Commander Zilyana", "Corporeal Beast",
-		"Crazy Archaeologist", "Dagannoth Prime", "Dagannoth Rex", "Dagannoth Supreme", "Deranged Archaeologist",
-		"General Graardor", "Giant Mole", "Grotesque Guardians", "Hespori", "Kalphite Queen", "King Black Dragon",
-		"Kraken", "Kree'Arra", "K'ril Tsutsaroth", "Mimic", "Nightmare", "Obor", "Sarachnis", "Scorpia", "Skotizo",
-		"Tempoross", "The Gauntlet", "The Corrupted Gauntlet", "Theatre of Blood", "Thermonuclear Smoke Devil",
-		"TzKal-Zuk", "TzTok-Jad", "Venenatis", "Vet'ion", "Vorkath", "Wintertodt", "Zalcano", "Zulrah"
+		"Abyssal Sire",
+		"Alchemical Hydra",
+		"Barrows Chests",
+		"Bryophyta",
+		"Callisto",
+		"Cerberus",
+		"Chambers of Xeric",
+		"Chambers of Xeric: Challenge Mode",
+		"Chaos Elemental",
+		"Chaos Fanatic",
+		"Commander Zilyana",
+		"Corporeal Beast",
+		"Crazy Archaeologist",
+		"Dagannoth Prime",
+		"Dagannoth Rex",
+		"Dagannoth Supreme",
+		"Deranged Archaeologist",
+		"General Graardor",
+		"Giant Mole",
+		"Grotesque Guardians",
+		"Hespori",
+		"Kalphite Queen",
+		"King Black Dragon",
+		"Kraken",
+		"Kree'Arra",
+		"K'ril Tsutsaroth",
+		"Mimic",
+		"Nightmare",
+		"Obor",
+		"Sarachnis",
+		"Scorpia",
+		"Skotizo",
+		"Tempoross",
+		"The Gauntlet",
+		"The Corrupted Gauntlet",
+		"Theatre of Blood",
+		"Thermonuclear Smoke Devil",
+		"TzKal-Zuk",
+		"TzTok-Jad",
+		"Venenatis",
+		"Vet'ion",
+		"Vorkath",
+		"Wintertodt",
+		"Zalcano",
+		"Zulrah"
 	];
+	// eslint-enable array-element-newline
 
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 	const itemCachePrefix = "osrs-item-price";
@@ -73,7 +143,7 @@ module.exports = (function () {
 		});
 
 		return result;
-	}
+	};
 
 	const fetchActivityData = async (ID) => {
 		// Check sb.Cache first
@@ -175,10 +245,10 @@ module.exports = (function () {
 		await sb.Cache.setByPrefix(activityCachePrefix, total, {
 			keys: { ID },
 			expiry: 300_000
-		})
+		});
 
 		return { success: true, total };
-	}
+	};
 
 	/**
 	 * @api {get} /osrs/lookup/:user Fetch user scores
@@ -228,7 +298,7 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
 			}
 			else {
-				return sb.WebUtils.apiFail(res, statusCode, "OSRS API error encountered");
+				return sb.WebUtils.apiFail(res, response.statusCode, "OSRS API error encountered");
 			}
 		}
 
@@ -339,14 +409,15 @@ module.exports = (function () {
 
 	Router.get("/activity/list", async (req, res) => {
 		const IDs = await sb.Query.getRecordset(rs => rs
-		    .select("ID")
-		    .from("osrs", "Activity")
+			.select("ID")
+			.from("osrs", "Activity")
 			.flat("ID")
 		);
 
 		const list = await Promise.all(IDs.map(i => fetchActivityData(i)));
 		if (list.some(i => i.success === false)) {
-			return sb.WebUtils.apiFail(res, item.statusCode, item.message);
+			const failed = list.filter(i => i.success === false);
+			return sb.WebUtils.apiFail(res, 400, { failed });
 		}
 
 		const data = list.map(i => i.total);

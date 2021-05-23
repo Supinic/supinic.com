@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -25,7 +24,7 @@ module.exports = (function () {
 						: 0,
 					value: (track.startTime || track.endTime)
 						? `${startTime} - ${endTime}`
-						: "(full song)",
+						: "(full song)"
 				},
 				Duration: {
 					dataOrder: Number(track.duration),

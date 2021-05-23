@@ -41,7 +41,7 @@ module.exports = (function () {
 				return {
 					Rank: index + 1,
 					Owner: (i.ownerName),
-					Total: "€ " + sb.Utils.round(i.convertedTotal, 3),
+					Total: `€ ${sb.Utils.round(i.convertedTotal, 3)}`,
 					Created: {
 						value: created.format("Y-m-d"),
 						dataOrder: created.valueOf()

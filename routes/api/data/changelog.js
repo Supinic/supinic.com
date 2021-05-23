@@ -17,7 +17,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiSuccess(res, []);
 		}
 
-		const data = await Changelog.selectMultipleCustom(q => q.where("ID IN %n+", list))
+		const data = await Changelog.selectMultipleCustom(q => q.where("ID IN %n+", list));
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 

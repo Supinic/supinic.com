@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -24,7 +23,7 @@ module.exports = (function () {
 					: "No",
 				"🚫": (i.flags.includes("opt-out")) ? "Yes" : "No",
 				"⛔": (i.flags.includes("block")) ? "Yes" : "No",
-				searchables: (i.aliases.length > 0) ? i.aliases.join(" ") : "",
+				searchables: (i.aliases.length > 0) ? i.aliases.join(" ") : ""
 			}));
 
 		res.render("generic-list-table", {
@@ -59,7 +58,7 @@ module.exports = (function () {
 		const statistics = await CommandExecution.hourlyStats();
 		res.render("command-stats", {
 			title: "Hourly stats of Supibot commands",
-			amount: statistics.reduce((acc, cur) => acc += cur, 0),
+			amount: statistics.reduce((acc, cur) => (acc += cur), 0),
 			hourlyStats: JSON.stringify(statistics),
 			openGraphDefinition: [
 				{
@@ -148,7 +147,7 @@ module.exports = (function () {
 				data[key] = JSON.parse(value).join(", ");
 			}
 			else if (key === "Cooldown") {
-				data[key] = (value / 1000) + " seconds";
+				data[key] = `${value / 1000} seconds`;
 			}
 			else if (value === null) {
 				data[key] = "N/A";
@@ -214,14 +213,14 @@ module.exports = (function () {
 		const prefix = (rawData.Flags?.includes("whitelist")) ? "Only " : "";
 		data.Restrictions = restrictions.filter(i => i.Channel_Mode !== "Inactive" && i.Channel_Mode !== "Read").map(i => {
 			if (i.Type === "Opt-out") {
-				return i.Username + " opted out from this command";
+				return `${i.Username} opted out from this command`;
 			}
 			else if (i.Type === "Whitelist") {
 				const who = i.Username || "Everyone";
 				const where = (i.Channel_Name) ? (`in ${i.Platform_Name} channel ${i.Channel_Name}`) : "everywhere";
 				return (i.Username)
 					? `${prefix}<u>${who}</u> can use this command ${where}`
-					: `<u>${who}</u> can use this command ${prefix.toLowerCase()} ${where}`
+					: `<u>${who}</u> can use this command ${prefix.toLowerCase()} ${where}`;
 			}
 			else if (i.Type === "Blacklist") {
 				if (i.Username) {
@@ -232,7 +231,8 @@ module.exports = (function () {
 					return `This command is disabled in ${i.Platform_Name} channel ${i.Channel_Name}`;
 				}
 			}
-		}).filter(Boolean).join("<br>") || "N/A";
+		}).filter(Boolean)
+			.join("<br>") || "N/A";
 
 		if (data.Flags.includes("whitelist")) {
 			data.Restrictions = `<b>Only available for these combinations:</b><br><br>${data.Restrictions}`;

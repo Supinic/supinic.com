@@ -27,7 +27,7 @@ module.exports = (function () {
 					value: sb.Utils.groupDigits((hourly.in.price ?? 0))
 				},
 				"AFK %": `${afkPercent}%`
-			}
+			};
 		});
 
 		return res.render("generic-list-table", {

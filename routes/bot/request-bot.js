@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 

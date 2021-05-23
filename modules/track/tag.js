@@ -31,9 +31,7 @@ module.exports = (function () {
 			return row;
 		}
 
-		static async createAlias () {
-
-		}
+		static async createAlias () {}
 
 		static get name () { return "tag"; }
 		static get database () { return "music"; }

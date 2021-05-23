@@ -21,9 +21,9 @@ module.exports = (function () {
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `User specific favourites list`,
-				},
-			],
+					content: `User specific favourites list`
+				}
+			]
 		});
 	};
 
@@ -33,8 +33,8 @@ module.exports = (function () {
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Track favourites - search for user`,
-				},
+					content: `Track favourites - search for user`
+				}
 			],
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Search another user's favourites</h5>
@@ -48,7 +48,7 @@ module.exports = (function () {
 					type: "string"
 				}
 			],
-			script: sb.Utils.tag.trim`
+			script: sb.Utils.tag.trim `
 				async function submit (element) {
 					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");

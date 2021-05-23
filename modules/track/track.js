@@ -90,7 +90,7 @@ module.exports = (function () {
 				return null;
 			}
 
-			const data = Object.assign({}, row.valuesObject);
+			const data = { ...row.valuesObject };
 			const prefix = (await sb.Query.getRecordset(rs => rs
 				.select("Link_Prefix")
 				.from("data", "Video_Type")
@@ -302,7 +302,7 @@ module.exports = (function () {
 						targetField: "Target_ID",
 						collapseOn: "Track_ID",
 						fields: ["Alias_Name"],
-			            condition: "Alias.Target_Table = 'Track'"
+						condition: "Alias.Target_Table = 'Track'"
 					});
 
 				for (const query of queries) {
@@ -358,8 +358,8 @@ module.exports = (function () {
 		}
 
 		static async add (options) {
-			let {tags = []} = options;
-			const {link, addedBy = 1, skipAuthorCheck = false} = options;
+			let { tags = []} = options;
+			const { link, addedBy = 1, skipAuthorCheck = false } = options;
 			if (!Array.isArray(tags)) {
 				tags = [tags];
 			}
@@ -381,7 +381,7 @@ module.exports = (function () {
 			const author = linkData.authorID;
 			const target = (linkData.type === "youtube")
 				? "Youtube_Channel_ID"
-				: sb.Utils.capitalize(target) + "_ID";
+				: `${sb.Utils.capitalize(target)}_ID`;
 
 			if (await Track.existsCustom(q => q.where("Link = %s", linkData.ID))) {
 				return new Result(false, "Link already exists in the database");
@@ -390,7 +390,7 @@ module.exports = (function () {
 			if (!skipAuthorCheck) {
 				const normalizedAuthorName = linkData.author.trim().toLowerCase().replace(/\s+/g, "_");
 				const authorCheck = await Author.selectSingleCustom(q => q
-					.where("Normalized_Name = %s OR " + target + " = %s", normalizedAuthorName, author)
+					.where(`Normalized_Name = %s OR ${target} = %s`, normalizedAuthorName, author)
 				);
 
 				if (authorCheck && authorCheck.ID) {
@@ -425,7 +425,7 @@ module.exports = (function () {
 			if (!skipAuthorCheck) {
 				const linkResult = await TrackAuthor.link({
 					trackID: trackData.insertId,
-					authorID: authorID,
+					authorID,
 					user: addedBy,
 					role: "Uploader"
 				});
@@ -437,7 +437,7 @@ module.exports = (function () {
 
 			await Promise.all(tags.map(tag => TrackTag.link(trackData.insertId, tag, addedBy)));
 
-			return new Result(true, "Added new track as ID " + trackData.insertId, { ID: trackData.insertId });
+			return new Result(true, `Added new track as ID ${trackData.insertId}`, { ID: trackData.insertId });
 		}
 
 		static async addReupload (existingID, reuploadLink, addedBy = 1) {
@@ -464,7 +464,7 @@ module.exports = (function () {
 			const [reuploadTag, todoTag, existingTrackData] = await Promise.all([
 				Tag.selectSingleCustom(q => q.where("Name = %s", "Reupload")),
 				Tag.selectSingleCustom(q => q.where("Name = %s", "Todo")),
-			    Track.selectSingleCustom(q => q.where("Link = %s", parsedLink))
+				Track.selectSingleCustom(q => q.where("Link = %s", parsedLink))
 			]);
 
 			let reuploadID = null;
@@ -498,7 +498,7 @@ module.exports = (function () {
 
 			return (existingTrackData)
 				? new Result(true, "Tracks linked together successfully", { ID: reuploadID })
-				: new Result(true, "Reupload track created and linked successfully", { ID: reuploadID })
+				: new Result(true, "Reupload track created and linked successfully", { ID: reuploadID });
 		}
 
 		static get name () { return "track"; }

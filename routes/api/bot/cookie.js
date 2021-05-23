@@ -26,7 +26,7 @@ module.exports = (function () {
 	 * User for given name/id does not exist<br>
 	 */
 	Router.get("/check", async (req, res) => {
-		const {name, id: rawID} = req.query;
+		const { name, id: rawID } = req.query;
 		if (!name && !rawID) {
 			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of name/id");
 		}
@@ -46,7 +46,7 @@ module.exports = (function () {
 
 		const extraData = (await ExtraUserData.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
-		)) || {Cookie_Today: false};
+		)) || { Cookie_Today: false };
 
 		return sb.WebUtils.apiSuccess(res, {
 			available: !extraData.Cookie_Today,

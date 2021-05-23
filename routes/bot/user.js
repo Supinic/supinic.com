@@ -18,7 +18,7 @@ module.exports = (function () {
 					type: "string"
 				}
 			],
-			script: sb.Utils.tag.trim`
+			script: sb.Utils.tag.trim `
 				async function submit (element) {
 					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");
@@ -41,7 +41,7 @@ module.exports = (function () {
 	Router.get("/:username/alias/list", async (req, res) => {
 		const { username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
-			url: "bot/user/" + encodeURIComponent(username) + "/alias/list",
+			url: `bot/user/${encodeURIComponent(username)}/alias/list`,
 			throwHttpErrors: false
 		});
 

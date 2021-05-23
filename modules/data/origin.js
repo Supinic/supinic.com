@@ -31,7 +31,8 @@ module.exports = (function () {
 				})
 				.where(
 					{ condition: (IDs.length !== 0) },
-					"Origin.ID IN %n+", IDs
+					"Origin.ID IN %n+",
+					IDs
 				)
 			);
 

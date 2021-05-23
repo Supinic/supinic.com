@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -12,14 +11,14 @@ module.exports = (function () {
 			Name: i.name,
 			Cooldown: {
 				dataOrder: i.cooldown,
-				value: (i.cooldown / 1000) + " seconds"
+				value: `${i.cooldown / 1000} seconds`
 			},
 			Sample: `<audio class="preview" style="width:100%" controls preload="none"><source src="/public/playsound/${i.filename}"></audio>`,
 			Notes: (i.notes) ?? "N/A"
 		}));
 
 		res.render("generic-list-table", {
-			data: data,
+			data,
 			head: Object.keys(data[0]),
 			pageLength: 25,
 			extraCSS: `audio.preview {

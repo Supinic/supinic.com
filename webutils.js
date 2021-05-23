@@ -87,7 +87,7 @@ module.exports = class WebUtils {
 	 * @param {Express.response} res
 	 * @param {Object} options = {}
 	 */
-	static async apiDeprecated (req, res,  options) {
+	static async apiDeprecated (req, res, options) {
 		const { original, replacement, timestamp = null } = options;
 		if (timestamp !== null && sb.Date.now() > timestamp) {
 			res.statusMessage = "ppPoof";
@@ -120,7 +120,7 @@ module.exports = class WebUtils {
 		const message = WebUtils.#requestMessages[statusCode];
 		return (message)
 			? `${statusCode} ${message}`
-			: `${statusCode} - other error`
+			: `${statusCode} - other error`;
 	}
 
 	/**
@@ -130,8 +130,8 @@ module.exports = class WebUtils {
 	 */
 	static async checkGlobalUserBan (userID) {
 		const check = await sb.Query.getRecordset(rs => rs
-		    .select("ID")
-		    .from("chat_data", "Filter")
+			.select("ID")
+			.from("chat_data", "Filter")
 			.where("User_Alias = %n", userID)
 			.where("Active = %b", true)
 			.where("Type = %s", "Blacklist")
@@ -227,7 +227,7 @@ module.exports = class WebUtils {
 		else if (req.query.localRequestAuthUser) {
 			const userID = Number(req.query.localRequestAuthUser);
 			if (!WebUtils.#localRequests.get(userID)) {
-				console.error("Invalid local request attempt", { req, path });
+				console.error("Invalid local request attempt", { req, userID });
 				return {
 					error: "Invalid local request attempt",
 					errorCode: 401
@@ -315,7 +315,7 @@ module.exports = class WebUtils {
 			Method: req.method,
 			Route: route,
 			Endpoint: req.baseUrl + req.url,
-			Source_IP: req.header("X-Forwarded-For") + " (" + req.connection.remoteAddress + ")",
+			Source_IP: `${req.header("X-Forwarded-For")} (${req.connection.remoteAddress})`,
 			User_Agent: req.header("User-Agent") || null,
 			Headers: JSON.stringify(req.headers),
 			Query: JSON.stringify(req.query),
@@ -335,7 +335,7 @@ module.exports = class WebUtils {
 			.from("data", "Video_Type")
 		);
 
-		WebUtils.videoTypes = Object.fromEntries(data.map(i => [i.ID, {...i}]));
+		WebUtils.videoTypes = Object.fromEntries(data.map(i => [i.ID, { ...i }]));
 	}
 
 	static parseVideoLink (type, link) {

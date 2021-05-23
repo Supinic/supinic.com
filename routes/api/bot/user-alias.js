@@ -32,7 +32,7 @@ module.exports = (function () {
 
 		const data = JSON.parse(row.Data ?? "{}");
 		if (!data.aliasedCommands) {
-			return sb.WebUtils.apiSuccess(res, { aliases: [] });
+			return sb.WebUtils.apiSuccess(res, { aliases: []});
 		}
 		else {
 			const aliases = Object.entries(data.aliasedCommands).map(([name, def]) => ({
@@ -83,9 +83,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} name
 	 * @apiError (404) NotFound User was not found
 	 **/
-	Router.get("/resolve/name/:name", async (req, res) => {
-		return await fetchUserData(res, "user-name", req.params.name);
-	});
+	Router.get("/resolve/name/:name", async (req, res) => await fetchUserData(res, "user-name", req.params.name));
 
 	/**
 	 * @api {get} /bot/user/resolve/ID/:id Fetch user by ID
@@ -97,9 +95,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} name
 	 * @apiError (404) NotFound User was not found
 	 **/
-	Router.get("/resolve/ID/:id", async (req, res) => {
-		return await fetchUserData(res, "user-id", req.params.id);
-	});
+	Router.get("/resolve/ID/:id", async (req, res) => await fetchUserData(res, "user-id", req.params.id));
 
 	return Router;
 })();

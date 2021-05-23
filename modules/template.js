@@ -1,7 +1,7 @@
 const deleteAllFailsafeRegex = /(\w+)\s*=\s*\1/;
 
 module.exports = class TemplateModule {
-	static #columns = [];
+	// static #columns = [];
 
 	static async getRow (ID) {
 		if (this.noIDs) {
@@ -37,7 +37,7 @@ module.exports = class TemplateModule {
 	static async selectSingleCustom (callback) {
 		return await sb.Query.getRecordset(rs => {
 			rs.single()
-				.select(this.table + ".*")
+				.select(`${this.table}.*`)
 				.from(this.database, this.table);
 
 			callback(rs);
@@ -54,7 +54,7 @@ module.exports = class TemplateModule {
 		}
 
 		return await sb.Query.getRecordset(rs => {
-			rs.select(this.table + ".*").from(this.database, this.table);
+			rs.select(`${this.table}.*`).from(this.database, this.table);
 			callback(rs);
 			return rs;
 		});
@@ -62,11 +62,11 @@ module.exports = class TemplateModule {
 
 	static async selectAll () {
 		return await sb.Query.getRecordset(rs => rs
-			.select(this.table + ".*")
+			.select(`${this.table}.*`)
 			.from(this.database, this.table)
 		);
 	}
-	
+
 	static async selectProperty (ID, property) {
 		if (this.noIDs) {
 			throw new sb.Error({
@@ -161,7 +161,7 @@ module.exports = class TemplateModule {
 				});
 			}
 
-			insert.properties.push("`" + name + "`");
+			insert.properties.push(`\`${name}\``);
 			insert.values.push(sb.Query.convertToSQL(value, column.type));
 		});
 
@@ -268,7 +268,7 @@ module.exports = class TemplateModule {
 	}
 
 	static get escapedPath () {
-		return "`" + this.database + "`.`" + this.table + "`";
+		return `\`${this.database}\`.\`${this.table}\``;
 	}
 
 	static get noIDs () { return false; }

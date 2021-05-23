@@ -17,7 +17,7 @@ module.exports = (function () {
 	const sortColumn = {
 		all: 5,
 		active: 4,
-		resolved: 4,
+		resolved: 4
 	};
 
 	const fetchSuggestionList = async (req, res, type) => {
@@ -27,7 +27,7 @@ module.exports = (function () {
 		if (userName) {
 			response = await sb.Got("Supinic", {
 				url: url[type],
-				searchParams: "userName=" + encodeURIComponent(userName)
+				searchParams: `userName=${encodeURIComponent(userName)}`
 			}).json();
 		}
 		else {
@@ -44,7 +44,7 @@ module.exports = (function () {
 			specificFiltering: true,
 			deferRender: true
 		});
-	}
+	};
 
 	const prettifyData = (data) => data.map(i => {
 		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
@@ -86,19 +86,13 @@ module.exports = (function () {
 
 		const name = encodeURIComponent(auth.userData.Name);
 		res.redirect(urlCallback(name));
-	}
+	};
 
-	Router.get("/list", async (req, res) => {
-		return await fetchSuggestionList(req, res, "all");
-	});
+	Router.get("/list", async (req, res) => await fetchSuggestionList(req, res, "all"));
 
-	Router.get("/list/active", async (req, res) => {
-		return await fetchSuggestionList(req, res, "active");
-	});
+	Router.get("/list/active", async (req, res) => await fetchSuggestionList(req, res, "active"));
 
-	Router.get("/list/resolved", async (req, res) => {
-		return await fetchSuggestionList(req, res, "resolved");
-	});
+	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
 
 	Router.get("/list/pretty", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
@@ -191,11 +185,11 @@ module.exports = (function () {
 				Count: i.userAmount,
 				"% of all": {
 					dataOrder: percentTotal,
-					value: percentTotal + "%"
+					value: `${percentTotal}%`
 				},
 				"% of user": {
 					dataOrder: percentUser,
-					value: percentUser + "%"
+					value: `${percentUser}%`
 				}
 			};
 		});

@@ -70,12 +70,12 @@ module.exports = (function () {
 
 		static async stats () {
 			return await super.selectCustom(rs => rs
-			    .select("User_Alias.ID AS User_ID")
-			    .select("User_Alias.Name AS User_Name")
+				.select("User_Alias.ID AS User_ID")
+				.select("User_Alias.Name AS User_Name")
 				.select("COUNT(*) AS Total")
 				.select("(SELECT COUNT(*) FROM data.Suggestion AS X WHERE X.User_Alias = Suggestion.User_Alias AND Status IN (\"Approved\", \"Completed\", \"Moved to Github\")) AS Accepted")
 				.select("(SELECT COUNT(*) FROM data.Suggestion AS X WHERE X.User_Alias = Suggestion.User_Alias AND Status IN (\"Dismissed\", \"Denied\")) AS Refused")
-			    .from("data", "Suggestion")
+				.from("data", "Suggestion")
 				.join("chat_data", "User_Alias")
 				.where("Status NOT IN %s+", ["Dismissed by author", "Quarantined"])
 				.groupBy("Suggestion.User_Alias")

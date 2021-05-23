@@ -11,7 +11,7 @@ module.exports = (function () {
 			const obj = await sb.Query.getRow("data", "Suggestion");
 			await obj.load(ID);
 
-			let ret = {};
+			const ret = {};
 			for (const field of fields) {
 				ret[field] = obj.values[field];
 			}
@@ -28,7 +28,7 @@ module.exports = (function () {
 				.orderBy("Suggestion.ID")
 			);
 
-			let ret = [];
+			const ret = [];
 			for (const row of data) {
 				ret.push({
 					ID: row.ID,
@@ -46,7 +46,7 @@ module.exports = (function () {
 		static async insert (data) {
 			const obj = await sb.Query.getRow("data", "Suggestion");
 			for (const key of Object.keys(data)) {
-				obj.values[key]  = data[key];
+				obj.values[key] = data[key];
 			}
 
 			await obj.save();

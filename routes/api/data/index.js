@@ -16,7 +16,7 @@ module.exports = (function () {
 	];
 
 	for (const [name, link] of subroutes) {
-		Router.use("/" + name, require("./" + link));
+		Router.use(`/${name}`, require(`./${link}`));
 	}
 
 	return Router;

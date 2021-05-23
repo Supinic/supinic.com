@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -32,7 +31,7 @@ module.exports = (function () {
 			else if (key === "Notes") {
 				printData[key] = (value === null)
 					? "N/A"
-					: value
+					: value;
 			}
 			else {
 				printData[key] = value;

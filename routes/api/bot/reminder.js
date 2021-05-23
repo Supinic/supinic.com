@@ -72,7 +72,7 @@ module.exports = (function () {
 
 		const data = await Reminder.listByUser(auth.userID, type, specific);
 		return sb.WebUtils.apiSuccess(res, data);
-	}
+	};
 
 	/**
 	 * @api {get} /bot/reminder/list Reminder - list active
@@ -95,9 +95,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
 	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
 	 */
-	Router.get("/list", async (req, res) => {
-		return await fetchReminderList(req, res, "active");
-	});
+	Router.get("/list", async (req, res) => await fetchReminderList(req, res, "active"));
 
 	/**
 	 * @api {get} /bot/reminder/list Reminder - list active
@@ -120,9 +118,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
 	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
 	 */
-	Router.get("/history", async (req, res) => {
-		return await fetchReminderList(req, res, "inactive");
-	});
+	Router.get("/history", async (req, res) => await fetchReminderList(req, res, "inactive"));
 
 	/**
 	 * @api {post} /bot/reminder/ Reminder - create
@@ -156,7 +152,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const {userID, username, text, private: rawPrivateReminder, schedule: rawSchedule} = req.query;
+		const { userID, username, text, private: rawPrivateReminder, schedule: rawSchedule } = req.query;
 		if (!userID && !username) {
 			return sb.WebUtils.apiFail(res, 400, "No username or user ID provided");
 		}

@@ -14,14 +14,14 @@ module.exports = (function () {
 			return { code: 401, error: "Unauthorized" };
 		}
 
-		const {table, tableID: rawTableID, alias} = req.query;
+		const { table, tableID: rawTableID, alias } = req.query;
 		const tableID = Number(rawTableID);
 
 		if (!table) {
-			return { code: 400, error:"No table provided" };
+			return { code: 400, error: "No table provided" };
 		}
 		else if (!allowedTables.includes(table)) {
-			return { code: 400, error: "Unknown table provided. Acceptable values: " + allowedTables.join(", ") };
+			return { code: 400, error: `Unknown table provided. Acceptable values: ${allowedTables.join(", ")}` };
 		}
 		else if (!sb.Utils.isValidInteger(tableID)) {
 			return { code: 400, error: "No or invalid table ID provided" };
@@ -47,7 +47,7 @@ module.exports = (function () {
 
 		return {
 			data: [table, tableID, alias, exists]
-		}
+		};
 	};
 
 	/**

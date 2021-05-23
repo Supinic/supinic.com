@@ -42,7 +42,7 @@ module.exports = (function () {
 			.single()
 		);
 
-		res.redirect("/track/detail/" + findTrack.ID);
+		res.redirect(`/track/detail/${findTrack.ID}`);
 	});
 
 	Router.get("/legacyDetail/:id", async (req, res) => {
@@ -71,10 +71,10 @@ module.exports = (function () {
 			Gachi.getPrefix(23)
 		]);
 		const embedLink = (data.Video_Type === 1)
-			? "https://www.youtube.com/embed/" + data.Link
-			: (data.Video_Type === 21)
-				? "https://embed.nicovideo.jp/watch/" + data.Link
-				: null; // @todo add other embeds
+			? `https://www.youtube.com/embed/${data.Link}`
+			: ((data.Video_Type === 21)
+				? `https://embed.nicovideo.jp/watch/${data.Link}`
+				: null); // @todo add other embeds
 
 		res.render("gachi-detail", {
 			printData: {
@@ -95,21 +95,19 @@ module.exports = (function () {
 				type: data.Video_Type,
 				link: embedLink,
 				original: (data.Based_On_Link && !data.Based_On_Link.includes(" "))
-					? ("https://www.youtube.com/embed/" + data.Based_On_Link)
+					? (`https://www.youtube.com/embed/${data.Based_On_Link}`)
 					: null,
 				reupload: (data.Youtube_Link)
-					? ("https://www.youtube.com/embed/" + data.Youtube_Link)
+					? (`https://www.youtube.com/embed/${data.Youtube_Link}`)
 					: null
 			}
 		});
 	});
 
-	Router.get("/edit/:id", async (req, res) => {
-		return res.status(503).render("error", {
-			error: "503",
-			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
-		});
-	});
+	Router.get("/edit/:id", async (req, res) => res.status(503).render("error", {
+		error: "503",
+		message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
+	}));
 
 	Router.post("/edit/:id", async (req, res) => {
 		res.status(503).render("error", {
@@ -118,19 +116,15 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/add", async (req, res) => {
-		return res.status(503).render("error", {
-			error: "503",
-			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
-		});
-	});	
+	Router.get("/add", async (req, res) => res.status(503).render("error", {
+		error: "503",
+		message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
+	}));
 
-	Router.post("/add", async (req, res) => {
-		return res.status(503).render("error", {
-			error: "503",
-			message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
-		});
-	});
+	Router.post("/add", async (req, res) => res.status(503).render("error", {
+		error: "503",
+		message: "Temporarily disabled - will come back with the full rework of music tracks. Stay tuned!"
+	}));
 
 	Router.get("/guidelines", async (req, res) => {
 		res.render("gachi-guidelines");

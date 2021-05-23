@@ -301,7 +301,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const {ID: rawID, category, text, addendum, notes, status} = req.query;
+		const { ID: rawID, category, text, addendum, notes, status } = req.query;
 		const ID = Number(rawID);
 
 		if (!sb.Utils.isValidInteger(ID)) {
@@ -327,7 +327,7 @@ module.exports = (function () {
 		}
 		// Otherwise, restrictions apply.
 		else {
-			if (row.values.User_Alias !== auth.userID)  {
+			if (row.values.User_Alias !== auth.userID) {
 				return sb.WebUtils.apiFail(res, 400, "You cannot edit this suggestion - it does not belong to you");
 			}
 			else if (lockedStatuses.includes(row.values.Status)) {

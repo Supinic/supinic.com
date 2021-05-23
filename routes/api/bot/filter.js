@@ -28,7 +28,7 @@ module.exports = (function () {
 	 * Command does not exist <br>
 	 */
 	Router.get("/check", async (req, res) => {
-		const {username, userID: rawUserID, commandID: rawCommandID} = req.query;
+		const { username, userID: rawUserID, commandID: rawCommandID } = req.query;
 		if ((!username && !rawUserID) || !rawCommandID) {
 			return sb.WebUtils.apiFail(res, 400, "Username and command ID must be provided");
 		}

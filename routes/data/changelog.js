@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	const formatChangelogList = (req, res, data) => {
 		const renderData = data.map(i => {
-			const created = new sb.Date(i.created)
+			const created = new sb.Date(i.created);
 			return {
 				ID: `<a href="/data/changelog/detail/${i.ID}">${i.ID}</a>`,
 				Type: i.type,
@@ -54,7 +54,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", "/data/changelog/detail/" + req.params.id);
+		const { statusCode, body } = await sb.Got("Supinic", `/data/changelog/detail/${req.params.id}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),

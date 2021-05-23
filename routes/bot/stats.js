@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -23,7 +22,7 @@ module.exports = (function () {
 		commands: {
 			active: "Currently available commands",
 			countSinceRestart: "Commands excuted since last bot restart",
-			countTotal: "All ever executed commands (since 2019-02-28)",
+			countTotal: "All ever executed commands (since 2019-02-28)"
 		},
 		afk: {
 			active: "Amount of currently AFK users",

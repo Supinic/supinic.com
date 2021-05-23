@@ -44,7 +44,7 @@ module.exports = (function () {
 		}
 
 		const response = await sb.Got("Supibot", {
-			url: "channel/" + type,
+			url: `channel/${type}`,
 			searchParams: {
 				channel: channel.Name
 			}
@@ -67,9 +67,7 @@ module.exports = (function () {
 	 * @apiParam (body) {string} [channelID] Twitch channel - ID
 	 * @apiParam (body) {string} [channelName] Twitch channel Name
 	 **/
-	Router.post("/banwave/part", async (req, res) => {
-		return await partOrJoin("part", req, res);
-	});
+	Router.post("/banwave/part", async (req, res) => await partOrJoin("part", req, res));
 
 	/**
 	 * @api {post} /bot/proxy/banwave/join Join channel - banwave
@@ -80,9 +78,7 @@ module.exports = (function () {
 	 * @apiParam (body) {string} [channelID] Twitch channel - ID
 	 * @apiParam (body) {string} [channelName] Twitch channel Name
 	 **/
-	Router.post("/banwave/join", async (req, res) => {
-		return await partOrJoin("join", req, res);
-	});
+	Router.post("/banwave/join", async (req, res) => await partOrJoin("join", req, res));
 
 	return Router;
 })();

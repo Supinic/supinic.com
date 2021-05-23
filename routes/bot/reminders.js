@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -66,14 +65,14 @@ module.exports = (function () {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
 					value: (schedule)
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
-						: "N/A",
+						: "N/A"
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `<div class="unset-reminder ${classes}"></div>`
 			};
 		});
 
-		const titleType = (target === "history") ? "inactive" : (target === "lookup") ? "lookup" : "active";
+		const titleType = (target === "history") ? "inactive" : ((target === "lookup") ? "lookup" : "active");
 		return res.render("generic-list-table", {
 			data,
 			title: `Your reminder list - ${titleType}`,
@@ -108,7 +107,7 @@ module.exports = (function () {
 			        background-image: url("/public/img/ppCircle.gif");
 			    }
 			`,
-			extraScript: sb.Utils.tag.trim  `
+			extraScript: sb.Utils.tag.trim `
 				function beforeTableInitalize () {
 					const unsetList = document.getElementsByClassName("unset-reminder");
 					for (const element of unsetList) {
@@ -173,17 +172,11 @@ module.exports = (function () {
 		});
 	};
 
-	Router.get("/list", async (req, res) => {
-		return await formatReminderList(req, res, "list");
-	});
+	Router.get("/list", async (req, res) => await formatReminderList(req, res, "list"));
 
-	Router.get("/history", async (req, res) => {
-		return await formatReminderList(req, res, "history");
-	});
+	Router.get("/history", async (req, res) => await formatReminderList(req, res, "history"));
 
-	Router.get("/lookup", async (req, res) => {
-		return await formatReminderList(req, res, "lookup");
-	});
+	Router.get("/lookup", async (req, res) => await formatReminderList(req, res, "lookup"));
 
 	Router.get("/:id", async (req, res) => {
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);

@@ -43,7 +43,7 @@ module.exports = (function () {
 			Track = Track || require("./track.js");
 			Author = Author || require("./author");
 
-			const {trackID, authorID, notes = null, user = 1, role} = options;
+			const { trackID, authorID, notes = null, user = 1, role } = options;
 
 			if (!sb.Utils.isValidInteger(trackID) || !sb.Utils.isValidInteger(authorID)) {
 				return new Result(false, "Track-Author link: Invalid Track/Author ID format");
@@ -73,7 +73,7 @@ module.exports = (function () {
 		}
 
 		static async unlink (options = {}) {
-			const {trackID, authorID, role} = options;
+			const { trackID, authorID, role } = options;
 
 			if (!sb.Utils.isValidInteger(trackID) || !sb.Utils.isValidInteger(authorID)) {
 				return new Result(false, "Track-Author link: Invalid Track/Author ID format");

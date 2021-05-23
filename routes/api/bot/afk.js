@@ -207,7 +207,7 @@ module.exports = (function () {
 
 		const { text, status = "afk" } = req.query;
 		if (!AFK.statuses.includes(status)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid AFK status provided. Available: " + AFK.statuses.join(", "));
+			return sb.WebUtils.apiFail(res, 400, `Invalid AFK status provided. Available: ${AFK.statuses.join(", ")}`);
 		}
 
 		const newStatus = await AFK.insert({
@@ -269,7 +269,7 @@ module.exports = (function () {
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
-			statusID: newStatus.insertId,
+			statusID: check.ID,
 			message: "Unset successfully"
 		});
 	});

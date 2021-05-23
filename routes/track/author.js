@@ -6,15 +6,13 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "track/author/list").json();
-		const printData = data.map(row => {
-			return {
-				Name: row.name,
-				Aliases: (row.aliases.length > 0)
-					? row.aliases.join(", ")
-					: "N/A",
-				ID: `<a target="_blank" href="/track/author/${row.ID}">${row.ID}</a>`
-			};
-		});
+		const printData = data.map(row => ({
+			Name: row.name,
+			Aliases: (row.aliases.length > 0)
+				? row.aliases.join(", ")
+				: "N/A",
+			ID: `<a target="_blank" href="/track/author/${row.ID}">${row.ID}</a>`
+		}));
 
 		res.render("generic-list-table", {
 			title: "List of authors in the Track List",
@@ -43,7 +41,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", "track/author/" + authorID).json();
+		const { data } = await sb.Got("Supinic", `track/author/${authorID}`).json();
 		const contactData = data.contacts.map(i => (
 			`<li>${i.website}: <a target="_blank" rel="noopener noreferrer" href="${i.link}">${i.name}</a></li>`
 		));

@@ -52,7 +52,7 @@ module.exports = (function () {
 			.single()
 		);
 
-		const data = await sb.Got("Supinic", "track/detail/" + track.ID).json();
+		const data = await sb.Got("Supinic", `track/detail/${track.ID}`).json();
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
