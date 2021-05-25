@@ -13,10 +13,15 @@ module.exports = (function () {
 		 * @returns {Promise<Object[]>}
 		 */
 		static async list (options = {}) {
+			if (options.status === "Quarantined" || Array.isArray(options.status) && options.status.includes("Quarantined")) {
+				throw new sb.Error({
+					message: `The "Quarantined" status is not supported!`
+				});
+			}
+
 			return await super.selectMultipleCustom(q => {
 				q.select("User_Alias.Name AS User_Name")
 					.join("chat_data", "User_Alias")
-					.where("Status <> %s", "Quarantined")
 					.orderBy("Suggestion.ID DESC");
 
 				if (options.category) {
