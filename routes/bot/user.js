@@ -103,7 +103,7 @@ module.exports = (function () {
 
 		const aliasData = body.data;
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
-		const edited = (aliasData.lastEdit) ? new sb.Date(aliasData.lastEdit).format("Y-m-d") : "N/A";
+		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
 		const invocation = (aliasData.invocation) ? aliasData.invocation.join(" ") : "N/A";
 
 		res.render("generic-detail-table", {
