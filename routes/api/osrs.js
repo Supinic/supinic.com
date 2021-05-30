@@ -281,7 +281,8 @@ module.exports = (function () {
 				regular: false,
 				hardcore: false,
 				ultimate: false,
-				deadHardcore: false
+				deadHardcore: false,
+				abandoned: false
 			}
 		};
 
@@ -303,6 +304,8 @@ module.exports = (function () {
 		}
 
 		let rawData = response.body;
+		const mainTotalXP = Number(rawData.split("\n")[0].split(",")[2]);
+
 		if (!result.seasonal) {
 			// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
 			// and both hardcore and regular if the account is a HCIM. That's why this
@@ -355,6 +358,13 @@ module.exports = (function () {
 			}
 			else if (compare.regular) {
 				result.ironman.regular = true;
+			}
+
+			// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
+			// higher - hence, the account must have been de-ironed.
+			const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
+			if (totalXP < mainTotalXP) {
+				result.ironman.abandoned = true;
 			}
 		}
 
