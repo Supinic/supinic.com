@@ -63,7 +63,7 @@ module.exports = (function () {
 					value: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`,
 					dataOrder: alias.name
 				},
-				Invocation: sb.Utils.escapeHTML(`${alias.invocation} ${alias.aruments.join(" ")}`),
+				Invocation: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`),
 				Created: {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
@@ -105,7 +105,7 @@ module.exports = (function () {
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
 		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
 		const invocation = (aliasData.invocation)
-			? `${aliasData.invocation} ${alias.arguments.join(" ")}`
+			? `${aliasData.invocation} ${aliasData.arguments.join(" ")}`
 			: "N/A";
 
 		res.render("generic-detail-table", {
