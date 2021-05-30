@@ -6,6 +6,7 @@ module.exports = (function () {
 
 	const subroutes = [
 		["bad-apple", "bad-apple.js"],
+		["changelog", "changelog.js"],
 		["corona", "corona.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
@@ -14,7 +15,9 @@ module.exports = (function () {
 		["tts", "tts.js"]
 	];
 
-	subroutes.forEach(([name, link]) =>  Router.use("/" + name, require("./" + link)));
+	for (const [name, link] of subroutes) {
+		Router.use(`/${name}`, require(`./${link}`));
+	}
 
 	return Router;
 })();

@@ -1,12 +1,51 @@
 module.exports = (function () {
 	"use strict";
-	
-	const Suggestion = require("../../modules/data/suggestion.js");
 
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const columnList = ["Author", "Text", "Status", "Priority", "Update", "ID"];
+	const url = {
+		all: "data/suggestion/list",
+		active: "data/suggestion/list/active",
+		resolved: "data/suggestion/list/resolved"
+	};
+	const columns = {
+		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
+		active: ["ID", "Text", "Status", "Priority", "Update"],
+		resolved: ["ID", "Text", "Status", "Priority", "Update"]
+	};
+	const sortColumn = {
+		all: 5,
+		active: 4,
+		resolved: 4
+	};
+
+	const fetchSuggestionList = async (req, res, type) => {
+		const { userName } = req.query;
+
+		let response;
+		if (userName) {
+			response = await sb.Got("Supinic", {
+				url: url[type],
+				searchParams: `userName=${encodeURIComponent(userName)}`
+			}).json();
+		}
+		else {
+			response = await sb.Got("Supinic", url[type]).json();
+		}
+
+		const printData = prettifyData(response.data);
+		res.render("generic-list-table", {
+			data: printData,
+			head: columns[type],
+			pageLength: 25,
+			sortColumn: sortColumn[type],
+			sortDirection: "desc",
+			specificFiltering: true,
+			deferRender: true
+		});
+	};
+
 	const prettifyData = (data) => data.map(i => {
 		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
 		const trimmedText = sb.Utils.wrapString(text, 200);
@@ -30,32 +69,30 @@ module.exports = (function () {
 		};
 	});
 
-	Router.get("/list", async (req, res) => {
-		const { userName } = req.query;
-
-		let response;
-		if (userName) {
-			response = await sb.Got("Supinic", {
-				url: "data/suggestion/list",
-				searchParams: "userName=" + encodeURIComponent(userName)
-			}).json();
+	const redirect = async (req, res, urlCallback) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "Your session timed out, please log in again"
+			});
 		}
-		else {
-			response = await sb.Got("Supinic", "data/suggestion/list").json();
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "You must be logged in before viewing your suggestion statistics"
+			});
 		}
 
-		const printData = prettifyData(response.data);
+		const name = encodeURIComponent(auth.userData.Name);
+		res.redirect(urlCallback(name));
+	};
 
-		res.render("generic-list-table", {
-			data: printData,
-			head: columnList,
-			pageLength: 25,
-			sortColumn: 5,
-			sortDirection: "desc",
-			specificFiltering: true,
-			deferRender: true
-		});
-	});
+	Router.get("/list", async (req, res) => await fetchSuggestionList(req, res, "all"));
+
+	Router.get("/list/active", async (req, res) => await fetchSuggestionList(req, res, "active"));
+
+	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
 
 	Router.get("/list/pretty", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
@@ -89,41 +126,77 @@ module.exports = (function () {
 	});
 
 	Router.get("/stats", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
-		if (auth.error) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "Your session timed out, please log in again"
-			});
-		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return res.status(401).render("error", {
-				error: "401 Unauthorized",
-				message: "You must be logged in before viewing your suggestion statistics"
-			});
-		}
-
-		const {Count: totalCount} = (await Suggestion.selectSingleCustom(rs => rs
-			.select("COUNT(*) AS Count")
-		));
-
-		const rawData = await Suggestion.selectMultipleCustom(rs => rs
-			.select("COUNT(*) AS Amount")
-			.where("User_Alias = %n", auth.userID)
-			.groupBy("Status")
-		);
-
-		const userCount = rawData.reduce((acc, cur) => acc += cur.Amount, 0);
-		const data = rawData.map(i => ({
-			Status: i.Status,
-			Count: i.Amount,
-			"% total": sb.Utils.round(i.Amount / totalCount * 100, 2),
-			"% yours": sb.Utils.round(i.Amount / userCount * 100, 2)
-		}));
+		const { data } = await sb.Got("Supinic", "/data/suggestion/stats").json();
+		const printData = data
+			.filter(i => i.total >= 10)
+			.map(i => ({
+				User: i.userName,
+				Total: {
+					dataOrder: i.total,
+					value: sb.Utils.groupDigits(i.total)
+				},
+				Accepted: {
+					dataOrder: i.accepted,
+					value: sb.Utils.groupDigits(i.accepted)
+				},
+				Refused: {
+					dataOrder: i.refused,
+					value: sb.Utils.groupDigits(i.refused)
+				}
+			}));
 
 		res.render("generic-list-table", {
-			data: data,
-			head: ["Status", "Count", "% total", "% yours"],
+			data: printData,
+			sortColumn: 1,
+			sortDirection: "desc",
+			head: ["User", "Total", "Accepted", "Refused"],
+			pageLength: 25
+		});
+	});
+
+	Router.get("/user/list/active", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/list/active?userName=${name}`);
+	});
+
+	Router.get("/user/list/resolved", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/list/resolved?userName=${name}`);
+	});
+
+	Router.get("/user/stats", async (req, res) => {
+		await redirect(req, res, name => `/data/suggestion/stats/user/${name}`);
+	});
+
+	Router.get("/stats/user/:user", async (req, res) => {
+		const escaped = encodeURIComponent(req.params.user);
+		const { statusCode, body } = await sb.Got("Supinic", `/data/suggestion/stats/user/${escaped}`);
+		if (statusCode !== 200) {
+			return res.status(statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(statusCode),
+				message: body.error.message
+			});
+		}
+
+		const printData = body.data.statuses.map(i => {
+			const percentTotal = sb.Utils.round(i.userAmount / body.data.globalTotal * 100, 2);
+			const percentUser = sb.Utils.round(i.userAmount / body.data.userTotal * 100, 2);
+
+			return {
+				Status: i.status ?? "Pending review",
+				Count: i.userAmount,
+				"% of all": {
+					dataOrder: percentTotal,
+					value: `${percentTotal}%`
+				},
+				"% of user": {
+					dataOrder: percentUser,
+					value: `${percentUser}%`
+				}
+			};
+		});
+
+		res.render("generic-list-table", {
+			data: printData,
+			head: ["Status", "Count", "% of all", "% of user"],
 			pageLength: 25
 		});
 	});
@@ -183,7 +256,7 @@ module.exports = (function () {
 				{
 					property: "description",
 					content: (data.text)
-						? sb.Utils.wrapString(data.text, 200)
+						? sb.Utils.wrapString(data.text, 300)
 						: "(no description available)"
 				},
 				{

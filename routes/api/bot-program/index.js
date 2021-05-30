@@ -87,18 +87,21 @@ module.exports = (function () {
 				on: "Bot_Badge.Badge = Badge.ID"
 			})
 			.where("Bot.Active = %b", true)
-			.groupBy("Bot.Bot_Alias"));
+			.groupBy("Bot.Bot_Alias")
+		);
 
 		const promises = rawData.map(async (bot) => {
 			const userData = (bot.Author === null)
 				? null
 				: await sb.User.get(bot.Author);
 
-			const badges = (await sb.Query.getRecordset(rs => rs
+			const badgeData = await sb.Query.getRecordset(rs => rs
 				.select("Badge", "Notes")
 				.from("bot_data", "Bot_Badge")
 				.where("Bot = %n", bot.Bot_Alias)
-			)).map(row => {
+			);
+
+			const badges = badgeData.map(row => {
 				const badge = badgeList.find(i => i.ID === row.Badge);
 				return {
 					ID: badge.ID,

@@ -1,3 +1,4 @@
+// noinspection JSUnusedLocalSymbols
 module.exports = (function () {
 	"use strict";
 
@@ -15,7 +16,7 @@ module.exports = (function () {
 		["relay", "relay.js"],
 		["test", "test.js"],
 		["track", "track"],
-		["trackData", "trackData.js"],
+		["trackData", "trackData.js"]
 	];
 
 	// Rate limit for API endpoints
@@ -57,11 +58,11 @@ module.exports = (function () {
 	 * @apiSuccess {string[]} endpoints.delete List of all API DELETE endpoints
 	 */
 	Router.get("/endpoints", async (req, res) => {
-		const endpoints = {GET: [], POST: [], PUT: [], DELETE: []};
+		const endpoints = { GET: [], POST: [], PUT: [], DELETE: []};
 		const check = (layer, subPath) => {
 			if (Array.isArray(layer?.handle?.stack)) {
 				for (const subLayer of layer.handle.stack) {
-					check(subLayer, subPath + "/" + layer.regexp.toString().match(/[\w\-]+/)[0]);
+					check(subLayer, `${subPath}/${layer.regexp.toString().match(/[\w-]+/)[0]}`);
 				}
 			}
 			else if (layer.route && !["*", "/*", "/robots.txt"].includes(layer.route.path)) {
@@ -84,19 +85,19 @@ module.exports = (function () {
 	});
 
 	for (const [route, file] of subroutes) {
-		Router.use("/" + route, require("./" + file));
+		Router.use(`/${route}`, require(`./${file}`));
 	}
 
 	// next param is required - Express recognizes four parameters functions as middlewares
+	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	Router.use(async (err, req, res, next) => {
 		const errorID = await sb.SystemLogger.sendError("Website - API", err);
 		return sb.WebUtils.apiFail(res, 500, err.message, { ID: errorID });
 	});
+	// eslint-enable no-unused-vars
 
-	Router.all("*", (req, res) => {
-		return sb.WebUtils.apiFail(res, 404, "Not found");
-	});
+	Router.all("*", (req, res) => sb.WebUtils.apiFail(res, 404, "Not found"));
 
 	return Router;
 })();

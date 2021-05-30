@@ -2,8 +2,8 @@ module.exports = (function () {
 	class Poll extends require("../template.js") {
 		static async getVotes () {
 			const votes = await sb.Query.getRecordset(rs => rs
-			    .select("Poll", "Vote AS Type")
-			    .from("chat_data", "Poll_Vote")
+				.select("Poll", "Vote AS Type")
+				.from("chat_data", "Poll_Vote")
 			);
 
 			const data = {};
@@ -17,7 +17,7 @@ module.exports = (function () {
 
 			return data;
 		}
-		
+
 		static get name () { return "Poll"; }
 		static get database () { return "chat_data"; }
 		static get table () { return "Poll"; }

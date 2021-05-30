@@ -48,7 +48,7 @@ module.exports = (function () {
 	 * @apiSuccess {string[]} [author.aliases]
 	 */
 	Router.get("/search", async (req, res) => {
-		const {country, name, normalizedName} = req.query;
+		const { country, name, normalizedName } = req.query;
 		const data = await Author.search({
 			country,
 			name,

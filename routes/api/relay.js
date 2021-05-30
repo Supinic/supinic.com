@@ -31,7 +31,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiSuccess(res, {
 				created: false,
 				identifier: digest,
-				link: "https://supinic.com/relay/" + digest
+				link: `https://supinic.com/relay/${digest}`
 			});
 		}
 
@@ -44,7 +44,7 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, {
 			created: true,
 			identifier: digest,
-			link: "https://supinic.com/relay/" + digest
+			link: `https://supinic.com/relay/${digest}`
 		});
 	});
 

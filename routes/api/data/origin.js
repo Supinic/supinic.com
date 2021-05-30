@@ -30,7 +30,13 @@ module.exports = (function () {
 	 **/
 	Router.get("/list", async (req, res) => {
 		const data = await Origin.fetch();
-		return sb.WebUtils.apiSuccess(res, data);
+		if (req.query.skipReplacedEmotes) {
+			const filtered = data.filter(i => !i.Replaced);
+			return sb.WebUtils.apiSuccess(res, filtered);
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, data);
+		}
 	});
 
 	/**
@@ -68,6 +74,23 @@ module.exports = (function () {
 		}
 
 		return sb.WebUtils.apiSuccess(res, items[0]);
+	});
+
+	Router.get("/image/:id", async (req, res) => {
+		const { id } = req.params;
+		const originID = Number(id);
+		if (!sb.Utils.isValidInteger(originID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
+		}
+
+		const row = await Origin.getRow(originID);
+		if (!row) {
+			return sb.WebUtils.apiFail(res, 404, "Emote not found");
+		}
+
+		const url = Origin.parseURL(row.valuesObject);
+		res.set("Cache-Control", "max-age=86400");
+		res.redirect(url);
 	});
 
 	return Router;

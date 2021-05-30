@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -49,12 +48,15 @@ module.exports = (function () {
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			await sb.WebUtils.invalidateBotCache({ type: "channel" });
-			await sb.InternalRequest.send(new sb.URLParams()
-				.set("type", "join-channel")
-				.set("platform", "twitch")
-				.set("channel", userData.Name)
-			);
+			sb.Got("Supibot", {
+				url: "channel/add",
+				searchParams: {
+					channel: userData.Name,
+					platform: "twitch",
+					mode: "Write",
+					announcement: `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${renamed.Name}.`
+				}
+			});
 
 			return sb.WebUtils.apiSuccess(res, {
 				success: true,
@@ -82,7 +84,7 @@ module.exports = (function () {
 		const userData = await sb.User.get(userID);
 		if (platformData.Name === "twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got("Leppunen", "twitch/modsvips/" + escapedChannel).json();
+			const { mods } = await sb.Got("Leppunen", `twitch/modsvips/${escapedChannel}`).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {

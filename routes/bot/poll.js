@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -10,8 +9,8 @@ module.exports = (function () {
 		const printData = data.map(i => ({
 			ID: i.ID,
 			Text: i.text,
-			["✔"]: i.votes.results.yes ?? "-",
-			["❌"]: i.votes.results.no ?? "-",
+			"✔": i.votes.results.yes ?? "-",
+			"❌": i.votes.results.no ?? "-",
 			Start: new sb.Date(i.started).format("Y-m-d"),
 			End: new sb.Date(i.ended).format("Y-m-d")
 		}));

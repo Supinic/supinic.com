@@ -39,9 +39,11 @@ module.exports = (function () {
 			.digest("hex");
 
 		await userData.saveProperty("Data", userData.Data);
-		await sb.WebUtils.invalidateBotCache({
-			type: "user",
-			username: userData.Name
+		await sb.Got("Supibot", {
+			url: "user/invalidateCache",
+			searchParams: {
+				name: userData.Name
+			}
 		});
 
 		res.send(200);
@@ -52,9 +54,11 @@ module.exports = (function () {
 		userData.Data.authKey = null;
 
 		await userData.saveProperty("Data", userData.Data);
-		await sb.WebUtils.invalidateBotCache({
-			type: "user",
-			username: userData.Name
+		await sb.Got("Supibot", {
+			url: "user/invalidateCache",
+			searchParams: {
+				name: userData.Name
+			}
 		});
 
 		res.send(200);

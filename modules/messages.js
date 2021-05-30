@@ -32,7 +32,7 @@ module.exports = (function () {
 				.from("chat_data", "Message_Meta_Channel")
 				.where("Channel = %n", channelID)
 				.where({
-					raw: "Timestamp >= " + previousDay
+					raw: `Timestamp >= ${previousDay}`
 				})
 				.groupBy("DAY(Timestamp)", "HOUR(Timestamp)")
 				.orderBy("DAY(Timestamp)", "HOUR(Timestamp)")
@@ -52,7 +52,7 @@ module.exports = (function () {
 				else {
 					data.push({
 						Amount: dataRow.Amount
-					})
+					});
 				}
 
 				then.addHours(1);
@@ -74,7 +74,7 @@ module.exports = (function () {
 			while (iteratorDate < now) {
 				const dayData = await MessageThroughput.lastDay(channelID, iteratorDate);
 				data.push({
-					Amount: dayData.reduce((acc, cur) => acc += cur.Amount ?? 0, 0),
+					Amount: dayData.reduce((acc, cur) => (acc += cur.Amount ?? 0), 0),
 					Timestamp: iteratorDate.clone()
 				});
 

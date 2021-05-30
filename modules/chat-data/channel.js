@@ -45,7 +45,7 @@ module.exports = (function () {
 				.select("AUTO_INCREMENT AS Max_ID")
 				.from("INFORMATION_SCHEMA", "TABLES")
 				.where("TABLE_SCHEMA = %s", "chat_line")
-			)
+			);
 
 			await sb.Cache.setByPrefix(cacheKey, data, {
 				expiry: 24 * 3_600_000

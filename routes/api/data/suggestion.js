@@ -10,6 +10,17 @@ module.exports = (function () {
 	const nonAdminStatuses = ["Dismissed by author"];
 	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
 
+	const fetchUserID = async (req) => {
+		const { userID: rawUserID, userName } = req.query;
+		let userID = null;
+		if (rawUserID || userName) {
+			const userData = await sb.User.get(Number(rawUserID) || userName);
+			userID = userData.ID;
+		}
+
+		return userID;
+	};
+
 	/**
 	 * @api {get} /data/suggestion/status/list Suggestion - Status - List
 	 * @apiName ListSuggestionsStatuses
@@ -33,6 +44,60 @@ module.exports = (function () {
 	 */
 	Router.get("/category/list", async (req, res) => {
 		const data = await Columns.getEnumColumnOptions("data", "Suggestion", "Category");
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /data/suggestion/stats Suggestion - stats
+	 * @apiName GetSuggestionStatistics
+	 * @apiDescription Posts a summary of suggestions' statistics
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiParam {number} [limit] limits the response to given amount of rows
+	 * @apiSuccess {Object[]} stat
+	 * @apiSuccess {number} stat.userID
+	 * @apiSuccess {string} stat.userName
+	 * @apiSuccess {number} stat.total Amount of suggestions the user has made
+	 * @apiSuccess {number} stat.accepted Suggestions in accepted states (aggregate across more statuses)
+	 * @apiSuccess {number} stat.refused Suggestions in refused states (aggregate across more statuses)
+	 **/
+	Router.get("/stats", async (req, res) => {
+		let limit;
+		if (req.query.limit) {
+			limit = Number(req.query.limit);
+			if (!sb.Utils.isValidInteger(limit)) {
+				return sb.WebUtils.apiFail(res, 400, "Invalid integer provided as limit");
+			}
+		}
+
+		const data = await Suggestion.stats();
+		if (limit) {
+			return sb.WebUtils.apiSuccess(res, data.slice(0, limit));
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, data);
+		}
+	});
+
+	/**
+	 * @api {get} /data/suggestion/stats Suggestion - user stats
+	 * @apiName GetUSerSuggestionStatistics
+	 * @apiDescription Posts a summary of a single users's suggestions statistics
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {number} globalTotal Total amount of all suggestions
+	 * @apiSuccess {number} userTotal Total amount of given user's suggestions
+	 * @apiSuccess {Object[]} statuses Data for each status
+	 * @apiSuccess {number} stat.globalAmount Total amount of suggestions with given status
+	 * @apiSuccess {number} stat.userAmount Total amount of given user's suggestions with given status
+	 **/
+	Router.get("/stats/user/:user", async (req, res) => {
+		const userData = await sb.User.get(req.params.user);
+		if (!userData) {
+			return sb.WebUtils.apiFail(res, 404, "User not found");
+		}
+
+		const data = await Suggestion.userStats(userData.ID);
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
@@ -65,6 +130,60 @@ module.exports = (function () {
 		}
 
 		const data = await Suggestion.list({ category, status, userID });
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /data/suggestion/list Suggestion - active list
+	 * @apiName ListResolvedSuggestions
+	 * @apiDescription Posts a list of active or still pending suggestions
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiParam {number} [userID] Filter by user ID. Mutually exclusive with `userName`.
+	 * @apiParam {string} [userName] Filter by user name. Mutually exclusive with `userID`.
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {number} userID
+	 * @apiSuccess {string} userName
+	 * @apiSuccess {string} category
+	 * @apiSuccess {string} status
+	 * @apiSuccess {number} [priority]
+	 * @apiSuccess {date} date ISO date string of the suggestion creation
+	 * @apiSuccess {string} [notes]
+	 **/
+	Router.get("/list/active", async (req, res) => {
+		const userID = await fetchUserID(req);
+		const data = await Suggestion.list({
+			userID,
+			status: [null, "Approved", "Blocked"]
+		});
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /data/suggestion/list Suggestion - resolved list
+	 * @apiName ListResolvedSuggestions
+	 * @apiDescription Posts a list of already resolved suggestions
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiParam {number} [userID] Filter by user ID. Mutually exclusive with `userName`.
+	 * @apiParam {string} [userName] Filter by user name. Mutually exclusive with `userID`.
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {number} userID
+	 * @apiSuccess {string} userName
+	 * @apiSuccess {string} category
+	 * @apiSuccess {string} status
+	 * @apiSuccess {number} [priority]
+	 * @apiSuccess {date} date ISO date string of the suggestion creation
+	 * @apiSuccess {string} [notes]
+	 **/
+	Router.get("/list/resolved", async (req, res) => {
+		const userID = await fetchUserID(req);
+		const data = await Suggestion.list({
+			userID,
+			status: ["Completed", "Denied", "Dismissed", "Dimissed by author", "Moved to Github"]
+		});
+
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
@@ -182,7 +301,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const {ID: rawID, category, text, addendum, notes, status} = req.query;
+		const { ID: rawID, category, text, addendum, notes, status } = req.query;
 		const ID = Number(rawID);
 
 		if (!sb.Utils.isValidInteger(ID)) {
@@ -208,7 +327,7 @@ module.exports = (function () {
 		}
 		// Otherwise, restrictions apply.
 		else {
-			if (row.values.User_Alias !== auth.userID)  {
+			if (row.values.User_Alias !== auth.userID) {
 				return sb.WebUtils.apiFail(res, 400, "You cannot edit this suggestion - it does not belong to you");
 			}
 			else if (lockedStatuses.includes(row.values.Status)) {

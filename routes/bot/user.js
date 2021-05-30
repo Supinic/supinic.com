@@ -18,7 +18,7 @@ module.exports = (function () {
 					type: "string"
 				}
 			],
-			script: sb.Utils.tag.trim`
+			script: sb.Utils.tag.trim `
 				async function submit (element) {
 					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");
@@ -41,7 +41,7 @@ module.exports = (function () {
 	Router.get("/:username/alias/list", async (req, res) => {
 		const { username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
-			url: "bot/user/" + encodeURIComponent(username) + "/alias/list",
+			url: `bot/user/${encodeURIComponent(username)}/alias/list`,
 			throwHttpErrors: false
 		});
 
@@ -52,7 +52,7 @@ module.exports = (function () {
 			});
 		}
 
-		const printData = body.data.aliases.map(alias => {
+		const printData = body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
 			const name = (alias.description)
 				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
@@ -60,10 +60,10 @@ module.exports = (function () {
 
 			return {
 				Name: {
-					value: `<a href="/bot/user/${username}/alias/${alias.name}">${name}</a>`,
+					value: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`,
 					dataOrder: alias.name
 				},
-				Invocation: sb.Utils.escapeHTML(alias.invocation.join(" ")),
+				Invocation: sb.Utils.escapeHTML(`${alias.invocation} ${alias.aruments.join(" ")}`),
 				Created: {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
@@ -87,10 +87,10 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:username/alias/:alias", async (req, res) => {
+	Router.get("/:username/alias/detail/:alias", async (req, res) => {
 		const { alias, username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
-			url: "bot/user/" + encodeURIComponent(username) + "/alias/" + alias,
+			url: `bot/user/${encodeURIComponent(username)}/alias/detail/${alias}`,
 			throwHttpErrors: false
 		});
 
@@ -103,8 +103,10 @@ module.exports = (function () {
 
 		const aliasData = body.data;
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
-		const edited = (aliasData.lastEdit) ? new sb.Date(aliasData.lastEdit).format("Y-m-d") : "N/A";
-		const invocation = (aliasData.invocation) ? aliasData.invocation.join(" ") : "N/A";
+		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
+		const invocation = (aliasData.invocation)
+			? `${aliasData.invocation} ${alias.arguments.join(" ")}`
+			: "N/A";
 
 		res.render("generic-detail-table", {
 			title: `Alias ${alias} of user ${username}`,
@@ -112,7 +114,7 @@ module.exports = (function () {
 				User: username,
 				Alias: aliasData.name,
 				Created: created,
-				"Last edit": edited,
+				Edited: edited,
 				Description: (aliasData.description)
 					? sb.Utils.escapeHTML(aliasData.description)
 					: "N/A",

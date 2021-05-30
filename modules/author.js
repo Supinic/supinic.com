@@ -54,7 +54,7 @@ module.exports = (function () {
 				return null;
 			}
 
-			const data = Object.assign({}, row.valuesObject);
+			const data = { ...row.valuesObject };
 			const aliasData = await sb.Query.getRecordset(rs => rs
 				.select("Name")
 				.from("music", "Alias")

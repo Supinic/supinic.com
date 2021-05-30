@@ -207,7 +207,7 @@ module.exports = (function () {
 
 		const { text, status = "afk" } = req.query;
 		if (!AFK.statuses.includes(status)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid AFK status provided. Available: " + AFK.statuses.join(", "));
+			return sb.WebUtils.apiFail(res, 400, `Invalid AFK status provided. Available: ${AFK.statuses.join(", ")}`);
 		}
 
 		const newStatus = await AFK.insert({
@@ -219,10 +219,11 @@ module.exports = (function () {
 			Silent: false
 		});
 
-		await sb.WebUtils.invalidateBotCache({
-			type: "afk",
-			specific: true,
-			ID: newStatus.insertId
+		await sb.Got("Supibot", {
+			url: "afk/reloadSpecific",
+			searchParams: {
+				ID: newStatus.insertId
+			}
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
@@ -260,15 +261,15 @@ module.exports = (function () {
 		}
 
 		await AFK.update(check.ID, { Active: false });
-
-		await sb.WebUtils.invalidateBotCache({
-			type: "afk",
-			specific: true,
-			ID: check.ID
+		await sb.Got("Supibot", {
+			url: "afk/reloadSpecific",
+			searchParams: {
+				ID: check.ID
+			}
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
-			statusID: newStatus.insertId,
+			statusID: check.ID,
 			message: "Unset successfully"
 		});
 	});

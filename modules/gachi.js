@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -25,7 +24,7 @@ module.exports = (function () {
 			}
 
 			const target = (fields.length !== 0) ? fields : Object.keys(row.values);
-			let ret = {};
+			const ret = {};
 			for (const field of target) {
 				ret[field] = row.values[field];
 			}
@@ -33,7 +32,7 @@ module.exports = (function () {
 			ret.Added_By = creditUser;
 			return ret;
 		}
-		
+
 		static async getAll () {
 			const youtubePrefix = "https://youtu.be/$";
 			const data = await sb.Query.getRecordset(rs => rs
@@ -46,17 +45,17 @@ module.exports = (function () {
 				.orderBy("Gachi.ID DESC")
 			);
 
-			let ret = [];
+			const ret = [];
 			for (const row of data) {
 				const basedOn = (!row.Based_On)
 					? "<b>(original work)</b>"
-					: (row.Based_On_Link)
-						? ("<a target='_blank' rel='noopener noreferrer' href='" + youtubePrefix.replace("$", row.Based_On_Link) + "'>" + row.Based_On + "</a>")
-						: row.Based_On;
+					: ((row.Based_On_Link)
+						? (`<a target='_blank' rel='noopener noreferrer' href='${youtubePrefix.replace("$", row.Based_On_Link)}'>${row.Based_On}</a>`)
+						: row.Based_On);
 				const mainLink = (row.Youtube_Link)
-					? youtubePrefix.replace("$", row.Youtube_Link) 
+					? youtubePrefix.replace("$", row.Youtube_Link)
 					: row.Link_Prefix.replace("$", row.Link);
-				const otherLink = (row.Youtube_Link) 
+				const otherLink = (row.Youtube_Link)
 					? row.Link_Prefix.replace("$", row.Link)
 					: null;
 
@@ -80,7 +79,7 @@ module.exports = (function () {
 
 			return ret;
 		}
-		
+
 		static async updateOrInsert (ID, data) {
 			const row = await sb.Query.getRow("data", "Gachi");
 
@@ -95,7 +94,7 @@ module.exports = (function () {
 				);
 
 				if (checkYoutube[0]) {
-					throw new Error("Video link already exists as a Youtube reupload for record ID = " + checkYoutube[0].ID);
+					throw new Error(`Video link already exists as a Youtube reupload for record ID = ${checkYoutube[0].ID}`);
 				}
 
 				const checkRejected = await sb.Query.getRecordset(rs => rs
@@ -106,7 +105,7 @@ module.exports = (function () {
 				);
 
 				if (checkRejected[0]) {
-					throw new Error("Video link has been rejected from being submitted. Reason: " + checkRejected[0].Notes);
+					throw new Error(`Video link has been rejected from being submitted. Reason: ${checkRejected[0].Notes}`);
 				}
 			}
 

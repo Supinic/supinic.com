@@ -1,11 +1,8 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
 	const Express = require("express");
 	const Router = Express.Router();
-
-	const Channel = require("../../modules/chat-data/channel.js");
 
 	const columns = {
 		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
@@ -68,14 +65,14 @@ module.exports = (function () {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
 					value: (schedule)
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
-						: "N/A",
+						: "N/A"
 				},
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `<div class="unset-reminder ${classes}"></div>`
 			};
 		});
 
-		const titleType = (target === "history") ? "inactive" : (target === "lookup") ? "lookup" : "active";
+		const titleType = (target === "history") ? "inactive" : ((target === "lookup") ? "lookup" : "active");
 		return res.render("generic-list-table", {
 			data,
 			title: `Your reminder list - ${titleType}`,
@@ -110,7 +107,7 @@ module.exports = (function () {
 			        background-image: url("/public/img/ppCircle.gif");
 			    }
 			`,
-			extraScript: sb.Utils.tag.trim  `
+			extraScript: sb.Utils.tag.trim `
 				function beforeTableInitalize () {
 					const unsetList = document.getElementsByClassName("unset-reminder");
 					for (const element of unsetList) {
@@ -175,17 +172,11 @@ module.exports = (function () {
 		});
 	};
 
-	Router.get("/list", async (req, res) => {
-		return await formatReminderList(req, res, "list");
-	});
+	Router.get("/list", async (req, res) => await formatReminderList(req, res, "list"));
 
-	Router.get("/history", async (req, res) => {
-		return await formatReminderList(req, res, "history");
-	});
+	Router.get("/history", async (req, res) => await formatReminderList(req, res, "history"));
 
-	Router.get("/lookup", async (req, res) => {
-		return await formatReminderList(req, res, "lookup");
-	});
+	Router.get("/lookup", async (req, res) => await formatReminderList(req, res, "lookup"));
 
 	Router.get("/:id", async (req, res) => {
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);
@@ -217,29 +208,22 @@ module.exports = (function () {
 			});
 		}
 
-		const rawData = body.data;
-		const [senderUserData, recipientUserData] = await Promise.all([
-			sb.User.get(rawData.userFrom),
-			sb.User.get(rawData.userTo),
-		]);
-
-		const data = {
-			ID: rawData.ID,
-			Sender: senderUserData.Name,
-			Recipient: recipientUserData.Name,
-			"Created in channel": (rawData.channel)
-				? (await Channel.getRow(rawData.channel)).values.Name
-				: "(created in PMs)",
-			Text: rawData.text,
-			Pending: (rawData.active) ? "yes" : "no",
-			Created: new sb.Date(rawData.created).format("Y-m-d H:i:s"),
-			Scheduled: (rawData.schedule)
-				? new sb.Date(rawData.schedule).format("Y-m-d H:i:s")
+		const data = body.data;
+		const printData = {
+			ID: data.ID,
+			Sender: data.sender,
+			Recipient: data.recipient,
+			"Created in channel": data.channel,
+			Text: data.text,
+			Pending: (data.active) ? "✔" : "❌",
+			Created: new sb.Date(data.created).format("Y-m-d H:i:s"),
+			Scheduled: (data.schedule)
+				? new sb.Date(data.schedule).format("Y-m-d H:i:s")
 				: "(not scheduled)",
-			Private: (rawData.privateMessage) ? "yes" : "no"
+			Private: (data.privateMessage) ? "✔" : "❌"
 		};
 
-		res.render("generic-detail-table", { data });
+		res.render("generic-detail-table", { data: printData });
 	});
 
 	return Router;

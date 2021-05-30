@@ -62,7 +62,7 @@
 	const Session = require("express-session");
 	const Passport = require("passport");
 	const { OAuth2Strategy } = require("passport-oauth");
-	const CacheController = require("express-cache-controller");
+	// const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
 
 	// methods `userProfile` is called internally to resolve the auth
@@ -74,7 +74,7 @@
 				throwHttpErrors: false,
 				url: "https://api.twitch.tv/helix/users",
 				headers: {
-					Authorization: "Bearer " + accessToken,
+					Authorization: `Bearer ${accessToken}`,
 					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
 				},
 				responseType: "json"
@@ -98,7 +98,7 @@
 				throwHttpErrors: false,
 				url: "https://api.github.com/user",
 				headers: {
-					Authorization: "token " + accessToken,
+					Authorization: `token ${accessToken}`,
 					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
 				},
 				responseType: "json"
@@ -142,20 +142,20 @@
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 
-	app.use("/public", Express.static(__dirname + "/public/", {
+	app.use("/public", Express.static(`${__dirname}/public/`, {
 		etag: true,
 		maxAge: "1 day",
 		lastModified: true
 	}));
-	app.use("/api", Express.static(__dirname + "/apidocs/"));
+	app.use("/api", Express.static(`${__dirname}/apidocs/`));
 
-	app.use(CacheController({
-		noCache: true
-	}));
+	// app.use(CacheController({
+	// 	noCache: true
+	// }));
 
 	app.use(Passport.initialize());
 	app.use(Passport.session());
-	
+
 	Passport.serializeUser((user, done) => done(null, user));
 	Passport.deserializeUser((user, done) => done(null, user));
 	Passport.use("twitch", new TwitchStrategy(
@@ -164,7 +164,7 @@
 			tokenURL: "https://id.twitch.tv/oauth2/token",
 			clientID: sb.Config.get("WEBSITE_TWITCH_CLIENT_ID"),
 			clientSecret: sb.Config.get("WEBSITE_TWITCH_CLIENT_SECRET"),
-			callbackURL: sb.Config.get("WEBSITE_TWITCH_CALLBACK_URL"),
+			callbackURL: sb.Config.get("WEBSITE_TWITCH_CALLBACK_URL")
 			// state: true
 		},
 		(access, refresh, profile, done) => {
@@ -211,7 +211,9 @@
 				{ name: "Slots winners list", link: "bot/slots-winner/list" },
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
 				{ separator: true },
-				{ name: "Bot statistics", link: "bot/stats" }
+				{ name: "Bot stats", link: "bot/stats" },
+				{ name: "Changelog", link: "data/changelog/list" },
+				{ name: "Suggestion stats", link: "data/suggestion/stats" }
 			]
 		},
 		{
@@ -233,7 +235,7 @@
 				{ separator: true },
 
 				{ name: "Archives", link: "gachi/archive" },
-				{ name: "Legacy list", link: "gachi/list" },
+				{ name: "Legacy list", link: "gachi/list" }
 				// { name: "Add new", link: "add" },
 				// { name: "Guidelines", link: "guidelines" },
 				// { name: "Todo list", link: "todo" },
@@ -254,14 +256,14 @@
 		{
 			name: "Other",
 			items: [
-				{ name: "Bad Apple!!", link: "data/bad-apple/list" },
+				{ name: "Bad Apple!!", link: "data/bad-apple/list" }
 			]
 		},
 		{
 			name: "API",
 			items: [
 				{ name: "Documentation", link: "api" },
-				{ name: "Get API key", link: "user/auth-key"}
+				{ name: "Get API key", link: "user/auth-key" }
 			]
 		},
 		{
@@ -275,28 +277,31 @@
 		{ name: "Github link", link: "auth/github" },
 		{ name: "Reminders - active", link: "bot/reminder/list" },
 		{ name: "Reminders - history", link: "bot/reminder/history" },
-		{ name: "Suggestion stats", link: "data/suggestion/stats" },
+		{ name: "Your suggestions - active", link: "data/suggestion/user/list/active" },
+		{ name: "Your suggestions - resolved", link: "data/suggestion/user/list/resolved" },
+		{ name: "Your suggestion stats", link: "data/suggestion/user/stats" },
 
 		{ separator: true },
 
-		{ name: "Log out", link: "user/logout" },
+		{ name: "Log out", link: "user/logout" }
 	];
 
 	app.set("view engine", "pug");
-	
+
 	// robots.txt - disallow everything
 	app.get("/robots.txt", (req, res) => {
 		res.type("text/plain");
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
+	const requestLogSymbol = Symbol("request-log-id");
 	await app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
-		await sb.WebUtils.logRequest(req, routeType);
+		const log = await sb.WebUtils.logRequest(req, routeType);
+		req[requestLogSymbol] = log.insertId;
 
-		if (req.headers?.["user-agent"].includes("paloaltonetworks.com")) {
-			const message = "If you would like this site to be included in your scans, please send IP addresses/domains to: supinic@pm.me";
-			res.status(403).send(message);
+		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
+			res.status(418).send("NOT OK");
 			return;
 		}
 
@@ -335,8 +340,8 @@
 				isLogin: () => true,
 				isEditor: () => Boolean(userData.Data.trackEditor || userData.Data.trackModerator || userData.Data.trackAdmin),
 				isModerator: () => Boolean(userData.Data.trackModerator || userData.Data.trackAdmin),
-				isAdmin: () => Boolean(userData.Data.trackAdmin),
-			}
+				isAdmin: () => Boolean(userData.Data.trackAdmin)
+			};
 		}
 
 		next();
@@ -344,14 +349,14 @@
 
 	app.get("/", (req, res) => res.render("index"));
 	for (const route of subroutes) {
-		app.use("/" + route, require("./routes/" + route));
+		app.use(`/${route}`, require(`./routes/${route}`));
 	}
 
 	// Twitch auth
 	app.get("/auth/twitch", (req, res, next) => {
 		const { returnTo } = req.query;
 		const state = (returnTo)
-			? Buffer.from(JSON.stringify({returnTo})).toString("base64")
+			? Buffer.from(JSON.stringify({ returnTo })).toString("base64")
 			: undefined;
 
 		const authenticator = Passport.authenticate("twitch", { scope: "", state });
@@ -431,9 +436,11 @@
 			};
 
 			await userData.saveProperty("Data");
-			await sb.WebUtils.invalidateBotCache({
-				type: "user",
-				username: userData.Name
+			await sb.Got("Supibot", {
+				url: "user/invalidateCache",
+				searchParams: {
+					name: userData.Name
+				}
 			});
 
 			return res.render("generic", {
@@ -452,15 +459,18 @@
 	);
 
 	// 4 params are required (next is unused) - express needs this to recognize the callback as middleware
+	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	app.use(async (err, req, res, next) => {
 		// first - manage URIErrors caused by malformed path params
 		// this is not an error, so no error will be printed.
 		if (err instanceof URIError) {
 			if (req.path.includes("/api")) {
+				res.set("Content-Type", "application/json");
 				return sb.WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
 			}
 			else {
+				res.set("Content-Type", "text/html");
 				return res.status(400).render("error", {
 					message: "404 Not found",
 					error: "Malformed URI - endpoint was not found"
@@ -469,29 +479,41 @@
 		}
 
 		console.error("Website error", { err, req, res });
+
 		try {
-			const errorID = await sb.SystemLogger.sendError("Website", err);
+			const requestID = req[requestLogSymbol] ?? null;
+			const row = await sb.Query.getRow("supinic.com", "Error");
+			row.setValues({
+				Request_ID: requestID,
+				Message: err.message ?? null,
+				Stack: err.stack ?? null
+			});
+
+			const { insertId } = await row.save();
+
+			res.set("Content-Type", "text/html");
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
-				message: `Internal error encountered (ID ${errorID})`
+				message: `Internal server error encountered (error ID ${insertId})`
 			});
 		}
 		catch (e) {
 			console.error("Error while trying to save error", e);
+
+			res.set("Content-Type", "text/html");
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
 				message: `Internal server error`
 			});
 		}
 	});
+	// eslint-enable no-unused-vars
 
 	// 404
-	app.get("*", (req, res) => {
-		return res.status(404).render("error", {
-			message: "404 Not found",
-			error: "Endpoint was not found"
-		});
-	});
+	app.get("*", (req, res) => res.status(404).render("error", {
+		message: "404 Not found",
+		error: "Endpoint was not found"
+	}));
 
 	app.listen(port, () => console.log("Listening..."));
 
@@ -500,4 +522,4 @@
 		/** @type {Map<string, Object>} */
 		deprecation: new Map()
 	};
-})();	
+})();

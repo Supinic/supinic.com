@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -20,19 +19,20 @@ module.exports = (function () {
 				If you would like to enter the bot creators program, you can use the $suggest command in any channel that has Supibot.<br>
 				Alternatively, you can enter <a href="//twitch.tv/supinic">Supinic's Twitch channel</a> and mention your idea to the chatters and discuss it.
 			`
-		})
+		});
 	});
 
-	Router.get("/list", async (req, res) => {
-		const { data: {bots, badges} } = await sb.Got("Supinic", "bot-program/bot/list").json();
-		const printData = bots.map(bot => {
-			const botBadges = bot.badges.map(row => {
-				const badge = badges.find(i => i.ID === row.ID);
-				return (row.notes && row.notes.includes("https://"))
-					? `<a style="float:left;" title="${badge.name}" href="${row.notes}">${badge.emoji}</a>`
-					: `<div style="float:left;" title="${badge.name}">${badge.emoji}</div>`;
-			});
+	const createBadge = (row, badges) => {
+		const badge = badges.find(i => i.ID === row.ID);
+		return (row.notes && row.notes.includes("https://"))
+			? `<a style="float:left;" title="${badge.name}" href="${row.notes}">${badge.emoji}</a>`
+			: `<div style="float:left;" title="${badge.name}">${badge.emoji}</div>`;
+	};
 
+	Router.get("/list", async (req, res) => {
+		const { data: { bots, badges } } = await sb.Got("Supinic", "bot-program/bot/list").json();
+		const printData = bots.map(bot => {
+			const botBadges = bot.badges.map(row => createBadge(row, badges));
 			return {
 				Name: `<div style="cursor: pointer; text-decoration: underline dotted;" title="${bot.description || "(no description)"}">${bot.name}</div>`,
 				Prefix: bot.prefix,
@@ -43,7 +43,7 @@ module.exports = (function () {
 					value: `<a href="/bot/channel-bots/levels">${bot.level}</a>`
 				},
 				Badges: botBadges.join("")
-			}
+			};
 		});
 
 		res.render("generic-list-table", {
@@ -60,10 +60,10 @@ module.exports = (function () {
 		);
 
 		res.render("generic-list-table", {
-			data: data,
+			data,
 			head: Object.keys(data[0]),
 			pageLength: 25
-		})
+		});
 	});
 
 	Router.get("/badges", async (req, res) => {
@@ -73,10 +73,10 @@ module.exports = (function () {
 		);
 
 		res.render("generic-list-table", {
-			data: data,
+			data,
 			head: Object.keys(data[0]),
 			pageLength: 25
-		})
+		});
 	});
 
 	return Router;

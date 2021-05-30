@@ -7,7 +7,7 @@ module.exports = (function () {
 	Router.get("/:digest", async (req, res) => {
 		const { digest } = req.params;
 		const response = await sb.Got("Supinic", {
-			url: "relay/" + digest,
+			url: `relay/${digest}`,
 			throwHttpErrors: false
 		});
 

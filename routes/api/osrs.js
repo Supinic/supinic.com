@@ -4,27 +4,99 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	// eslint-disable array-element-newline
 	const skills = [
-		"Overall", "Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting",
-		"Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving",
-		"Slayer", "Farming", "Runecrafting", "Hunter", "Construction"
+		"Overall",
+		"Attack",
+		"Defence",
+		"Strength",
+		"Hitpoints",
+		"Ranged",
+		"Prayer",
+		"Magic",
+		"Cooking",
+		"Woodcutting",
+		"Fletching",
+		"Fishing",
+		"Firemaking",
+		"Crafting",
+		"Smithing",
+		"Mining",
+		"Herblore",
+		"Agility",
+		"Thieving",
+		"Slayer",
+		"Farming",
+		"Runecrafting",
+		"Hunter",
+		"Construction"
 	];
 	const activities = [
-		"League Points", "Bounty Hunter - Hunter", "Bounty Hunter - Rogue", "Clue Scrolls (all)",
-		"Clue Scrolls (beginner)", "Clue Scrolls (easy)", "Clue Scrolls (medium)", "Clue Scrolls (hard)",
-		"Clue Scrolls (elite)", "Clue Scrolls (master)", "LMS - Rank", "Abyssal Sire", "Alchemical Hydra",
-		"Barrows Chests", "Bryophyta", "Callisto", "Cerberus", "Chambers of Xeric", "Chambers of Xeric: Challenge Mode",
-		"Chaos Elemental", "Chaos Fanatic", "Commander Zilyana", "Corporeal Beast", "Crazy Archaeologist",
-		"Dagannoth Prime", "Dagannoth Rex", "Dagannoth Supreme", "Deranged Archaeologist", "General Graardor",
-		"Giant Mole", "Grotesque Guardians", "Hespori", "Kalphite Queen", "King Black Dragon", "Kraken", "Kree'Arra",
-		"K'ril Tsutsaroth", "Mimic", "Nightmare", "Obor", "Sarachnis", "Scorpia", "Skotizo", "The Gauntlet",
-		"The Corrupted Gauntlet", "Theatre of Blood", "Thermonuclear Smoke Devil", "TzKal-Zuk", "TzTok-Jad", "Venenatis",
-		"Vet'ion", "Vorkath", "Wintertodt", "Zalcano", "Zulrah"
+		"League Points",
+		"Bounty Hunter - Hunter",
+		"Bounty Hunter - Rogue",
+		"Clue Scrolls (all)",
+		"Clue Scrolls (beginner)",
+		"Clue Scrolls (easy)",
+		"Clue Scrolls (medium)",
+		"Clue Scrolls (hard)",
+		"Clue Scrolls (elite)",
+		"Clue Scrolls (master)",
+		"LMS - Rank",
+		"Soul Wars Zeal",
+
+		"Abyssal Sire",
+		"Alchemical Hydra",
+		"Barrows Chests",
+		"Bryophyta",
+		"Callisto",
+		"Cerberus",
+		"Chambers of Xeric",
+		"Chambers of Xeric: Challenge Mode",
+		"Chaos Elemental",
+		"Chaos Fanatic",
+		"Commander Zilyana",
+		"Corporeal Beast",
+		"Crazy Archaeologist",
+		"Dagannoth Prime",
+		"Dagannoth Rex",
+		"Dagannoth Supreme",
+		"Deranged Archaeologist",
+		"General Graardor",
+		"Giant Mole",
+		"Grotesque Guardians",
+		"Hespori",
+		"Kalphite Queen",
+		"King Black Dragon",
+		"Kraken",
+		"Kree'Arra",
+		"K'ril Tsutsaroth",
+		"Mimic",
+		"Nightmare",
+		"Obor",
+		"Sarachnis",
+		"Scorpia",
+		"Skotizo",
+		"Tempoross",
+		"The Gauntlet",
+		"The Corrupted Gauntlet",
+		"Theatre of Blood",
+		"Thermonuclear Smoke Devil",
+		"TzKal-Zuk",
+		"TzTok-Jad",
+		"Venenatis",
+		"Vet'ion",
+		"Vorkath",
+		"Wintertodt",
+		"Zalcano",
+		"Zulrah"
 	];
+	// eslint-enable array-element-newline
+
 	const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 	const itemCachePrefix = "osrs-item-price";
 	const activityCachePrefix = "osrs-activity";
-	const account = {
+	const apiURLs = {
 		main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
 		seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.ws",
 		ironman: {
@@ -71,7 +143,7 @@ module.exports = (function () {
 		});
 
 		return result;
-	}
+	};
 
 	const fetchActivityData = async (ID) => {
 		// Check sb.Cache first
@@ -173,10 +245,10 @@ module.exports = (function () {
 		await sb.Cache.setByPrefix(activityCachePrefix, total, {
 			keys: { ID },
 			expiry: 300_000
-		})
+		});
 
 		return { success: true, total };
-	}
+	};
 
 	/**
 	 * @api {get} /osrs/lookup/:user Fetch user scores
@@ -194,11 +266,12 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} ironman.hardcore
 	 * @apiSuccess {boolean} ironman.ultimate
 	 * @apiSuccess {boolean} ironman.deadHardcore
+	 * @apiSuccess {boolean} ironman.abandoned True if an account has been "de-ironed"
 	 * @apiSuccess {boolean} seasonal
 	 */
 	Router.get("/lookup/:user", async (req, res) => {
 		const user = req.params.user.toLowerCase();
-		const url = (req.query.seasonal) ? account.seasonal : account.main;
+		const url = (req.query.seasonal) ? apiURLs.seasonal : apiURLs.main;
 		const forceHardcore = Boolean(req.query.forceHardcore);
 
 		const result = {
@@ -209,7 +282,8 @@ module.exports = (function () {
 				regular: false,
 				hardcore: false,
 				ultimate: false,
-				deadHardcore: false
+				deadHardcore: false,
+				abandoned: false
 			}
 		};
 
@@ -226,11 +300,13 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
 			}
 			else {
-				return sb.WebUtils.apiFail(res, statusCode, "OSRS API error encountered");
+				return sb.WebUtils.apiFail(res, response.statusCode, "OSRS API error encountered");
 			}
 		}
 
 		let rawData = response.body;
+		const mainTotalXP = Number(rawData.split("\n")[0].split(",")[2]);
+
 		if (!result.seasonal) {
 			// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
 			// and both hardcore and regular if the account is a HCIM. That's why this
@@ -239,18 +315,16 @@ module.exports = (function () {
 
 			for (const type of types) {
 				const { statusCode, body } = await sb.Got({
-					url: account.ironman[type],
+					url: apiURLs.ironman[type],
 					throwHttpErrors: false,
-					searchParams: new sb.URLParams()
-						.set("player", user)
-						.toString()
+					searchParams: { player: user }
 				});
 
 				if (statusCode !== 404) {
 					// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
 					// detect whether the account is alive or not, and adjust the response accordingly.
 					if (type === "ultimate") {
-						result.ironman[type] = true;
+						result.ironman.ultimate = true;
 						rawData = body;
 						break;
 					}
@@ -260,6 +334,8 @@ module.exports = (function () {
 				}
 			}
 
+			// Figuring out if a HCIM has died. If their total XP in the ironman leaderboard is higher than the total XP
+			// in HCIM leaderboard, this means that they have lost the HCIM status.
 			if (compare.hardcore && compare.regular) {
 				const regularXP = Number(compare.regular.split("\n")[0].split(",")[2]);
 				const hardcoreXP = Number(compare.hardcore.split("\n")[0].split(",")[2]);
@@ -277,6 +353,20 @@ module.exports = (function () {
 					result.ironman.hardcore = true;
 					result.ironman.deadHardcore = false;
 				}
+			}
+			else if (compare.hardcore) {
+				result.ironman.hardcore = true;
+			}
+			else if (compare.regular) {
+				result.ironman.regular = true;
+			}
+
+			// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
+			// higher - hence, the account must have been de-ironed. Use the main data.
+			const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
+			if (totalXP < mainTotalXP) {
+				rawData = response.body;
+				result.ironman.abandoned = true;
 			}
 		}
 
@@ -332,14 +422,15 @@ module.exports = (function () {
 
 	Router.get("/activity/list", async (req, res) => {
 		const IDs = await sb.Query.getRecordset(rs => rs
-		    .select("ID")
-		    .from("osrs", "Activity")
+			.select("ID")
+			.from("osrs", "Activity")
 			.flat("ID")
 		);
 
 		const list = await Promise.all(IDs.map(i => fetchActivityData(i)));
 		if (list.some(i => i.success === false)) {
-			return sb.WebUtils.apiFail(res, item.statusCode, item.message);
+			const failed = list.filter(i => i.success === false);
+			return sb.WebUtils.apiFail(res, 400, { failed });
 		}
 
 		const data = list.map(i => i.total);

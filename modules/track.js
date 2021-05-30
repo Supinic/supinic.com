@@ -31,7 +31,7 @@ module.exports = (function () {
 				return null;
 			}
 
-			const data = Object.assign({}, row.valuesObject);
+			const data = { ...row.valuesObject };
 			const prefix = (await sb.Query.getRecordset(rs => rs
 				.select("Link_Prefix")
 				.from("data", "Video_Type")
@@ -143,7 +143,7 @@ module.exports = (function () {
 				.leftJoin("music", {
 					raw: "music.Track_Tag ON Track_Tag.Track = Track.ID"
 				})
-				.where(tags.map(tagID => "Track_Tag.Tag = " + tagID).join(" AND "))
+				.where(tags.map(tagID => `Track_Tag.Tag = ${tagID}`).join(" AND "))
 				.groupBy("Track.ID")
 			);
 		}

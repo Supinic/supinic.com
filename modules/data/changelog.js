@@ -3,11 +3,11 @@ module.exports = (function () {
 
 	const TemplateModule = require("../template.js");
 
-	class BadApple extends TemplateModule {
-		static get name () { return "bad-apple"; }
+	class Changelog extends TemplateModule {
+		static get name () { return "changelog"; }
 		static get database () { return "data"; }
-		static get table () { return "Bad_Apple"; }
+		static get table () { return "Changelog"; }
 	}
 
-	return BadApple;
+	return Changelog;
 })();

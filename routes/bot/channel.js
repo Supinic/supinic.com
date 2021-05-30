@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -36,7 +35,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			title: "Channel list - Supibot",
-			data: data,
+			data,
 			head: Object.keys(data[0]),
 			pageLength: 50,
 			sortColumn: 0,
@@ -77,7 +76,7 @@ module.exports = (function () {
 			"Message limit": channelData.Message_Limit ?? channelData.Platform_Message_Limit,
 			Description: channelData.Description ?? "N/A",
 			Activity: `<a href="/bot/channel/${channelData.ID}/activity">Activity charts</a>`,
-			Filters: `<a href="/bot/channel/${channelData.ID}/filter/list">List of filters</a>`,
+			Filters: `<a href="/bot/channel/${channelData.ID}/filter/list">List of filters</a>`
 		};
 
 		res.render("generic-detail-table", {
@@ -109,9 +108,9 @@ module.exports = (function () {
 			Throughput.lastMonth(channelData.ID)
 		]);
 
-		let hourData = [];
-		let dayLabels = [];
-		let dayData = [];
+		const hourData = [];
+		const dayLabels = [];
+		const dayData = [];
 
 		for (const row of lastDayData) {
 			hourData.push(Number(row.Amount));
@@ -159,4 +158,3 @@ module.exports = (function () {
 
 	return Router;
 })();
-	

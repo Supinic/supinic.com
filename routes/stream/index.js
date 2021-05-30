@@ -11,7 +11,7 @@ module.exports = (function () {
 	];
 
 	for (const [route, file] of subroutes) {
-		Router.use("/" + route, require("./" + file));
+		Router.use(`/${route}`, require(`./${file}`));
 	}
 
 	return Router;

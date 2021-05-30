@@ -14,14 +14,28 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
+			title: "User specific favourites list",
 			head: ["Track", "Created", "Edited"],
 			data: printData,
-			pageLength: 25
+			pageLength: 25,
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `User specific favourites list`
+				}
+			]
 		});
 	};
 
 	Router.get("/find", async (req, res) => {
 		res.render("generic-form", {
+			title: "Track favourites - search for user",
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Track favourites - search for user`
+				}
+			],
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Search another user's favourites</h5>
 	            <div id="alert-anchor"></div>
@@ -34,7 +48,7 @@ module.exports = (function () {
 					type: "string"
 				}
 			],
-			script: sb.Utils.tag.trim`
+			script: sb.Utils.tag.trim `
 				async function submit (element) {
 					const userName = encodeURIComponent(document.getElementById("user-name").value).toLowerCase();
 					const alerter = document.getElementById("alert-anchor");

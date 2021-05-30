@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 	const subroutes = [
 		["bad-apple", "bad-apple.js"],
+		["changelog", "changelog.js"],
 		["corona", "corona.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
@@ -13,7 +14,7 @@ module.exports = (function () {
 	];
 
 	for (const [route, file] of subroutes) {
-		Router.use("/" + route, require("./" + file));
+		Router.use(`/${route}`, require(`./${file}`));
 	}
 
 	return Router;

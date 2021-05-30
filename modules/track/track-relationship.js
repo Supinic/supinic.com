@@ -23,9 +23,9 @@ module.exports = (function () {
 				return new Result(false, "Track-Relationship link: To track ID does not exist");
 			}
 			else if (await TrackRelationship.existsCustom(q => q
-					.where("Track_From = %n", fromID)
-					.where("Relationship = %s", relationship)
-					.where("Track_To = %n", toID)
+				.where("Track_From = %n", fromID)
+				.where("Relationship = %s", relationship)
+				.where("Track_To = %n", toID)
 			)) {
 				return new Result(false, "Track-Relationship link: Link between tracks already exists");
 			}

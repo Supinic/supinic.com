@@ -4,8 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Author = require("../../modules/track/author.js");
-
 	const subroutes = [
 		["author", "author.js"],
 		["detail", "detail.js"],
@@ -14,15 +12,16 @@ module.exports = (function () {
 
 	const columns = {
 		gachi: ["🔁", "Name", "Published", "Author", "Favs", "ID"],
+		lookup: ["🔁", "Name", "Published", "Author", "Favs", "ID"],
 		todo: ["Name", "Published", "Author", "Added to list", "ID"]
 	};
 
 	for (const [route, file] of subroutes) {
-		Router.use("/" + route, require("./" + file));
+		Router.use(`/${route}`, require(`./${file}`));
 	}
 
 	const fetchList = async (req, res, listType, inputData = {}) => {
-		let searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
+		const searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
 		let sortColumn = 0;
 
 		if (listType === "todo") {
@@ -39,7 +38,7 @@ module.exports = (function () {
 		}
 		else {
 			throw new sb.Error({
-				message: "Unrecognized internal list type " + listType
+				message: `Unrecognized internal list type ${listType}`
 			});
 		}
 
@@ -52,11 +51,6 @@ module.exports = (function () {
 			url: "track/search",
 			searchParams: searchParams.toString()
 		}).json();
-
-		const authorIDs = new Set(raw.map(i => i.authors).flat());
-		const authors = Object.fromEntries((await Author.selectMultipleCustom(rs => rs
-			.where("ID IN %n+", Array.from(authorIDs))
-		)).map(i => [i.ID, i.Name]));
 
 		const data = raw.map(i => {
 			const obj = {};
@@ -78,7 +72,7 @@ module.exports = (function () {
 				dataOrder: (i.published) ? new sb.Date(i.published).valueOf() : 0
 			};
 			obj.Author = (i.authors.length !== 0)
-				? i.authors.map(authorID => `<a href="/track/author/${authorID}">${authors[authorID]}</a>`).join(" ")
+				? i.authors.map(author => `<a href="/track/author/${author.ID}">${author.name}</a>`).join(" ")
 				: "N/A";
 
 			if (listType === "todo") {
@@ -103,7 +97,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			title: `${sb.Utils.capitalize(listType)} track list`,
-			data: data,
+			data,
 			head: columns[listType],
 			sortColumn,
 			pageLength: 25,
@@ -203,7 +197,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", "track/resolve/" + ID).json();
+		const { data } = await sb.Got("Supinic", `track/resolve/${ID}`).json();
 		if (!data.link) {
 			return res.status(404).render("error", {
 				error: "404 Not found",

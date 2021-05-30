@@ -30,8 +30,31 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
 
+		const data = await Reminder.selectSingleCustom(q => q
+			.select("Channel.Name AS Channel_Name")
+			.select("Platform.Name AS Platform_Name")
+			.select("Sender.Name AS Sender_Name")
+			.select("Recipient.Name AS Recipient_Name")
+			.where("Reminder.ID = %n", reminderID)
+			.leftJoin("chat_data", "Channel")
+			.leftJoin("chat_data", "Platform")
+			.join({
+				alias: "Sender",
+				fromField: "User_From",
+				toTable: "User_Alias",
+				toField: "ID"
+			})
+			.join({
+				alias: "Recipient",
+				fromField: "User_To",
+				toTable: "User_Alias",
+				toField: "ID"
+			})
+		);
+
 		return {
 			success: true,
+			data,
 			auth,
 			row,
 			reminderID
@@ -49,7 +72,7 @@ module.exports = (function () {
 
 		const data = await Reminder.listByUser(auth.userID, type, specific);
 		return sb.WebUtils.apiSuccess(res, data);
-	}
+	};
 
 	/**
 	 * @api {get} /bot/reminder/list Reminder - list active
@@ -72,9 +95,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
 	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
 	 */
-	Router.get("/list", async (req, res) => {
-		return await fetchReminderList(req, res, "active");
-	});
+	Router.get("/list", async (req, res) => await fetchReminderList(req, res, "active"));
 
 	/**
 	 * @api {get} /bot/reminder/list Reminder - list active
@@ -97,9 +118,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} reminder.active Whether or not the reminder is currently active
 	 * @apiSuccess {boolean} reminder.privateMessage Whether or not the reminder will be PM'd to the target user
 	 */
-	Router.get("/history", async (req, res) => {
-		return await fetchReminderList(req, res, "inactive");
-	});
+	Router.get("/history", async (req, res) => await fetchReminderList(req, res, "inactive"));
 
 	/**
 	 * @api {post} /bot/reminder/ Reminder - create
@@ -133,7 +152,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const {userID, username, text, private: rawPrivateReminder, schedule: rawSchedule} = req.query;
+		const { userID, username, text, private: rawPrivateReminder, schedule: rawSchedule } = req.query;
 		if (!userID && !username) {
 			return sb.WebUtils.apiFail(res, 400, "No username or user ID provided");
 		}
@@ -211,10 +230,11 @@ module.exports = (function () {
 			Private_Message: privateReminder
 		});
 
-		await sb.WebUtils.invalidateBotCache({
-			type: "reminder",
-			specific: true,
-			ID: newReminder.insertId
+		await sb.Got("Supibot", {
+			url: "reminder/reloadSpecific",
+			searchParams: {
+				ID: newReminder.insertId
+			}
 		});
 
 		const ID = newReminder.insertId;
@@ -223,11 +243,11 @@ module.exports = (function () {
 			searchParams: { ID }
 		});
 
-		if (statusCode !== 200 || !body.data.available.includes(ID)) {
+		if (statusCode !== 200 || !body.data.active.includes(ID)) {
 			return sb.WebUtils.apiSuccess(res, {
 				reminderID: ID,
 				botResult: body,
-				message: "Reminder set successfully - but the bot failed to reload"
+				message: "Warning - reminder created successfully, but bot failed to reload reminders"
 			});
 		}
 		else {
@@ -261,10 +281,11 @@ module.exports = (function () {
 	 * @apiGroup Bot
 	 * @apiPermission login
 	 * @apiSuccess {number} ID
-	 * @apiSuccess {number} userFrom
-	 * @apiSuccess {number} userTo
-	 * @apiSuccess {number} [channel]
-	 * @apiSuccess {number} [platform]
+	 * @apiSuccess {string} sender
+	 * @apiSuccess {string} recipient
+	 * @apiSuccess {string} [channel]
+	 * @apiSuccess {number} [channelID]
+	 * @apiSuccess {string} [platform]
 	 * @apiSuccess {string} [text]
 	 * @apiSuccess {date} created
 	 * @apiSuccess {date} [schedule]
@@ -282,7 +303,20 @@ module.exports = (function () {
 			return check;
 		}
 
-		return sb.WebUtils.apiSuccess(res, check.row.valuesObject);
+		const { data } = check;
+		return sb.WebUtils.apiSuccess(res, ({
+			ID: data.ID,
+			Sender: data.Sender_Name,
+			Recipient: data.Recipient_Name,
+			Channel_ID: data.Channel,
+			Channel: data.Channel_Name,
+			Platform: data.Platform_Name,
+			Text: data.Text,
+			Created: data.Created,
+			Schedule: data.Schedule,
+			Active: data.Active,
+			Private_Message: data.Private_Message
+		}));
 	});
 
 	/**
@@ -296,6 +330,7 @@ module.exports = (function () {
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
 	 * If both id and name were used at the same time<br>
 	 * If target user does not exist
+	 * If the reminder has already been unset
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
@@ -306,6 +341,10 @@ module.exports = (function () {
 		}
 
 		const { reminderID: ID, row } = check;
+		if (row.values.Active === false) {
+			return sb.WebUtils.apiFail(res, 400, "Reminder has been unset already");
+		}
+
 		row.values.Active = false;
 		await row.save();
 

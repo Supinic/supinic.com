@@ -1,4 +1,3 @@
-/* global sb */
 module.exports = (function () {
 	"use strict";
 
@@ -9,7 +8,7 @@ module.exports = (function () {
 		const { data: rawData } = await sb.Got("Supinic", "/data/slots-winner/list").json();
 
 		const data = rawData.sort((a, b) => b.odds - a.odds).map(i => ({
-			"Odds - 1:X" : sb.Utils.round(i.odds, 3),
+			"Odds - 1:X": sb.Utils.round(i.odds, 3),
 			User: i.userName,
 			Channel: i.channelName,
 			Roll: [
@@ -20,7 +19,7 @@ module.exports = (function () {
 		}));
 
 		res.render("generic-list-table", {
-			data: data,
+			data,
 			head: Object.keys(data[0]),
 			pageLength: 25,
 			sortColumn: 0,

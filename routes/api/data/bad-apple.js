@@ -7,11 +7,11 @@ module.exports = (function () {
 	const BadApple = require("../../../modules/data/bad-apple.js");
 
 	Router.get("/list", async (req, res) => {
-		const data = await BadApple.selectAll();
+		const data = await BadApple.selectMultipleCustom(q => q.where("Status = %s", "Approved"));
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
-	Router.get("/:id", async (req, res) => {
+	Router.get("/detail/:id", async (req, res) => {
 		const { id } = req.params;
 		const appleID = Number(id);
 
