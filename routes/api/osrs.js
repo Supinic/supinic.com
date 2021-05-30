@@ -266,6 +266,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} ironman.hardcore
 	 * @apiSuccess {boolean} ironman.ultimate
 	 * @apiSuccess {boolean} ironman.deadHardcore
+	 * @apiSuccess {boolean} ironman.abandoned True if an account has been "de-ironed"
 	 * @apiSuccess {boolean} seasonal
 	 */
 	Router.get("/lookup/:user", async (req, res) => {
@@ -361,9 +362,10 @@ module.exports = (function () {
 			}
 
 			// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
-			// higher - hence, the account must have been de-ironed.
+			// higher - hence, the account must have been de-ironed. Use the main data.
 			const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
 			if (totalXP < mainTotalXP) {
+				rawData = response.body;
 				result.ironman.abandoned = true;
 			}
 		}
