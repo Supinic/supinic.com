@@ -4,6 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
 	const UserAlias = require("../../../modules/chat-data/user-alias.js");
 
 	const fetchUserData = async (res, type, id) => {
@@ -25,52 +26,43 @@ module.exports = (function () {
 
 	Router.get("/:name/alias/list", async (req, res) => {
 		const { name } = req.params;
-		const row = await UserAlias.selectSingleCustom(q => q.where("Name = %s", name));
-		if (!row) {
+		const userData = await sb.User.get(name);
+		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = JSON.parse(row.Data ?? "{}");
-		if (!data.aliasedCommands) {
-			return sb.WebUtils.apiSuccess(res, { aliases: []});
-		}
-		else {
-			const aliases = Object.entries(data.aliasedCommands).map(([name, def]) => ({
-				name,
-				invocation: [def.invocation, ...def.args],
-				created: def.created,
-				lastEdit: def.lastEdit,
-				description: def.desc ?? null
-			}));
+		const data = await CustomCommandAlias.selectMultipleCustom(rs => rs
+			.where("User_Alias = %n", userData.ID)
+			.where("Channel IS NULL")
+		);
 
-			return sb.WebUtils.apiSuccess(res, { aliases });
+		for (const item of data) {
+			item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
 		}
+
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/:name/alias/detail/:alias", async (req, res) => {
 		const { name, alias } = req.params;
-		const row = await UserAlias.selectSingleCustom(q => q.where("Name = %s", name));
-		if (!row) {
+		const userData = await sb.User.get(name);
+		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = JSON.parse(row.Data ?? "{}");
-		if (!data.aliasedCommands) {
-			return sb.WebUtils.apiFail(res, 404, "User has no aliases");
-		}
+		const aliasData = await CustomCommandAlias.selectSingleCustom(rs => rs
+			.where("User_Alias = %n", userData.ID)
+			.where("Name = %s", alias)
+			.where("Channel IS NULL")
+		);
 
-		const aliasData = data.aliasedCommands[alias];
 		if (!aliasData) {
 			return sb.WebUtils.apiFail(res, 404, "User has no such alias");
 		}
 
-		return sb.WebUtils.apiSuccess(res, {
-			name: aliasData.name,
-			invocation: [aliasData.invocation, ...aliasData.args],
-			created: aliasData.created,
-			lastEdit: aliasData.lastEdit,
-			description: aliasData.desc ?? null
-		});
+		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
+
+		return sb.WebUtils.apiSuccess(res, aliasData);
 	});
 
 	/**
