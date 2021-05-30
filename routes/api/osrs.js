@@ -320,6 +320,7 @@ module.exports = (function () {
 					// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
 					// detect whether the account is alive or not, and adjust the response accordingly.
 					if (type === "ultimate") {
+						result.ironman.ultimate = true;
 						rawData = body;
 						break;
 					}
