@@ -103,13 +103,63 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
 		}
 
+		let extraNotes = "";
+		if (platformData.Name === "twitch") {
+			const [bttv, ffz, follows, recent] = await Promise.all([
+				sb.Got({
+					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
+					responseType: "json",
+					throwHttpErrors: false
+				}),
+				sb.Got({
+					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
+					responseType: "json",
+					throwHttpErrors: false
+				}),
+				sb.Got("Helix", {
+					url: "users/follows",
+					searchParams: {
+						to_id: twitchChannelID
+					}
+				}),
+				sb.Got({
+					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
+					responseType: "json",
+					throwHttpErrors: false,
+					searchParams: {
+						hide_moderation_messages: "true",
+						limit: "1"
+					}
+				})
+			]);
+
+			const stats = [];
+			if (bttv.statusCode === 200) {
+				stats.push(`${bttv.body.channelEmotes.length} BTTV emotes`);
+			}
+			if (ffz.statusCode === 200) {
+				stats.push(`${ffz.body.sets[ffz.body.room.set].emoticons.length} FFZ emotes`);
+			}
+			if (follows.statusCode === 200) {
+				stats.push(`${follows.body.total} followers`)
+			}
+			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
+				const timestamp = Number(recent.body.messages[0].match(/tmi-sent-ts=(\d+)/)?.[1]);
+				const delta = sb.Utils.timeDeltas(new sb.Date(timestamp));
+
+				stats.push(`last recent-message sent ${delta}`);
+			}
+
+			extraNotes = `\n\nChannel statistics: ${stats.join(", ")}`;
+		}
+
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
 			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
 			Category: "Bot addition",
 			Status: null,
 			Priority: null,
-			Notes: "Requested via website form"
+			Notes: `Requested via website form${extraNotes}`
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
