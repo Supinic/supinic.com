@@ -51,7 +51,7 @@ module.exports = (function () {
 			sb.Got("Supibot", {
 				url: "channel/add",
 				searchParams: {
-					channel: userData.Name,
+					name: userData.Name,
 					platform: "twitch",
 					mode: "Write",
 					announcement: `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${renamed.Name}.`
