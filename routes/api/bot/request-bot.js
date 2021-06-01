@@ -77,7 +77,9 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
 			}
 		}
-		else if (await sb.Utils.getTwitchID(targetChannel) === null) {
+
+		const twitchChannelID = await sb.Utils.getTwitchID(targetChannel);
+		if (platformData.Name === "twitch" && twitchChannelID === null) {
 			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
 		}
 
