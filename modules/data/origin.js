@@ -76,6 +76,9 @@ module.exports = (function () {
 			else if (type === "FFZ") {
 				return `https://cdn.frankerfacez.com/emote/${ID}/4`;
 			}
+			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
+				return `https://cdn.7tv.app/emote/${ID}/4x`;
+			}
 			else if (type === "Discord") {
 				return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
 			}
@@ -95,6 +98,9 @@ module.exports = (function () {
 			}
 			else if (type === "FFZ") {
 				return `https://www.frankerfacez.com/emoticon/${ID}`;
+			}
+			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
+				return `https://7tv.app/emotes/${ID}`;
 			}
 
 			return null;
