@@ -106,7 +106,7 @@ module.exports = (function () {
 		}
 
 		let extraNotes = "";
-		if (platformData.Name === "twitch") {
+		if (platformData.Name === "Twitch") {
 			const [bttv, ffz, follows, recent] = await Promise.all([
 				sb.Got({
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
