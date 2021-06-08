@@ -160,7 +160,7 @@ module.exports = (function () {
 			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
 			Category: "Bot addition",
 			Status: null,
-			Priority: null,
+			Priority: 100,
 			Notes: `Requested via website form${extraNotes}`
 		});
 
