@@ -301,12 +301,12 @@ module.exports = (function () {
 			}
 			else if (response.statusCode === 302) {
 				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently offline", {
-					externalResponse: response
+					externalResponse: response.body
 				});
 			}
 			else {
 				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
-					externalResponse: response
+					externalResponse: response.body
 				});
 			}
 		}
