@@ -270,7 +270,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} seasonal
 	 */
 	Router.get("/lookup/:user", async (req, res) => {
-		const user = req.params.user.toLowerCase();
+		const player = req.params.user.toLowerCase();
 		const url = (req.query.seasonal) ? apiURLs.seasonal : apiURLs.main;
 		const forceHardcore = Boolean(req.query.forceHardcore);
 
@@ -289,18 +289,25 @@ module.exports = (function () {
 
 		const response = await sb.Got({
 			url,
+			searchParams: { player },
+			retry: 0,
 			throwHttpErrors: false,
-			searchParams: new sb.URLParams()
-				.set("player", user)
-				.toString()
+			followRedirect: false
 		});
 
 		if (response.statusCode !== 200) {
 			if (response.statusCode === 404) {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
 			}
+			else if (response.statusCode === 302) {
+				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently offline", {
+					externalResponse: response
+				});
+			}
 			else {
-				return sb.WebUtils.apiFail(res, response.statusCode, "OSRS API error encountered");
+				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
+					externalResponse: response
+				});
 			}
 		}
 
@@ -317,7 +324,7 @@ module.exports = (function () {
 				const { statusCode, body } = await sb.Got({
 					url: apiURLs.ironman[type],
 					throwHttpErrors: false,
-					searchParams: { player: user }
+					searchParams: { player: player }
 				});
 
 				if (statusCode !== 404) {
