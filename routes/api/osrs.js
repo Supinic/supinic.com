@@ -291,18 +291,17 @@ module.exports = (function () {
 			url,
 			searchParams: { player },
 			retry: 0,
-			throwHttpErrors: false,
-			followRedirect: false
+			throwHttpErrors: false
 		});
 
-		if (response.statusCode !== 200) {
+		if (response.redirectUrls.length !== 0) {
+			return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
+				redirectUrl: response.url
+			});
+		}
+		else if (response.statusCode !== 200) {
 			if (response.statusCode === 404) {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
-			}
-			else if (response.statusCode === 302) {
-				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently offline", {
-					externalResponse: response.body
-				});
 			}
 			else {
 				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
