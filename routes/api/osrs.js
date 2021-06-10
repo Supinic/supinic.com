@@ -81,6 +81,7 @@ module.exports = (function () {
 		"The Gauntlet",
 		"The Corrupted Gauntlet",
 		"Theatre of Blood",
+		"Theatre of Blood: Hard Mode",
 		"Thermonuclear Smoke Devil",
 		"TzKal-Zuk",
 		"TzTok-Jad",
