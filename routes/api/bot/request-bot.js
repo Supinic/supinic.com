@@ -147,7 +147,7 @@ module.exports = (function () {
 			}
 			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
 				const timestamp = Number(recent.body.messages[0].match(/tmi-sent-ts=(\d+)/)?.[1]);
-				const delta = sb.Utils.timeDeltas(new sb.Date(timestamp));
+				const delta = sb.Utils.timeDelta(new sb.Date(timestamp));
 
 				stats.push(`last recent-message sent ${delta}`);
 			}
