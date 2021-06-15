@@ -153,16 +153,17 @@ module.exports = (function () {
 				stats.push(`last recent-message sent ${delta}`);
 			}
 
-			extraNotes = `\n\nChannel statistics: ${stats.join(", ")}`;
+			const list = stats.map(i => `\t${i}`).join("\n");
+			extraNotes = `\nStatistics:\n${list}`;
 		}
 
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
-			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
+			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}${extraNotes}`,
 			Category: "Bot addition",
 			Status: null,
 			Priority: 100,
-			Notes: `Requested via website form${extraNotes}`
+			Notes: `Requested via website form`
 		});
 
 		return sb.WebUtils.apiSuccess(res, {
