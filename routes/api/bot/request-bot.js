@@ -137,7 +137,8 @@ module.exports = (function () {
 
 			const stats = [];
 			if (bttv.statusCode === 200) {
-				stats.push(`${bttv.body.channelEmotes.length} BTTV emotes`);
+				const { channelEmotes, sharedEmotes } = bttv.body;
+				stats.push(`${sharedEmotes.length} shared, ${channelEmotes.length} custom BTTV emotes`);
 			}
 			if (ffz.statusCode === 200) {
 				stats.push(`${ffz.body.sets[ffz.body.room.set].emoticons.length} FFZ emotes`);
