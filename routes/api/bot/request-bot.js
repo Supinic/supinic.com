@@ -48,7 +48,7 @@ module.exports = (function () {
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			sb.Got("Supibot", {
+			await sb.Got("Supibot", {
 				url: "channel/add",
 				searchParams: {
 					name: userData.Name,
