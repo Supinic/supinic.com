@@ -7,7 +7,7 @@ module.exports = (function () {
 	const rules = sb.Utils.tag.trim `
 	    <h6>Rules</h6>
 		<ol>
-			<li>You can only request Supibot in your own channel or someone else's channel if you are a moderator there.</li>
+			<li>You can only request Supibot in your own channel, or in one you are a moderator in.</li>
 			<li>Your Twitch channel must not be in subscriber-only or emote-only mode (follow mode is fine). If it is, the suggestion will be dropped.</li>
 			<li>
 				Make sure to not accidentally ban the bot - because when it does, it will automatically leave your channel and will not come back on its own.
@@ -15,8 +15,8 @@ module.exports = (function () {
 				If you must, time out the bot instead. This will not cause any issues and you can untimeout it at any point.
 			</li>
 			<li>If you change your name (outside of changing lower- and uppercase characters), Supibot will not track your namechange and you must request the bot again.</li>
-			<li>Please refer to Supibot as "the bot" or "Supibot", not as "Supi". "Supi" refers to me (Supinic), and it gets very confusing sometimes 😃</li>
-			<li>There needs to be at least some sort of activity in your channel in order to receive the bot. If you want to test commands, you can simply whisper Supibot instead.</li>
+			<li>Refer to Supibot as "the bot" or "Supibot", not as "Supi". "Supi" refers to me (Supinic), and it gets very confusing sometimes 😃</li>
+			<li>There needs to be at least <span class="text-danger">some activity</span> in your channel in order to receive the bot. If you want to test commands, you can simply whisper Supibot instead.</li>
 		</ol>
 		<h6>Warning</h6>
 			<div>
