@@ -29,34 +29,49 @@ module.exports = (function () {
 
 		if (renamedChannel) {
 			const userData = await sb.User.get(userID);
-			const renamed = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
-			if (!renamed) {
+			const previousChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
+			const currentChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", userData.Name));
+
+			if (!previousChannel) {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
 			}
-			else if (renamed.Name === userData.Name) {
+			else if (previousChannel.Name === userData.Name) {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel is the same as the current one");
 			}
 
 			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
-			const previousChannelID = renamed.Specific_ID;
+			const previousChannelID = previousChannel.Specific_ID;
 			if (currentChannelID !== previousChannelID) {
 				return sb.WebUtils.apiFail(res, 400, "Renaming verification did not pass");
 			}
 
 			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
-			await renamedRow.load(renamed.ID);
+			await renamedRow.load(previousChannel.ID);
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			await sb.Got("Supibot", {
-				url: "channel/add",
-				searchParams: {
-					name: userData.Name,
-					platform: "twitch",
-					mode: "Write",
-					announcement: `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${renamed.Name}.`
-				}
-			});
+			const announcement = `Hello again 🙂👋 I'm back from when ${currentChannel.Name} was called ${previousChannel.Name}.`;
+			if (currentChannel) {
+				await sb.Got("Supibot", {
+					url: "channel/join",
+					searchParams: {
+						name: currentChannel.Name,
+						platform: "twitch",
+						announcement
+					}
+				});
+			}
+			else {
+				await sb.Got("Supibot", {
+					url: "channel/add",
+					searchParams: {
+						name: currentChannel.Name,
+						platform: "twitch",
+						mode: "Write",
+						announcement
+					}
+				});
+			}
 
 			return sb.WebUtils.apiSuccess(res, {
 				success: true,
