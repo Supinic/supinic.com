@@ -36,7 +36,7 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
 			}
 			else if (previousChannel.Name === userData.Name) {
-				return sb.WebUtils.apiFail(res, 400, "Provided channel is the same as the current one");
+				return sb.WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
 			}
 
 			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
