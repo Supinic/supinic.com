@@ -7,7 +7,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "/data/slots-winner/list").json();
 
-		const printData = rawData.sort((a, b) => b.odds - a.odds).map(i => ({
+		const printData = data.sort((a, b) => b.odds - a.odds).map(i => ({
 			Rank: `<a href="/data/slots-winner/detail/${i.ID}">${i.rank}</a>`,
 			Odds: sb.Utils.round(i.odds, 3),
 			User: i.userName,
@@ -17,7 +17,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: printData,
-			head: Object.keys(data[0]),
+			head: Object.keys(printData[0]),
 			pageLength: 50,
 			sortColumn: 0,
 			sortDirection: "desc"
