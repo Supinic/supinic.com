@@ -25,15 +25,15 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { data } = await sb.Got("Supinic", `/data/slots-winner/detail/${req.query.id}`).json();
+		const { data } = await sb.Got("Supinic", `/data/slots-winner/detail/${req.params.id}`).json();
 
 		const printData = {
 			Odds: sb.Utils.round(data.odds, 3),
 			User: data.userName,
 			Channel: data.channelName,
-			Date: new sb.Date(i.timestamp).format("Y-m-d H:i:s"),
-			Roll: sb.Utils.escapeHTML(i.result),
-			Input: sb.Utils.escapeHTML(i.source)
+			Date: new sb.Date(data.timestamp).format("Y-m-d H:i:s"),
+			Roll: sb.Utils.escapeHTML(data.result),
+			Input: sb.Utils.escapeHTML(data.source)
 		};
 
 		res.render("generic-detail-table", { data: printData });
