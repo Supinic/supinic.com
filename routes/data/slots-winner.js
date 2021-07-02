@@ -33,7 +33,7 @@ module.exports = (function () {
 			Channel: data.channelName,
 			Date: new sb.Date(data.timestamp).format("Y-m-d H:i:s"),
 			Roll: sb.Utils.escapeHTML(data.result),
-			Input: sb.Utils.escapeHTML(data.source)
+			Input: `<code>${sb.Utils.escapeHTML(data.source)}</code>`
 		};
 
 		res.render("generic-detail-table", { data: printData });
