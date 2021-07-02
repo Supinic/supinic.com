@@ -50,7 +50,7 @@ module.exports = (function () {
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			const announcement = `Hello again 🙂👋 I'm back from when ${currentChannel.Name} was called ${previousChannel.Name}.`;
+			const announcement = `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${previousChannel.Name}.`;
 			if (currentChannel) {
 				await sb.Got("Supibot", {
 					url: "channel/join",
