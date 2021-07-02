@@ -29,6 +29,7 @@ module.exports = (function () {
 			.select("User_Alias.Name AS User_Name")
 			.join("chat_data", "Channel")
 			.join("chat_data", "User_Alias")
+			.where("Odds >= %n", 2.0)
 		);
 
 		return sb.WebUtils.apiSuccess(res, data);
