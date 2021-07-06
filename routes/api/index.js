@@ -92,8 +92,28 @@ module.exports = (function () {
 	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	Router.use(async (err, req, res, next) => {
-		const errorID = await sb.SystemLogger.sendError("Website - API", err);
-		return sb.WebUtils.apiFail(res, 500, err.message, { ID: errorID });
+		try {
+			const requestID = req[sb.App.requestLogSymbol] ?? null;
+			const row = await sb.Query.getRow("supinic.com", "Error");
+			row.setValues({
+				Type: "API",
+				Request_ID: requestID,
+				Message: err.message ?? null,
+				Stack: err.stack ?? null
+			});
+
+			const { insertId } = await row.save();
+			return sb.WebUtils.apiFail(res, 500, "Internal server error", { ID: insertId });
+		}
+		catch (e) {
+			console.error("Error while trying to save error", e);
+			return sb.WebUtils.apiFail(
+				res,
+				500,
+				"Internal server error while processing another error",
+				{}
+			);
+		}
 	});
 	// eslint-enable no-unused-vars
 
