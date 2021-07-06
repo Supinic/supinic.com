@@ -294,11 +294,12 @@
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
-	sb.App.requestLogSymbol = Symbol("request-log-id");
 	await app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await sb.WebUtils.logRequest(req, routeType);
-		req[sb.App.requestLogSymbol] = log.insertId;
+		const requestLogSymbol = Symbol.for("request-log-symbol");
+
+		req[requestLogSymbol] = log.insertId;
 
 		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
 			res.status(418).send("NOT OK");
@@ -480,8 +481,9 @@
 
 		console.error("Website error", { err, req, res });
 
+		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
-			const requestID = req[sb.App.requestLogSymbol] ?? null;
+			const requestID = req[requestLogSymbol] ?? null;
 			const row = await sb.Query.getRow("supinic.com", "Error");
 			row.setValues({
 				Type: "View",

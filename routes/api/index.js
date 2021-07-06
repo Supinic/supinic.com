@@ -92,8 +92,9 @@ module.exports = (function () {
 	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	Router.use(async (err, req, res, next) => {
+		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
-			const requestID = req[sb.App.requestLogSymbol] ?? null;
+			const requestID = req[requestLogSymbol] ?? null;
 			const row = await sb.Query.getRow("supinic.com", "Error");
 			row.setValues({
 				Type: "API",
