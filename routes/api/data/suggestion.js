@@ -195,6 +195,12 @@ module.exports = (function () {
 	 * @apiPermission none
 	 **/
 	Router.get("/list/pretty", async (req, res) => {
+		const length = (req.query.length) ? Number(req.query.length) : 25;
+		const start = (req.query.start) ? Number(req.query.start) : 0;
+		if (!sb.Utils.isValidInteger(length) || !sb.Utils.isValidInteger(start)) {
+			return sb.WebUtils.apiFail(res, 400, "Length and start must be valid integers");
+		}
+
 		const data = await Suggestion.list();
 		const resultData = data.map(i => ({
 			Author: i.User_Name,
@@ -211,7 +217,7 @@ module.exports = (function () {
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		}));
 
-		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+		return sb.WebUtils.apiSuccess(res, resultData.slice(start, start + length), { skipCaseConversion: true });
 	});
 
 	/**
