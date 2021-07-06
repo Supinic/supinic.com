@@ -65,7 +65,7 @@ module.exports = (function () {
 				await sb.Got("Supibot", {
 					url: "channel/add",
 					searchParams: {
-						name: currentChannel.Name,
+						name: userData.Name,
 						platform: "twitch",
 						mode: "Write",
 						announcement
