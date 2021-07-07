@@ -73,6 +73,7 @@ module.exports = (function () {
 		"K'ril Tsutsaroth",
 		"Mimic",
 		"Nightmare",
+		"Phosani's Nightmare",
 		"Obor",
 		"Sarachnis",
 		"Scorpia",
