@@ -11,7 +11,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "bot/command/list").json();
 
-		const isDeveloper = Boolean(res.locals.authUser?.userData.Data.developer);
+		const isDeveloper = Boolean(res.locals.authUser?.userData?.Data.developer);
 		const printData = data
 			.filter(i => isDeveloper || !i.flags.includes("developer"))
 			.sort((a, b) => a.name.localeCompare(b.name))

@@ -10,6 +10,7 @@ module.exports = (function () {
 		["faq", "faq.js"],
 		["origin", "origin.js"],
 		["other", "other.js"],
+		["slots-winner", "slots-winner.js"],
 		["suggestion", "suggestion.js"]
 	];
 

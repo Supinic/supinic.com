@@ -208,7 +208,7 @@
 				{ name: "Commands statistics", link: "bot/command/stats" },
 				{ name: "Emote origins", link: "data/origin/list" },
 				{ name: "Polls", link: "bot/poll/list" },
-				{ name: "Slots winners list", link: "bot/slots-winner/list" },
+				{ name: "Slots winners list", link: "data/slots-winner/list" },
 				{ name: "Suggestions - all", link: "data/suggestion/list" },
 				{ separator: true },
 				{ name: "Bot stats", link: "bot/stats" },
@@ -294,10 +294,11 @@
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
-	const requestLogSymbol = Symbol("request-log-id");
 	await app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await sb.WebUtils.logRequest(req, routeType);
+		const requestLogSymbol = Symbol.for("request-log-symbol");
+
 		req[requestLogSymbol] = log.insertId;
 
 		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
@@ -480,10 +481,12 @@
 
 		console.error("Website error", { err, req, res });
 
+		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
 			const requestID = req[requestLogSymbol] ?? null;
 			const row = await sb.Query.getRow("supinic.com", "Error");
 			row.setValues({
+				Type: "View",
 				Request_ID: requestID,
 				Message: err.message ?? null,
 				Stack: err.stack ?? null

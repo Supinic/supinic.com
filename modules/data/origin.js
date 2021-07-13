@@ -70,11 +70,14 @@ module.exports = (function () {
 			else if (type === "Twitch - Global" || type === "Twitch - Sub") {
 				return `https://static-cdn.jtvnw.net/emoticons/v2/${ID}/default/dark/3.0`;
 			}
-			else if (type === "BTTV") {
+			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
 				return `https://cdn.betterttv.net/emote/${ID}/3x`;
 			}
-			else if (type === "FFZ") {
+			else if (type === "FFZ" || type === "FFZ - Global" || type === "FFZ - Channel") {
 				return `https://cdn.frankerfacez.com/emote/${ID}/4`;
+			}
+			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
+				return `https://cdn.7tv.app/emote/${ID}/4x`;
 			}
 			else if (type === "Discord") {
 				return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
@@ -90,11 +93,14 @@ module.exports = (function () {
 			if (type === "Twitch - Global" || type === "Twitch - Sub") {
 				return `https://twitchemotes.com/emotes/${ID}`;
 			}
-			else if (type === "BTTV") {
+			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
 				return `https://betterttv.com/emotes/${ID}`;
 			}
-			else if (type === "FFZ") {
+			else if (type === "FFZ" || type === "FFZ - Global" || type === "FFZ - Channel") {
 				return `https://www.frankerfacez.com/emoticon/${ID}`;
+			}
+			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
+				return `https://7tv.app/emotes/${ID}`;
 			}
 
 			return null;

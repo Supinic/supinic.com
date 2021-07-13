@@ -29,34 +29,49 @@ module.exports = (function () {
 
 		if (renamedChannel) {
 			const userData = await sb.User.get(userID);
-			const renamed = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
-			if (!renamed) {
+			const previousChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
+			const currentChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", userData.Name));
+
+			if (!previousChannel) {
 				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
 			}
-			else if (renamed.Name === userData.Name) {
-				return sb.WebUtils.apiFail(res, 400, "Provided channel is the same as the current one");
+			else if (previousChannel.Name === userData.Name) {
+				return sb.WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
 			}
 
 			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
-			const previousChannelID = renamed.Specific_ID;
+			const previousChannelID = previousChannel.Specific_ID;
 			if (currentChannelID !== previousChannelID) {
 				return sb.WebUtils.apiFail(res, 400, "Renaming verification did not pass");
 			}
 
 			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
-			await renamedRow.load(renamed.ID);
+			await renamedRow.load(previousChannel.ID);
 			renamedRow.values.Mode = "Inactive";
 			await renamedRow.save();
 
-			sb.Got("Supibot", {
-				url: "channel/add",
-				searchParams: {
-					channel: userData.Name,
-					platform: "twitch",
-					mode: "Write",
-					announcement: `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${renamed.Name}.`
-				}
-			});
+			const announcement = `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${previousChannel.Name}.`;
+			if (currentChannel) {
+				await sb.Got("Supibot", {
+					url: "channel/join",
+					searchParams: {
+						name: currentChannel.Name,
+						platform: "twitch",
+						announcement
+					}
+				});
+			}
+			else {
+				await sb.Got("Supibot", {
+					url: "channel/add",
+					searchParams: {
+						name: userData.Name,
+						platform: "twitch",
+						mode: "Write",
+						announcement
+					}
+				});
+			}
 
 			return sb.WebUtils.apiSuccess(res, {
 				success: true,
@@ -77,7 +92,9 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
 			}
 		}
-		else if (await sb.Utils.getTwitchID(targetChannel) === null) {
+
+		const twitchChannelID = await sb.Utils.getTwitchID(targetChannel);
+		if (platformData.Name === "twitch" && twitchChannelID === null) {
 			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
 		}
 
@@ -94,7 +111,7 @@ module.exports = (function () {
 
 		const requestPending = await Suggestion.existsCustom(q => q
 			.where("Category = %s", "Bot addition")
-			.where("Status IS NULL")
+			.where("Status IS NULL OR Status = %s", "Approved")
 			.where("Text %*like*", `Channel: ${targetChannel}`)
 			.where("Text %*like*", `Platform: ${platformData.Name}`)
 		);
@@ -103,13 +120,65 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
 		}
 
+		let extraNotes = "";
+		if (platformData.Name === "Twitch") {
+			const [bttv, ffz, follows, recent] = await Promise.all([
+				sb.Got({
+					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
+					responseType: "json",
+					throwHttpErrors: false
+				}),
+				sb.Got({
+					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
+					responseType: "json",
+					throwHttpErrors: false
+				}),
+				sb.Got("Helix", {
+					url: "users/follows",
+					searchParams: {
+						to_id: twitchChannelID
+					}
+				}),
+				sb.Got({
+					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
+					responseType: "json",
+					throwHttpErrors: false,
+					searchParams: {
+						hide_moderation_messages: "true",
+						limit: "1"
+					}
+				})
+			]);
+
+			const stats = [];
+			if (bttv.statusCode === 200) {
+				const { channelEmotes, sharedEmotes } = bttv.body;
+				stats.push(`${sharedEmotes.length} shared, ${channelEmotes.length} custom BTTV emotes`);
+			}
+			if (ffz.statusCode === 200) {
+				stats.push(`${ffz.body.sets[ffz.body.room.set].emoticons.length} FFZ emotes`);
+			}
+			if (follows.statusCode === 200) {
+				stats.push(`${follows.body.total} followers`)
+			}
+			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
+				const timestamp = Number(recent.body.messages[0].match(/tmi-sent-ts=(\d+)/)?.[1]);
+				const delta = sb.Utils.timeDelta(new sb.Date(timestamp));
+
+				stats.push(`last recent-message sent ${delta}`);
+			}
+
+			const list = stats.map(i => `\t${i}`).join("\n");
+			extraNotes = `\nStatistics:\n${list}`;
+		}
+
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
-			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}`,
+			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}${extraNotes}`,
 			Category: "Bot addition",
 			Status: null,
-			Priority: null,
-			Notes: "Requested via website form"
+			Priority: 100,
+			Notes: `Requested via website form`
 		});
 
 		return sb.WebUtils.apiSuccess(res, {

@@ -11,7 +11,6 @@ module.exports = (function () {
 		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
-		["slots-winner", "slots-winner.js"],
 		["stats", "stats.js"],
 		["user", "user.js"]
 	];
