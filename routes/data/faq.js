@@ -16,7 +16,8 @@ module.exports = (function () {
 			head: Object.keys(renderData[0]),
 			pageLength: 25,
 			sortColumn: 0,
-			sortDirection: "asc"
+			sortDirection: "asc",
+			specificFiltering: true
 		});
 	});
 
