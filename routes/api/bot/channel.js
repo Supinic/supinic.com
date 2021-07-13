@@ -49,5 +49,53 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	/**
+	 * @api {get} /bot/channel/list/ Channel - get previous channel names
+	 * @apiName GetPreviousNameCHannelList
+	 * @apiDescription For a given username/twitch user ID, this endpoint returns a list of all the channel rows that had the same user ID
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiParam {string} [twitchUserID] Determines user by their Twitch user ID (exclusive with username)
+	 * @apiParam {string} [username] Determines user by their Twitch user name (exclusive with twitchUserID)
+	 * @apiSuccess {Object[]} data list of channels
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} name
+	 * @apiSuccess {string} specificID
+	 * @apiSuccess {string} mode
+	 */
+	Router.get("/previousChannelList", async (req, res) => {
+		const { twitchUserID, username } = req.query;
+		if (!username && !twitchUserID) {
+			return sb.WebUtils.apiFail(res, 400, "Either username or twitchUserID must be provided");
+		}
+		else if (username && twitchUserID) {
+			return sb.WebUtils.apiFail(res, 400, "Only one of username and twitchUserID must be provided");
+		}
+
+		let userID = twitchUserID;
+		if (username) {
+			userID = await sb.Utils.getTwitchID(username);
+			if (!userID) {
+				return sb.WebUtils.apiFail(res, 404, "Provided username does not exist on Twitch");
+			}
+		}
+
+		const data = await Channel.selectCustom(q => {
+			q.select("ID", "Name", "Specific_ID", "Mode");
+			q.where("Platform = %n", 1);
+
+			if (username) {
+				q.where("Name = %s OR Specific_ID = %s", username, userID);
+			}
+			else {
+				q.where("Specific_ID = %s", userID);
+			}
+
+			return q;
+		});
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
 	return Router;
 })();
