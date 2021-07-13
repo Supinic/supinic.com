@@ -30,8 +30,8 @@ module.exports = (function () {
 	`;
 
 	Router.get("/form", async (req, res) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
-		if (!userID) {
+		const { userData } = await sb.WebUtils.getUserLevel(req, res);
+		if (!userData) {
 			return res.render("generic", {
 				data: `
 					<h5 class="text-center">You must log in before requesting the bot!</h5>
@@ -41,15 +41,39 @@ module.exports = (function () {
 			});
 		}
 
+		const { data } = await sb.Got("Supinic", {
+			url: "bot/channel/previousList",
+			searchParams: {
+				username: userData.Name
+			}
+		}).json();
+
+		let specialOccassionString = "";
+		if (data.length !== 0) {
+			const selfChannel = data.find(i => i.name === userData.Name);
+			if (selfChannel && selfChannel.mode === "Inactive") {
+				specialOccassionString = sb.Utils.tag.trim `
+					<h4 class="text-danger"> Supibot has been banned in your channel at some point. </h4>
+					<h5> Follow <a href="/data/faq/list?columnQuestion=banned">this FAQ article</a> for more info. </h5>
+				`;
+			}
+			else if (data.every(i => i.mode === "Inactive")) {
+				specialOccassionString = sb.Utils.tag.trim `
+					<h5 class="text-danger"> You seem to have renamed your channel while having Supibot in it. </h5>
+					<h6> If you want Supibot back, make sure to check the Rename button. It will then join your chat immediately, without waiting for Supinic's Tuesday bot addition. </h6>
+				`;
+			}
+		}
+
 		const now = sb.Date.now();
 		const isChristmasHoliday = (new sb.Date("2020-12-23") < now && now < new sb.Date("2021-01-04"));
 
-		const userData = await sb.User.get(userID ?? 1);
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Request Supibot</h5>
        			<div id="alert-anchor"></div>
        			${rules}
+       			${specialOccassionString}
 			`,
 			onSubmit: "submit()",
 			fields: [
