@@ -50,8 +50,8 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/channel/list/ Channel - get previous channel names
-	 * @apiName GetPreviousNameCHannelList
+	 * @api {get} /bot/channel/list/ Channel - get previous channels
+	 * @apiName GetPreviousNameList
 	 * @apiDescription For a given username/twitch user ID, this endpoint returns a list of all the channel rows that had the same user ID
 	 * @apiGroup Bot
 	 * @apiPermission any
@@ -63,7 +63,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} specificID
 	 * @apiSuccess {string} mode
 	 */
-	Router.get("/previousChannelList", async (req, res) => {
+	Router.get("/previousList", async (req, res) => {
 		const { twitchUserID, username } = req.query;
 		if (!username && !twitchUserID) {
 			return sb.WebUtils.apiFail(res, 400, "Either username or twitchUserID must be provided");
