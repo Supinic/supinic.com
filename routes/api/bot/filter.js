@@ -85,5 +85,38 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	/**
+	 * @api {get} /bot/filter/command/:id/list Command-related filters
+	 * @apiName CheckFilterStatus
+	 * @apiDescription List all filters related to a command
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiParam {number} :id Command ID as part of URL
+	 * @apiSuccess {Object[]} filter List of filters
+	 * @apiSuccess {string} type
+	 * @apiSuccess {string} channelName
+	 * @apiSuccess {string} userName
+	 * @apiError (400) InvalidRequest Command does not exist
+	 */
+	Router.get("/command/:id/list", async (req, res) => {
+		const id = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(id)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed command ID");
+		}
+
+		const data = await Filter.selectMultipleCustom(q => q
+			.select("Type")
+			.select("Channel.Name AS Channel_Name")
+			.select("User_Alias.Name AS User_Name")
+			.leftJoin("chat_data", "Channel")
+			.leftJoin("chat_data", "User_Alias")
+			.where("Command = %n", id)
+			.where("Active = %b", true)
+			.where("Type NOT IN %s+", ["Block", "Unping"])
+		);
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
 	return Router;
 })();
