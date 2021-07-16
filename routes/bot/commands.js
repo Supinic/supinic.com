@@ -213,7 +213,7 @@ module.exports = (function () {
 
 			let string;
 			const where = (filter.channelName)
-				? `in ${filter.platformName} channel ${filter.channelName}`
+				? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 				: "everywhere";
 
 			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
