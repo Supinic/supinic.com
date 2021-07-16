@@ -252,7 +252,7 @@ module.exports = (function () {
 				continue;
 			}
 
-			const filterItems = filters.map(i => `<li>${i}</li>`);
+			const filterItems = filters.sort().map(i => `<li>${i}</li>`);
 			const filterList = `<ul id="${type.toLowerCase()}" class="collapse">${filterItems.join("")}</ul>`;
 			const section = sb.Utils.tag.trim `<a
 				 class="btn btn-primary"
