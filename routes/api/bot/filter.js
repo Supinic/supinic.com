@@ -125,7 +125,7 @@ module.exports = (function () {
 			})
 			.where("Command = %n", id)
 			.where("Active = %b", true)
-			.where("Type NOT IN %s+", ["Block", "Unping"])
+			.where("Type NOT IN %s+", ["Block"])
 			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
 		);
 
