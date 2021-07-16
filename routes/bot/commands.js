@@ -210,8 +210,8 @@ module.exports = (function () {
 			}
 
 			let string;
-			const where = (i.channelName)
-				? `in ${i.platformName} channel ${i.channelName}`
+			const where = (filter.channelName)
+				? `in ${filter.platformName} channel ${filter.channelName}`
 				: "everywhere";
 
 			if (filter.type === "Opt-out") {
