@@ -238,6 +238,8 @@ module.exports = (function () {
 
 				string = `${sb.Utils.capitalize(where)}: ${list.join("; ")}`;
 			}
+
+			restrictions[filter.type].push(string);
 		}
 
 		const restrictionItems = [];
