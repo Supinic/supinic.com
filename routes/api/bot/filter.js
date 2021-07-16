@@ -105,7 +105,6 @@ module.exports = (function () {
 		}
 
 		const data = await Filter.selectMultipleCustom(q => q
-			.select("Type")
 			.select("Channel.Name AS Channel_Name")
 			.select("User_Alias.Name AS User_Name")
 			.leftJoin("chat_data", "Channel")
