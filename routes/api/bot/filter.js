@@ -112,7 +112,7 @@ module.exports = (function () {
 		}
 
 		const data = await Filter.selectCustom(q => q
-			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason")
+			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Data")
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("User_Alias.Name AS Username")
 			.select("Platform.Name AS Platform_Name")
@@ -127,6 +127,12 @@ module.exports = (function () {
 			.where("Type NOT IN %s+", ["Block", "Unping"])
 			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
 		);
+
+		for (const item of data) {
+			if (item.Data) {
+				item.Data = JSON.parse(item.Data);
+			}
+		}
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});
