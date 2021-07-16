@@ -9,11 +9,13 @@ module.exports = (function () {
 
 	const filterTypeMap = {
 		Blacklist: "These users/channels are banned from this command",
-		Whitelist: "Only these users/channels can user  this command",
+		Whitelist: "Only these users/channels can use this command",
 		"Opt-out": "These users opted out from this command",
 		Arguments: "Disabled specific arguments",
 		"Offline-only": "Only available while channel is offline",
-		"Online-only": "Only available while channel is online"
+		"Online-only": "Only available while channel is online",
+		Unmention: "These users will not be mentioned by this command",
+		Unping: "These users will not be \"pinged\" by this command",
 	};
 
 	Router.get("/list", async (req, res) => {
@@ -214,7 +216,7 @@ module.exports = (function () {
 				? `in ${filter.platformName} channel ${filter.channelName}`
 				: "everywhere";
 
-			if (filter.type === "Opt-out") {
+			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
 				string = filter.username;
 			}
 			else if (filter.type === "Whitelist") {
@@ -239,7 +241,9 @@ module.exports = (function () {
 				string = `${sb.Utils.capitalize(where)}: ${list.join("; ")}`;
 			}
 
-			restrictions[filter.type].push(string);
+			if (string) {
+				restrictions[filter.type].push(string);
+			}
 		}
 
 		const restrictionItems = [];
@@ -252,11 +256,12 @@ module.exports = (function () {
 			const filterList = `<ul id="${type.toLowerCase()}" class="collapse">${filterItems.join("")}</ul>`;
 			const section = sb.Utils.tag.trim `<a
 				 class="btn btn-primary"
-				 href="${type.toLowerCase()}"
+				 href="#${type.toLowerCase()}"
 				 role="button"
 				 data-toggle="collapse"
 		         aria-expanded="false"
 		         aria-controls=""${type.toLowerCase()}"
+		         style="padding:3px"
 	            >
 	                ${filterTypeMap[type] ?? type}
                 </a>
@@ -267,11 +272,7 @@ module.exports = (function () {
 
 		data.Restrictions = (restrictionItems.length === 0)
 			? "N/A"
-			: restrictionItems.join("");
-
-		if (data.Flags.includes("whitelist")) {
-			data.Restrictions = `<b>Only available for these combinations:</b><br><br>${data.Restrictions}`;
-		}
+			: restrictionItems.join("<br>");
 
 		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
 
