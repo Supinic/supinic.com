@@ -113,7 +113,7 @@ module.exports = (function () {
 		}
 
 		const data = await Filter.selectCustom(q => q
-			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Data")
+			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("User_Alias.Name AS Username")
 			.select("Platform.Name AS Platform_Name")
