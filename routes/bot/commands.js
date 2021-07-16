@@ -6,7 +6,15 @@ module.exports = (function () {
 
 	const Command = require("../../modules/chat-data/command.js");
 	const CommandExecution = require("../../modules/chat-data/command-execution.js");
-	const Filter = require("../../modules/chat-data/filter.js");
+
+	const filterTypeMap = {
+		Blacklist: "These users/channels are banned from this command",
+		Whitelist: "Only these users/channels can user  this command",
+		"Opt-out": "These users opted out from this command",
+		Arguments: "Disabled specific arguments",
+		"Offline-only": "Only available while channel is offline",
+		"Online-only": "Only available while channel is online"
+	};
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "bot/command/list").json();
@@ -157,23 +165,6 @@ module.exports = (function () {
 			}
 		}
 
-		const restrictions = await Filter.selectMultipleCustom(rs => rs
-			.select("User_Alias.Name AS Username")
-			.select("IFNULL(Channel.Description, Channel.Name) as Channel_Name", "Channel.Mode AS Channel_Mode")
-			.select("Platform.Name as Platform_Name")
-			.where("Command = %n", ID)
-			.where("Active = %b", true)
-			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
-			.leftJoin("chat_data", "User_Alias")
-			.leftJoin("chat_data", "Channel")
-			.leftJoin({
-				toDatabase: "chat_data",
-				toTable: "Platform",
-				on: "Channel.Platform = Platform.ID"
-			})
-			.orderBy("Username ASC")
-		);
-
 		if (auth.userID) {
 			const check = await sb.Query.getRecordset(rs => rs
 				.select("ID")
@@ -210,29 +201,71 @@ module.exports = (function () {
 			}
 		}
 
-		const prefix = (rawData.Flags?.includes("whitelist")) ? "Only " : "";
-		data.Restrictions = restrictions.filter(i => i.Channel_Mode !== "Inactive" && i.Channel_Mode !== "Read").map(i => {
-			if (i.Type === "Opt-out") {
-				return `${i.Username} opted out from this command`;
+		const filterData = await sb.Got("Supinic", `bot/filter/command/${ID}/list`).json();
+		const restrictions = {};
+
+		for (const filter of filterData) {
+			if (!restrictions[filter.type]) {
+				restrictions[filter.type] = [];
 			}
-			else if (i.Type === "Whitelist") {
-				const who = i.Username || "Everyone";
-				const where = (i.Channel_Name) ? (`in ${i.Platform_Name} channel ${i.Channel_Name}`) : "everywhere";
-				return (i.Username)
-					? `${prefix}<u>${who}</u> can use this command ${where}`
-					: `<u>${who}</u> can use this command ${prefix.toLowerCase()} ${where}`;
+
+			let string;
+			const where = (i.channelName)
+				? `in ${i.platformName} channel ${i.channelName}`
+				: "everywhere";
+
+			if (filter.type === "Opt-out") {
+				string = filter.username;
 			}
-			else if (i.Type === "Blacklist") {
-				if (i.Username) {
-					const where = (i.Channel_Name) ? (`in ${i.Platform_Name} channel ${i.Channel_Name}`) : "everywhere";
-					return `${i.Username} is banned from using this command ${where}`;
-				}
-				else if (i.Channel_Name) {
-					return `This command is disabled in ${i.Platform_Name} channel ${i.Channel_Name}`;
-				}
+			else if (filter.type === "Whitelist") {
+				string = (filter.username)
+					? `${filter.username} ${where}`
+					: `everyone ${where}`;
 			}
-		}).filter(Boolean)
-			.join("<br>") || "N/A";
+			else if (filter.type === "Blacklist") {
+				string = (filter.username)
+					? `Ban: ${filter.username} ${where}`
+					: `Disabled ${where}`;
+			}
+			else if (filter.type === "Offline-only" || filter.type === "Online-only") {
+				string = (filter.username)
+					? `${filter.username} ${where}`
+					: `everyone ${where}`;
+			}
+			else if (filter.type === "Arguments") {
+				const { args } = filter.data;
+				const list = args.map(i => `position ${i.index}, "${i.string}"`);
+
+				string = `${sb.Utils.capitalize(where)}: ${list.join("; ")}`;
+			}
+		}
+
+		const restrictionItems = [];
+		for (const [type, filters] of Object.entries(restrictions)) {
+			if (filters.length === 0) {
+				continue;
+			}
+
+			const filterItems = filters.map(i => `<li>${i}</li>`);
+			const filterList = `<ul id="${type.toLowerCase()}" class="collapse">${filterItems.join("")}</ul>`;
+			const section = sb.Utils.tag.trim `<a
+				 class="btn btn-primary"
+				 href="${type.toLowerCase()}"
+				 role="button"
+				 data-toggle="collapse"
+		         aria-expanded="false"
+		         aria-controls=""${type.toLowerCase()}"
+	            >
+	                ${filterTypeMap[type] ?? type}
+                </a>
+            `;
+
+			restrictionItems.push(`${section}${filterList}`);
+		}
+
+		data.Restrictions = (restrictionItems.length === 0)
+			? "N/A"
+			: restrictionItems.join("");
 
 		if (data.Flags.includes("whitelist")) {
 			data.Restrictions = `<b>Only available for these combinations:</b><br><br>${data.Restrictions}`;
