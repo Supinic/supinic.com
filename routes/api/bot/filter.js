@@ -93,9 +93,16 @@ module.exports = (function () {
 	 * @apiPermission any
 	 * @apiParam {number} :id Command ID as part of URL
 	 * @apiSuccess {Object[]} filter List of filters
+	 * @apiSuccess {number} ID
 	 * @apiSuccess {string} type
-	 * @apiSuccess {string} channelName
+	 * @apiSuccess {number} userAlias
 	 * @apiSuccess {string} userName
+	 * @apiSuccess {number} channel
+	 * @apiSuccess {string} channelName
+	 * @apiSuccess {string} platformName
+	 * @apiSuccess {string} invocation
+	 * @apiSuccess {string} response
+	 * @apiSuccess {string} reason
 	 * @apiError (400) InvalidRequest Command does not exist
 	 */
 	Router.get("/command/:id/list", async (req, res) => {
@@ -104,14 +111,21 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Malformed command ID");
 		}
 
-		const data = await Filter.selectMultipleCustom(q => q
-			.select("Channel.Name AS Channel_Name")
+		const data = await Filter.selectCustom(q => q
+			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason")
+			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("User_Alias.Name AS User_Name")
+			.select("Platform.Name AS Platform_Name")
 			.leftJoin("chat_data", "Channel")
 			.leftJoin("chat_data", "User_Alias")
+			.leftJoin({
+				toTable: "Platform",
+				on: "Channel.Platform = Platform.ID"
+			})
 			.where("Command = %n", id)
 			.where("Active = %b", true)
 			.where("Type NOT IN %s+", ["Block", "Unping"])
+			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
 		);
 
 		return sb.WebUtils.apiSuccess(res, data);
