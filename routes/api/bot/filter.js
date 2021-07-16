@@ -103,6 +103,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} invocation
 	 * @apiSuccess {string} response
 	 * @apiSuccess {string} reason
+	 * @apiSuccess {Object} data Custom filter data
 	 * @apiError (400) InvalidRequest Command does not exist
 	 */
 	Router.get("/command/:id/list", async (req, res) => {
