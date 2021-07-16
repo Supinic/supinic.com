@@ -261,7 +261,7 @@ module.exports = (function () {
 				 data-toggle="collapse"
 		         aria-expanded="false"
 		         aria-controls=""${type.toLowerCase()}"
-		         style="padding:3px"
+		         style="margin:3px"
 	            >
 	                ${filterTypeMap[type] ?? type}
                 </a>
