@@ -42,6 +42,14 @@ module.exports = (function () {
 		const sortedData = body.data.sort((a, b) => b.ID - a.ID);
 
 		const data = sortedData.map(i => {
+			let cancelled = "N/A";
+			if (i.cancelled === true) {
+				cancelled = "✔";
+			}
+			else if (i.cancelled === false) {
+				cancelled = "❌";
+			}
+
 			if (i.author.toLowerCase() === user) {
 				i.author = "(You)";
 			}
@@ -67,7 +75,7 @@ module.exports = (function () {
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A"
 				},
-				Cancelled: (i.cancelled) ? "✔" : "❌",
+				Cancelled: cancelled,
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `<div class="unset-reminder ${classes}"></div>`
 			};
