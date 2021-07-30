@@ -6,8 +6,8 @@ module.exports = (function () {
 
 	const columns = {
 		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
-		history: ["ID", "Created", "Sender", "Recipient", "Scheduled"],
-		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"]
+		history: ["ID", "Created", "Sender", "Recipient", "Scheduled", "Cancelled"],
+		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Cancelled", "Unset"]
 	};
 
 	const formatReminderList = async (req, res, target) => {
@@ -67,6 +67,7 @@ module.exports = (function () {
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A"
 				},
+				Cancelled: (i.cancelled) ? "✔" : "❌",
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `<div class="unset-reminder ${classes}"></div>`
 			};
