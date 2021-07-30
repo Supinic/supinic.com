@@ -346,6 +346,7 @@ module.exports = (function () {
 		}
 
 		row.values.Active = false;
+		row.values.Cancelled = true;
 		await row.save();
 
 		const { body, statusCode } = await sb.Got("Supibot", {
