@@ -67,7 +67,7 @@ module.exports = (function () {
 			if (type === "Twitch - Bits") {
 				return `https://static-cdn.jtvnw.net/emoticons/v1/${ID}/3.0`;
 			}
-			else if (type === "Twitch - Global" || type === "Twitch - Sub") {
+			else if (type === "Twitch - Global" || type === "Twitch - Sub" || type === "Twitch - Other") {
 				return `https://static-cdn.jtvnw.net/emoticons/v2/${ID}/default/dark/3.0`;
 			}
 			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
@@ -90,7 +90,7 @@ module.exports = (function () {
 			const ID = item.Emote_ID;
 			const type = item.Type;
 
-			if (type === "Twitch - Global" || type === "Twitch - Sub") {
+			if (type === "Twitch - Global" || type === "Twitch - Sub" || type === "Twitch - Other") {
 				return `https://twitchemotes.com/emotes/${ID}`;
 			}
 			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
