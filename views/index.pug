@@ -55,7 +55,7 @@ html
 						a(href="//twitch.tv/supinic") here.
 
 					div(class="col-xs-1" id="twitch-status")
-						- if (game && viewers) {
+						- if (game !== null && viewers !== null) {
 							h6.
 								I'm streaming #{game} for #{viewers} viewers right now.
 						- }
