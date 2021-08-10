@@ -348,7 +348,21 @@
 		next();
 	});
 
-	app.get("/", (req, res) => res.render("index"));
+	app.get("/", async (req, res) => {
+		const streamResponse = await sb.Got("Helix", {
+			url: "streams",
+			searchParams: {
+				user_id: "31400525"
+			}
+		});
+
+		const [stream] = streamResponse.body.data;
+		res.render("index", {
+			game: stream?.game_name ?? null,
+			viewers: stream?.viewer_count ?? null
+		});
+	});
+
 	for (const route of subroutes) {
 		app.use(`/${route}`, require(`./routes/${route}`));
 	}

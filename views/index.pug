@@ -5,27 +5,6 @@ html
 		include ./header.pug
 		include ./navigation.pug
 
-		script(type="text/javascript").
-			window.addEventListener("load", async () => {
-				const response = await fetch ("https://api.twitch.tv/kraken/streams/31400525", {
-					headers: {
-						"Accept": "application/vnd.twitchtv.v5+json",
-						"Client-ID": "z1ymdwsi2d9lt5835zh0rnkshzgnb5"
-					}
-				});
-
-				const { stream } = await response.json();
-				const element = document.getElementById("twitch-status");
-				if (!stream) {
-					element.innerHTML = "<h6>I'm not currently streaming.</h6>";
-				}
-				else {
-					element.innerHTML = `
-						<h6>I'm streaming right now! Playing ${stream.game} for ${stream.viewers} viewers.</h6>
-					`;
-				}
-			});
-
 		meta(name="google-site-verification" content="lF51U5qMQbOR4gJoT33cBTiGkf89XEYfrALUxBUIhmc")
 	body
 		block navigation
@@ -76,3 +55,11 @@ html
 						a(href="//twitch.tv/supinic") here.
 
 					div(class="col-xs-1" id="twitch-status")
+						- if (game && viewers) {
+							h6.
+								I'm streaming #{stream.game} for #{stream.viewers} viewers right now.
+						- }
+						- else {
+							h6.
+								I'm not currently streaming.
+						- }
