@@ -39,6 +39,9 @@ module.exports = (function () {
 
 		const rawData = await Channel.list();
 		const data = rawData.filter(i => {
+			if (i.Mode === "Read" || i.Mode === "Last seen") {
+				return false;
+			}
 			if (!platform) {
 				return true;
 			}
