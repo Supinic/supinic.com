@@ -72,10 +72,10 @@ module.exports = (function () {
 		const ID = (req.query.ID ?? "");
 		const { data } = await sb.Got("Supinic", {
 			url: "/data/origin/lookup",
-			searchParams: {
-				ID,
-				skipReplacedEmotes: "true"
-			}
+			searchParams: new sb.URLParams()
+				.set("ID", ID)
+				.set("skipReplacedEmotes", "true")
+				.toString()
 		}).json();
 
 		return renderList(res, data, {
