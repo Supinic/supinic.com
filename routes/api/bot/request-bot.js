@@ -94,7 +94,7 @@ module.exports = (function () {
 		}
 
 		const twitchChannelID = await sb.Utils.getTwitchID(targetChannel);
-		if (platformData.Name === "twitch" && twitchChannelID === null) {
+		if (platformData.Name === "Twitch" && twitchChannelID === null) {
 			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
 		}
 
