@@ -70,14 +70,22 @@ module.exports = (function () {
 
 	Router.get("/lookup", async (req, res) => {
 		const ID = (req.query.ID ?? "");
-		const { data } = await sb.Got("Supinic", {
+		const response = await sb.Got("Supinic", {
 			url: "/data/origin/lookup",
 			searchParams: new sb.URLParams()
 				.set("ID", ID)
 				.set("skipReplacedEmotes", "true")
 				.toString()
-		}).json();
+		});
 
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
+			});
+		}
+
+		const { data } = response.body;
 		return renderList(res, data, {
 			ogp: {
 				title: "Emote origin lookup",
