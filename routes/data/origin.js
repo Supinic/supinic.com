@@ -6,6 +6,7 @@ module.exports = (function () {
 
 	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
 
+	const renderColumns = ["Emote", "Name", "Type"];
 	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
@@ -15,14 +16,7 @@ module.exports = (function () {
 		`)
 	);
 
-	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", {
-			url: "/data/origin/list",
-			searchParams: {
-				skipReplacedEmotes: "true"
-			}
-		}).json();
-
+	const renderList = (res, data, options = {}) => {
 		const renderData = data.map(i => {
 			const emote = (i.url) ? `<img alt="${i.name}" loading="lazy" class="list-emote" src="${i.url}"/>` : "N/A";
 			return {
@@ -34,7 +28,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: renderData,
-			head: Object.keys(renderData[0]),
+			head: renderColumns,
 			pageLength: 10,
 			sortColumn: 1,
 			sortDirection: "asc",
@@ -48,13 +42,47 @@ module.exports = (function () {
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Emote origin list`
+					content: options.ogp.title
 				},
 				{
 					property: "description",
-					content: "Many Twitch, BTTV, FFZ, Discord and other emotes' origins, authors and miscellaneous data can be found here."
+					content: options.ogp.description
 				}
 			]
+		});
+	};
+
+	Router.get("/list", async (req, res) => {
+		const { data } = await sb.Got("Supinic", {
+			url: "/data/origin/list",
+			searchParams: {
+				skipReplacedEmotes: "true"
+			}
+		}).json();
+
+		return renderList(res, data, {
+			ogp: {
+				title: "Emote origin list",
+				description: "Many Twitch, BTTV, FFZ, Discord and other emotes' origins, authors and miscellaneous data can be found here."
+			}
+		});
+	});
+
+	Router.get("/lookup", async (req, res) => {
+		const ID = (req.query.ID ?? "");
+		const { data } = await sb.Got("Supinic", {
+			url: "/data/origin/lookup",
+			searchParams: {
+				ID,
+				skipReplacedEmotes: "true"
+			}
+		}).json();
+
+		return renderList(res, data, {
+			ogp: {
+				title: "Emote origin lookup",
+				description: `Emote lookup - ${data.length} emotes' origins are found here, per user query.`
+			}
 		});
 	});
 

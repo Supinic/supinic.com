@@ -40,6 +40,32 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/origin/lookup Origin - lookup
+	 * @apiName LookupEmoteOrigins
+	 * @apiDescription Fetches a list of emote origins for provided IDs
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {Object[]} Same structure as in `ListEmoteOrigins`
+	 **/
+	Router.get("/lookup", async (req, res) => {
+		const { ID } = req.query;
+		if (!ID) {
+			return sb.WebUtils.apiSuccess(res, []);
+		}
+
+		const numberIDs = (typeof ID === "string")
+			? ID.split(",").map(Number)
+			: ID.map(Number);
+
+		if (!numberIDs.some(sb.Utils.isValidInteger)) {
+			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+		}
+
+		const data = await Origin.fetch(...numberIDs);
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
 	 * @api {get} /data/origin/list Origin - Detail
 	 * @apiName GetEmoteOriginDetail
 	 * @apiDescription Fetches a single emote's origin
