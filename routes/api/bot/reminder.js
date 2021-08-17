@@ -267,7 +267,7 @@ module.exports = (function () {
 			? ID.split(",").map(Number)
 			: ID.map(Number);
 
-		if (!numberIDs.some(sb.Utils.isValidInteger)) {
+		if (numberIDs.some(i => !sb.Utils.isValidInteger(i))) {
 			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
 		}
 
