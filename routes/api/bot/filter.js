@@ -77,7 +77,7 @@ module.exports = (function () {
 	};
 
 	/**
-	 * @api {post} /bot/filter/ Check Filter status
+	 * @api {post} /bot/filter/ Create a Filter
 	 * @apiName PostFilterStatus
 	 * @apiDescription Creates a filter. Usable even when the authenticated user is globally banned from the service.
 	 * @apiGroup Bot
@@ -95,7 +95,7 @@ module.exports = (function () {
 	Router.post("/", async (req, res) => handleFilterEndpoint(req, res));
 
 	/**
-	 * @api {post} /bot/filter/ Check Filter status
+	 * @api {post} /bot/filter/ Deactivate Filter status
 	 * @apiName DeleteFilterStatus
 	 * @apiDescription Deactivates an active filter. Usable even when the authenticated user is globally banned from the service.
 	 * @apiGroup Bot
