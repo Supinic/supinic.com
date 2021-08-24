@@ -54,7 +54,7 @@ module.exports = (function () {
 		const response = await sb.Got("Supibot", {
 			url: "command/execute",
 			searchParams: {
-				invocation: filterMapType[type][req.method.toLowerCase()],
+				invocation: filterTypeMap[type][req.method.toLowerCase()],
 				platform: "twitch",
 				channel: null,
 				user: userData.Name,
