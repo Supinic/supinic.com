@@ -6,6 +6,112 @@ module.exports = (function () {
 
 	const Filter = require("../../../modules/chat-data/filter");
 
+	const filterTypeMap = {
+		block: {
+			post: "block",
+			delete: "unblock"
+		},
+		optout: {
+			post: "optout",
+			delete: "unoptout"
+		}
+	};
+
+	const handleFilterEndpoint = async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res, { ignoreGlobalBan: true });
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const { type } = req.query;
+		if (!filterTypeMap[type]) {
+			return sb.WebUtils.apiFail(res, 400, "Invalid filter type provided");
+		}
+
+		const { userData } = auth;
+		const { channel, command, invocation, platform, user } = req.query;
+
+		const args = [];
+		if (channel) {
+			args.push(`channel:${channel}`);
+		}
+		if (command) {
+			args.push(`command:${command}`);
+		}
+		if (command) {
+			args.push(`invocation:${invocation}`);
+		}
+		if (platform) {
+			args.push(`platform:${platform}`);
+		}
+		if (user) {
+			args.push(`user:${user}`);
+		}
+
+		const response = await sb.Got("Supibot", {
+			url: "command/execute",
+			searchParams: {
+				invocation: filterMapType[type][req.method.toLowerCase()],
+				platform: "twitch",
+				channel: null,
+				user: userData.Name,
+				arguments: args.join(" "),
+				skipGlobalBan: "true"
+			}
+		});
+
+		const { result } = response.body.data;
+		if (result.success === false) {
+			return sb.WebUtils.apiFail(res, 400, {
+				reply: result.reply
+			});
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, {
+				reply: result.reply
+			});
+		}
+	};
+
+	/**
+	 * @api {post} /bot/filter/ Check Filter status
+	 * @apiName PostFilterStatus
+	 * @apiDescription Creates a filter. Usable even when the authenticated user is globally banned from the service.
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiParam {string} type Type of filter - "block" or "optout"
+	 * @apiParam {string} command Command to block/optout form
+	 * @apiParam {string} [invocation] Specific command invocation context
+	 * @apiParam {string} [channel] Channel context for the filter
+	 * @apiParam {string} [platform] Platform context for the filter
+	 * @apiParam {string} [user] User to block - not applicable for "optout" type, mandatory for "block"
+	 * @apiSuccess {string} reply
+	 * @apiError (400) InvalidRequest Invalid filter type provided<br>
+	 * Filter creation was not successful<br>
+	 */
+	Router.post("/", async (req, res) => handleFilterEndpoint(req, res));
+
+	/**
+	 * @api {post} /bot/filter/ Check Filter status
+	 * @apiName DeleteFilterStatus
+	 * @apiDescription Deactivates an active filter. Usable even when the authenticated user is globally banned from the service.
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiParam {string} type Type of filter - "block" or "optout"
+	 * @apiParam {string} command Command to block/optout form
+	 * @apiParam {string} [invocation] Specific command invocation context
+	 * @apiParam {string} [channel] Channel context for the filter
+	 * @apiParam {string} [platform] Platform context for the filter
+	 * @apiParam {string} [user] User to block - not applicable for "optout" type, mandatory for "block"
+	 * @apiSuccess {string} reply
+	 * @apiError (400) InvalidRequest Invalid filter type provided<br>
+	 * Filter deactivation  was not successful (e.g. filter does not exist)<br>
+	 */
+	Router.delete("/", async (req, res) => handleFilterEndpoint(req, res));
+
 	/**
 	 * @api {get} /bot/filter/check/ Check Filter status
 	 * @apiName CheckFilterStatus
