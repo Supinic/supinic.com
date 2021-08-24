@@ -32,7 +32,7 @@ module.exports = (function () {
 		}
 
 		const { userData } = auth;
-		const { channel, command, invocation, platform, user } = req.query;
+		const { channel, command, invocation, platform, user } = req.body;
 
 		const args = [];
 		if (channel) {
