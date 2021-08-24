@@ -149,9 +149,11 @@ module.exports = class WebUtils {
 	 * Parses out user authentication and returns an object containing the level, or an error
 	 * @param {Object} req
 	 * @param {Object} res
+	 * @param {Object} options = {}
+	 * @param {boolean} [options.ignoreGlobalBan]
 	 * @returns Promise<UserLevelResult>
 	 */
-	static async getUserLevel (req, res) {
+	static async getUserLevel (req, res, options = {}) {
 		if (req.query.auth_key && req.query.auth_user) {
 			const userData = await sb.User.get(Number(req.query.auth_user));
 			if (!userData) {
@@ -211,7 +213,7 @@ module.exports = class WebUtils {
 			}
 
 			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
-			if (banned) {
+			if (banned && !options.ignoreGlobalBan) {
 				return {
 					error: "Access revoked",
 					errorCode: 403
@@ -219,6 +221,7 @@ module.exports = class WebUtils {
 			}
 
 			return {
+				banned,
 				level: userData.Data.trackLevel || "login",
 				userID: userData.ID,
 				userData
