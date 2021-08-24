@@ -26,7 +26,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { type } = req.query;
+		const { type } = req.body;
 		if (!filterTypeMap[type]) {
 			return sb.WebUtils.apiFail(res, 400, "Invalid filter type provided");
 		}
