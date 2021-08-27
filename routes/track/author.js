@@ -61,14 +61,19 @@ module.exports = (function () {
 				"<thead><tr><th>Track</th><th>Role</th><th>Published</th></tr></thead>",
 				data.tracks
 					// .sort((a, b) => (new sb.Date(b.published) ?? 0) - (new sb.Date(a.published) ?? 0))
-					.map(i => [
-						"<tr>",
-						`<td><a target="_blank" href="/track/detail/${i.ID}">${i.name}</a></td>`,
-						`<td>${i.role}</td>`,
-						`<td>${(i.published) ? new sb.Date(i.published).sqlDate() : "N/A"}</td>`,
-						"</tr>"
-					].join(""))
-					.join(""),
+					.map(i => {
+						const date = (i.published) ? new sb.Date(i.published) : null;
+						const orderValue = (date) ? date.valueOf() : 0;
+						const cellValue = (date) ? date.format("Y-m-d") : "N/A";
+
+						return [
+							"<tr>",
+							`<td><a target="_blank" href="/track/detail/${i.ID}">${i.name}</a></td>`,
+							`<td>${i.role}</td>`,
+							`<td data-order="${orderValue}">${cellValue}</td>`,
+							"</tr>"
+						].join("");
+					}).join(""),
 				"</table>"
 			].join("")
 		};
