@@ -167,7 +167,7 @@ module.exports = class WebUtils {
 			}
 
 			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
-			if (banned) {
+			if (banned && !options.ignoreGlobalBan) {
 				return {
 					error: "Access revoked",
 					errorCode: 403
@@ -175,6 +175,7 @@ module.exports = class WebUtils {
 			}
 
 			return {
+				banned,
 				level: userData.Data.trackLevel || "login",
 				userID: userData.ID,
 				userData
@@ -248,7 +249,7 @@ module.exports = class WebUtils {
 			}
 
 			const banned = await WebUtils.checkGlobalUserBan(userData.ID);
-			if (banned) {
+			if (banned && !options.ignoreGlobalBan) {
 				return {
 					error: "Access revoked",
 					errorCode: 403
@@ -256,6 +257,7 @@ module.exports = class WebUtils {
 			}
 
 			return {
+				banned,
 				level: userData.Data.trackLevel || "login",
 				userID: userData.ID,
 				userData
