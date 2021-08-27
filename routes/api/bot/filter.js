@@ -51,17 +51,26 @@ module.exports = (function () {
 			args.push(`user:${user}`);
 		}
 
-		const response = await sb.Got("Supibot", {
-			url: "command/execute",
-			searchParams: {
-				invocation: filterTypeMap[type][req.method.toLowerCase()],
-				platform: "twitch",
-				channel: null,
-				user: userData.Name,
-				arguments: args.join(" "),
-				skipGlobalBan: "true"
-			}
-		});
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: "command/execute",
+				searchParams: {
+					invocation: filterTypeMap[type][req.method.toLowerCase()],
+					platform: "twitch",
+					channel: null,
+					user: userData.Name,
+					arguments: args.join(" "),
+					skipGlobalBan: "true"
+				}
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
+		}
 
 		const { result } = response.body.data;
 		if (result.success === false) {

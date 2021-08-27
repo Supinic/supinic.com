@@ -43,12 +43,21 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 401, "You don't have banwave-part permission for this channel");
 		}
 
-		const response = await sb.Got("Supibot", {
-			url: `channel/${type}`,
-			searchParams: {
-				channel: channel.Name
-			}
-		});
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: `channel/${type}`,
+				searchParams: {
+					channel: channel.Name
+				}
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
+		}
 
 		if (response.statusCode !== 200) {
 			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
