@@ -319,7 +319,7 @@
 				app.locals.columnValues = [];
 			}
 
-			app.locals.currentLocation = req.originalUrl;
+			app.locals.currentLocation = encodeURIComponent(req.originalUrl);
 		}
 
 		if (req.session.passport?.user?.source === "twitch") {
