@@ -60,7 +60,7 @@ module.exports = (function () {
 				"<table id='authorTracks'>",
 				"<thead><tr><th>Track</th><th>Role</th><th>Published</th></tr></thead>",
 				data.tracks
-					.sort((a, b) => (new sb.Date(b.published) ?? 0) - (new sb.Date(a.published) ?? 0))
+					// .sort((a, b) => (new sb.Date(b.published) ?? 0) - (new sb.Date(a.published) ?? 0))
 					.map(i => [
 						"<tr>",
 						`<td><a target="_blank" href="/track/detail/${i.ID}">${i.name}</a></td>`,

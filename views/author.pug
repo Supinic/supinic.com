@@ -5,9 +5,19 @@ html
         include ./header.pug
         include ./datatables.pug
         include ./navigation.pug
+
+        - if (typeof sortColumn === "undefined") {
+        -    sortColumn = 2;
+        - }
+        - if (typeof sortDirection === "undefined") {
+        -    sortDirection = "desc";
+        - }
+
         script.
             $(document).ready(() => {
-                const table = $("#authorTracks").DataTable();
+                const table = $("#authorTracks").DataTable({
+                    order: [#{sortColumn}, "#{sortDirection}"]
+                });
             });
         meta(charset="UTF-8")
         style(type="text/css").
