@@ -104,7 +104,7 @@ module.exports = (function () {
 	Router.post("/", async (req, res) => handleFilterEndpoint(req, res));
 
 	/**
-	 * @api {post} /bot/filter/ Deactivate Filter status
+	 * @api {delete} /bot/filter/ Deactivate Filter status
 	 * @apiName DeleteFilterStatus
 	 * @apiDescription Deactivates an active filter. Usable even when the authenticated user is globally banned from the service.
 	 * @apiGroup Bot
