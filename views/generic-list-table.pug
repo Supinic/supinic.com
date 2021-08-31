@@ -51,7 +51,7 @@ html
 						const column = columnValues.find(value => value.title === title || value.position === position);
 						const value = (column && column.value) || null
 
-						if (disabledFilterColumns.includes(i))) {
+						if (disabledFilterColumns.includes(i)) {
 							$(this).html(`<input type="text" disabled placeholder="🔎 ${title}">`);
 						}
 						else {
