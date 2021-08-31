@@ -33,6 +33,7 @@ module.exports = (function () {
 			sortColumn: 1,
 			sortDirection: "asc",
 			specificFiltering: true,
+			disabledFilterColumns: [0],
 			extraCSS: sb.Utils.tag.trim `
 				img.list-emote { 
 					height: 32px;
