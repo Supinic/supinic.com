@@ -14,6 +14,9 @@ html
 		- if (typeof specificFiltering === "undefined") {
 		-	specificFiltering = false;
 		- }
+		- if (typeof disabledFilterColumns === "undefined") {
+		-	disabledFilterColumns = [];
+		- }
 		- if (typeof head === "undefined") {
 		-    head = [];
 		- }
@@ -33,6 +36,7 @@ html
 					beforeTableInitalize();
 				}
 
+				const disabledFilterColumns = JSON.parse(`!{JSON.stringify(disabledFilterColumns)}`);
 				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
 				const table = $("#table").DataTable({
 					lengthMenu: [10, 25, 50, 100, 250, 500, 1000],
@@ -47,7 +51,11 @@ html
 						const column = columnValues.find(value => value.title === title || value.position === position);
 						const value = (column && column.value) || null
 
-						$(this).html(`<input type="text" placeholder="🔎 ${title}">`);
+						const disabledStr = (disabledFilterColumns.includes(i))
+							? "disabled"
+							: "";
+
+						$(this).html(`<input type="text" ${disabledStr} placeholder="🔎 ${title}">`);
 
 						$("input", this).on("keyup change", function () {
 							if (table.column(i).search() !== this.value) {
