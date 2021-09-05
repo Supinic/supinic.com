@@ -91,7 +91,7 @@ module.exports = (function () {
 			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : [],
 			Description: i.Description,
 			Cooldown: i.Cooldown,
-			Flags: i.Flags
+			Flags: i.Flags ?? []
 		}));
 
 		return sb.WebUtils.apiSuccess(res, data);
