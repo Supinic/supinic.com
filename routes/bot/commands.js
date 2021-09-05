@@ -281,19 +281,19 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="/bot/command/${commandData.ID}/code">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="/bot/command/${commandData.name}/code">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
-			title: `Command detail - ${data.Name}`,
+			title: `Command detail - ${commandData.name}`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Command ${data.Name}`
+					content: `Command ${commandData.name}`
 				},
 				{
 					property: "description",
-					content: data.Description ?? "(no description available)"
+					content: commandData.description ?? "(no description available)"
 				}
 			]
 		});
