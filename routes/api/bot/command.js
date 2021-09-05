@@ -6,35 +6,6 @@ module.exports = (function () {
 
 	const Command = require("../../../modules/chat-data/command");
 
-	const fetchCommandData = async (req, res) => {
-		let commandID = Number(req.params.identifier);
-		let commandName;
-
-		if (Number.isNaN(commandID)) {
-			commandName = req.params.identifier;
-		}
-		else if (sb.Utils.isValidInteger(commandID)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid command identifier provided");
-		}
-
-		let command;
-		if (commandName) {
-			command = await Command.selectSingleCustom(q => q.where("Name = %s", commandName));
-		}
-		else if (commandID) {
-			command = await Command.selectSingleCustom(q => q.where("ID = %n", commandID));
-		}
-
-		if (!command) {
-			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
-		}
-
-		return {
-			success: true,
-			command
-		};
-	}
-
 	/**
 	 * @api {get} /bot/command/:identifier Command - get data
 	 * @apiName GetCommandData
@@ -56,12 +27,28 @@ module.exports = (function () {
 	 * @apiSuccess {string} command.latestCommit
 	 */
 	Router.get("/:identifier", async (req, res) => {
-		const result = await fetchCommandData (req, res);
-		if (!result.success) {
-			return result;
+		let commandID = Number(req.params.identifier);
+		let commandName;
+
+		if (Number.isNaN(commandID)) {
+			commandName = req.params.identifier;
+		}
+		else if (!sb.Utils.isValidInteger(commandID)) {
+			return sb.WebUtils.apiFail(res, 400, "Invalid command identifier provided");
 		}
 
-		const command = result.command;
+		let command;
+		if (commandName) {
+			command = await Command.selectSingleCustom(q => q.where("Name = %s", commandName));
+		}
+		else if (commandID) {
+			command = await Command.selectSingleCustom(q => q.where("ID = %n", commandID));
+		}
+
+		if (!command) {
+			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
+		}
+
 		return sb.WebUtils.apiSuccess(res, {
 			ID: command.ID,
 			Name: command.Name,
