@@ -318,7 +318,7 @@ module.exports = (function () {
 			header: data.name,
 			code: `// Command code:\n${data.code}`,
 			staticData: `// Static data:\n${data.staticData ?? "// None"}`,
-			dynamicDescription: `// Dynamic description:\n${data.values.dynamicDescription ?? "// None"}`,
+			dynamicDescription: `// Dynamic description:\n${data.dynamicDescription ?? "// None"}`,
 			params: `// Parameters definition:\n${paramsString}`,
 			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.name)}/index.js`,
 			openGraphDefinition: [
