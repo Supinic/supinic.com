@@ -66,7 +66,7 @@ module.exports = (function () {
 			ID: command.ID,
 			Name: command.Name,
 			Aliases: (command.Aliases) ? JSON.parse(command.Aliases) : [],
-			Flags: (command.Flags) ? command.Flags.split(",") : [],
+			Flags: command.Flags,
 			Description: command.Description,
 			Cooldown: command.Cooldown,
 			Author: command.Author,
