@@ -6,6 +6,78 @@ module.exports = (function () {
 
 	const Command = require("../../../modules/chat-data/command");
 
+	const fetchCommandData = async (req, res) => {
+		let commandID = Number(req.params.identifier);
+		let commandName;
+
+		if (Number.isNaN(commandID)) {
+			commandName = req.params.identifier;
+		}
+		else if (sb.Utils.isValidInteger(commandID)) {
+			return sb.WebUtils.apiFail(res, 400, "Invalid command identifier provided");
+		}
+
+		let command;
+		if (commandName) {
+			command = await Command.selectSingleCustom(q => q.where("Name = %s", commandName));
+		}
+		else if (commandID) {
+			command = await Command.selectSingleCustom(q => q.where("ID = %n", commandID));
+		}
+
+		if (!command) {
+			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
+		}
+
+		return {
+			success: true,
+			command
+		};
+	}
+
+	/**
+	 * @api {get} /bot/command/:identifier Command - get data
+	 * @apiName GetCommandData
+	 * @apiDescription Fetches full data for a specific command. <br>
+	 * The `identifier` parameter can be either number (ID) or string (Name, not aliases)
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiSuccess {number} command.ID
+	 * @apiSuccess {string} command.name
+	 * @apiSuccess {string[]} [command.aliases]
+	 * @apiSuccess {object} command.flags
+	 * @apiSuccess {string} [command.description]
+	 * @apiSuccess {number} command.cooldown
+	 * @apiSuccess {string} command.author
+	 * @apiSuccess {date} command.lastEdit
+	 * @apiSuccess {string} command.code
+	 * @apiSuccess {string} command.staticData
+	 * @apiSuccess {string} command.dynamicDescription
+	 * @apiSuccess {string} command.latestCommit
+	 */
+	Router.get("/:identifier", async (req, res) => {
+		const result = await fetchCommandData (req, res);
+		if (!result.success) {
+			return result;
+		}
+
+		const command = result.command;
+		return sb.WebUtils.apiSuccess(res, {
+			ID: command.ID,
+			Name: command.Name,
+			Aliases: (command.Aliases) ? JSON.parse(command.Aliases) : [],
+			Flags: (command.Flags) ? command.Flags.split(",") : [],
+			Description: command.Description,
+			Cooldown: command.Cooldown,
+			Author: command.Author,
+			Last_Edit: (command.Last_Edit) ? command.Last_Edit.valueOf() : null,
+			Code: command.Code,
+			Static_Data: command.Static_Data,
+			Dynamic_Description: command.Dynamic_Description,
+			Latest_Commit: command.Latest_Commit
+		});
+	});
+
 	/**
 	 * @api {get} /bot/command/list/ Command - list
 	 * @apiName GetCommandList
@@ -19,13 +91,14 @@ module.exports = (function () {
 	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
 	 * @apiSuccess {object} command.flags
-	 * @apiSuccess {string} [command.whitelistResponse]
 	 */
 	Router.get("/list", async (req, res) => {
-		const data = (await Command.selectMultipleCustom(rs => rs
+		const rawData = await Command.selectMultipleCustom(rs => rs
 			.where("Flags NOT %*like*", "archived")
 			.where("Flags NOT %*like*", "system")
-		)).map(i => ({
+		);
+
+		const data = rawData.map(i => ({
 			ID: i.ID,
 			Name: i.Name,
 			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : [],
@@ -36,6 +109,5 @@ module.exports = (function () {
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});
-
 	return Router;
 })();
