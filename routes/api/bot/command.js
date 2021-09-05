@@ -48,15 +48,18 @@ module.exports = (function () {
 	 * @apiSuccess {number} command.ID
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} [command.aliases]
-	 * @apiSuccess {object} command.flags
+	 * @apiSuccess {string[]} [command.flags]
 	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
 	 * @apiSuccess {string} command.author
 	 * @apiSuccess {date} command.lastEdit
 	 * @apiSuccess {string} command.code
-	 * @apiSuccess {string} command.staticData
-	 * @apiSuccess {string} command.dynamicDescription
-	 * @apiSuccess {string} command.latestCommit
+	 * @apiSuccess {Object[]} [[command.params]
+	 * @apiSuccess {string} command.params.name]
+	 * @apiSuccess {string} command.params.type
+	 * @apiSuccess {string} [command.staticData]
+	 * @apiSuccess {string} [command.dynamicDescription]
+	 * @apiSuccess {string} [command.latestCommit]
 	 */
 	Router.get("/:identifier", async (req, res) => {
 		const commandID = Number(req.params.identifier);
@@ -91,6 +94,7 @@ module.exports = (function () {
 			Author: command.Author,
 			Last_Edit: (command.Last_Edit) ? command.Last_Edit.valueOf() : null,
 			Code: command.Code,
+			Params: (command.Params) ? JSON.parse(command.Params) : [],
 			Static_Data: command.Static_Data,
 			Dynamic_Description: command.Dynamic_Description,
 			Latest_Commit: command.Latest_Commit
