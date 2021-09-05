@@ -121,7 +121,7 @@ module.exports = (function () {
 					values.getCacheData = sb.Command.prototype.getCacheData.bind(fakeCommand);
 					values.getStaticData = function () {
 						this.data = {};
-						const resolver = eval(this.Static_Data);
+						const resolver = eval(this.staticData);
 						if (typeof resolver === "function") {
 							return resolver.apply(this);
 						}
@@ -149,15 +149,19 @@ module.exports = (function () {
 				}
 			}
 			else if (key === "lastEdit") {
-				data[name] = (value)
-					? `${value.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(value)})`
-					: "N/A";
+				if (value) {
+					const date = new sb.Date(value);
+					data[name] = `${date.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(date)})`;
+				}
+				else {
+					data[name] = "N/A";
+				}
 			}
 			else if (key === "latestCommit" && value !== null) {
 				data[name] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
 			}
 			else if (key === "aliases" && value !== null) {
-				data[name] = JSON.parse(value).join(", ");
+				data[name] = value.join(", ");
 			}
 			else if (key === "cooldown") {
 				data[name] = `${value / 1000} seconds`;
