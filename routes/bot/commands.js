@@ -15,7 +15,7 @@ module.exports = (function () {
 		"Offline-only": "Only available while channel is offline",
 		"Online-only": "Only available while channel is online",
 		Unmention: "These users will not be mentioned by this command",
-		Unping: "These users will not be \"pinged\" by this command",
+		Unping: "These users will not be \"pinged\" by this command"
 	};
 
 	Router.get("/list", async (req, res) => {
@@ -83,33 +83,36 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:id", async (req, res) => {
-		const ID = Number(req.params.id);
-		if (!sb.Utils.isValidInteger(ID)) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Invalid or malformed ID"
+	Router.get("/:identifier", async (req, res) => {
+		const response = await sb.Got("Supinic", `bot/command/${req.params.identifier}`);
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
 			});
 		}
 
-		const rawData = await Command.getRow(ID);
-		if (!rawData) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "ID is out of bounds"
-			});
-		}
+		const properties = {
+			name: "Name",
+			aliases: "Aliases",
+			description: "Description",
+			cooldown: "Cooldown",
+			dynamicDescription: "Dynamic description",
+			author: "Author",
+			lastEdit: "Last edit",
+			latestCommit: "Latest commit"
+		};
 
-		const auth = await sb.WebUtils.getUserLevel(req, res);
-		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "whitelist response", "code"];
+		const commandData = response.body.data;
+		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "code"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
 
-		for (const [rawKey, value] of Object.entries(rawData.values)) {
-			const key = rawKey.replace(/_/g, " ");
-			if (key === "Dynamic Description") {
+		for (const [key, name] of Object.entries(properties)) {
+			const value = commandData[key];
+			if (key === "dynamicDescription") {
 				if (value) {
-					const values = { ...rawData.valuesObject };
+					const values = { ...commandData };
 					const fakeCommand = {
 						ID: values.ID,
 						getCacheKey: () => sb.Command.prototype.getCacheKey.apply(fakeCommand)
@@ -130,48 +133,49 @@ module.exports = (function () {
 					const fn = eval(value);
 					const result = await fn(commandPrefix, values);
 
-					data[key] = result.join("<br>");
+					data[name] = result.join("<br>");
 				}
 				else {
-					data[key] = "N/A";
+					data[name] = "N/A";
 				}
 			}
-			else if (key === "Flags") {
+			else if (key === "flags") {
 				if (value === null) {
-					data[key] = "none";
+					data[name] = "none";
 				}
 				else {
 					const list = value.map(i => `<li>${i}</li>`).join("");
-					data[key] = `<ul>${list}</ul>`;
+					data[name] = `<ul>${list}</ul>`;
 				}
 			}
-			else if (key === "Last Edit") {
-				data[key] = (value)
+			else if (key === "lastEdit") {
+				data[name] = (value)
 					? `${value.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(value)})`
 					: "N/A";
 			}
-			else if (key === "Latest Commit" && value !== null) {
-				data[key] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
+			else if (key === "latestCommit" && value !== null) {
+				data[name] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
 			}
-			else if (key === "Aliases" && value !== null) {
-				data[key] = JSON.parse(value).join(", ");
+			else if (key === "aliases" && value !== null) {
+				data[name] = JSON.parse(value).join(", ");
 			}
-			else if (key === "Cooldown") {
-				data[key] = `${value / 1000} seconds`;
+			else if (key === "cooldown") {
+				data[name] = `${value / 1000} seconds`;
 			}
 			else if (value === null) {
-				data[key] = "N/A";
+				data[name] = "N/A";
 			}
 			else if (!skip.includes(key.toLowerCase())) {
-				data[key] = value;
+				data[name] = value;
 			}
 		}
 
+		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			const check = await sb.Query.getRecordset(rs => rs
 				.select("ID")
 				.from("chat_data", "Filter")
-				.where("Command = %n", ID)
+				.where("Command = %n", commandData.ID)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Opt-out")
 				.where("Active = %b", true)
@@ -188,7 +192,7 @@ module.exports = (function () {
 					toTable: "User_Alias",
 					on: "Filter.Blocked_User = User_Alias.ID"
 				})
-				.where("Command = %n", ID)
+				.where("Command = %n", commandData.ID)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Block")
 				.where("Active = %b", true)
@@ -203,7 +207,7 @@ module.exports = (function () {
 			}
 		}
 
-		const { data: filterData } = await sb.Got("Supinic", `bot/filter/command/${ID}/list`).json();
+		const { data: filterData } = await sb.Got("Supinic", `bot/filter/command/${commandData.ID}/list`).json();
 		const restrictions = {};
 
 		for (const filter of filterData) {
@@ -274,7 +278,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="/bot/command/${data.ID}/code">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="/bot/command/${commandData.ID}/code">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,

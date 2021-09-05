@@ -27,7 +27,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} command.latestCommit
 	 */
 	Router.get("/:identifier", async (req, res) => {
-		let commandID = Number(req.params.identifier);
+		const commandID = Number(req.params.identifier);
 		let commandName;
 
 		if (Number.isNaN(commandID)) {
