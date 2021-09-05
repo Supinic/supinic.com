@@ -4,7 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Command = require("../../modules/chat-data/command.js");
 	const CommandExecution = require("../../modules/chat-data/command-execution.js");
 
 	const filterTypeMap = {
@@ -300,50 +299,32 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:id/code", async (req, res) => {
-		const ID = Number(req.params.id);
-		if (!sb.Utils.isValidInteger(ID)) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Invalid or malformed ID"
+	Router.get("/:identifier/code", async (req, res) => {
+		const response = await sb.Got("Supinic", `bot/command/${req.params.identifier}`);
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
 			});
 		}
 
-		let data = null;
-		try {
-			data = await Command.getRow(ID);
-		}
-		catch (e) {
-			console.error(e);
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Malformed command ID"
-			});
-		}
-
-		if (!data) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Command ID is out of bounds"
-			});
-		}
-
-		const paramsString = (data.values.Params)
-			? JSON.stringify(JSON.parse(data.values.Params), null, 4)
+		const { data } = response.body;
+		const paramsString = (data.params)
+			? JSON.stringify(data.params, null, 4)
 			: "// None";
 
 		res.render("code", {
-			title: `${data.values.Name} - Supibot command code`,
-			header: data.values.Name,
-			code: `// Command code:\n${data.values.Code}`,
-			staticData: `// Static data:\n${data.values.Static_Data ?? "// None"}`,
-			dynamicDescription: `// Dynamic description:\n${data.values.Dynamic_Description ?? "// None"}`,
+			title: `${data.name} - Supibot command code`,
+			header: data.name,
+			code: `// Command code:\n${data.code}`,
+			staticData: `// Static data:\n${data.staticData ?? "// None"}`,
+			dynamicDescription: `// Dynamic description:\n${data.values.dynamicDescription ?? "// None"}`,
 			params: `// Parameters definition:\n${paramsString}`,
-			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.values.Name)}/index.js`,
+			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.name)}/index.js`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Code of Supibot command ${data.values.Name}`
+					content: `Code of Supibot command ${data.name}`
 				}
 			]
 		});
