@@ -23,7 +23,7 @@ module.exports = (function () {
 
 		const isDeveloper = Boolean(res.locals.authUser?.userData?.Data.developer);
 		const printData = data
-			.filter(i => isDeveloper || !i.flags.includes("developer"))
+			.filter(i => isDeveloper || !i.flags?.includes("developer"))
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
 				Name: `<a href="/bot/command/${i.ID}">${i.name}</a>`,
