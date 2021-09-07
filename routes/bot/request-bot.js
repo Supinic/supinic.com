@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const rules = sb.Utils.tag.trim `
-	    <h6>Before requesting</h6>
+	    <h6>Before requesting:</h6>
 		<ul>
 			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
 			<li>The channel must have at least <u>some</u> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
