@@ -159,8 +159,10 @@ module.exports = (function () {
 			else if (key === "latestCommit" && value !== null) {
 				data[name] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
 			}
-			else if (key === "aliases" && value !== null) {
-				data[name] = value.join(", ");
+			else if (key === "aliases") {
+				data[name] = (value && value.length > 0)
+					? value.join(", ")
+					: "N/A";
 			}
 			else if (key === "cooldown") {
 				data[name] = `${value / 1000} seconds`;
