@@ -285,6 +285,7 @@ module.exports = (function () {
 
 		res.render("generic-detail-table", {
 			data,
+			header: `$${commandData.name}`,
 			title: `Command detail - ${commandData.name}`,
 			openGraphDefinition: [
 				{
