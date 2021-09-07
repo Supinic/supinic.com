@@ -5,19 +5,18 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const rules = sb.Utils.tag.trim `
-		I process bot requests manually, every Tuesday in the evenings (Europe time). 
-	
 	    <h6>Before requesting</h6>
 		<ul>
 			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
-			<li>The channel must have at least <b>some</b> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
+			<li>The channel must have at least <u>some</u> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
 			<li>If your channel doesn't have a lot of activity, use the Description field below to explain why you should receive Supibot</li>
 		</ul>
 		
-		<h6>After requesting</h6>
+		<h6>Keep in mind:</h6>
 		<ul>
-			<li>Twitch: If you rename or get banned, you can easily get Supibot back by whispering the <code>$bot rejoin</code> command to Supibot <a href="/bot/command/bot">(more info here)</a></li>
-			<li>Don't call Supibot "Supi" - this refers to me, Supinic</li>
+			<li>If you rename or get banned, you can get Supibot back by whispering the <code>$bot rejoin</code> command to Supibot <a href="/bot/command/bot">(more info here)</a></li>
+			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
+			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot"</li>
 		</ul>
 	`;
 
