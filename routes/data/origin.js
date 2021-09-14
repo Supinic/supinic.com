@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
 
-	const renderColumns = ["Emote", "Name", "Type"];
+	const renderColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
 	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
@@ -22,6 +22,8 @@ module.exports = (function () {
 			return {
 				Emote: `<a target="_blank" href="/data/origin/detail/${i.ID}">${emote}</a>`,
 				Name: i.name,
+				"Emote added": (i.emoteAdded) ? new sb.Date(i.emoteAdded).format("Y-m-d") : "N/A",
+				"Origin added": (i.recordAdded) ? new sb.Date(i.recordAdded).format("Y-m-d") : "N/A",
 				Type: i.type ?? "N/A"
 			};
 		});
