@@ -52,8 +52,14 @@ module.exports = (function () {
 			.single()
 		);
 
-		const data = await sb.Got("Supinic", `track/detail/${track.ID}`).json();
-		return sb.WebUtils.apiSuccess(res, data);
+		const response = await sb.Got("Supinic", `track/detail/${track.ID}`);
+		if (response.statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.message, {
+				causeData: response.body
+			});
+		}
+
+		return sb.WebUtils.apiSuccess(res, response.body.data);
 	});
 
 	return Router;
