@@ -122,7 +122,7 @@ module.exports = (function () {
 
 		let extraNotes = "";
 		if (platformData.Name === "Twitch") {
-			const [bttv, ffz, follows, recent] = await Promise.all([
+			const [bttv, ffz, sevenTv, follows, recent, stream] = await Promise.all([
 				sb.Got({
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
 					responseType: "json",
@@ -130,6 +130,11 @@ module.exports = (function () {
 				}),
 				sb.Got({
 					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
+					responseType: "json",
+					throwHttpErrors: false
+				}),
+				sb.Got({
+					url: `https://api.7tv.app/v2/users/${targetChannel}/emotes`,
 					responseType: "json",
 					throwHttpErrors: false
 				}),
@@ -147,6 +152,12 @@ module.exports = (function () {
 						hide_moderation_messages: "true",
 						limit: "1"
 					}
+				}),
+				sb.Got("Leppunen", {
+					url: `v2/twitch/user/${twitchChannelID}`,
+					searchParams: {
+						id: "true"
+					}
 				})
 			]);
 
@@ -158,6 +169,9 @@ module.exports = (function () {
 			if (ffz.statusCode === 200) {
 				stats.push(`${ffz.body.sets[ffz.body.room.set].emoticons.length} FFZ emotes`);
 			}
+			if (sevenTv.statusCode === 200) {
+				stats.push(`${sevenTv.body.length} 7TV emotes`);
+			}
 			if (follows.statusCode === 200) {
 				stats.push(`${follows.body.total} followers`)
 			}
@@ -166,6 +180,10 @@ module.exports = (function () {
 				const delta = sb.Utils.timeDelta(new sb.Date(timestamp));
 
 				stats.push(`last recent-message sent ${delta}`);
+			}
+			if (stream.statusCode === 200 && stream.body.lastBroadcast.startedAt) {
+				const delta = sb.Utils.timeDelta(new sb.Date(stream.body.lastBroadcast.startedAt));
+				stats.push(`last stream started ${delta}`);
 			}
 
 			const list = stats.map(i => `\t${i}`).join("\n");
