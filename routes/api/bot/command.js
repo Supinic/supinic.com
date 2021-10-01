@@ -54,7 +54,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} command.author
 	 * @apiSuccess {date} command.lastEdit
 	 * @apiSuccess {string} command.code
-	 * @apiSuccess {Object[]} [[command.params]
+	 * @apiSuccess {Object[]} [command.params]
 	 * @apiSuccess {string} command.params.name]
 	 * @apiSuccess {string} command.params.type
 	 * @apiSuccess {string} [command.staticData]
