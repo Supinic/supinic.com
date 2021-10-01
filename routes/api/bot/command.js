@@ -12,7 +12,7 @@ module.exports = (function () {
 	 * @apiDescription Posts a list of bot commands and their parameters
 	 * @apiGroup Bot
 	 * @apiPermission any
-	 * @apiSuccess {Object[]} command List of commands
+	 * @apiSuccess {Array} command List of commands
 	 * @apiSuccess {number} command.ID
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} [command.aliases]
