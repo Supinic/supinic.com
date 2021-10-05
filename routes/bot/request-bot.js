@@ -113,6 +113,13 @@ module.exports = (function () {
 					const channelElement = document.getElementById("channel-name");
 					const descriptionElement = document.getElementById("description");	
 					
+					if (channelElement.value?.toLowerCase() !== "${userData.Name}") {
+						const result = confirm("Adding Supibot to someone else's channel will automatically make you that channel's Ambassador. Do you agree to take this responsibility?");
+						if (!result) {
+							return;
+						}
+					}
+					
 					const body = {
 						platform: platformElement.value,
 						targetChannel: channelElement.value,
