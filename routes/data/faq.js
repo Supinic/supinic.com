@@ -14,7 +14,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: renderData,
-			head: Object.keys(renderData[0]),
+			head: ["Question", "Answer"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
