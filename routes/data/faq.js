@@ -8,7 +8,8 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "/data/faq/list").json();
 		const renderData = data.map(i => ({
 			Question: i.question,
-			Answer: i.answer
+			Answer: i.answer,
+			searchables: (i.tags.length > 0) ? i.tags.join(";") : ""
 		}));
 
 		res.render("generic-list-table", {
