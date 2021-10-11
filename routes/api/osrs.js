@@ -383,22 +383,12 @@ module.exports = (function () {
 
 		for (const skill of skills) {
 			const [rank, level, experience] = data[index];
-			if (rank === -1) {
-				result.skills.push({
-					name: skill,
-					rank: null,
-					level: null,
-					experience: null
-				});
-			}
-			else {
-				result.skills.push({
-					name: skill,
-					rank,
-					level,
-					experience
-				});
-			}
+			result.skills.push({
+				name: skill,
+				rank: (rank === -1) ? null : rank,
+				level,
+				experience
+			});
 
 			index++;
 		}
