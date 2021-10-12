@@ -24,8 +24,8 @@ module.exports = (function () {
 		}
 	};
 
-	Router.get("/alias/detail/:ID", async (req, res) => {
-		const ID = Number(req.params.ID);
+	Router.get("/alias/detail/:id", async (req, res) => {
+		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
 			return sb.WebUtils.apiFail(res, 400, "Malformed ID provided");
 		}
