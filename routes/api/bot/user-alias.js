@@ -24,6 +24,24 @@ module.exports = (function () {
 		}
 	};
 
+	Router.get("/alias/detail/:ID", async (req, res) => {
+		const ID = Number(req.params.ID);
+		if (!sb.Utils.isValidInteger(ID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed ID provided");
+		}
+
+		const aliasData = await CustomCommandAlias.selectSingleCustom(rs => rs
+			.where("ID = %n", ID)
+		);
+
+		if (!aliasData) {
+			return sb.WebUtils.apiFail(res, 404, "No such alias exists");
+		}
+
+		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
+		return sb.WebUtils.apiSuccess(res, aliasData);
+	});
+
 	Router.get("/:name/alias/list", async (req, res) => {
 		const { name } = req.params;
 		const userData = await sb.User.get(name);
