@@ -38,7 +38,10 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "No such alias exists");
 		}
 
+		const userData = await sb.User.get(aliasData.User_Alias);
+		aliasData.User_Name = userData.Name;
 		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
+
 		return sb.WebUtils.apiSuccess(res, aliasData);
 	});
 
@@ -78,6 +81,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "User has no such alias");
 		}
 
+		aliasData.User_Name = userData.Name;
 		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
 
 		return sb.WebUtils.apiSuccess(res, aliasData);
