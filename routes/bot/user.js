@@ -91,7 +91,7 @@ module.exports = (function () {
 			});
 		}
 
-		createAliasDetailTable(response.body.data);
+		createAliasDetailTable(res, response.body.data);
 	});
 
 	Router.get("/:username/alias/list", async (req, res) => {
@@ -157,7 +157,7 @@ module.exports = (function () {
 			});
 		}
 
-		createAliasDetailTable(response.body.data);
+		createAliasDetailTable(res, response.body.data);
 	});
 
 	return Router;
