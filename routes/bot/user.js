@@ -80,7 +80,7 @@ module.exports = (function () {
 
 	Router.get("/alias/detail/:id", async (req, res) => {
 		const response = await sb.Got("Supinic", {
-			url: `bot/user/alias/detail${req.params.ID}`,
+			url: `bot/user/alias/detail/${req.params.ID}`,
 			throwHttpErrors: false
 		});
 
