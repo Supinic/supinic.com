@@ -15,9 +15,10 @@ module.exports = (function () {
 		
 		<h6>Keep in mind:</h6>
 		<ul>
-			<li>If you rename or get banned, you can get Supibot back by whispering the <code>$bot rejoin</code> command to Supibot <a href="/bot/command/bot">(more info here)</a></li>
+			<li>If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/bot">$bot rejoin</a> command to Supibot.</li>
 			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
-			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot"</li>
+			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/suggest">$suggest</a> or <a href="/contact">these methods</a>.
+			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot".</li>
 		</ul>
 	`;
 
