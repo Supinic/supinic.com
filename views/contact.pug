@@ -11,36 +11,29 @@ html
 				height: 32px;
 			}
 
+			div.contacts {
+				padding-top: 3em;
+			}
+
 	body
 		block navigation
 		center
 			br
 
-			a(href="mailto:supinic@pm.me")
-				img(class="icon" title="E-mail" alt="E-mail" src="/public/img/email.png")
+			div(class="container contacts")
+				div(class="row")
+					div(class="col d-flex justify-content-center")
+						a(href="mailto:supinic@pm.me")
+							img(class="icon" title="E-mail" alt="E-mail" src="/public/img/email.png")
 
-			br
-			br
+					div(class="col d-flex justify-content-center")
+						a(target="_blank" href="https://github.com/Supinic")
+							img(class="icon" title="GitHub" alt="GitHub" src="/public/img/github.png")
 
-			a(target="_blank" href="https://github.com/Supinic")
-				img(class="icon" title="GitHub" alt="GitHub" src="/public/img/github.png")
+					div(class="col d-flex justify-content-center")
+						a(target="_blank" href="https://twitch.tv/supinic")
+							img(class="icon" title="Twitch" alt="Twitch" src="/public/img/twitch.png")
 
-			br
-			br
-
-			a(target="_blank" href="https://twitch.tv/supinic")
-				img(class="icon" title="Twitch" alt="Twitch" src="/public/img/twitch.png")
-
-			br
-			br
-
-			a(target="_blank" href="https://discord.gg/RtYSuV9")
-				img(class="icon" title="Discord server" alt="Discord server"  src="/public/img/discord.png")
-
-			br
-			br
-
-			a(target="_blank" href="https://tox.chat/")
-				img(alt="TOX" style="height: 32px;" src="/public/img/tox.png")
-			br
-			div A43F580580281EA55864F71CDA44EA5225A9C066FAA01BFA0B9086FC7E577A7B01F87A260BD2
+					div(class="col d-flex justify-content-center")
+						a(target="_blank" href="https://discord.gg/RtYSuV9")
+							img(class="icon" title="Discord server" alt="Discord server" src="/public/img/discord.png")
