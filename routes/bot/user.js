@@ -4,6 +4,46 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const createAliasDetailTable = (res, aliasData) => {
+		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
+		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
+
+		const args = aliasData.arguments ?? [];
+		const invocation = (aliasData.invocation)
+			? `${aliasData.invocation} ${args.join(" ")}`
+			: "N/A";
+
+		res.render("generic-detail-table", {
+			title: `Alias ${aliasData.name} of user ${aliasData.userName}`,
+			data: {
+				User: aliasData.userName,
+				Alias: aliasData.name,
+				Created: created,
+				Edited: edited,
+				Description: (aliasData.description)
+					? sb.Utils.escapeHTML(aliasData.description)
+					: "N/A",
+				Invocation: (aliasData.invocation)
+					? `<code>${sb.Utils.escapeHTML(invocation)}</code>`
+					: "N/A"
+			},
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Alias ${aliasData.name} of user ${aliasData.userName}`
+				},
+				{
+					property: "description",
+					content: aliasData.description ?? invocation ?? "N/A"
+				},
+				{
+					property: "author",
+					content: aliasData.userName
+				}
+			]
+		});
+	}
+
 	Router.get("/alias/find", async (req, res) => {
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
@@ -36,6 +76,22 @@ module.exports = (function () {
 				}
 			`
 		});
+	});
+
+	Router.get("/alias/detail/:id", async (req, res) => {
+		const response = await sb.Got("Supinic", {
+			url: `bot/user/alias/detail${req.params.ID}`,
+			throwHttpErrors: false
+		});
+
+		if (response.statusCode !== 200) {
+			return res.status(404).render("error", {
+				error: response.statusCode,
+				message: response.body.error.message
+			});
+		}
+
+		createAliasDetailTable(response.body.data);
 	});
 
 	Router.get("/:username/alias/list", async (req, res) => {
@@ -89,60 +145,19 @@ module.exports = (function () {
 
 	Router.get("/:username/alias/detail/:alias", async (req, res) => {
 		const { alias, username } = req.params;
-		const { statusCode, body } = await sb.Got("Supinic", {
+		const response = await sb.Got("Supinic", {
 			url: `bot/user/${encodeURIComponent(username)}/alias/detail/${alias}`,
 			throwHttpErrors: false
 		});
 
-		if (statusCode !== 200) {
+		if (response.statusCode !== 200) {
 			return res.status(404).render("error", {
-				error: statusCode,
-				message: body.error.message
+				error: response.statusCode,
+				message: response.body.error.message
 			});
 		}
 
-		const aliasData = body.data;
-		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
-		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
-
-		const args = aliasData.arguments ?? [];
-		const invocation = (aliasData.invocation)
-			? `${aliasData.invocation} ${args.join(" ")}`
-			: "N/A";
-
-		res.render("generic-detail-table", {
-			title: `Alias ${alias} of user ${username}`,
-			data: {
-				User: username,
-				Alias: aliasData.name,
-				Created: created,
-				Edited: edited,
-				Description: (aliasData.description)
-					? sb.Utils.escapeHTML(aliasData.description)
-					: "N/A",
-				Invocation: (aliasData.invocation)
-					? `<code>${sb.Utils.escapeHTML(invocation)}</code>`
-					: "N/A"
-			},
-			openGraphDefinition: [
-				{
-					property: "title",
-					content: `Alias ${alias} of user ${username}`
-				},
-				{
-					property: "description",
-					content: aliasData.description ?? invocation ?? "N/A"
-				},
-				{
-					property: "author",
-					content: username
-				},
-				{
-					property: "url",
-					content: `https://supinic.com/bot/user/${username}/alias/${alias}`
-				}
-			]
-		});
+		createAliasDetailTable(response.body.data);
 	});
 
 	return Router;
