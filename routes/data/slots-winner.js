@@ -20,7 +20,7 @@ module.exports = (function () {
 			head: Object.keys(printData[0]),
 			pageLength: 50,
 			sortColumn: 0,
-			sortDirection: "desc"
+			sortDirection: "asc"
 		});
 	});
 
