@@ -13,9 +13,6 @@ In order to access endpoints with required authorization, you must provide your 
 2) Log in, if not logged in already
 3) Generate your key! Make sure to save both your user ID and the key together 
 
-**Disclaimer**: Only use the alternative method in case the recommended one doesn't work, as your key is subject to possible
-leaks based on what platform you're in. There's no guarantee that it's going to be safe.
-
 ### Using the key
 
 ##### Headers
