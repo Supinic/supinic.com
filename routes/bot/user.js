@@ -129,7 +129,7 @@ module.exports = (function () {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
 				},
-				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${alias.name}" class="link-alias active"></div>`
+				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${encodeURIComponent(alias.name)}" class="link-alias active"></div>`
 			};
 		});
 
