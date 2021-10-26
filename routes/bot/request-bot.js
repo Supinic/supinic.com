@@ -10,7 +10,7 @@ module.exports = (function () {
 			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
 			<li>The channel must have at least <u>some</u> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
 			<li>If your channel doesn't have a lot of activity, use the Description field below to explain why you should receive Supibot</li>
-			<li>If you simply want to test the bot out, join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> or DM it on any platform. The functionality is (almost) exactly the same as it would be in your channel.</li>
+			<li>If you simply want to test the bot out, join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> and type commands in chat. You can also DM it on any platform. The functionality is (almost) exactly the same as it would be in your channel.</li>
 		</ul>
 		
 		<h6>Keep in mind:</h6>
@@ -18,6 +18,7 @@ module.exports = (function () {
 			<li>If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/bot">$bot rejoin</a> command to Supibot.</li>
 			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
 			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/suggest">$suggest</a> or <a href="/contact">these methods</a>.
+			<li>If you're unsure about what the bot can do, consult the <code>$help</code>, <code>$help (command name)</code> and <code>$faq</code> commands.</li>
 			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot".</li>
 		</ul>
 	`;
