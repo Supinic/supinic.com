@@ -109,7 +109,7 @@ module.exports = (function () {
 		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
-		const headerColumns = (auth.userData)
+		const headerColumns = (auth.userData && auth.userData.Name !== username.toLowerCase())
 			? ["Name", "Invocation", "Created", "Link"]
 			: ["Name", "Invocation", "Created"];
 
