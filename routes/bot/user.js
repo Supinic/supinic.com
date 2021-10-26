@@ -108,6 +108,11 @@ module.exports = (function () {
 			});
 		}
 
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const headerColumns = (auth.userData)
+			? ["Name", "Invocation", "Created", "Link"]
+			: ["Name", "Invocation", "Created"];
+
 		const printData = body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
 			const name = (alias.description)
@@ -124,13 +129,16 @@ module.exports = (function () {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
 				},
-				"🔗": `<div alias-owner="${encodeURIComponent(username)}" alias-name="${alias.name}" alias-id="${alias.ID}" class="link-alias"></div>`
+				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${alias.name}" class="link-alias active"></div>`
 			};
 		});
 
 		res.render("generic-list-table", {
 			data: printData,
-			head: ["Name", "Invocation", "Created", "🔗"],
+			head: headerColumns,
+			headerDescriptions: {
+				"Link": "Links the alias to you - as if you used $alias link (user) (alias) with Supibot!"
+			},
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
@@ -139,7 +147,7 @@ module.exports = (function () {
 				function beforeTableInitalize () {
 					const unsetList = document.getElementsByClassName("link-alias");
 					for (const element of unsetList) {
-						if (element.textContent === "N/A") {
+						if (element.textContent === "OK") {
 							continue;
 						}
 						
@@ -153,6 +161,9 @@ module.exports = (function () {
 						console.log("Aborted requested, previous is still pending");
 						return;
 					}
+					else if (element.classList.contains("inactive")) {
+						return;
+					}
 									
 					const aliasName = element.getAttribute("alias-name");
 					const aliasOwner = element.getAttribute("alias-owner");
@@ -161,6 +172,7 @@ module.exports = (function () {
 						return;
 					}
 					
+					element.classList.remove("active");
 					element.classList.add("loading");
 					
 					const url = "/api/bot/user/alias/link/" + aliasOwner + "/" + aliasName;
@@ -170,10 +182,16 @@ module.exports = (function () {
 					
 					element.classList.remove("loading");
 					
-					if (data.result.success === false) {
+					if (data.statusCode === 403) {
+						element.classList.add("active");
+						alert("Your session expired! Please log in again.");
+					}					
+					else if (data.result.success === false) {
+						element.classList.add("active");
 						alert("🚨 " + data.result.reply);
 					}					
 					else {
+						element.classList.add("inactive");
 						alert("✔ " + data.result.reply);
 					}
 				}				 
@@ -189,6 +207,9 @@ module.exports = (function () {
 			    }
 				div.link-alias.active:before { 
 					content: "🔗"
+			    }
+				div.link-alias.inactive:before { 
+					content: "OK"
 			    }
 			    div.link-alias.loading {
 			        background-image: url("/public/img/ppCircle.gif");
