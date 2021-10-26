@@ -123,18 +123,78 @@ module.exports = (function () {
 				Created: {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
+				},
+				"🔗": {
+					value: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${alias.name}" alias-id="${alias.ID}" class="link-alias"></div>`,
 				}
 			};
 		});
 
 		res.render("generic-list-table", {
 			data: printData,
-			head: ["Name", "Invocation", "Created"],
+			head: ["Name", "Invocation", "Created", "🔗"],
 			pageLength: 25,
 			sortColumn: 0,
 			sortDirection: "asc",
 			specificFiltering: true,
+			extraScript: `
+				function beforeTableInitalize () {
+					const unsetList = document.getElementsByClassName("link-alias");
+					for (const element of unsetList) {
+						if (element.textContent === "N/A") {
+							continue;
+						}
+						
+						element.classList.add("clickable");
+						element.parentElement.addEventListener("click", () => linkAlias(element));
+					}
+				}
+				
+				async function linkAlias (element) {
+					if (element.classList.contains("loading")) {
+						console.log("Aborted requested, previous is still pending");
+						return;
+					}
+									
+					const aliasName = element.getAttribute("alias-name");
+					const aliasOwner = element.getAttribute("alias-owner");
+					const approved = confirm("Do you really want to link alias " + aliasName + "?");
+					if (!approved) {
+						return;
+					}
+					
+					element.classList.add("loading");
+					
+					const url = "/api/bot/user/alias/link/" + aliasOwner + "/" + aliasName;
+					const { data } = await fetch(url, { method: "GET" })
+						.then(i => i.json())
+						.catch(i => i.json());
+					
+					element.classList.remove("loading");
+					
+					if (data.result.success === false) {
+						alert("🚨 " + data.result.reply);
+					}					
+					else {
+						alert("✔ " + data.result.reply);
+					}
+				}				 
+			`,
 			extraCSS: `
+				div.clickable {
+					cursor: pointer;
+				}
+				div.link-alias.active { 					
+				    background-position: center; 
+				    background-repeat: no-repeat;
+				    background-size: contain;
+			    }
+				div.link-alias.active:before { 
+					content: "🔗"
+			    }
+			    div.link-alias.loading {
+			        background-image: url("/public/img/ppCircle.gif");
+			    }			
 				div.hoverable {
 					cursor: pointer;
 					text-decoration: underline dotted;

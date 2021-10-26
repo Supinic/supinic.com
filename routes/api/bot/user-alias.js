@@ -24,6 +24,45 @@ module.exports = (function () {
 		}
 	};
 
+	Router.get("/alias/link/:username/:alias", async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const aliasOwnerData = await sb.User.get(req.params.username);
+		if (!aliasOwnerData) {
+			return sb.WebUtils.apiFail(res, 404, "Provided user does not exist");
+		}
+
+		const aliasData = await CustomCommandAlias.selectSingleCustom(q => q
+			.where("User_Alias = %n", aliasOwnerData.ID)
+			.where("Name = %s", req.params.alias)
+		);
+
+		if (!aliasData) {
+			return sb.WebUtils.apiFail(res, 404, "Provided user does not own the provided alias");
+		}
+
+		const response = await sb.Got("Supibot", {
+			url: "command/execute",
+			searchParams: {
+				invocation: "alias",
+				platform: "twitch",
+				channel: null,
+				user: auth.userData.Name,
+				arguments: `link ${aliasOwnerData.Name} ${aliasData.Name}`
+			}
+		});
+
+		return sb.WebUtils.apiSuccess(res, response.body.data, {
+			skipCaseConversion: true
+		});
+	});
+
 	Router.get("/alias/detail/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
