@@ -167,7 +167,7 @@ module.exports = (function () {
 									
 					const aliasName = element.getAttribute("alias-name");
 					const aliasOwner = element.getAttribute("alias-owner");
-					const approved = confirm("Do you really want to link alias " + aliasName + "?");
+					const approved = confirm("Do you really want to link alias '" + aliasName + "'?");
 					if (!approved) {
 						return;
 					}
