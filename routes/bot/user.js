@@ -172,8 +172,11 @@ module.exports = (function () {
 						return;
 					}
 					
+					const previousContent = element.textContent;
 					element.classList.remove("active");
+					element.classList.remove("clickable");
 					element.classList.add("loading");
+					element.textContent = "";
 					
 					const url = "/api/bot/user/alias/link/" + aliasOwner + "/" + aliasName;
 					const { data } = await fetch(url, { method: "GET" })
@@ -181,6 +184,7 @@ module.exports = (function () {
 						.catch(i => i.json());
 					
 					element.classList.remove("loading");
+					element.textContent = previousContent;
 					
 					if (data.statusCode === 403) {
 						element.classList.add("active");
@@ -192,6 +196,7 @@ module.exports = (function () {
 					}					
 					else {
 						element.classList.add("inactive");
+						element.classList.remove("clickable");
 						alert("✔ " + data.result.reply);
 					}
 				}				 
@@ -213,7 +218,7 @@ module.exports = (function () {
 			    }
 			    div.link-alias.loading {
 			        background-image: url("/public/img/ppCircle.gif");
-			    }			
+			    }
 				div.hoverable {
 					cursor: pointer;
 					text-decoration: underline dotted;
