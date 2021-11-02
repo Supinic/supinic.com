@@ -129,7 +129,7 @@ module.exports = (function () {
 	 * @apiPermission any
 	 * @apiParam {string} username User name - mutually exclusive with userID
 	 * @apiParam {number} userID Supibot user ID - mutually exclusive with username
-	 * @apiParam {number} commandID Supibot command ID
+	 * @apiParam {string} command Supibot command name
 	 * @apiSuccess {Object[]} filter List of filters
 	 * @apiSuccess {string} filter.type Opt-out, Blacklist, Whitelist, Block, Unping, Unmention
 	 * @apiSuccess {string} filter.response Type of response the bot responds with when the filter is encountered.
@@ -143,9 +143,9 @@ module.exports = (function () {
 	 * Command does not exist <br>
 	 */
 	Router.get("/check", async (req, res) => {
-		const { username, userID: rawUserID, commandID: rawCommandID } = req.query;
-		if ((!username && !rawUserID) || !rawCommandID) {
-			return sb.WebUtils.apiFail(res, 400, "Username and command ID must be provided");
+		const { username, userID: rawUserID, command } = req.query;
+		if ((!username && !rawUserID) || !command) {
+			return sb.WebUtils.apiFail(res, 400, "Username and command name must be provided");
 		}
 		else if (username && rawUserID) {
 			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of user name/id");
@@ -161,16 +161,13 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "User does not exist");
 		}
 
-		const commandID = Number(rawCommandID);
-		if (rawCommandID && !sb.Utils.isValidInteger(commandID)) {
-			return sb.WebUtils.apiFail(res, 400, "Command ID must be a valid ID integer");
-		}
-
-		const filterList = (await Filter.selectMultipleCustom(rs => rs
+		const rawList = await Filter.selectMultipleCustom(rs => rs
 			.where("User_Alias = %n", userData.ID)
-			.where("Command = %n", commandID)
+			.where("Command = %s", command)
 			.where("Active = %b", true)
-		)).map(i => ({
+		);
+
+		const filterList = rawList.map(i => ({
 			Type: i.Type,
 			Response: i.Response,
 			Reason: i.Reason,
@@ -201,7 +198,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/filter/command/:id/list Command-related filters
+	 * @api {get} /bot/filter/command/:name/list Command-related filters
 	 * @apiName CheckFilterStatus
 	 * @apiDescription List all filters related to a command
 	 * @apiGroup Bot
@@ -221,12 +218,8 @@ module.exports = (function () {
 	 * @apiSuccess {Object} data Custom filter data
 	 * @apiError (400) InvalidRequest Command does not exist
 	 */
-	Router.get("/command/:id/list", async (req, res) => {
-		const id = Number(req.params.id);
-		if (!sb.Utils.isValidInteger(id)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed command ID");
-		}
-
+	Router.get("/command/:name/list", async (req, res) => {
+		const { name } = req.params;
 		const data = await Filter.selectCustom(q => q
 			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
@@ -238,7 +231,7 @@ module.exports = (function () {
 				toTable: "Platform",
 				on: "Channel.Platform = Platform.ID"
 			})
-			.where("Command = %n", id)
+			.where("Command = %s", name)
 			.where("Active = %b", true)
 			.where("Type NOT IN %s+", ["Block"])
 			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
