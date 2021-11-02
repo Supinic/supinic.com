@@ -37,10 +37,9 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/detail/command/:identifier Command - get data
+	 * @api {get} /bot/detail/command/:name Command - get data
 	 * @apiName GetCommandData
-	 * @apiDescription Fetches full data for a specific command. <br>
-	 * The `identifier` parameter can be either number (ID) or string (Name, not aliases)
+	 * @apiDescription Fetches full data for a specific command.
 	 * @apiGroup Bot
 	 * @apiPermission any
 	 * @apiSuccess {string} command.name
