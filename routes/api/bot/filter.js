@@ -203,7 +203,7 @@ module.exports = (function () {
 	 * @apiDescription List all filters related to a command
 	 * @apiGroup Bot
 	 * @apiPermission any
-	 * @apiParam {number} :id Command ID as part of URL
+	 * @apiParam {number} :name Command name as part of URL
 	 * @apiSuccess {Object[]} filter List of filters
 	 * @apiSuccess {number} ID
 	 * @apiSuccess {string} type
