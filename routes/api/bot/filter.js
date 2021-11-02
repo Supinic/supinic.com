@@ -41,7 +41,7 @@ module.exports = (function () {
 		if (command) {
 			args.push(`command:${command}`);
 		}
-		if (command) {
+		if (invocation) {
 			args.push(`invocation:${invocation}`);
 		}
 		if (platform) {
