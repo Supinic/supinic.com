@@ -13,7 +13,6 @@ module.exports = (function () {
 	 * @apiGroup Bot
 	 * @apiPermission any
 	 * @apiSuccess {Array} command List of commands
-	 * @apiSuccess {number} command.ID
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} [command.aliases]
 	 * @apiSuccess {string} [command.description]
@@ -27,7 +26,6 @@ module.exports = (function () {
 		);
 
 		const data = rawData.map(i => ({
-			ID: i.ID,
 			Name: i.Name,
 			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : [],
 			Description: i.Description,
@@ -39,7 +37,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/command/:identifier Command - get data
+	 * @api {get} /bot/detail/command/:identifier Command - get data
 	 * @apiName GetCommandData
 	 * @apiDescription Fetches full data for a specific command. <br>
 	 * The `identifier` parameter can be either number (ID) or string (Name, not aliases)
@@ -59,33 +57,14 @@ module.exports = (function () {
 	 * @apiSuccess {string} command.params.type
 	 * @apiSuccess {string} [command.staticData]
 	 * @apiSuccess {string} [command.dynamicDescription]
-	 * @apiSuccess {string} [command.latestCommit]
 	 */
-	Router.get("/:identifier", async (req, res) => {
-		const commandID = Number(req.params.identifier);
-		let commandName;
-
-		if (Number.isNaN(commandID)) {
-			commandName = req.params.identifier;
-		}
-		else if (!sb.Utils.isValidInteger(commandID)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid command identifier provided");
-		}
-
-		let command;
-		if (commandName) {
-			command = await Command.selectSingleCustom(q => q.where("Name = %s", commandName));
-		}
-		else if (commandID) {
-			command = await Command.selectSingleCustom(q => q.where("ID = %n", commandID));
-		}
-
+	Router.get("/detail/:identifier", async (req, res) => {
+		const command = await Command.selectSingleCustom(q => q.where("Name = %s", req.params.identifier));
 		if (!command) {
 			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
 		}
 
 		return sb.WebUtils.apiSuccess(res, {
-			ID: command.ID,
 			Name: command.Name,
 			Aliases: (command.Aliases) ? JSON.parse(command.Aliases) : [],
 			Flags: command.Flags,
@@ -96,8 +75,15 @@ module.exports = (function () {
 			Code: command.Code,
 			Params: (command.Params) ? JSON.parse(command.Params) : [],
 			Static_Data: command.Static_Data,
-			Dynamic_Description: command.Dynamic_Description,
-			Latest_Commit: command.Latest_Commit
+			Dynamic_Description: command.Dynamic_Description
+		});
+	});
+
+	Router.get("/:identifier", async (req, res) => {
+		return sb.WebUtils.apiDeprecated(req, res, {
+			original: `/api/bot/command/${req.params.identifier}`,
+			replacement: `/api/bot/command/detail/${req.params.identifier}`,
+			timestamp: new sb.Date("2020-11-30 23:59:59.999").valueOf()
 		});
 	});
 
