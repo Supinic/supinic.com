@@ -211,7 +211,7 @@ module.exports = (function () {
 			}
 		}
 
-		const { data: filterData } = await sb.Got("Supinic", `bot/filter/command/${commandData.ID}/list`).json();
+		const { data: filterData } = await sb.Got("Supinic", `bot/filter/command/${commandData.name}/list`).json();
 		const restrictions = {};
 
 		for (const filter of filterData) {

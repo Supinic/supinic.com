@@ -43,7 +43,6 @@ module.exports = (function () {
 	 * The `identifier` parameter can be either number (ID) or string (Name, not aliases)
 	 * @apiGroup Bot
 	 * @apiPermission any
-	 * @apiSuccess {number} command.ID
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} [command.aliases]
 	 * @apiSuccess {string[]} [command.flags]
