@@ -98,12 +98,11 @@ module.exports = (function () {
 			cooldown: "Cooldown",
 			dynamicDescription: "Dynamic description",
 			author: "Author",
-			lastEdit: "Last edit",
-			latestCommit: "Latest commit"
+			lastEdit: "Last edit"
 		};
 
 		const commandData = response.body.data;
-		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "code"];
+		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "code", "latest commit"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
 
