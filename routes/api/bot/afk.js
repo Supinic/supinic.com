@@ -189,7 +189,7 @@ module.exports = (function () {
 		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "afk"));
 		const banCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", auth.userID)
-			.where("Command = %n", command.ID)
+			.where("Command = %s", command.Name)
 			.where("Active = %b", true)
 			.where("Type = %s", "Blacklist")
 		);

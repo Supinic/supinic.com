@@ -180,7 +180,7 @@ module.exports = (function () {
 			const check = await sb.Query.getRecordset(rs => rs
 				.select("ID")
 				.from("chat_data", "Filter")
-				.where("Command = %n", commandData.ID)
+				.where("Command = %s", commandData.name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Opt-out")
 				.where("Active = %b", true)
@@ -197,7 +197,7 @@ module.exports = (function () {
 					toTable: "User_Alias",
 					on: "Filter.Blocked_User = User_Alias.ID"
 				})
-				.where("Command = %n", commandData.ID)
+				.where("Command = %s", commandData.name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Block")
 				.where("Active = %b", true)

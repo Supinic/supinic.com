@@ -183,7 +183,7 @@ module.exports = (function () {
 		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "remind"));
 		const banCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
-			.where("Command = %n", command.ID)
+			.where("Command = %s", command.Name)
 			.where("Active = %b", true)
 			.where("Type = %s", "Blacklist")
 		);
@@ -193,7 +193,7 @@ module.exports = (function () {
 
 		const optoutCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
-			.where("Command = %n", command.ID)
+			.where("Command = %s", command.Name)
 			.where("Active = %b", true)
 			.where("Type = %s", "Opt-out")
 		);
@@ -204,7 +204,7 @@ module.exports = (function () {
 		const blockCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
 			.where("Blocked_User = %n", auth.userID)
-			.where("Command = %n", command.ID)
+			.where("Command = %s", command.Name)
 			.where("Active = %b", true)
 			.where("Type = %s", "Block")
 		);
