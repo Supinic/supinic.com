@@ -15,9 +15,9 @@ module.exports = (function () {
 		
 		<h6>Keep in mind:</h6>
 		<ul>
-			<li>If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/bot">$bot rejoin</a> command to Supibot.</li>
+			<li>If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rejoin</a> command to Supibot.</li>
 			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
-			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/suggest">$suggest</a> or <a href="/contact">these methods</a>.
+			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/detail/suggest">$suggest</a> or <a href="/contact">these methods</a>.
 			<li>If you're unsure about what the bot can do, consult the <code>$help</code>, <code>$help (command name)</code> and <code>$faq</code> commands.</li>
 			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot".</li>
 		</ul>
@@ -54,7 +54,7 @@ module.exports = (function () {
 			else if (data.every(i => i.mode === "Inactive")) {
 				specialOccassionString = sb.Utils.tag.trim `
 					<h5 class="text-danger"> You seem to have renamed your channel while having Supibot in it. </h5>
-					<h6> Whisper the <code>$bot rejoin</code> command to Supibot <a href="/bot/command/bot">(more info here)</a> </h6>
+					<h6> Whisper the <code>$bot rejoin</code> command to Supibot <a href="/bot/command/detail/bot">(more info here)</a> </h6>
 				`;
 			}
 		}

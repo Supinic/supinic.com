@@ -25,7 +25,7 @@ module.exports = (function () {
 			.filter(i => isDeveloper || !i.flags?.includes("developer"))
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
-				Name: `<a href="/bot/command/${i.ID}">${i.name}</a>`,
+				Name: `<a href="/bot/command/detail/${i.name}">${i.name}</a>`,
 				Description: i.description || "N/A",
 				"👤": (i.aliases.length > 0)
 					? `<div class="hoverable" title="Aliases: ${i.aliases.join(", ")}">Yes</div>`
@@ -82,7 +82,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:identifier", async (req, res) => {
+	Router.get("/detail/:identifier", async (req, res) => {
 		const response = await sb.Got("Supinic", `bot/command/${req.params.identifier}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
@@ -283,7 +283,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="/bot/command/${commandData.name}/code">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="/bot/command/detail/${commandData.name}/code">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
@@ -302,7 +302,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:identifier/code", async (req, res) => {
+	Router.get("/detail/:identifier/code", async (req, res) => {
 		const response = await sb.Got("Supinic", `bot/command/${req.params.identifier}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
