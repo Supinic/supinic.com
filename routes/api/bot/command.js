@@ -83,7 +83,7 @@ module.exports = (function () {
 		return sb.WebUtils.apiDeprecated(req, res, {
 			original: `/api/bot/command/${req.params.identifier}`,
 			replacement: `/api/bot/command/detail/${req.params.identifier}`,
-			timestamp: new sb.Date("2020-11-30 23:59:59.999").valueOf()
+			timestamp: new sb.Date("2021-12-31 23:59:59.999").valueOf()
 		});
 	});
 
