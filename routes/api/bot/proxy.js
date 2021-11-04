@@ -60,7 +60,7 @@ module.exports = (function () {
 		}
 
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
 		}
 		else {
 			return sb.WebUtils.apiSuccess(res, { message: "OK" });

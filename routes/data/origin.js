@@ -93,7 +93,7 @@ module.exports = (function () {
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
-				message: response.body.error.message
+				message: response.body.error?.message ?? "N/A"
 			});
 		}
 
@@ -112,7 +112,7 @@ module.exports = (function () {
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
-				message: response.body.error.message
+				message: response.body.error?.message ?? "N/A"
 			});
 		}
 

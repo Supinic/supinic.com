@@ -87,7 +87,7 @@ module.exports = (function () {
 		if (response.statusCode !== 200) {
 			return res.status(404).render("error", {
 				error: response.statusCode,
-				message: response.body.error.message
+				message: response.body.error?.message ?? "N/A"
 			});
 		}
 
@@ -237,7 +237,7 @@ module.exports = (function () {
 		if (response.statusCode !== 200) {
 			return res.status(404).render("error", {
 				error: response.statusCode,
-				message: response.body.error.message
+				message: response.body.error?.message ?? "N/A"
 			});
 		}
 
