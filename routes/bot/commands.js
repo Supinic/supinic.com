@@ -83,7 +83,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier", async (req, res) => {
-		const response = await sb.Got("Supinic", `bot/command/detail/${req.params.identifier}`);
+		const identifier = encodeURIComponent(req.params.identifier);
+		const response = await sb.Got("Supinic", `bot/command/detail/${identifier}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
@@ -302,7 +303,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		const response = await sb.Got("Supinic", `bot/command/detail/${req.params.identifier}`);
+		const identifier = encodeURIComponent(req.params.identifier);
+		const response = await sb.Got("Supinic", `bot/command/detail/${identifier}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
