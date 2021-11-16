@@ -334,12 +334,12 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:channel/", async (req, res) => {
+	Router.get("/channel/:channel/", async (req, res) => {
 		res.set("Content-Type", "text/html");
 		res.send("NYI");
 	});
 
-	Router.get("/:channel/:user", async (req, res) => {
+	Router.get("/channel/:channel/user/:user", async (req, res) => {
 		res.set("Content-Type", "text/html");
 		res.send("NYI");
 	});
