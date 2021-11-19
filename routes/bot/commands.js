@@ -102,17 +102,17 @@ module.exports = (function () {
 			lastEdit: "Last edit"
 		};
 
-		const commandData = response.body.data;
+		const commandDefinition = response.body.data;
 		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "code", "latest commit"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		const data = {};
 
 		for (const [key, name] of Object.entries(properties)) {
-			const value = commandData[key];
+			const value = commandDefinition[key];
 			if (key === "dynamicDescription") {
 				if (value) {
 					const descriptionFunction = eval(value);
-					const commandData = sb.Command.get(commandData.name);
+					const commandData = sb.Command.get(commandDefinition.name);
 					const mockedCommandData = {
 						...commandData,
 						getStaticData: () => {
@@ -171,7 +171,7 @@ module.exports = (function () {
 			const check = await sb.Query.getRecordset(rs => rs
 				.select("ID")
 				.from("chat_data", "Filter")
-				.where("Command = %s", commandData.name)
+				.where("Command = %s", commandDefinition.name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Opt-out")
 				.where("Active = %b", true)
@@ -188,7 +188,7 @@ module.exports = (function () {
 					toTable: "User_Alias",
 					on: "Filter.Blocked_User = User_Alias.ID"
 				})
-				.where("Command = %s", commandData.name)
+				.where("Command = %s", commandDefinition.name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Block")
 				.where("Active = %b", true)
@@ -278,16 +278,16 @@ module.exports = (function () {
 
 		res.render("generic-detail-table", {
 			data,
-			header: `$${commandData.name}`,
-			title: `Command detail - ${commandData.name}`,
+			header: `$${commandDefinition.name}`,
+			title: `Command detail - ${commandDefinition.name}`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Command ${commandData.name}`
+					content: `Command ${commandDefinition.name}`
 				},
 				{
 					property: "description",
-					content: commandData.description ?? "(no description available)"
+					content: commandDefinition.description ?? "(no description available)"
 				}
 			]
 		});
