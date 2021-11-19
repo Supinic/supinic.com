@@ -111,26 +111,17 @@ module.exports = (function () {
 			const value = commandData[key];
 			if (key === "dynamicDescription") {
 				if (value) {
-					const values = { ...commandData };
-					const fakeCommand = {
-						ID: values.ID,
-						getCacheKey: () => sb.Command.prototype.getCacheKey.apply(fakeCommand)
-					};
-
-					values.getCacheData = sb.Command.prototype.getCacheData.bind(fakeCommand);
-					values.getStaticData = function () {
-						this.data = {};
-						const resolver = eval(this.staticData);
-						if (typeof resolver === "function") {
-							return resolver.apply(this);
-						}
-						else {
-							return resolver;
+					const descriptionFunction = eval(value);
+					const commandData = sb.Command.get(commandData.name);
+					const mockedCommandData = {
+						...commandData,
+						getStaticData: () => {
+							console.debug("Deprecated getStaticData() call", commandData.name);
+							return commandData.staticData;
 						}
 					};
 
-					const fn = eval(value);
-					const result = await fn(commandPrefix, values);
+					const result = await descriptionFunction(commandPrefix, mockedCommandData);
 
 					data[name] = result.join("<br>");
 				}
