@@ -25,7 +25,7 @@ module.exports = (function () {
 			.filter(i => isDeveloper || !i.flags?.includes("developer"))
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
-				Name: `<a href="/bot/command/detail/${i.name}">${i.name}</a>`,
+				Name: `<a href="/bot/command/detail/${encodeURIComponent(i.name)}">${i.name}</a>`,
 				Description: i.description || "N/A",
 				"👤": (i.aliases.length > 0)
 					? `<div class="hoverable" title="Aliases: ${i.aliases.join(", ")}">Yes</div>`
@@ -283,7 +283,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="/bot/command/detail/${commandData.name}/code">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="/bot/command/detail/${identifier}/code">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
