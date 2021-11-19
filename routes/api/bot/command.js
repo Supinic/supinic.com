@@ -21,7 +21,7 @@ module.exports = (function () {
 		const commandsData = sb.Command.definitions;
 		const data = commandsData.map(i => ({
 			Name: i.Name,
-			Aliases: i.Aliases,
+			Aliases: i.Aliases ?? [],
 			Description: i.Description,
 			Cooldown: i.Cooldown,
 			Flags: i.Flags ?? []
