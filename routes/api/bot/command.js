@@ -4,8 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Command = require("../../../modules/chat-data/command");
-
 	/**
 	 * @api {get} /bot/command/list/ Command - list
 	 * @apiName GetCommandList
@@ -20,14 +18,10 @@ module.exports = (function () {
 	 * @apiSuccess {object} command.flags
 	 */
 	Router.get("/list", async (req, res) => {
-		const rawData = await Command.selectMultipleCustom(rs => rs
-			.where("Flags NOT %*like*", "archived")
-			.where("Flags NOT %*like*", "system")
-		);
-
-		const data = rawData.map(i => ({
+		const commandsData = sb.Command.definitions;
+		const data = commandsData.map(i => ({
 			Name: i.Name,
-			Aliases: (i.Aliases) ? JSON.parse(i.Aliases) : [],
+			Aliases: i.Aliases,
 			Description: i.Description,
 			Cooldown: i.Cooldown,
 			Flags: i.Flags ?? []
@@ -48,32 +42,39 @@ module.exports = (function () {
 	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
 	 * @apiSuccess {string} command.author
-	 * @apiSuccess {date} command.lastEdit
 	 * @apiSuccess {string} command.code
 	 * @apiSuccess {Object[]} [command.params]
-	 * @apiSuccess {string} command.params.name]
+	 * @apiSuccess {string} command.params.name
 	 * @apiSuccess {string} command.params.type
 	 * @apiSuccess {string} [command.staticData]
 	 * @apiSuccess {string} [command.dynamicDescription]
 	 */
 	Router.get("/detail/:identifier", async (req, res) => {
-		const command = await Command.selectSingleCustom(q => q.where("Name = %s", req.params.identifier));
-		if (!command) {
+		const commandData = sb.Command.get(req.params.identifier);
+		if (!commandData) {
 			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
 		}
 
+		const definition = sb.Command.definitions.find(i => i.Name === commandData.Name);
+		if (!definition) {
+			return sb.WebUtils.apiFail(res, 404, "Command definition does not exist");
+		}
+
 		return sb.WebUtils.apiSuccess(res, {
-			Name: command.Name,
-			Aliases: (command.Aliases) ? JSON.parse(command.Aliases) : [],
-			Flags: command.Flags,
-			Description: command.Description,
-			Cooldown: command.Cooldown,
-			Author: command.Author,
-			Last_Edit: (command.Last_Edit) ? command.Last_Edit.valueOf() : null,
-			Code: command.Code,
-			Params: (command.Params) ? JSON.parse(command.Params) : [],
-			Static_Data: command.Static_Data,
-			Dynamic_Description: command.Dynamic_Description
+			Name: definition.Name,
+			Aliases: definition.Aliases,
+			Flags: definition.Flags,
+			Description: definition.Description,
+			Cooldown: definition.Cooldown,
+			Author: definition.Author,
+			Code: definition.Code.toString(),
+			Params: definition.Params ?? [],
+			Static_Data: (definition.Static_Data)
+				? definition.Static_Data.toString()
+				: null,
+			Dynamic_Description: (definition.Dynamic_Description)
+				? definition.Dynamic_Description.toString()
+				: null
 		});
 	});
 

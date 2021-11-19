@@ -4,7 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Command = require("../../../modules/chat-data/command.js");
 	const Filter = require("../../../modules/chat-data/filter.js");
 	const Reminder = require("../../../modules/chat-data/reminder.js");
 
@@ -180,10 +179,9 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "No user matches provided identifier");
 		}
 
-		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "remind"));
 		const banCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
-			.where("Command = %s", command.Name)
+			.where("Command = %s", "remind")
 			.where("Active = %b", true)
 			.where("Type = %s", "Blacklist")
 		);
@@ -193,7 +191,7 @@ module.exports = (function () {
 
 		const optoutCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
-			.where("Command = %s", command.Name)
+			.where("Command = %s", "remind")
 			.where("Active = %b", true)
 			.where("Type = %s", "Opt-out")
 		);
@@ -204,7 +202,7 @@ module.exports = (function () {
 		const blockCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", userData.ID)
 			.where("Blocked_User = %n", auth.userID)
-			.where("Command = %s", command.Name)
+			.where("Command = %s", "remind")
 			.where("Active = %b", true)
 			.where("Type = %s", "Block")
 		);

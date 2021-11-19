@@ -39,10 +39,8 @@ module.exports = (function () {
 	 * @apiSuccess {string} [playsounds.notes] Additional info
 	 */
 	Router.get("/list", async (req, res) => {
-		const [playsounds, command] = await Promise.all([
-			Playsound.selectAll(),
-			Playsound.getCommand()
-		]);
+		const command = sb.Command.get("playsound");
+		const playsounds = Playsound.selectAll();
 
 		const data = {
 			commandCooldown: command.Cooldown,

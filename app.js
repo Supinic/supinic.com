@@ -28,7 +28,6 @@
 		],
 
 		skipData: [
-			"classes/command",
 			"classes/reminder"
 		]
 	});

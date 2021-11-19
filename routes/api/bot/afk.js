@@ -5,7 +5,6 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const AFK = require("../../../modules/chat-data/afk.js");
-	const Command = require("../../../modules/chat-data/command.js");
 	const Filter = require("../../../modules/chat-data/filter.js");
 
 	/**
@@ -186,10 +185,9 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const command = await Command.selectSingleCustom(q => q.where("Name = %s", "afk"));
 		const banCheck = await Filter.selectSingleCustom(q => q
 			.where("User_Alias = %n", auth.userID)
-			.where("Command = %s", command.Name)
+			.where("Command = %s", "afk")
 			.where("Active = %b", true)
 			.where("Type = %s", "Blacklist")
 		);

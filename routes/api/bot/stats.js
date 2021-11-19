@@ -62,13 +62,7 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_line")
 				.single()
 			),
-			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
-				.from("chat_data", "Command")
-				.where("Flags NOT %*like*", "archived")
-				.single()
-				.flat("Total")
-			),
+			sb.Command.data.length,
 			sb.Runtime.commands,
 			sb.Query.getRecordset(rs => rs
 				.select("COUNT(*) AS Total")
