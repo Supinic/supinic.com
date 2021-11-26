@@ -306,6 +306,7 @@ module.exports = (function () {
 	 * @apiSuccess {boolean} ironman.deadHardcore
 	 * @apiSuccess {boolean} ironman.abandoned True if an account has been "de-ironed"
 	 * @apiSuccess {boolean} seasonal
+	 * @apiSuccess {number} [combatLevel]
 	 */
 	Router.get("/lookup/:user", async (req, res) => {
 		const player = req.params.user.toLowerCase();
