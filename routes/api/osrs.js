@@ -4,6 +4,9 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const skillExperienceData = require("./osrs-xp.json");
+	const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
+
 	// eslint-disable array-element-newline
 	const skills = [
 		"Overall",
@@ -421,13 +424,22 @@ module.exports = (function () {
 
 		for (const skill of skills) {
 			const [rank, level, experience] = data[index];
-			result.skills.push({
+			const skillObject = {
 				name: skill,
 				rank: (rank === -1) ? null : rank,
 				level,
 				experience
-			});
+			};
 
+			if (experience >= VIRTUAL_LEVEL_EXPERIENCE) {
+				const firstGreaterLevelData = skillExperienceData.find(i => i.experience > experience);
+				skillObject.virtualLevel = firstGreaterLevelData.level - 1;
+			}
+			else {
+				skillObject.virtualLevel = level;
+			}
+
+			result.skills.push(skillObject);
 			index++;
 		}
 
