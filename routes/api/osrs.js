@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const skillExperienceData = require("./osrs-xp.json");
+	const reversedSkillExperienceData = skillExperienceData.reverse();
 	const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
 
 	// eslint-disable array-element-newline
@@ -432,7 +433,7 @@ module.exports = (function () {
 			};
 
 			if (experience >= VIRTUAL_LEVEL_EXPERIENCE) {
-				const levelData = skillExperienceData.reverse().find(i => experience > i.experience);
+				const levelData = reversedSkillExperienceData.find(i => experience > i.experience);
 				skillObject.virtualLevel = levelData.level;
 			}
 			else {
