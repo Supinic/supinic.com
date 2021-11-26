@@ -432,7 +432,7 @@ module.exports = (function () {
 				experience
 			};
 
-			if (skill !== "overall") {
+			if (skill !== "Overall") {
 				if (experience >= VIRTUAL_LEVEL_EXPERIENCE) {
 					const levelData = reversedSkillExperienceData.find(i => experience > i.experience);
 					skillObject.virtualLevel = levelData.level;
