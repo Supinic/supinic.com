@@ -252,6 +252,42 @@ module.exports = (function () {
 		return { success: true, total };
 	};
 
+	// Formulae and general algorithm based on OSRS Wiki: https://oldschool.runescape.wiki/w/Combat_level
+	const combatSkills = ["attack", "defence", "hitpoints", "magic", "prayer", "ranged", "strength"];
+	const calculateCombatLevelData = (skills) => {
+		const combat = {};
+		for (const skill of skills) {
+			if (combatSkills.includes(skill.name.toLowerCase())) {
+				combat[skill.name.toLowerCase()] = skill.level;
+			}
+		}
+
+		// If at least one combat skill is missing, abort immediately
+		if (!Object.values(combat).every(Boolean)) {
+			return null;
+		}
+
+		const baseLevel = 0.25 * (combat.defence + combat.hitpoints + Math.floor(combat.prayer / 2));
+		const meleeLevel = 0.325 * (combat.attack + combat.strength);
+		const mageLevel = 0.325 * (combat.magic * 1.5);
+		const rangeLevel = 0.325 * (combat.ranged * 1.5);
+
+		let combatType = "melee";
+		if (mageLevel > meleeLevel && mageLevel > rangeLevel) {
+			combatType = "magic";
+		}
+		else if (rangeLevel > meleeLevel && rangeLevel > mageLevel) {
+			combatType = "ranged";
+		}
+
+		const preciseCombatLevel = baseLevel + Math.max(meleeLevel, mageLevel, rangeLevel);
+		return {
+			level: Math.floor(preciseCombatLevel),
+			fullLevel: preciseCombatLevel,
+			type: combatType
+		}
+	};
+
 	/**
 	 * @api {get} /osrs/lookup/:user Fetch user scores
 	 * @apiName FetchUserScores
@@ -279,6 +315,7 @@ module.exports = (function () {
 		const result = {
 			skills: [],
 			activities: [],
+			combatLevel: null,
 			seasonal: Boolean(req.query.seasonal),
 			ironman: {
 				regular: false,
@@ -411,6 +448,11 @@ module.exports = (function () {
 			}
 
 			index++;
+		}
+
+		const combatLevelData = calculateCombatLevelData(result.skills);
+		if (combatLevelData) {
+			result.combatLevel = combatLevelData.level;
 		}
 
 		return sb.WebUtils.apiSuccess(res, result, {
