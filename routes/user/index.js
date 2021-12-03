@@ -148,7 +148,12 @@ module.exports = (function () {
 		const { userData } = res.locals.authUser;
 		const escapedUsername = encodeURIComponent(userData.Name);
 
-		const response = await sb.Got("Supinic", `bot/user/${escapedUsername}/data/list`);
+		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		const response = await sb.Got("Supinic", {
+			url: `bot/user/${escapedUsername}/data/list`,
+			searchParams
+		});
+
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(response.statusCode),
