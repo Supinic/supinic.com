@@ -1,11 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
+const UserAlias = require("../../../modules/chat-data/user-alias.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
-	const UserAlias = require("../../../modules/chat-data/user-alias.js");
 
 	const fetchUserData = async (res, type, id) => {
 		const callback = (type === "user-name")
@@ -124,6 +124,56 @@ module.exports = (function () {
 		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
 
 		return sb.WebUtils.apiSuccess(res, aliasData);
+	});
+
+	/**
+	 * @api {get} /bot/user/:username/data/list List custom data for current user
+	 * @apiName GetCustomUserData
+	 * @apiDescription For a specified logged in user (ONLY the authenticated one), lists all their custom data.
+	 * @apiGroup Bot
+	 * @apiPermission login, self-only
+	 * @apiSuccess {Object[]} properties
+	 * @apiSuccess {string} properties.name
+	 * @apiSuccess {string|number|boolean|Object|Array|null} properties.value
+	 * @apiError (403) Forbidden Not logged in; or checking a non-self user
+	 * @apiError (404) NotFound User was not found
+	 */
+	Router.get("/:username/data/list", async (req, res) => {
+		const { username } = req.params;
+		const userData = await sb.User.get(username);
+		if (!userData) {
+			return sb.WebUtils.apiFail(res, 404, "User not found");
+		}
+
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		if (auth.userData.Name !== userData.Name) {
+			return sb.WebUtils.apiFail(res, 403, "Cannot list another user's data");
+		}
+
+		const propertyList = await sb.Query.getRecordset(rs => rs
+			.select("Property")
+			.from("chat_data", "User_Alias_Data")
+			.where("User_Alias = %n", userData.ID)
+			.flat("Property")
+		);
+
+		const promises = propertyList.map(async (property) => {
+			const value = await userData.getDataProperty(property);
+			return {
+				name: property,
+				value
+			};
+		});
+
+		const propertyData = await Promise.all(promises);
+		return sb.WebUtils.apiSuccess(res, propertyData);
 	});
 
 	/**
