@@ -144,5 +144,51 @@ module.exports = (function () {
 		res.redirect(`/bot/user/${userData.Name}/alias/list`);
 	});
 
+	Router.get("/data/list", async (req, res) => {
+		const { userData } = res.locals.authUser;
+		const escapedUsername = encodeURIComponent(userData.Name);
+
+		const response = await sb.Got("Supinic", `bot/user/${escapedUsername}/data/list`);
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
+			});
+		}
+
+		const printData = {};
+		const { data } = response.body;
+
+		for (const property of data) {
+			const content = `<div id="${property.name}" class="collapse">${property.value}</div>`;
+			const section = sb.Utils.tag.trim `<a
+				 class="btn btn-primary"
+				 href="#${property.name}"
+				 role="button"
+				 data-toggle="collapse"
+		         aria-expanded="false"
+		         aria-controls=""${property.name}"
+		         style="margin:3px"
+	            >
+	                Click to show
+                </a>
+            `;
+
+			printData[property.name] = `${section}${content}`;
+		}
+
+		res.render("generic-detail-table", {
+			printData,
+			header: Object.keys(printData),
+			title: "Custom user data list",
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `Custom user data`
+				}
+			]
+		});
+	});
+
 	return Router;
 })();
