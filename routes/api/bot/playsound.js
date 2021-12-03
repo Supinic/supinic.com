@@ -40,7 +40,7 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const command = sb.Command.get("playsound");
-		const playsounds = Playsound.selectAll();
+		const playsounds = await Playsound.selectAll();
 
 		const data = {
 			commandCooldown: command.Cooldown,
