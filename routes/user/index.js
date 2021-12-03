@@ -151,7 +151,7 @@ module.exports = (function () {
 		const searchParams = sb.WebUtils.authenticateLocalRequest(userData.ID, null);
 		const response = await sb.Got("Supinic", {
 			url: `bot/user/${escapedUsername}/data/list`,
-			searchParams
+			searchParams: searchParams.toString()
 		});
 
 		if (response.statusCode !== 200) {
