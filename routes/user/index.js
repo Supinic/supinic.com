@@ -184,7 +184,7 @@ module.exports = (function () {
 
 		res.render("generic-detail-table", {
 			data: printData,
-			header: Object.keys(printData),
+			header: "Your Supibot data",
 			title: "Custom user data list",
 			openGraphDefinition: [
 				{
