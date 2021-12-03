@@ -277,6 +277,7 @@
 		{ name: "Github link", link: "auth/github" },
 		{ name: "Reminders - active", link: "bot/reminder/list" },
 		{ name: "Reminders - history", link: "bot/reminder/history" },
+		{ name: "Your data within Supibot", link: "user/data/list" },
 		{ name: "Your suggestions - active", link: "data/suggestion/user/list/active" },
 		{ name: "Your suggestions - resolved", link: "data/suggestion/user/list/resolved" },
 		{ name: "Your suggestion stats", link: "data/suggestion/user/stats" },
