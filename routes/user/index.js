@@ -165,7 +165,18 @@ module.exports = (function () {
 		const { data } = response.body;
 
 		for (const property of data) {
-			const content = `<div id="${property.name}" class="collapse">${property.value}</div>`;
+			let innerContent;
+			if (property.type === "object" || property.type === "array") {
+				innerContent = `<pre><code>${JSON.stringify(property.value, null, 4)}</code></pre>`
+			}
+			else if (property.type === "function") {
+				innerContent = "(function)";
+			}
+			else {
+				innerContent = String(property.value);
+			}
+
+			const content = `<div id="${property.name}" class="collapse">${innerContent}</div>`;
 			const section = sb.Utils.tag.trim `<a
 				 class="btn btn-primary"
 				 href="#${property.name}"
