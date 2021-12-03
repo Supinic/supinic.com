@@ -135,6 +135,7 @@ module.exports = (function () {
 	 * @apiSuccess {Object[]} properties
 	 * @apiSuccess {string} properties.name
 	 * @apiSuccess {string|number|boolean|Object|Array|null} properties.value
+	 * @apiSuccess {string} properties.type
 	 * @apiError (403) Forbidden Not logged in; or checking a non-self user
 	 * @apiError (404) NotFound User was not found
 	 */
@@ -158,17 +159,21 @@ module.exports = (function () {
 		}
 
 		const propertyList = await sb.Query.getRecordset(rs => rs
-			.select("Property")
+			.select("Custom_Data_Property.Name", "Custom_Data_Property.Type")
 			.from("chat_data", "User_Alias_Data")
+			.join({
+				toTable: "Custom_Data_Property",
+				on: "Custom_Data_Property.Name = User_Alias_Data.Property"
+			})
 			.where("User_Alias = %n", userData.ID)
-			.flat("Property")
 		);
 
 		const promises = propertyList.map(async (property) => {
-			const value = await userData.getDataProperty(property);
+			const value = await userData.getDataProperty(property.Name, { force: true });
 			return {
-				name: property,
-				value
+				name: property.Name,
+				value,
+				type: property.Type
 			};
 		});
 
