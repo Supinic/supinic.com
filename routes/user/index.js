@@ -183,7 +183,7 @@ module.exports = (function () {
 		}
 
 		res.render("generic-detail-table", {
-			printData,
+			data: printData,
 			header: Object.keys(printData),
 			title: "Custom user data list",
 			openGraphDefinition: [
