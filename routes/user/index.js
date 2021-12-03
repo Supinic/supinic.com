@@ -167,7 +167,7 @@ module.exports = (function () {
 		for (const property of data) {
 			let innerContent;
 			if (property.type === "object" || property.type === "array") {
-				innerContent = `<pre><code>${JSON.stringify(property.value, null, 4)}</code></pre>`
+				innerContent = `<pre><code>${JSON.stringify(property.value, null, 4)}</code></pre>`;
 			}
 			else if (property.type === "function") {
 				innerContent = "(function)";
