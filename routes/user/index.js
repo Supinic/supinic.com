@@ -148,7 +148,7 @@ module.exports = (function () {
 		const { userData } = res.locals.authUser;
 		const escapedUsername = encodeURIComponent(userData.Name);
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		const searchParams = sb.WebUtils.authenticateLocalRequest(userData.ID, null);
 		const response = await sb.Got("Supinic", {
 			url: `bot/user/${escapedUsername}/data/list`,
 			searchParams
