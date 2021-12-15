@@ -337,13 +337,6 @@
 				admin: data.login === "supinic",
 				userData
 			};
-
-			res.locals.level = {
-				isLogin: () => true,
-				isEditor: () => Boolean(userData.Data.trackEditor || userData.Data.trackModerator || userData.Data.trackAdmin),
-				isModerator: () => Boolean(userData.Data.trackModerator || userData.Data.trackAdmin),
-				isAdmin: () => Boolean(userData.Data.trackAdmin)
-			};
 		}
 
 		next();
@@ -431,7 +424,8 @@
 				});
 			}
 
-			if (userData.Data.github?.login === profile.login) {
+			let githubData = await userData.getDataProperty("github");
+			if (githubData?.login === profile.login) {
 				return res.render("generic", {
 					data: sb.Utils.tag.trim `
 						<div class="pt-3 text-center">
@@ -441,17 +435,16 @@
 				});
 			}
 
-			const previousString = (userData.Data.github)
-				? `Your Twitch account was previously connected to ${userData.Data.github.login}.`
+			const previousString = (githubData)
+				? `Your Twitch account was previously connected to ${githubData.login}.`
 				: "";
 
-			userData.Data.github = {
+			await userData.setDataProperty("github", {
 				created: new sb.Date(profile.created_at).valueOf(),
 				login: profile.login,
 				type: profile.type
-			};
+			});
 
-			await userData.saveProperty("Data");
 			await sb.Got("Supibot", {
 				url: "user/invalidateCache",
 				searchParams: {

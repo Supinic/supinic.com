@@ -396,7 +396,16 @@ module.exports = (function () {
 	 * @apiError (403) Forbidden Insufficient level (at least moderator required)
 	 */
 	Router.delete("/connect", async (req, res) => {
-		if (res && res.locals && !res.locals.level.isModerator()) {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const { level } = await sb.WebUtils.getUserLevel(req, res);
+		if (level !== "moderator" && level !== "admin") {
 			sb.WebUtils.apiFail(res, 403, "Insufficient level (requires moderator)");
 		}
 

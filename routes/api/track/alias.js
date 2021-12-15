@@ -120,7 +120,8 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, valid.code, valid.error);
 		}
 
-		if (!res.locals.level.isModerator()) {
+		const { level } = await sb.WebUtils.getUserLevel(req, res);
+		if (level !== "moderator" && level !== "admin") {
 			return sb.WebUtils.apiFail(res, 403, "Insufficient level");
 		}
 

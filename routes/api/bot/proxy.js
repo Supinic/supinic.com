@@ -35,7 +35,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "Channel does not exist");
 		}
 
-		const { banWavePartPermissions } = auth.userData.Data;
+		const banWavePartPermissions = await auth.userData.getDataProperty("banWavePartPermissions");
 		if (!banWavePartPermissions) {
 			return sb.WebUtils.apiFail(res, 401, "Endpoint requires banwave-part permissions");
 		}

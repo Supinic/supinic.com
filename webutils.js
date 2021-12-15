@@ -159,7 +159,9 @@ module.exports = class WebUtils {
 			if (!userData) {
 				return { error: "User identifier (query) is not valid a valid ID number" };
 			}
-			else if (!userData.Data.authKey || userData.Data.authKey !== req.query.auth_key) {
+
+			const authKey = await userData.getDataProperty("authKey");
+			if (!authKey || authKey !== req.query.auth_key) {
 				return {
 					error: "Access denied",
 					errorCode: 401
@@ -174,9 +176,10 @@ module.exports = class WebUtils {
 				};
 			}
 
+			const level = await userData.getDataProperty("trackLevel");
 			return {
 				banned,
-				level: userData.Data.trackLevel || "login",
+				level: level ?? "login",
 				userID: userData.ID,
 				userData
 			};
@@ -206,7 +209,9 @@ module.exports = class WebUtils {
 					errorCode: 400
 				};
 			}
-			else if (!authKey || userData.Data.authKey !== authKey) {
+
+			const storedAuthKey = await userData.getDataProperty("authKey");
+			if (!storedAuthKey || storedAuthKey !== authKey) {
 				return {
 					error: "Access denied",
 					errorCode: 401
@@ -221,9 +226,10 @@ module.exports = class WebUtils {
 				};
 			}
 
+			const level = await userData.getDataProperty("trackLevel");
 			return {
 				banned,
-				level: userData.Data.trackLevel || "login",
+				level: level ?? "login",
 				userID: userData.ID,
 				userData
 			};
@@ -256,9 +262,10 @@ module.exports = class WebUtils {
 				};
 			}
 
+			const level = await userData.getDataProperty("trackLevel");
 			return {
 				banned,
-				level: userData.Data.trackLevel || "login",
+				level: level ?? "login",
 				userID: userData.ID,
 				userData
 			};
@@ -277,8 +284,9 @@ module.exports = class WebUtils {
 			};
 		}
 		else {
+			const level = await res.locals.authUser.userData.getDataProperty("trackLevel");
 			return {
-				level: res.locals.authUser.userData.Data.trackLevel || "login",
+				level: level ?? "login",
 				userID: res.locals.authUser.userData.ID,
 				userData: res.locals.authUser.userData
 			};

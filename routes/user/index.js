@@ -67,11 +67,12 @@ module.exports = (function () {
 
 	Router.get("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
-		const hasKey = Boolean(userData.Data.authKey);
+		const authKey = await userData.getDataProperty("authKey");
+		const hasKey = Boolean(authKey);
 
 		const fieldDisabled = (hasKey) ? "" : "disabled";
 		const generateString = (hasKey) ? "Regenerate" : "Generate";
-		const keyValue = (hasKey) ? userData.Data.authKey : "N/A";
+		const keyValue = (hasKey) ? authKey : "N/A";
 		const keyFieldType = (hasKey) ? "password" : "string";
 
 		const script = sb.Utils.tag.trim `
