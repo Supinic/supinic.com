@@ -31,14 +31,15 @@ module.exports = (function () {
 		const { userData } = res.locals.authUser;
 		const crypto = require("crypto");
 
-		userData.Data.authKey = crypto.createHash("sha3-256")
+		const authKey = crypto.createHash("sha3-256")
 			.update(userData.Name)
 			.update(userData.ID.toString())
 			.update(new sb.Date().valueOf().toString())
 			.update(crypto.randomBytes(256).toString())
 			.digest("hex");
 
-		await userData.saveProperty("Data", userData.Data);
+		await userData.setDataProperty("authKey", authKey);
+
 		await sb.Got("Supibot", {
 			url: "user/invalidateCache",
 			searchParams: {
@@ -51,9 +52,9 @@ module.exports = (function () {
 
 	Router.delete("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
-		userData.Data.authKey = null;
 
-		await userData.saveProperty("Data", userData.Data);
+		await userData.setDataProperty("authKey", null);
+
 		await sb.Got("Supibot", {
 			url: "user/invalidateCache",
 			searchParams: {
