@@ -18,7 +18,7 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			data: printData,
 			head: Object.keys(printData[0]),
-			pageLength: 50,
+			pageLength: 100,
 			sortColumn: 0,
 			sortDirection: "asc"
 		});
