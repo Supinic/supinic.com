@@ -155,7 +155,15 @@ module.exports = class WebUtils {
 	 */
 	static async getUserLevel (req, res, options = {}) {
 		if (req.query.auth_key && req.query.auth_user) {
-			const userData = await sb.User.get(Number(req.query.auth_user));
+			let userData;
+			const userID = Number(req.query.auth_user);
+			if (!sb.Utils.isValidInteger(userID)) {
+				userData = await sb.User.get(req.query.auth_user);
+			}
+			else {
+				userData = await sb.User.get(userID);
+			}
+
 			if (!userData) {
 				return { error: "User identifier (query) is not valid a valid ID number" };
 			}
