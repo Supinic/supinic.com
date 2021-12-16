@@ -207,7 +207,7 @@
 				{ name: "Commands statistics", link: "bot/command/stats" },
 				{ name: "Emote origins", link: "data/origin/list" },
 				{ name: "Polls", link: "bot/poll/list" },
-				{ name: "Slots winners list", link: "data/slots-winner/list" },
+				{ name: "Slots winners list", link: "data/slots-winner/leaderboard" },
 				{ name: "Suggestions - active", link: "data/suggestion/list/active" },
 				{ name: "Suggestions - inactive", link: "data/suggestion/list/resolved" },
 				{ separator: true },

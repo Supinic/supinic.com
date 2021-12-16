@@ -36,6 +36,36 @@ module.exports = (function () {
 	});
 
 	/**
+	 * @api {get} /data/slots-winner/leaderboard Slots Winner - Leaderboard
+	 * @apiName SlotsWinnersLeaderboard
+	 * @apiDescription Fetches a top 100 list of slots winners
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {number} userAlias
+	 * @apiSuccess {string} userName
+	 * @apiSuccess {number} channel Channel ID, where the slots happened
+	 * @apiSuccess {number} channelName Channel name, where the slots happened
+	 * @apiSuccess {number} odds Odds in format 1:X
+	 * @apiSuccess {string} timestamp ISO date string of the slots victory
+	 * @apiSuccess {number} rank
+	 **/
+	Router.get("/leaderboard", async (req, res) => {
+		const data = await SlotsWinner.selectCustom(rs => rs
+			.select("Slots_Winner.ID AS ID", "User_Alias", "Channel", "Odds", "Timestamp")
+			.select("DENSE_RANK() OVER (ORDER BY Odds DESC) AS Rank")
+			.select("Channel.Name AS Channel_Name")
+			.select("User_Alias.Name AS User_Name")
+			.join("chat_data", "Channel")
+			.join("chat_data", "User_Alias")
+			.orderBy("Odds DESC")
+			.limit(100)
+		);
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
 	 * @api {get} /data/slots-winner/list Slots Winner - Detail
 	 * @apiName GetSlotsWinnerDetail
 	 * @apiDescription Fetches the detail of a specific slot winner

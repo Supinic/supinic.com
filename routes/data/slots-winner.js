@@ -4,8 +4,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/slots-winner/list").json();
+	Router.get("/leaderboard", async (req, res) => {
+		const { data } = await sb.Got("Supinic", "/data/slots-winner/leaderboard").json();
 
 		const printData = data.sort((a, b) => b.odds - a.odds).map(i => ({
 			Rank: `<a href="/data/slots-winner/detail/${i.ID}">${i.rank}</a>`,
