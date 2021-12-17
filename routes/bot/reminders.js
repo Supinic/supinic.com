@@ -80,6 +80,7 @@ module.exports = (function () {
 				Unset: `
 					<a class="unset-reminder btn btn-warning ${classes}" role="button" aria-controls>
 						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
+						</div>
 					</a>
 				`
 			};
@@ -109,10 +110,10 @@ module.exports = (function () {
 					content: "❌"
 			    }
 			    div.spinner-border.active {
-			        display: none;
+			        display: inherit;
 			    }
 			    div.spinner-border.inactive {
-			        display: inherit;
+			        display: none;
 			    }
 			`,
 			extraScript: sb.Utils.tag.trim `
@@ -123,7 +124,7 @@ module.exports = (function () {
 							continue;
 						}
 						
-						element.parentElement.addEventListener("click", () => unsetReminder(element));
+						element.addEventListener("click", () => unsetReminder(element));
 					}
 				}
 				 				
