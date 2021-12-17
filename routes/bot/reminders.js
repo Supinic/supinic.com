@@ -58,7 +58,7 @@ module.exports = (function () {
 			}
 
 			const created = new sb.Date(i.created);
-			const classes = (i.active) ? "active" : "disabled";
+			const classes = (i.active) ? "hasText" : "disabled";
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			return {
 				Active: (i.active) ? "Yes" : "No",
@@ -106,7 +106,7 @@ module.exports = (function () {
 				div.hoverable {
 					text-decoration: underline dotted;
 				}
-				a.unset-reminder.active:before { 
+				a.unset-reminder.hasText:before { 
 					content: "❌"
 			    }
 			    div.spinner-border.active {
@@ -145,7 +145,7 @@ module.exports = (function () {
 					const spinner = element.firstElementChild;
 					spinner.classList.remove("inactive");
 					spinner.classList.add("active");
-					element.classList.remove("active");
+					element.classList.remove("hasText");
 					
 					const response = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
@@ -153,7 +153,7 @@ module.exports = (function () {
 					
 					spinner.classList.add("inactive");
 					spinner.classList.remove("active");
-					element.classList.add("active");
+					element.classList.add("hasText");
 					
 					if (response.statusCode === 403) {
 						alert("Your session expired! Please log in again.");
@@ -168,7 +168,7 @@ module.exports = (function () {
 						}
 						
 						row.classList.add("deactivated");
-						element.classList.add("disabled");					
+						element.classList.add("disabled");
 						console.log(response.data.message + "!");
 					}
 				}
