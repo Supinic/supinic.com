@@ -58,7 +58,7 @@ module.exports = (function () {
 			}
 
 			const created = new sb.Date(i.created);
-			const classes = (i.active) ? "active clickable" : "inactive";
+			const classes = (i.active) ? "" : "disabled";
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			return {
 				Active: (i.active) ? "Yes" : "No",
@@ -77,7 +77,11 @@ module.exports = (function () {
 				},
 				Cancelled: cancelled,
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
-				Unset: `<div class="unset-reminder ${classes}"></div>`
+				Unset: `
+					<a class="unset-reminder btn btn-warning ${classes}" role="button" aria-controls>
+						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
+					</a>
+				`
 			};
 		});
 
@@ -91,6 +95,9 @@ module.exports = (function () {
 			sortDirection: "desc",
 			specificFiltering: true,
 			extraCSS: sb.Utils.tag.trim `
+				a.btn {
+					margin: 3px;
+				}
 				tr.deactivated {
 					color: #666 !important;
 					text-decoration: line-through !important;
@@ -98,22 +105,14 @@ module.exports = (function () {
 				div.hoverable {
 					text-decoration: underline dotted;
 				}
-				div.clickable {
-					cursor: pointer;
-				}
-				div.unset-reminder.active { 					
-				    background-position: center; 
-				    background-repeat: no-repeat;
-				    background-size: contain;
-			    }
-				div.unset-reminder.active:before { 
+				a.unset-reminder.active:before { 
 					content: "❌"
 			    }
-			    div.unset-reminder.inactive:before { 
-					content: "N/A"
+			    div.spinner-border.active {
+			        display: none;
 			    }
-			    div.unset-reminder.loading {
-			        background-image: url("/public/img/ppCircle.gif");
+			    div.spinner-border.inactive {
+			        display: inherit;
 			    }
 			`,
 			extraScript: sb.Utils.tag.trim `
@@ -124,7 +123,6 @@ module.exports = (function () {
 							continue;
 						}
 						
-						element.classList.add("clickable");
 						element.parentElement.addEventListener("click", () => unsetReminder(element));
 					}
 				}
@@ -143,28 +141,22 @@ module.exports = (function () {
 						return;
 					}
 					
-					const previousContent = element.textContent;
-					element.classList.remove("active");
-					element.classList.remove("clickable");
-					element.classList.add("loading");
-					element.textContent = "";
+					const spinner = element.firstChild;
+					spinner.classList.remove("inactive");
+					spinner.classList.add("active");
 					
 					const response = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
 						.catch(i => i.json());
 					
-					element.classList.remove("loading");
-					element.textContent = previousContent;
+					spinner.classList.add("inactive");
+					spinner.classList.remove("active");
 					
 					if (response.statusCode === 403) {
-						element.classList.add("active");
-						element.classList.add("clickable");
 						alert("Your session expired! Please log in again.");
 					}
 					else if (response.statusCode !== 200) {
-						element.classList.add("active");
-						element.classList.add("clickable");
-						alert("An unknown error occured!");
+						alert("An unknown error occured! Please contact @Supinic");
 					}
 					else {
 						const activeElement = Array.from(row.children).find(i => i.getAttribute("field") === "Active");
@@ -173,7 +165,7 @@ module.exports = (function () {
 						}
 						
 						row.classList.add("deactivated");
-						element.classList.add("inactive");					
+						element.classList.add("disabled");					
 						console.log(response.data.message + "!");
 					}
 				}
