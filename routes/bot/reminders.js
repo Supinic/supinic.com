@@ -58,7 +58,7 @@ module.exports = (function () {
 			}
 
 			const created = new sb.Date(i.created);
-			const classes = (i.active) ? "" : "disabled";
+			const classes = (i.active) ? "active" : "disabled";
 			const schedule = (i.schedule) ? new sb.Date(i.schedule) : null;
 			return {
 				Active: (i.active) ? "Yes" : "No",
@@ -142,9 +142,10 @@ module.exports = (function () {
 						return;
 					}
 					
-					const spinner = element.firstChild;
+					const spinner = element.firstElementChild;
 					spinner.classList.remove("inactive");
 					spinner.classList.add("active");
+					element.classList.remove("active");
 					
 					const response = await fetch("/api/bot/reminder/" + ID, { method: "DELETE" })
 						.then(i => i.json())
@@ -152,6 +153,7 @@ module.exports = (function () {
 					
 					spinner.classList.add("inactive");
 					spinner.classList.remove("active");
+					element.classList.add("active");
 					
 					if (response.statusCode === 403) {
 						alert("Your session expired! Please log in again.");
