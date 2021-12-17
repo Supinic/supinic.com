@@ -350,7 +350,7 @@
 			}
 		});
 
-		const [stream] = streamResponse.body.data;
+		const [stream] = streamResponse.body.data ?? [];
 		res.render("index", {
 			game: stream?.game_name || null, // when no game is set, the game field is an empty string - || operator accounts for this
 			viewers: stream?.viewer_count ?? null
