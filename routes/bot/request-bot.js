@@ -35,16 +35,18 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", {
+		const response = await sb.Got("Supinic", {
 			url: "bot/channel/previousList",
 			searchParams: {
 				username: userData.Name
 			}
-		}).json();
+		});
 
 		let specialOccassionString = "";
-		if (data.length !== 0) {
+		if (response.statusCode === 200 && response.body.data.length !== 0) {
+			const { data } = response.body;
 			const selfChannel = data.find(i => i.name === userData.Name);
+
 			if (selfChannel && selfChannel.mode === "Inactive") {
 				specialOccassionString = sb.Utils.tag.trim `
 					<h4 class="text-danger"> Supibot has been banned in your channel at some point. </h4>
