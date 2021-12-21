@@ -69,10 +69,10 @@ module.exports = (function () {
 	Router.get("/previousList", async (req, res) => {
 		const { twitchUserID, username } = req.query;
 		if (!username && !twitchUserID) {
-			return sb.WebUtils.apiFail(res, 400, "Either username or twitchUserID must be provided");
+			return sb.WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
 		}
 		else if (username && twitchUserID) {
-			return sb.WebUtils.apiFail(res, 400, "Only one of username and twitchUserID must be provided");
+			return sb.WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
 		}
 
 		let userID = twitchUserID;
