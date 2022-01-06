@@ -112,7 +112,7 @@ module.exports = (function () {
 			if (key === "dynamicDescription") {
 				if (value) {
 					const commandData = sb.Command.get(commandDefinition.name);
-					const descriptionFunction = eval(value).bind(commandData);
+					const descriptionFunction = eval(`(${value})`).bind(commandData);
 
 					const mockedCommandData = {
 						...commandData,
