@@ -8,6 +8,9 @@ module.exports = (function () {
 	const reversedSkillExperienceData = skillExperienceData.reverse();
 	const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
 
+	// The ordering of these following skills and activities is **very** important!
+	// Old School Runescape API does not provide any info about its values and instead relies on the ordering of
+	// each numerical value being in a pre-determined order.
 	// eslint-disable array-element-newline
 	const skills = [
 		"Overall",
@@ -76,6 +79,7 @@ module.exports = (function () {
 		"Kree'Arra",
 		"K'ril Tsutsaroth",
 		"Mimic",
+		"Nex",
 		"Nightmare",
 		"Phosani's Nightmare",
 		"Obor",
