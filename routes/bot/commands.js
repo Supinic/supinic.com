@@ -6,6 +6,7 @@ module.exports = (function () {
 
 	const CommandExecution = require("../../modules/chat-data/command-execution.js");
 
+	const baseGithubCommandPath = "https://github.com/Supinic/supibot-package-manager/tree/master/commands";
 	const filterTypeMap = {
 		Blacklist: "These users/channels are banned from this command",
 		Whitelist: "Only these users/channels can use this command",
@@ -275,7 +276,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="/bot/command/detail/${identifier}/code">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${identifier}">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
@@ -295,35 +296,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		const identifier = encodeURIComponent(req.params.identifier);
-		const response = await sb.Got("Supinic", `bot/command/detail/${identifier}`);
-		if (response.statusCode !== 200) {
-			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
-				message: response.body.error?.message ?? "N/A"
-			});
-		}
-
-		const { data } = response.body;
-		const paramsString = (data.params)
-			? JSON.stringify(data.params, null, 4)
-			: "// None";
-
-		res.render("code", {
-			title: `${data.name} - Supibot command code`,
-			header: data.name,
-			code: `// Command code:\n${data.code}`,
-			staticData: `// Static data:\n${data.staticData ?? "// None"}`,
-			dynamicDescription: `// Dynamic description:\n${data.dynamicDescription ?? "// None"}`,
-			params: `// Parameters definition:\n${paramsString}`,
-			link: `https://github.com/Supinic/supibot-package-manager/blob/master/commands/${encodeURI(data.name)}/index.js`,
-			openGraphDefinition: [
-				{
-					property: "title",
-					content: `Code of Supibot command ${data.name}`
-				}
-			]
-		});
+		const redirectUrl = `${baseGithubCommandPath}/${identifier}`;
+		res.redirect(redirectUrl);
 	});
 
 	Router.get("/channel/:channel/", async (req, res) => {
