@@ -276,7 +276,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${identifier}">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${identifier}/index.js">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
@@ -296,7 +296,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		const redirectUrl = `${baseGithubCommandPath}/${identifier}`;
+		const redirectUrl = `${baseGithubCommandPath}/${identifier}/index.js`;
 		res.redirect(redirectUrl);
 	});
 
