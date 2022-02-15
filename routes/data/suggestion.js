@@ -90,14 +90,6 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-
-	});
-
-	Router.get("/list/active", async (req, res) => await fetchSuggestionList(req, res, "active"));
-
-	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
-
-	Router.get("/list/clientside-pagination", async (req, res) => {
 		const objectColumns = JSON.stringify(columns.clientside.map(i => ({ data: i })));
 
 		res.render("generic-list-table-defer", {
@@ -134,6 +126,10 @@ module.exports = (function () {
 			`
 		});
 	});
+
+	Router.get("/list/active", async (req, res) => await fetchSuggestionList(req, res, "active"));
+
+	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
 
 	Router.get("/list/pretty", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
