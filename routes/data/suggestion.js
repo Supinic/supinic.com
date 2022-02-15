@@ -88,7 +88,9 @@ module.exports = (function () {
 		res.redirect(urlCallback(name));
 	};
 
-	Router.get("/list", async (req, res) => await fetchSuggestionList(req, res, "all"));
+	Router.get("/list", async (req, res) => {
+
+	});
 
 	Router.get("/list/active", async (req, res) => await fetchSuggestionList(req, res, "active"));
 
@@ -102,10 +104,14 @@ module.exports = (function () {
 			head: data.columns,
 			script: `
 				$(document).ready(async () => {
-					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
-					const { data } = await response.json();					
+					const spinnerHTML = \`<div class="d-flex flex-column align-items-center" id="spinner-loading"><h5>Loading...</h5><br><img alt="Loading" src="/public/img/ppCircle.gif"></div>\`;
+					const tableElement = document.getElementById("table");					
+					tableElement.insertAdjacentHTML("beforebegin", spinnerHTML);				
 					
-					const table = $("#table").DataTable({
+					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
+					const { data } = await response.json();		
+					
+					tableElement.DataTable({
 						data,
 						columns: ${objectColumns},
 						pageLength: 25,
@@ -114,6 +120,10 @@ module.exports = (function () {
 						scroller: true,
 						scrollCollapse: true
 					});
+					
+					const spinnerEl = document.getElementById("spinner-loading");
+					const parentEl = spinnerEl.parentNode;
+					parentEl.removeChild(spinnerEl);
 				});
 			`
 		});
