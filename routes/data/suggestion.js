@@ -103,7 +103,7 @@ module.exports = (function () {
 			script: `
 				$(document).ready(async () => {
 					const response = await fetch("https://supinic.com/api/data/suggestion/list");
-					const data = await response.json();					
+					const { data } = await response.json();					
 					
 					const table = $("#table").DataTable({
 						data,
