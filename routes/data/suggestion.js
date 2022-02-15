@@ -98,11 +98,10 @@ module.exports = (function () {
 	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
 
 	Router.get("/list/clientside-pagination", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
 		const objectColumns = JSON.stringify(columns.clientside.map(i => ({ data: i })));
 
 		res.render("generic-list-table-defer", {
-			head: data.columns,
+			head: columns.clientside,
 			script: `
 				$(document).ready(async () => {
 					const spinnerHTML = \`<div class="d-flex flex-column align-items-center" id="spinner-loading"><h5>Loading...</h5><br><img alt="Loading" src="/public/img/ppCircle.gif"></div>\`;
