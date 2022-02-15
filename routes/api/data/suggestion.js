@@ -230,7 +230,7 @@ module.exports = (function () {
 			Text: (i.Text)
 				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
 				: "N/A",
-			Status: i.Status,
+			Status: i.Status ?? "Pending",
 			Update: (i.Last_Update)
 				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
 				: "N/A",
