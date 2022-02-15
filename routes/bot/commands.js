@@ -84,7 +84,15 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier", async (req, res) => {
-		const identifier = encodeURIComponent(req.params.identifier);
+		const commandData = sb.Command.get(req.params.identifier);
+		if (!commandData) {
+			return res.status(404).render("error", {
+				error: "404 Not Found",
+				message: "Command does not exist"
+			});
+		}
+
+		const identifier = encodeURIComponent(commandData.Name);
 		const response = await sb.Got("Supinic", `bot/command/detail/${identifier}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
@@ -112,9 +120,7 @@ module.exports = (function () {
 			const value = commandDefinition[key];
 			if (key === "dynamicDescription") {
 				if (value) {
-					const commandData = sb.Command.get(commandDefinition.name);
 					const descriptionFunction = eval(`(${value})`).bind(commandData);
-
 					const mockedCommandData = {
 						...commandData,
 						getStaticData: () => {
@@ -296,7 +302,15 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		const redirectUrl = `${baseGithubCommandPath}/${identifier}/index.js`;
+		const commandData = sb.Command.get(req.params.identifier);
+		if (!commandData) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Command does not exist"
+			});
+		}
+
+		const redirectUrl = `${baseGithubCommandPath}/${commandData.Name}/index.js`;
 		res.redirect(redirectUrl);
 	});
 
