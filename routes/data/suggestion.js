@@ -13,7 +13,7 @@ module.exports = (function () {
 		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
 		active: ["ID", "Text", "Status", "Priority", "Update"],
 		resolved: ["ID", "Text", "Status", "Priority", "Update"],
-		clientside:  ["Author", "Text", "Update", "ID"]
+		clientside:  ["Author", "Text", "Status", "Update", "ID"]
 	};
 	const sortColumn = {
 		all: 5,
