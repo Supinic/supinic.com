@@ -94,6 +94,31 @@ module.exports = (function () {
 
 	Router.get("/list/resolved", async (req, res) => await fetchSuggestionList(req, res, "resolved"));
 
+	Router.get("/list/clientside-pagination", async (req, res) => {
+		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
+		const objectColumns = JSON.stringify(data.columns.map(i => ({ data: i })));
+
+		res.render("generic-list-table-defer", {
+			head: data.columns,
+			script: `
+				$(document).ready(async () => {
+					const response = await fetch("https://supinic.com/api/data/suggestion/list");
+					const data = await response.json();					
+					
+					const table = $("#table").DataTable({
+						data,
+						columns: ${objectColumns},
+						pageLength: 25,
+						order: [0, "asc"],
+						deferRender: true,
+						scroller: true,
+						scrollCollapse: true
+					});
+				});
+			`
+		});
+	});
+
 	Router.get("/list/pretty", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
 		const objectColumns = JSON.stringify(data.columns.map(i => ({ data: i })));
