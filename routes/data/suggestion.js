@@ -12,7 +12,8 @@ module.exports = (function () {
 	const columns = {
 		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
 		active: ["ID", "Text", "Status", "Priority", "Update"],
-		resolved: ["ID", "Text", "Status", "Priority", "Update"]
+		resolved: ["ID", "Text", "Status", "Priority", "Update"],
+		clientside:  ["Author", "Text", "Update", "ID"]
 	};
 	const sortColumn = {
 		all: 5,
@@ -98,7 +99,7 @@ module.exports = (function () {
 
 	Router.get("/list/clientside-pagination", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "data/suggestion/meta").json();
-		const objectColumns = JSON.stringify(data.columns.map(i => ({ data: i })));
+		const objectColumns = JSON.stringify(columns.clientside.map(i => ({ data: i })));
 
 		res.render("generic-list-table-defer", {
 			head: data.columns,
@@ -112,7 +113,7 @@ module.exports = (function () {
 						data: [],
 						columns: ${objectColumns},
 						pageLength: 25,
-						order: [0, "asc"],
+						order: [4, "desc"],
 						deferRender: true,
 						scroller: true,
 						scrollCollapse: true
@@ -128,6 +129,8 @@ module.exports = (function () {
 					const spinnerEl = document.getElementById("spinner-loading");
 					const parentEl = spinnerEl.parentNode;
 					parentEl.removeChild(spinnerEl);
+					
+					table.columns.adjust();
 				});
 			`
 		});

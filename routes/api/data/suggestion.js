@@ -231,9 +231,6 @@ module.exports = (function () {
 				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
 				: "N/A",
 			Status: i.Status,
-			Priority: (i.Priority === 255)
-				? "(not checked)"
-				: (i.Priority ?? "N/A"),
 			Update: (i.Last_Update)
 				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
 				: "N/A",
