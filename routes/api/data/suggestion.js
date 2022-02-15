@@ -221,6 +221,29 @@ module.exports = (function () {
 	});
 
 	/**
+	 * testing endpoint for clientside pagination
+	 */
+	Router.get("/list/clientside-pagination", async (req, res) => {
+		const data = await Suggestion.list();
+		const resultData = data.map(i => ({
+			Author: i.User_Name,
+			Text: (i.Text)
+				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
+				: "N/A",
+			Status: i.Status,
+			Priority: (i.Priority === 255)
+				? "(not checked)"
+				: (i.Priority ?? "N/A"),
+			Update: (i.Last_Update)
+				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
+				: "N/A",
+			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
+		}));
+
+		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+	});
+
+	/**
 	 * @api {get} /data/suggestion/list Suggestion - Meta
 	 * @apiName SuggestionsMeta
 	 * @apiDescription Posts metadata about suggestions - internal use only

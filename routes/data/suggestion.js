@@ -102,7 +102,7 @@ module.exports = (function () {
 			head: data.columns,
 			script: `
 				$(document).ready(async () => {
-					const response = await fetch("https://supinic.com/api/data/suggestion/list");
+					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
 					const { data } = await response.json();					
 					
 					const table = $("#table").DataTable({
