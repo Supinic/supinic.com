@@ -107,12 +107,9 @@ module.exports = (function () {
 					const spinnerHTML = \`<div class="d-flex flex-column align-items-center" id="spinner-loading"><h5>Loading...</h5><br><img alt="Loading" src="/public/img/ppCircle.gif"></div>\`;
 					const tableElement = document.getElementById("table");					
 					tableElement.insertAdjacentHTML("beforebegin", spinnerHTML);				
-					
-					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
-					const { data } = await response.json();		
-					
-					tableElement.DataTable({
-						data,
+						
+					const table = $("#table").DataTable({
+						data: [],
 						columns: ${objectColumns},
 						pageLength: 25,
 						order: [0, "asc"],
@@ -120,6 +117,13 @@ module.exports = (function () {
 						scroller: true,
 						scrollCollapse: true
 					});
+					
+					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
+					const { data } = await response.json();						
+					
+					table.clear();
+					table.rows.add(data);
+					table.draw();
 					
 					const spinnerEl = document.getElementById("spinner-loading");
 					const parentEl = spinnerEl.parentNode;
