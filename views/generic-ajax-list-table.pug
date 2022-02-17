@@ -58,9 +58,10 @@ html
 				const response = await fetch("#{url}");
 				const { data } = await response.json();
 
+				const columns = headers.map(i => i.data);
 				const fixedData = data.map(i => {
 					for (const key of Object.keys(i)) {
-						if (!headers.includes(key)) {
+						if (!columns.includes(key)) {
 							delete i[key];
 						}
 					}
