@@ -24,7 +24,7 @@ module.exports = (function () {
 	const prettifyData = (data) => data.map(i => {
 		const text = (i.Text) ? sb.Utils.escapeHTML(i.Text) : "N/A";
 		const trimmedText = sb.Utils.wrapString(text, 200);
-		const update = (i.Last_Update) ? new sb.Date(i.Last_Update).valueOf() : null;
+		const update = (i.Last_Update) ? new sb.Date(i.Last_Update) : null;
 
 		return {
 			Author: i.User_Name,
@@ -32,7 +32,10 @@ module.exports = (function () {
 				? `<div title="${text}">${trimmedText}</div>`
 				: text,
 			Status: i.Status ?? "(pending)",
-			Update: update,
+			Update: {
+				display: sb.Utils.timeDelta(update),
+				"@data-search": update.valueOf()
+			},
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		};
 	});
