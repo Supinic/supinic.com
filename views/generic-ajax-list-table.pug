@@ -41,8 +41,8 @@ html
 				for (const header of headers) {
 					if (header && header.type === "timeDelta") {
 						delete header.type;
-						header.render = (data) => (typeof data === "number")
-							? `<div data-order="${data}">${utils.timeDelta(data)}</div>`
+						header.render = (data, type, row, meta) => (typeof data === "number")
+							? `<div data-order="${row[header.title]}">${utils.timeDelta(row[header.title])}</div>`
 							: "N/A";
 					}
 				}
