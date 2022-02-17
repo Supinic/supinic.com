@@ -137,6 +137,12 @@ html
 				padding: 10px 40px 0 40px !important;
 			}
 
+			td.searchFooter > input {
+				width: 100%;
+				max-width: 100%;
+				min-width: 50px;
+			}
+
 		include ./navigation.pug
 	body
 		block navigation
@@ -159,3 +165,11 @@ html
 						- else {
 						th #{key.title}
 						- }
+
+			- if (specificFiltering) {
+				tfoot
+					tr
+					- var index = 0;
+						each key in head
+							td(class="searchFooter" name=key position=index)
+							- index++;
