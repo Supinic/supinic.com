@@ -30,7 +30,7 @@ html
 					data: [],
 					columns: headers.map(i => ({ data: i })),
 					pageLength: #{pageLength},
-					order: [#{sortColumn}, #{sortDirection}],
+					order: [#{sortColumn}, "#{sortDirection}"],
 					deferRender: true,
 					scroller: true,
 					scrollCollapse: true
