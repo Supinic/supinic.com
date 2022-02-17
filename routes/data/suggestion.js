@@ -38,7 +38,7 @@ module.exports = (function () {
 			sortColumn: 4,
 			pageLength: 25,
 			specificFiltering: true,
-			extraCode: `
+			extraScript: `
 				globalThis.prepareData = (i) => {
 					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
 					return i;
@@ -55,7 +55,7 @@ module.exports = (function () {
 			sortColumn: 4,
 			pageLength: 25,
 			specificFiltering: true,
-			extraCode: `
+			extraScript: `
 				globalThis.prepareData = (i) => {
 					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
 					return i;
@@ -72,7 +72,7 @@ module.exports = (function () {
 			sortColumn: 4,
 			pageLength: 25,
 			specificFiltering: true,
-			extraCode: `
+			extraScript: `
 				globalThis.prepareData = (i) => {
 					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
 					return i;
