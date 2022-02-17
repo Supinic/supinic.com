@@ -30,7 +30,11 @@ html
 			!{extraCSS}
 		- }
 
+		script(src="/public/js/utils.js")
+
 		script.
+			import * as utils from "/public/js/utils.js";
+
 			$(document).ready(async () => {
 				const headers = !{JSON.stringify(head)};
 				const table = $("#table").DataTable({
@@ -51,6 +55,10 @@ html
 						if (!headers.includes(key)) {
 							delete i[key];
 						}
+					}
+
+					if (typeof globalThis.prepareData === "function") {
+						i = globalThis.prepareData(i);
 					}
 
 					return i;

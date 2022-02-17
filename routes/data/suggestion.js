@@ -37,7 +37,13 @@ module.exports = (function () {
 			sortDirection: "desc",
 			sortColumn: 4,
 			pageLength: 25,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCode: `
+				globalThis.prepareData = (i) => {
+					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					return i;
+				};
+			`
 		});
 	});
 
@@ -48,7 +54,13 @@ module.exports = (function () {
 			sortDirection: "desc",
 			sortColumn: 4,
 			pageLength: 25,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCode: `
+				globalThis.prepareData = (i) => {
+					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					return i;
+				};
+			`
 		});
 	});
 
@@ -59,7 +71,13 @@ module.exports = (function () {
 			sortDirection: "desc",
 			sortColumn: 4,
 			pageLength: 25,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCode: `
+				globalThis.prepareData = (i) => {
+					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					return i;
+				};
+			`
 		});
 	});
 
