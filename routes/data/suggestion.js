@@ -90,40 +90,12 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-		const objectColumns = JSON.stringify(columns.clientside.map(i => ({ data: i })));
-
-		res.render("generic-list-table-defer", {
+		res.render("generic-ajax-list-table", {
 			head: columns.clientside,
-			script: `
-				$(document).ready(async () => {
-					const spinnerHTML = \`<div class="d-flex flex-column align-items-center" id="spinner-loading"><h5>Loading...</h5><br><img alt="Loading" src="/public/img/ppCircle.gif"></div>\`;
-					const tableElement = document.getElementById("table");					
-					tableElement.insertAdjacentHTML("beforebegin", spinnerHTML);				
-						
-					const table = $("#table").DataTable({
-						data: [],
-						columns: ${objectColumns},
-						pageLength: 25,
-						order: [4, "desc"],
-						deferRender: true,
-						scroller: true,
-						scrollCollapse: true
-					});
-					
-					const response = await fetch("https://supinic.com/api/data/suggestion/list/clientside-pagination");
-					const { data } = await response.json();						
-					
-					table.clear();
-					table.rows.add(data);
-					table.draw();
-					
-					const spinnerEl = document.getElementById("spinner-loading");
-					const parentEl = spinnerEl.parentNode;
-					parentEl.removeChild(spinnerEl);
-					
-					table.columns.adjust();
-				});
-			`
+			url: "https://supinic.com/api/data/suggestion/list/clientside-pagination",
+			sortDirection: "desc",
+			sortColumn: 4,
+			pageLength: 25
 		});
 	});
 
