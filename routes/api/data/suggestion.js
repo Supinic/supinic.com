@@ -22,16 +22,16 @@ module.exports = (function () {
 	};
 
 	const prettifyData = (data) => data.map(i => {
-		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
+		const text = (i.Text) ? sb.Utils.escapeHTML(i.Text) : "N/A";
 		const trimmedText = sb.Utils.wrapString(text, 200);
-		const update = (i.lastUpdate) ? new sb.Date(i.lastUpdate) : null;
+		const update = (i.Last_Update) ? new sb.Date(i.Last_Update) : null;
 
 		return {
-			Author: i.userName,
-			Text: (i.text.length > 200)
+			Author: i.User_Name,
+			Text: (i.Text.length > 200)
 				? `<div title="${text}">${trimmedText}</div>`
 				: text,
-			Status: i.status ?? "(pending)",
+			Status: i.Status ?? "(pending)",
 			Update: {
 				value: (update) ? sb.Utils.timeDelta(update) : "N/A",
 				dataOrder: update ?? 0
