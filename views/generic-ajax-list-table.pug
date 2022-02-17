@@ -33,9 +33,9 @@ html
 		script(type="module" src="/public/js/utils.js")
 
 		script.
-			import * as utils from "/public/js/utils.js";
-
 			$(document).ready(async () => {
+				const utils = await import("/public/js/utils.js");
+
 				const headers = !{JSON.stringify(head)};
 				const table = $("#table").DataTable({
 					data: [],
