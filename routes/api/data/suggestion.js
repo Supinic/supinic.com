@@ -33,8 +33,8 @@ module.exports = (function () {
 				: text,
 			Status: i.Status ?? "(pending)",
 			Update: {
-				display: sb.Utils.timeDelta(update),
-				"@data-search": update.valueOf()
+				display: (update) ? sb.Utils.timeDelta(update) : "null",
+				"@data-search": (update) ? update.valueOf() : 0
 			},
 			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
 		};
