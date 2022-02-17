@@ -21,6 +21,25 @@ module.exports = (function () {
 		return userID;
 	};
 
+	const prettifyData = (data) => data.map(i => {
+		const text = (i.text) ? sb.Utils.escapeHTML(i.text) : "N/A";
+		const trimmedText = sb.Utils.wrapString(text, 200);
+		const update = (i.lastUpdate) ? new sb.Date(i.lastUpdate) : null;
+
+		return {
+			Author: i.userName,
+			Text: (i.text.length > 200)
+				? `<div title="${text}">${trimmedText}</div>`
+				: text,
+			Status: i.status ?? "(pending)",
+			Update: {
+				value: (update) ? sb.Utils.timeDelta(update) : "N/A",
+				dataOrder: update ?? 0
+			},
+			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
+		};
+	});
+
 	/**
 	 * @api {get} /data/suggestion/status/list Suggestion - Status - List
 	 * @apiName ListSuggestionsStatuses
@@ -187,57 +206,33 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
-	/**
-	 * @api {get} /data/suggestion/list Suggestion - List - Pretty
-	 * @apiName PrettyListSuggestions
-	 * @apiDescription Posts a "pretty" list of suggestions - for internal use only
-	 * @apiGroup Data
-	 * @apiPermission none
-	 **/
-	Router.get("/list/pretty", async (req, res) => {
-		const length = (req.query.length) ? Number(req.query.length) : 25;
-		const start = (req.query.start) ? Number(req.query.start) : 0;
-		if (!sb.Utils.isValidInteger(length) || !sb.Utils.isValidInteger(start)) {
-			return sb.WebUtils.apiFail(res, 400, "Length and start must be valid integers");
-		}
-
+	Router.get("/list/client", async (req, res) => {
 		const data = await Suggestion.list();
-		const resultData = data.map(i => ({
-			Author: i.User_Name,
-			Text: (i.Text)
-				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
-				: "N/A",
-			Status: i.Status,
-			Priority: (i.Priority === 255)
-				? "(not checked)"
-				: (i.Priority ?? "N/A"),
-			Update: (i.Last_Update)
-				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
-				: "N/A",
-			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
-		}));
-
-		return sb.WebUtils.apiSuccess(res, resultData.slice(start, start + length), { skipCaseConversion: true });
-	});
-
-	/**
-	 * testing endpoint for clientside pagination
-	 */
-	Router.get("/list/clientside-pagination", async (req, res) => {
-		const data = await Suggestion.list();
-		const resultData = data.map(i => ({
-			Author: i.User_Name,
-			Text: (i.Text)
-				? sb.Utils.wrapString(sb.Utils.escapeHTML(i.Text), 200)
-				: "N/A",
-			Status: i.Status ?? "Pending",
-			Update: (i.Last_Update)
-				? sb.Utils.timeDelta(new sb.Date(i.Last_Update))
-				: "N/A",
-			ID: `<a href="/data/suggestion/${i.ID}">${i.ID}</a>`
-		}));
+		const resultData = prettifyData(data)
 
 		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+	});
+
+	Router.get("/list/active/client", async (req, res) => {
+		const userID = await fetchUserID(req);
+		const data = await Suggestion.list({
+			userID,
+			status: [null, "Approved", "Blocked"]
+		});
+
+		const resultData = prettifyData(data)
+		return sb.WebUtils.apiSuccess(res, resultData);
+	});
+
+	Router.get("/list/resolved/client", async (req, res) => {
+		const userID = await fetchUserID(req);
+		const data = await Suggestion.list({
+			userID,
+			status: ["Completed", "Denied", "Dismissed", "Dimissed by author", "Moved to Github"]
+		});
+
+		const resultData = prettifyData(data)
+		return sb.WebUtils.apiSuccess(res, resultData);
 	});
 
 	/**

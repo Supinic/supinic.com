@@ -6,14 +6,21 @@ html
 		include ./datatables.pug
 
 		- if (typeof sortColumn === "undefined") {
-			sortColumn = 0;
+		-	sortColumn = 0;
 		- }
 		- if (typeof sortDirection === "undefined") {
-			sortDirection = "asc";
+		-	sortDirection = "asc";
 		- }
 		- if (typeof pageLength === "undefined") {
-			pageLength = 25;
+		-	pageLength = 25;
 		- }
+		- if (typeof specificFiltering === "undefined") {
+		-	specificFiltering = false;
+		- }
+		- if (typeof disabledFilterColumns === "undefined") {
+		-	disabledFilterColumns = [];
+		- }
+
 		- if (typeof extraScript !== "undefined") {
 		script.
 			!{extraScript}
@@ -58,6 +65,36 @@ html
 				parentEl.removeChild(spinnerEl);
 
 				table.columns.adjust();
+
+				const disabledFilterColumns = JSON.parse(`!{JSON.stringify(disabledFilterColumns)}`);
+				const columnValues = JSON.parse(`!{JSON.stringify(columnValues)}`);
+				if (#{specificFiltering}) {
+					$("td.searchFooter").each(function (i) {
+						const position = Number($(this).attr("position"));
+						const title = $(this).attr("name");
+						const column = columnValues.find(value => value.title === title || value.position === position);
+						const value = (column && column.value) || null
+
+						if (disabledFilterColumns.includes(i)) {
+							$(this).html(`<input type="text" disabled placeholder="🔎 ${title}">`);
+						}
+						else {
+							$(this).html(`<input type="text" placeholder="🔎 ${title}">`);
+
+							$("input", this).on("keyup change", function () {
+								if (table.column(i).search() !== this.value) {
+									table.column(i).search(this.value, true).draw();
+								}
+							});
+
+							if (value) {
+								const input = $(this).children("input").first();
+								input.val(value);
+								input.trigger("change");
+							}
+						}
+					});
+				}
 			});
 
 		meta(charset="UTF-8")
