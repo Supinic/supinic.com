@@ -34,7 +34,7 @@ html
 
 		script.
 			$(document).ready(async () => {
-				const utils = await import("/public/js/utils.js");
+				globalThis.utils = await import("/public/js/utils.js");
 
 				const headers = !{JSON.stringify(head)};
 				const table = $("#table").DataTable({
@@ -58,7 +58,7 @@ html
 					}
 
 					if (typeof globalThis.prepareData === "function") {
-						i = globalThis.prepareData(i);
+						i = globalThis.prepareData(i, utils);
 					}
 
 					return i;

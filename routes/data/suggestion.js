@@ -40,7 +40,7 @@ module.exports = (function () {
 			specificFiltering: true,
 			extraScript: `
 				globalThis.prepareData = (i) => {
-					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					i.Update = (i.Update) ? globalThis.utils.timeDelta(i.Update) : "N/A";
 					return i;
 				};
 			`
@@ -57,7 +57,7 @@ module.exports = (function () {
 			specificFiltering: true,
 			extraScript: `
 				globalThis.prepareData = (i) => {
-					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					i.Update = (i.Update) ? globalThis.utils.timeDelta(i.Update) : "N/A";
 					return i;
 				};
 			`
@@ -74,7 +74,7 @@ module.exports = (function () {
 			specificFiltering: true,
 			extraScript: `
 				globalThis.prepareData = (i) => {
-					i.Update = (i.Update) ? utils.timeDelta(i.Update) : "N/A";
+					i.Update = (i.Update) ? globalThis.utils.timeDelta(i.Update) : "N/A";
 					return i;
 				};
 			`
