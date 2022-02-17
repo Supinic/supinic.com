@@ -36,10 +36,18 @@ html
 			$(document).ready(async () => {
 				globalThis.utils = await import("/public/js/utils.js");
 
-				const headers = !{JSON.stringify(head)};
+				const rawHeaders = !{JSON.stringify(head)};
+				const headers = rawHeaders.map(i => (typeof i === "string") ? { data: i } : i);
+				for (const header of headers) {
+					if (header && header.type === "timeDelta") {
+						delete header.type;
+						header.render = (data) => (typeof data === number) ? utils.timeDelta(data) : data;
+					}
+				}
+
 				const table = $("#table").DataTable({
 					data: [],
-					columns: headers.map(i => ({ data: i })),
+					columns: headers,
 					pageLength: #{pageLength},
 					order: [#{sortColumn}, "#{sortDirection}"],
 					deferRender: true,

@@ -8,7 +8,7 @@ module.exports = (function () {
 		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
 		active: ["ID", "Text", "Status", "Priority", "Update"],
 		resolved: ["ID", "Text", "Status", "Priority", "Update"],
-		clientside:  ["Author", "Text", "Status", "Update", "ID"]
+		clientside:  ["Author", "Text", "Status", { data: "Update", type: "timeDelta" }, "ID"]
 	};
 
 	const redirect = async (req, res, urlCallback) => {
