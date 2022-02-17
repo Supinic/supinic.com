@@ -153,4 +153,9 @@ html
 			thead
 				tr
 					each key in head
+						- if (typeof key === "string") {
 						th #{key}
+						- }
+						- else {
+						th #{key.title}
+						- }
