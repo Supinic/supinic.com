@@ -221,7 +221,7 @@ module.exports = (function () {
 		});
 
 		const resultData = prettifyData(data)
-		return sb.WebUtils.apiSuccess(res, resultData);
+		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	Router.get("/list/resolved/client", async (req, res) => {
@@ -232,7 +232,7 @@ module.exports = (function () {
 		});
 
 		const resultData = prettifyData(data)
-		return sb.WebUtils.apiSuccess(res, resultData);
+		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	/**
