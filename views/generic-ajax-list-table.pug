@@ -41,7 +41,9 @@ html
 				for (const header of headers) {
 					if (header && header.type === "timeDelta") {
 						delete header.type;
-						header.render = (data) => (typeof data === number) ? utils.timeDelta(data) : data;
+						header.render = (data) => (typeof data === "number")
+							? `<div data-order="${data}">utils.timeDelta(data)</div>`
+							: data;
 					}
 				}
 
