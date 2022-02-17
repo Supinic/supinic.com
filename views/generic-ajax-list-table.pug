@@ -28,7 +28,7 @@ html
 
 		script.
 			$(document).ready(async () => {
-				const headers = #{JSON.stringify(head)};
+				const headers = !{JSON.stringify(head)};
 				const table = $("#table").DataTable({
 					data: [],
 					columns: headers.map(i => ({ data: i })),
