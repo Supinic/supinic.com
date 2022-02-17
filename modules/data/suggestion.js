@@ -22,7 +22,8 @@ module.exports = (function () {
 			return await super.selectMultipleCustom(q => {
 				q.select("User_Alias.Name AS User_Name")
 					.join("chat_data", "User_Alias")
-					.orderBy("Suggestion.ID DESC");
+					.orderBy("Suggestion.ID DESC")
+					.where("Category <> %s", "Quarantined");
 
 				if (options.category) {
 					if (Array.isArray(options.category)) {
