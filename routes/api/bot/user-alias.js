@@ -92,8 +92,22 @@ module.exports = (function () {
 		}
 
 		const data = await CustomCommandAlias.selectMultipleCustom(rs => rs
-			.where("User_Alias = %n", userData.ID)
-			.where("Channel IS NULL")
+			.select("ParentAuthor.Name AS Link_Author", "ParentAlias.Name AS Link_Name")
+			.from("data", "Custom_Command_Alias")
+			.where("Custom_Command_Alias.User_Alias = %n", 421810 )
+			.where("Custom_Command_Alias.Channel IS NULL")
+			.leftJoin({
+				alias: "ParentAlias",
+				toDatabase: "data",
+				toTable: "Custom_Command_Alias",
+				on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
+			})
+			.leftJoin({
+				alias: "ParentAuthor",
+				toDatabase: "chat_data",
+				toTable: "User_Alias",
+				on: "ParentAlias.User_Alias = ParentAuthor.ID"
+			})
 		);
 
 		for (const item of data) {
