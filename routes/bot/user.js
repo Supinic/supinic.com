@@ -124,7 +124,7 @@ module.exports = (function () {
 				: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`;
 
 			const invocation = (alias.linkAuthor && alias.linkName)
-				? `(link to alias ${alias.linkName} made by ${alias.linkAuthor})`
+				? `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`
 				: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`);
 
 			return {
