@@ -119,12 +119,20 @@ module.exports = (function () {
 				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
 				: alias.name;
 
+			const link = (alias.linkAuthor && alias.linkName)
+				? `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`
+				: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`;
+
+			const invocation = (alias.linkAuthor && alias.linkName)
+				? `(link to alias ${alias.linkName} made by ${alias.linkAuthor})`
+				: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`);
+
 			return {
 				Name: {
-					value: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`,
+					value: link,
 					dataOrder: alias.name
 				},
-				Invocation: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`),
+				Invocation: invocation,
 				Created: {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
