@@ -94,7 +94,7 @@ module.exports = (function () {
 		const data = await CustomCommandAlias.selectMultipleCustom(rs => rs
 			.select("ParentAuthor.Name AS Link_Author", "ParentAlias.Name AS Link_Name")
 			.from("data", "Custom_Command_Alias")
-			.where("Custom_Command_Alias.User_Alias = %n", 421810 )
+			.where("Custom_Command_Alias.User_Alias = %n", userData.ID)
 			.where("Custom_Command_Alias.Channel IS NULL")
 			.leftJoin({
 				alias: "ParentAlias",
