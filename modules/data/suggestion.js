@@ -97,7 +97,7 @@ module.exports = (function () {
 					(
 						SELECT COUNT(*) 
 						FROM data.Suggestion AS X
-						WHERE X.User_Alias = ${userID} AND X.Status = Suggestion.Status
+						WHERE X.User_Alias = ${userID} AND X.Status <=> Suggestion.Status
 					) AS User_Amount
 				`)
 				.join("chat_data", "User_Alias")
