@@ -23,7 +23,7 @@ module.exports = (function () {
 				q.select("User_Alias.Name AS User_Name")
 					.join("chat_data", "User_Alias")
 					.orderBy("Suggestion.ID DESC")
-					.where("Category <> %s", "Quarantined");
+					.where("Category <> %s OR Category IS NULL", "Quarantined");
 
 				if (options.category) {
 					if (Array.isArray(options.category)) {
