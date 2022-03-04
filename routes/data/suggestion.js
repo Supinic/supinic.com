@@ -95,11 +95,11 @@ module.exports = (function () {
 	});
 
 	Router.get("/user/list/active", async (req, res) => {
-		await redirect(req, res, name => `/data/suggestion/list/active?userName=${name}`);
+		await redirect(req, res, name => `/data/suggestion/list/active?columnAuthor=${name}`);
 	});
 
 	Router.get("/user/list/resolved", async (req, res) => {
-		await redirect(req, res, name => `/data/suggestion/list/resolved?userName=${name}`);
+		await redirect(req, res, name => `/data/suggestion/list/resolved?columnAuthor=${name}`);
 	});
 
 	Router.get("/user/stats", async (req, res) => {
