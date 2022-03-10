@@ -257,7 +257,7 @@ module.exports = (function () {
 						collapseOn: "Track_ID",
 						fields: ["Reupload_ID"],
 						referenceCondition: "Relationship = 'Reupload of'",
-						targetCodition: "Video_Type = 1 AND Available = 1"
+						targetCondition: "Youtube_Reupload.Video_Type = 1 AND Youtube_Reupload.Available = 1"
 					})
 				);
 			}
@@ -349,7 +349,7 @@ module.exports = (function () {
 				delete track.Alias;
 
 				track.Youtube_Reuploads = (track.Youtube_Reupload)
-					? track.Youtube_Reupload.map(i => i.Reupload_ID)
+					? track.Youtube_Reupload.map(i => i.Reupload_ID).filter(Boolean)
 					: null;
 				delete track.Youtube_Reupload;
 			}
