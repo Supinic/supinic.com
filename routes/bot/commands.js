@@ -54,13 +54,13 @@ module.exports = (function () {
 					alerter.innerHTML = "";
 					
 					const input = document.getElementById("input");
-					const response = await fetch("/api/bot/run?query=" + encodeURIComponent(input.value));
+					const response = await fetch("/api/bot/command/run?query=" + encodeURIComponent(input.value));
 					const { data, error } = await response.json();					
 						
 					if (error) {					
 						alerter.classList.add("alert");
 						alerter.classList.add("alert-danger");						
-						alerter.innerHTML = error;
+						alerter.innerHTML = error.message ?? "(empty error message)";
 					}
 					else {					
 						const output = document.getElementById("output");
