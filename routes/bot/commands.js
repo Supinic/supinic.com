@@ -58,6 +58,7 @@ module.exports = (function () {
 			script: sb.Utils.tag.trim `
 				async function submit () {
 					const alerter = document.getElementById("alert-anchor");
+					const button = document.getElementById("submit-button");
 					alerter.classList.remove("alert", "alert-danger");
 					alerter.innerHTML = "";
 					
@@ -66,6 +67,7 @@ module.exports = (function () {
 					
 					output.value = "";
 					output.classList.add("loading");
+					button.disabled = true;
 					
 					const response = await fetch("/api/bot/command/run", {
 						method: "POST",
@@ -79,7 +81,8 @@ module.exports = (function () {
 					
 					const { data, error } = await response.json();	
 					
-					output.classList.remove("loading");				
+					output.classList.remove("loading");		
+					button.disabled = false;
 						
 					if (error) {					
 						alerter.classList.add("alert");
