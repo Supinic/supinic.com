@@ -64,9 +64,16 @@ module.exports = (function () {
 					const input = document.getElementById("input");
 					const output = document.getElementById("output");
 					
+					output.value = "";
 					output.classList.add("loading");
 					
-					const response = await fetch("/api/bot/command/run?query=" + encodeURIComponent(input.value));
+					const response = await fetch("/api/bot/command/run", {
+						method: "POST",
+						body: JSON.stringify({
+							query: encodeURIComponent(input.value)
+						})
+					});
+					
 					const { data, error } = await response.json();	
 					
 					output.classList.remove("loading");				

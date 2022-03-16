@@ -52,6 +52,7 @@ html
                             placeholder=value.placeholder
                             rows=(value.rows || 3)
                             disabled=value.disabled || false
+                            maxlength=value.maxLength || value.maxlength  || ""
                         ).
                             !{value.value}
                     - }

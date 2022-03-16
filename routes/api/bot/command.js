@@ -4,15 +4,17 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const commandRunQueryThreshold = 50_000;
+
 	/**
-	 * @api {get} /bot/command/list/ Command - list
+	 * @api {post} /bot/command/list/ Command - list
 	 * @apiName GetCommandList
 	 * @apiDescription Posts a list of bot commands and their parameters
 	 * @apiGroup Bot
 	 * @apiParam {string} query Command string to execute
 	 * @apiPermission login
 	 */
-	Router.get("/run", async (req, res) => {
+	Router.post("/run", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
@@ -23,12 +25,15 @@ module.exports = (function () {
 
 		const { userData } = auth;
 		const { prefix, prefixRegex } = sb.Command;
-		const { query } = req.query;
+		const { query } = req.body;
 		if (!query) {
 			return sb.WebUtils.apiFail(res, 400, "No command query provided");
 		}
 		else if (!query.startsWith(prefix)) {
 			return sb.WebUtils.apiFail(res, 400, "Command query must begin with the command prefix");
+		}
+		else if (query.length > commandRunQueryThreshold) {
+			return sb.WebUtils.apiFail(res, 400, `Command query is too long, ${query.length}/${commandRunQueryThreshold} characters`);
 		}
 
 		const [command, ...args] = query.split(/\s+/);
