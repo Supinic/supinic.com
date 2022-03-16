@@ -69,6 +69,9 @@ module.exports = (function () {
 					
 					const response = await fetch("/api/bot/command/run", {
 						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
 						body: JSON.stringify({
 							query: encodeURIComponent(input.value)
 						})
