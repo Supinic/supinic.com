@@ -18,6 +18,59 @@ module.exports = (function () {
 		Unping: "These users will not be \"pinged\" by this command"
 	};
 
+	Router.get("/run", async (req, res) => {
+		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		if (!userID) {
+			return res.status(401).render("error", {
+				error: "401 Unauthorized",
+				message: "You must be logged in before running Supibot commands"
+			});
+		}
+
+		res.render("generic-form", {
+			prepend: sb.Utils.tag.trim `
+				<h5 class="pt-3 text-center">Run a Supibot command</h5>
+	            <div id="alert-anchor"></div>
+			`,
+			onSubmit: "submit()",
+			fields: [
+				{
+					id: "input",
+					name: "user-input",
+					type: "memo",
+					placeholder: "Your Supibot command text here"
+				},
+				{
+					id: "output",
+					name: "user-output",
+					type: "memo",
+					disabled: true
+				},
+			],
+			script: sb.Utils.tag.trim `
+				async function submit () {
+					const alerter = document.getElementById("alert-anchor");
+					alerter.classList.remove("alert", "alert-danger");
+					alerter.innerHTML = "";
+					
+					const input = document.getElementById("input");
+					const response = await fetch("/api/bot/run?query=" + encodeURIComponent(input.value));
+					const { data, error } = await response.json();					
+						
+					if (error) {					
+						alerter.classList.add("alert");
+						alerter.classList.add("alert-danger");						
+						alerter.innerHTML = error;
+					}
+					else {					
+						const output = document.getElementById("output");
+						output.value = data.reply ?? "(empty message)";
+					}
+				}
+			`
+		});
+	});
+
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "bot/command/list").json();
 
