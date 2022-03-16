@@ -40,7 +40,7 @@ module.exports = (function () {
 
 		const aliasData = await CustomCommandAlias.selectSingleCustom(q => q
 			.where("User_Alias = %n", aliasOwnerData.ID)
-			.where("Name = %s", req.params.alias)
+			.where("Name COLLATE utf8mb4_bin = %s", req.params.alias)
 		);
 
 		if (!aliasData) {
@@ -126,7 +126,7 @@ module.exports = (function () {
 
 		const aliasData = await CustomCommandAlias.selectSingleCustom(rs => rs
 			.where("User_Alias = %n", userData.ID)
-			.where("Name = %s", alias)
+			.where("Name COLLATE utf8mb4_bin = %s", alias)
 			.where("Channel IS NULL")
 		);
 
