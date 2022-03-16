@@ -9,6 +9,70 @@ module.exports = (function () {
 	 * @apiName GetCommandList
 	 * @apiDescription Posts a list of bot commands and their parameters
 	 * @apiGroup Bot
+	 * @apiParam {string} query Command string to execute
+	 * @apiPermission login
+	 */
+	Router.get("/run", async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const { userData } = auth;
+		const { prefix, prefixRegex } = sb.Command;
+		const { query } = req.query;
+		if (!query) {
+			return sb.WebUtils.apiFail(res, 400, "No command query provided");
+		}
+		else if (!query.startsWith(prefix)) {
+			return sb.WebUtils.apiFail(res, 400, "Command query must begin with the command prefix");
+		}
+
+		const [command, ...args] = query.split(/\s+/);
+		if (!command.startsWith(prefix)) {
+			return sb.WebUtils.apiFail(res, 400, "Command invocation must begin with the command prefix");
+		}
+
+		const invocation = command.replace(prefixRegex, "");
+		const response = await sb.Got("Supibot", {
+			url: "command/execute",
+			searchParams: {
+				invocation,
+				platform: "twitch",
+				channel: null,
+				user: userData.Name,
+				arguments: args.join(" "),
+			}
+		});
+
+		if (response.body.error) {
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
+		}
+		else {
+			const { result } = response.body.data;
+			if (!result.reply) {
+				if (result.reason === "cooldown") {
+					result.reply = "You currently have a cooldown pending!";
+				}
+				else if (result.reason === "no-command") {
+					result.reply = "That command does not exist!";
+				}
+			}
+
+			return sb.WebUtils.apiSuccess(res, {
+				reply: result.reply ?? "(no message)"
+			});
+		}
+	});
+
+	/**
+	 * @api {get} /bot/command/list/ Command - list
+	 * @apiName GetCommandList
+	 * @apiDescription Posts a list of bot commands and their parameters
+	 * @apiGroup Bot
 	 * @apiPermission any
 	 * @apiSuccess {Array} command List of commands
 	 * @apiSuccess {string} command.name

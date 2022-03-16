@@ -38,7 +38,7 @@ module.exports = (function () {
 					id: "input",
 					name: "Input",
 					type: "memo",
-					placeholder: "Your Supibot command text goes here - prefix included"
+					placeholder: "Your Supibot command text goes here - just like in chat, prefix included"
 				},
 				{
 					id: "output",
