@@ -37,6 +37,7 @@ module.exports = (function () {
 				    background-image: url("/public/img/ppCircle.gif");
 				    background-repeat: no-repeat;
 				    background-position: center;
+				    background-size: contain;
 				}
 			`,
 			onSubmit: "submit()",

@@ -10,6 +10,7 @@ html
                 const button = document.getElementById("submit-button");
                 document.addEventListener("keydown", (evt) => {
                     if (evt.key === "Enter") {
+                        evt.preventDefault();
                         button.click();
                     }
                 });
