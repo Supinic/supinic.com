@@ -273,18 +273,19 @@
 	];
 	app.locals.loginItems = [
 		{ name: "Command aliases", link: "user/alias/list" },
-		{ name: "Favourite tracks", link: "track/favourite/list" },
-		{ name: "Github link", link: "auth/github" },
+		{ name: "Run a Supibot command", link: "bot/command/run" },
+		{ separator: true },
 		{ name: "Reminders - active", link: "bot/reminder/list" },
 		{ name: "Reminders - history", link: "bot/reminder/history" },
-		{ name: "Run a Supibot command", link: "bot/command/run" },
-		{ name: "Your data within Supibot", link: "user/data/list" },
-		{ name: "Your suggestions - active", link: "data/suggestion/user/list/active" },
-		{ name: "Your suggestions - resolved", link: "data/suggestion/user/list/resolved" },
-		{ name: "Your suggestion stats", link: "data/suggestion/user/stats" },
-
 		{ separator: true },
-
+		{ name: "Suggestions - active", link: "data/suggestion/user/list/active" },
+		{ name: "Suggestions - resolved", link: "data/suggestion/user/list/resolved" },
+		{ name: "Suggestion - stats", link: "data/suggestion/user/stats" },
+		{ separator: true },
+		{ name: "Data within Supibot", link: "user/data/list" },
+		{ name: "Favourite tracks", link: "track/favourite/list" },
+		{ name: "Github link", link: "auth/github" },
+		{ separator: true },
 		{ name: "Log out", link: "user/logout" }
 	];
 
