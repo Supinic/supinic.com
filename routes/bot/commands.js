@@ -36,13 +36,13 @@ module.exports = (function () {
 			fields: [
 				{
 					id: "input",
-					name: "user-input",
+					name: "Input",
 					type: "memo",
-					placeholder: "Your Supibot command text here"
+					placeholder: "Your Supibot command text goes here - prefix included"
 				},
 				{
 					id: "output",
-					name: "user-output",
+					name: "Output",
 					type: "memo",
 					disabled: true
 				},
