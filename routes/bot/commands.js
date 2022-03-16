@@ -73,7 +73,7 @@ module.exports = (function () {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							query: encodeURIComponent(input.value)
+							query: input.value
 						})
 					});
 					
