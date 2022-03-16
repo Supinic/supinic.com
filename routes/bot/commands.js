@@ -32,6 +32,13 @@ module.exports = (function () {
 				<h5 class="pt-3 text-center">Run a Supibot command</h5>
 	            <div id="alert-anchor"></div>
 			`,
+			extraCSS: `
+				textarea.loading {
+				    background-image: url("/public/img/ppCircle.gif");
+				    background-repeat: no-repeat;
+				    background-position: center;
+				}
+			`,
 			onSubmit: "submit()",
 			fields: [
 				{
@@ -54,8 +61,14 @@ module.exports = (function () {
 					alerter.innerHTML = "";
 					
 					const input = document.getElementById("input");
+					const output = document.getElementById("output");
+					
+					output.classList.add("loading");
+					
 					const response = await fetch("/api/bot/command/run?query=" + encodeURIComponent(input.value));
-					const { data, error } = await response.json();					
+					const { data, error } = await response.json();	
+					
+					output.classList.remove("loading");				
 						
 					if (error) {					
 						alerter.classList.add("alert");
@@ -63,7 +76,6 @@ module.exports = (function () {
 						alerter.innerHTML = error.message ?? "(empty error message)";
 					}
 					else {					
-						const output = document.getElementById("output");
 						output.value = data.reply ?? "(empty message)";
 					}
 				}
