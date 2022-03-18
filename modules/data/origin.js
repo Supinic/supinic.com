@@ -90,17 +90,17 @@ module.exports = (function () {
 			const ID = item.Emote_ID;
 			const type = item.Type;
 
-			if (type === "Twitch - Global" || type === "Twitch - Sub" || type === "Twitch - Other") {
+			if (type.startsWith("Twitch")) {
 				// return `https://twitchemotes.com/emotes/${ID}`;
 				return `https://emotes.raccatta.cc/twitch/emote/${ID}`;
 			}
-			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
+			else if (type.startsWith("BTTV")) {
 				return `https://betterttv.com/emotes/${ID}`;
 			}
-			else if (type === "FFZ" || type === "FFZ - Global" || type === "FFZ - Channel") {
+			else if (type.startsWith("FFZ")) {
 				return `https://www.frankerfacez.com/emoticon/${ID}`;
 			}
-			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
+			else if (type.startsWith("7TV")) {
 				return `https://7tv.app/emotes/${ID}`;
 			}
 
