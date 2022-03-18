@@ -91,7 +91,8 @@ module.exports = (function () {
 			const type = item.Type;
 
 			if (type === "Twitch - Global" || type === "Twitch - Sub" || type === "Twitch - Other") {
-				return `https://twitchemotes.com/emotes/${ID}`;
+				// return `https://twitchemotes.com/emotes/${ID}`;
+				return `https://emotes.raccatta.cc/twitch/emote/${ID}`;
 			}
 			else if (type === "BTTV" || type === "BTTV - Global" || type === "BTTV - Channel") {
 				return `https://betterttv.com/emotes/${ID}`;
