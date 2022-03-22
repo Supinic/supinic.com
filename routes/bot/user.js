@@ -191,6 +191,11 @@ module.exports = (function () {
 						return;
 					}
 					
+					const approved = confirm("Do you really want to remove the " + aliasName + " alias?");
+					if (!approved) {
+						return;
+					}
+					
 					const spinner = element.firstElementChild;
 					spinner.classList.remove("inactive");
 					spinner.classList.add("active");
@@ -209,11 +214,11 @@ module.exports = (function () {
 					spinner.classList.add("inactive");
 					spinner.classList.remove("active");
 					
-					if (data.statusCode === 403) {
+					if (response.status === 403) {
 						alert("Your session expired! Please log in again.");
-					}					
-					else if (data.result.success === false) {
-						alert("🚨 " + data.result.reply);
+					}
+					else if (data.success === false) {
+						alert("🚨 " + data.reply);
 					}					
 					else {
 						const row = element.parentElement.parentElement;
@@ -303,7 +308,7 @@ module.exports = (function () {
 					text-decoration: line-through !important;
 				}				
 				tr.deactivated a {
-					cursor: defautl;
+					cursor: default;
                     pointer-events: none;
 				}
 				a.delete-alias:before { 
