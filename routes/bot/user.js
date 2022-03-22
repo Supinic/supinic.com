@@ -109,9 +109,18 @@ module.exports = (function () {
 		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
-		const headerColumns = (auth.userData && auth.userData.Name !== username.toLowerCase())
-			? ["Name", "Invocation", "Created", "Link"]
-			: ["Name", "Invocation", "Created"];
+		let headerColumns;
+		if (auth.userData) {
+			if (auth.userData.Name === username.toLowerCase()) {
+				headerColumns = ["Name", "Invocation", "Created", "Unset"];
+			}
+			else {
+				headerColumns = ["Name", "Invocation", "Created", "Link"];
+			}
+		}
+		else {
+			headerColumns = ["Name", "Invocation", "Created"];
+		}
 
 		const printData = body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
@@ -137,7 +146,13 @@ module.exports = (function () {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
 				},
-				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${encodeURIComponent(alias.name)}" class="link-alias active"></div>`
+				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${encodeURIComponent(alias.name)}" class="link-alias active"></div>`,
+				Unset: `
+					<a class="delete-alias btn btn-warning" role="button" alias-name="${encodeURIComponent(alias.name)}" aria-controls>
+						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
+						</div>
+					</a>
+				`
 			};
 		});
 
@@ -162,6 +177,54 @@ module.exports = (function () {
 						element.classList.add("clickable");
 						element.parentElement.addEventListener("click", () => linkAlias(element));
 					}
+					
+					const deleteList = document.getElementsByClassName("delete-alias");
+					for (const element of deleteList) {						
+						element.classList.add("clickable");
+						element.parentElement.addEventListener("click", () => deleteAlias(element));
+					}
+				}
+				
+				async function deleteAlias (element) {
+					const aliasName = element.getAttribute("alias-name");
+					if (!aliasName) {
+						return;
+					}
+					
+					const spinner = element.firstElementChild;
+					spinner.classList.remove("inactive");
+					spinner.classList.add("active");
+					
+					const response = await fetch("/api/bot/command/run", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							query: "$alias remove " + aliasName
+						})
+					});
+					const { data } = await response.json();
+					
+					spinner.classList.add("inactive");
+					spinner.classList.remove("active");
+					
+					if (data.statusCode === 403) {
+						alert("Your session expired! Please log in again.");
+					}					
+					else if (data.result.success === false) {
+						alert("🚨 " + data.result.reply);
+					}					
+					else {
+						const row = element.parentElement.parentElement;
+						const linkElement = Array.from(row.children).find(i => i.getAttribute("field") === "Name");
+						if (linkElement) {
+							activeElement.textContent = "No";
+						}
+						
+						row.classList.add("deactivated");
+						element.classList.add("disabled");
+					}					
 				}
 				
 				async function linkAlias (element) {
@@ -231,6 +294,27 @@ module.exports = (function () {
 					cursor: pointer;
 					text-decoration: underline dotted;
 				}
+				
+				a.btn {
+					margin: 3px;
+				}
+				tr.deactivated {
+					color: #666 !important;
+					text-decoration: line-through !important;
+				}				
+				tr.deactivated a {
+					cursor: defautl;
+                    pointer-events: none;
+				}
+				a.delete-alias:before { 
+					content: "❌"
+			    }
+			    div.spinner-border.active {
+			        display: inherit;
+			    }
+			    div.spinner-border.inactive {
+			        display: none;
+			    }
 			`
 		});
 	});
