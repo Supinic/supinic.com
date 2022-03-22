@@ -187,7 +187,10 @@ module.exports = (function () {
 		const data = await Filter.selectMultipleCustom(q => q
 			.select("Command.Name AS Command_Name")
 			.select("User_Alias.Name AS User_Name")
-			.leftJoin("chat_data", "Command")
+			.leftJoin({
+				toTable: "Command",
+				toField: "Name"
+			})
 			.leftJoin("chat_data", "User_Alias")
 			.where("Channel = %n", id)
 			.where("Active = %b", true)
