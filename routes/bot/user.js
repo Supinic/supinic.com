@@ -304,6 +304,7 @@ module.exports = (function () {
 					text-decoration: line-through !important;
 				}				
 				tr.deactivated a {
+					color: #666 !important;
 					cursor: default;
                     pointer-events: none;
 				}
