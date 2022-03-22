@@ -146,9 +146,9 @@ module.exports = (function () {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
 				},
-				Link: `<div alias-owner="${encodeURIComponent(username)}" alias-name="${encodeURIComponent(alias.name)}" class="link-alias active"></div>`,
+				Link: `<div alias-owner="${username}" alias-name="${alias.name}" class="link-alias active"></div>`,
 				Unset: `
-					<a class="delete-alias btn btn-warning" role="button" alias-name="${encodeURIComponent(alias.name)}" aria-controls>
+					<a class="delete-alias btn btn-warning" role="button" alias-name="${alias.name}" aria-controls>
 						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
 						</div>
 					</a>
@@ -222,10 +222,6 @@ module.exports = (function () {
 					}					
 					else {
 						const row = element.parentElement.parentElement;
-						const linkElement = Array.from(row.children).find(i => i.getAttribute("field") === "Name");
-						if (linkElement) {
-							activeElement.textContent = "No";
-						}
 						
 						row.classList.add("deactivated");
 						element.classList.add("disabled");
@@ -254,7 +250,7 @@ module.exports = (function () {
 					element.classList.add("loading");
 					element.textContent = "";
 					
-					const url = "/api/bot/user/alias/link/" + aliasOwner + "/" + aliasName;
+					const url = "/api/bot/user/alias/link/" + encodeURIComponent(aliasOwner) + "/" + encodeURIComponent(aliasName);
 					const { data } = await fetch(url, { method: "GET" })
 						.then(i => i.json())
 						.catch(i => i.json());
