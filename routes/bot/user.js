@@ -181,7 +181,7 @@ module.exports = (function () {
 					const deleteList = document.getElementsByClassName("delete-alias");
 					for (const element of deleteList) {						
 						element.classList.add("clickable");
-						element.parentElement.addEventListener("click", () => deleteAlias(element));
+						element.addEventListener("click", () => deleteAlias(element));
 					}
 				}
 				
