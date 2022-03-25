@@ -179,7 +179,7 @@ module.exports = (function () {
 		const printData = {};
 		const data = [
 			{
-				name: "Active filters",
+				name: "activeFilters",
 				type: "array",
 				value: filterResponse.body.data
 			},
