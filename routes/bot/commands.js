@@ -32,6 +32,9 @@ module.exports = (function () {
 				<h5 class="pt-3 text-center">Run a Supibot command</h5>
 	            <div id="alert-anchor"></div>
 			`,
+			append: sb.Utils.tag.trim `
+				<h6 class="pt-3 text-center text-muted">The commands are executed as if you were whispering Supibot on Twitch.</h6>
+			`,
 			extraCSS: `
 				textarea.loading {
 				    background-image: url("/public/img/ppCircle.gif");
