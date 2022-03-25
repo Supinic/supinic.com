@@ -163,8 +163,28 @@ module.exports = (function () {
 			});
 		}
 
+		const filterSearchParams = sb.WebUtils.authenticateLocalRequest(userData.ID, null);
+		const filterResponse = await sb.Got("Supinic", {
+			url: `bot/filter/user/list`,
+			searchParams: filterSearchParams.toString()
+		});
+
+		if (filterResponse.statusCode !== 200) {
+			return res.status(filterResponse.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(filterResponse.statusCode),
+				message: filterResponse.body.error.message
+			});
+		}
+
 		const printData = {};
-		const { data } = response.body;
+		const data = [
+			{
+				name: "Active filters",
+				type: "array",
+				value: filterResponse.body.data
+			},
+			...response.body.data
+		];
 
 		for (const property of data) {
 			let innerContent;
