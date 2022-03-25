@@ -38,6 +38,7 @@ html
         block navigation
         div(class="px-4" id="prepend").
             !{prepend}
+
         div(class="px-4" id="form-wrapper")
             for value, key in fields
                 - if (!value.type) value.type = "string";
@@ -92,3 +93,8 @@ html
                         )
                     - }
             button(class="btn btn-primary" id="submit-button" onclick=onSubmit) Submit
+
+        - if (typeof append !== "undefined") {
+            div(class="px-4" id="append").
+                !{append}
+        - }
