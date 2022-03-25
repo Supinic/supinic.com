@@ -249,5 +249,54 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	/**
+	 * @api {get} /bot/filter/user/list User filters
+	 * @apiName CheckFilterStatus
+	 * @apiDescription List all filters related to the currently logged user
+	 * @apiGroup Bot
+	 * @apiPermission login
+	 * @apiSuccess {Object[]} filter List of filters
+	 * @apiSuccess {number} ID
+	 * @apiSuccess {string} type
+	 * @apiSuccess {number} channel
+	 * @apiSuccess {string} channelName
+	 * @apiSuccess {string} platformName
+	 * @apiSuccess {string} invocation
+	 * @apiSuccess {string} response
+	 * @apiSuccess {string} reason
+	 * @apiError (400) InvalidRequest Command does not exist
+	 */
+	Router.get("/user/list", async (req, res) => {
+		const auth = await sb.WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		const data = await Filter.selectCustom(q => q
+			.select("Filter.ID", "Type", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
+			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
+			.select("Platform.Name AS Platform_Name")
+			.leftJoin("chat_data", "Channel")
+			.leftJoin({
+				toTable: "Platform",
+				on: "Channel.Platform = Platform.ID"
+			})
+			.where("User_Alias = %n", auth.userData.ID)
+			.where("Active = %b", true)
+			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
+		);
+
+		for (const item of data) {
+			if (item.Data) {
+				item.Data = JSON.parse(item.Data);
+			}
+		}
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
 	return Router;
 })();
