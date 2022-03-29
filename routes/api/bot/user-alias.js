@@ -111,45 +111,30 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = await CustomCommandAlias.selectCustom(rs => {
-			rs.select("Custom_Command_Alias.Name")
-				.select("Custom_Command_Alias.Invocation")
-				.select("Custom_Command_Alias.Created")
-				.select("Custom_Command_Alias.Edited")
-				.select("Custom_Command_Alias.Description")
-				.select("ParentAuthor.Name AS Link_Author")
-				.select("ParentAlias.Name AS Link_Name")
-				.where("Custom_Command_Alias.User_Alias = %n", userData.ID)
-				.where("Custom_Command_Alias.Channel IS NULL")
-				.leftJoin({
-					alias: "ParentAlias",
-					toDatabase: "data",
-					toTable: "Custom_Command_Alias",
-					on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
-				})
-				.leftJoin({
-					alias: "ParentAuthor",
-					toDatabase: "chat_data",
-					toTable: "User_Alias",
-					on: "ParentAlias.User_Alias = ParentAuthor.ID"
-				});
-
-			if (includeArguments) {
-				rs.select("Custom_Command_Alias.Arguments");
-			}
-
-			return rs;
+		const data = await CustomCommandAlias.fetchForUser(userData.ID, {
+			includeArguments: Boolean(includeArguments)
 		});
-
-		if (includeArguments) {
-			for (const item of data) {
-				item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
-			}
-		}
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	/**
+	 * @api {get} /bot/user/:name/alias/list Detail of specific command alias
+	 * @apiName GetUserCommandAliasDetail
+	 * @apiDescription For a specified user and their alias, this endpoint lists its details
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiSuccess {string} name
+	 * @apiSuccess {string} invocation Main command of the custom alias
+	 * @apiSuccess {string} created ISO date string
+	 * @apiSuccess {string} edited ISO date string
+	 * @apiSuccess {string} description
+	 * @apiSuccess {string} linkAuthor If the alias is a link to another, this is its author name
+	 * @apiSuccess {string} linkName If the alias is a link to another, this is the linked alias name
+	 * @apiSuccess {string} userName Owner of the alias = identical to :name
+	 * @apiSuccess {string[]} alias.arguments Body of the alias
+	 * @apiError (404) NotFound User was not found
+	 */
 	Router.get("/:name/alias/detail/:alias", async (req, res) => {
 		const { name, alias } = req.params;
 		const userData = await sb.User.get(name);
@@ -157,18 +142,16 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const aliasData = await CustomCommandAlias.selectSingleCustom(rs => rs
-			.where("User_Alias = %n", userData.ID)
-			.where("Name COLLATE utf8mb4_bin = %s", alias)
-			.where("Channel IS NULL")
-		);
+		const aliasData = await CustomCommandAlias.fetchForUser(userData.ID, {
+			aliasIdentifier: alias,
+			includeArguments: true
+		});
 
 		if (!aliasData) {
 			return sb.WebUtils.apiFail(res, 404, "User has no such alias");
 		}
 
 		aliasData.User_Name = userData.Name;
-		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
 
 		return sb.WebUtils.apiSuccess(res, aliasData);
 	});
