@@ -10,7 +10,14 @@ module.exports = (function () {
 			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
 			<li>The channel must have at least <u>some</u> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
 			<li>If your channel doesn't have a lot of activity, use the Description field below to explain why you should receive Supibot</li>
-			<li>If you simply want to test the bot out, join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> and type commands in chat. You can also DM it on any platform. The functionality is (almost) exactly the same as it would be in your channel.</li>
+			<li>
+				If you only want to test the bot out, don't request it, but rather try one of these:
+				<ul>
+					<li>Join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> and type commands in chat</li>
+					<li>DM it on any platform it's active in</li>
+					<li>Go to <a href="/bot/command/run">this page</a> and run commands as if in Twitch chat</li>
+				</ul>
+			</li>
 		</ul>
 		
 		<h6>Keep in mind:</h6>
