@@ -339,8 +339,8 @@ module.exports = (function () {
 		}
 
 		const { data } = response.body;
-		if (data.linkAuthor && data.linkAlias) {
-			res.redirect(`bot/user/${encodeURIComponent(data.linkAuthor)}/alias/detail/${data.linkAlias}`);
+		if (data.linkAuthor && data.linkName) {
+			res.redirect(`bot/user/${encodeURIComponent(data.linkAuthor)}/alias/detail/${data.linkName}`);
 		}
 		else {
 			createAliasDetailTable(res, response.body.data);
