@@ -84,34 +84,67 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, aliasData);
 	});
 
+	/**
+	 * @api {get} /bot/user/:name/alias/list List custom command aliases
+	 * @apiName GetUserCommandAliases
+	 * @apiDescription For a specified user, this endpoint lists all their custom command aliases.
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiParam {string} includeArguments If any value is passed, the alias `arguments` body will be returned also.
+	 * @apiSuccess {Object[]} alias
+	 * @apiSuccess {string} alias.name
+	 * @apiSuccess {string} alias.invocation Main command of the custom alias
+	 * @apiSuccess {string} alias.created ISO date string
+	 * @apiSuccess {string} alias.edited ISO date string
+	 * @apiSuccess {string} alias.description
+	 * @apiSuccess {string} alias.linkAuthor If the alias is a link to another, this is its author name
+	 * @apiSuccess {string} alias.linkName If the alias is a link to another, this is the linked alias name
+	 * @apiSuccess {string[]} [alias.arguments] Body of the alias as a string array. Will be omitted unless `includeArguments` is provided.
+	 * @apiError (404) NotFound User was not found
+	 */
 	Router.get("/:name/alias/list", async (req, res) => {
 		const { name } = req.params;
+		const { includeArguments } = req.query;
+
 		const userData = await sb.User.get(name);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = await CustomCommandAlias.selectMultipleCustom(rs => rs
-			.select("ParentAuthor.Name AS Link_Author", "ParentAlias.Name AS Link_Name")
-			.from("data", "Custom_Command_Alias")
-			.where("Custom_Command_Alias.User_Alias = %n", userData.ID)
-			.where("Custom_Command_Alias.Channel IS NULL")
-			.leftJoin({
-				alias: "ParentAlias",
-				toDatabase: "data",
-				toTable: "Custom_Command_Alias",
-				on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
-			})
-			.leftJoin({
-				alias: "ParentAuthor",
-				toDatabase: "chat_data",
-				toTable: "User_Alias",
-				on: "ParentAlias.User_Alias = ParentAuthor.ID"
-			})
-		);
+		const data = await CustomCommandAlias.selectCustom(rs => {
+			rs.select("Custom_Command_Alias.Name")
+				.select("Custom_Command_Alias.Invocation")
+				.select("Custom_Command_Alias.Created")
+				.select("Custom_Command_Alias.Edited")
+				.select("Custom_Command_Alias.Description")
+				.select("ParentAuthor.Name AS Link_Author")
+				.select("ParentAlias.Name AS Link_Name")
+				.where("Custom_Command_Alias.User_Alias = %n", userData.ID)
+				.where("Custom_Command_Alias.Channel IS NULL")
+				.leftJoin({
+					alias: "ParentAlias",
+					toDatabase: "data",
+					toTable: "Custom_Command_Alias",
+					on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
+				})
+				.leftJoin({
+					alias: "ParentAuthor",
+					toDatabase: "chat_data",
+					toTable: "User_Alias",
+					on: "ParentAlias.User_Alias = ParentAuthor.ID"
+				});
 
-		for (const item of data) {
-			item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
+			if (includeArguments) {
+				rs.select("Custom_Command_Alias.Arguments");
+			}
+
+			return rs;
+		});
+
+		if (includeArguments) {
+			for (const item of data) {
+				item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
+			}
 		}
 
 		return sb.WebUtils.apiSuccess(res, data);

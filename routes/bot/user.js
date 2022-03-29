@@ -98,6 +98,9 @@ module.exports = (function () {
 		const { username } = req.params;
 		const { statusCode, body } = await sb.Got("Supinic", {
 			url: `bot/user/${encodeURIComponent(username)}/alias/list`,
+			searchParams: {
+				includeArguments: "true"
+			},
 			throwHttpErrors: false
 		});
 
