@@ -338,7 +338,13 @@ module.exports = (function () {
 			});
 		}
 
-		createAliasDetailTable(res, response.body.data);
+		const { data } = response.body;
+		if (data.linkAuthor && data.linkAlias) {
+			res.redirect(`bot/user/${encodeURIComponent(data.linkAuthor)}/alias/detail/${data.linkAlias}`);
+		}
+		else {
+			createAliasDetailTable(res, response.body.data);
+		}
 	});
 
 	return Router;
