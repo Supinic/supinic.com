@@ -181,7 +181,7 @@ module.exports = (function () {
 	 * @apiPermission login, self-only
 	 * @apiSuccess {Object[]} properties
 	 * @apiSuccess {string} properties.name
-	 * @apiSuccess {*} properties.value Value can be one of `string|number|boolean|Object|Array|null`
+	 * @apiSuccess {*} properties.value Value can be one of `string number boolean Object Array null`
 	 * @apiSuccess {string} properties.type
 	 * @apiError (403) Forbidden Not logged in; or checking a non-self user
 	 * @apiError (404) NotFound User was not found
