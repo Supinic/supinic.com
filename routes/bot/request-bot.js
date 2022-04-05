@@ -167,6 +167,10 @@ module.exports = (function () {
 						alerter.classList.add("alert-danger");
 						alerter.innerHTML = "Internal server error occured!";
 					}
+					else if (response.status === 409) {						
+						alerter.classList.add("alert-danger");
+						alerter.innerHTML = json.error.message + ". Create a suggestion with the <a href='/bot/command/detail/suggest'>$suggest</a> command - most easily using <a href='/bot/command/run'>this command form</a>.";
+					}
 					else {
 						alerter.classList.add("alert-danger");
 						alerter.innerHTML = json.error.message;

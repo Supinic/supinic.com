@@ -86,7 +86,13 @@ module.exports = (function () {
 
 		if (exists) {
 			if (exists.Mode === "Inactive") {
-				return sb.WebUtils.apiFail(res, 400, "The bot has been removed from target channel, contact Supinic to resolve this");
+				const { inactiveReason = "unknown" } = JSON.parse(exists.Data ?? "{}");
+
+				return sb.WebUtils.apiFail(
+					res,
+					409,
+					`The bot has been removed from target channel, reason: ${inactiveReason}`
+				);
 			}
 			else {
 				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
