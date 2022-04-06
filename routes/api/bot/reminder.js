@@ -104,10 +104,10 @@ module.exports = (function () {
 	 * @apiPermission login
 	 * @apiSuccess {Object[]} reminder AFK status object
 	 * @apiSuccess {number} reminder.ID Status ID
-	 * @apiSuccess {number} reminder.userFrom Author user ID
+	 * @apiSuccess {number} reminder.userFrom Author user's internal Supibot ID
 	 * @apiSuccess {string} reminder.author Author user name
-	 * @apiSuccess {number} reminder.userTo Target user ID
-	 * @apiSuccess {number} reminder.target Target user namer
+	 * @apiSuccess {number} reminder.userTo Target user's internal Supibot ID
+	 * @apiSuccess {number} reminder.target Target user name
 	 * @apiSuccess {number} [reminder.channel] The channel, where the reminder was set up (null if PM'd, or set by API)
 	 * @apiSuccess {string} [reminder.channelName] Channel name
 	 * @apiSuccess {number} [reminder.platform] The platfomr of reminder origin (null if set by API)
@@ -125,7 +125,7 @@ module.exports = (function () {
 	 * @apiDescription Posts a new reminder to a target user. If the reminder is timed and non-private, it will always fire in the Twitch channel of Supibot.
 	 * @apiGroup Bot
 	 * @apiPermission login
-	 * @apiParam {number} [userID] Target user's ID. Mutually exclusive with username.
+	 * @apiParam {number} [userID] Target user's internal Supibot ID. Mutually exclusive with username.
 	 * @apiParam {string} [username] Target user's name. Mutually exclusive with userID.
 	 * @apiParam {string} [text] The text of the reminder itself. Can be omitted, in which case a default message will be used.
 	 * @apiParam {date} [schedule] ISO string of datetime for given reminder to fire at.
