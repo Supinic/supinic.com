@@ -107,13 +107,19 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim `
 				async function submit () {
+					const alerter = document.getElementById("alert-anchor");
 					const descriptionElement = document.getElementById("description");	
 					if (descriptionElement.value?.toLowerCase().includes("rename")) {
 						const listItemElement = document.getElementById("rename-list-item");
 						const content = escape(listItemElement.textContent);
 						
-						window.location.href += "#:~:text=" + content;
-						alert("Please check the 'Keep in mind' category to resolve your renaming issues.");
+						window.location.href += "#:~:text=" + content;						
+						
+						alerter.setAttribute("role", "alert");
+						alerter.classList.remove("alert-success", "alert-danger");
+						alerter.classList.add("alert", "alert-warning");
+						
+						alerter.innerHTML = "Please check the 'Keep in mind' category to resolve your renaming issues.";
 						
 						return;
 					}					
@@ -158,9 +164,8 @@ module.exports = (function () {
 					});
 					
 					const json = await response.json();
-					const alerter = document.getElementById("alert-anchor");
 					alerter.setAttribute("role", "alert");
-					alerter.classList.remove("alert-success", "alert-danger");
+					alerter.classList.remove("alert-success", "alert-danger", "alert-warning");
 					alerter.classList.add("alert");
 					
 					button.disabled = false;
