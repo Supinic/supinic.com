@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols
+
 module.exports = (function () {
 	"use strict";
 
@@ -8,25 +10,25 @@ module.exports = (function () {
 	    <h6>Before requesting:</h6>
 		<ul>
 			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
-			<li>The channel must have at least <u>some</u> activity in it - mostly as a streaming, or a chat-focused channel ("offline chat")</li>
+			<li>The channel must either be streaming related; or an "offline chat", with at least a couple of users (not bots), or both.</li>
 			<li>If your channel doesn't have a lot of activity, use the Description field below to explain why you should receive Supibot</li>
 			<li>
-				If you only want to test the bot out, don't request it, but rather try one of these:
+				<u>If you only want to test the bot out, don't request it, but rather try one of these:</u>
 				<ul>
 					<li>Join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> and type commands in chat</li>
 					<li>DM it on any platform it's active in</li>
-					<li>Go to <a href="/bot/command/run">this page</a> and run commands as if in Twitch chat</li>
+					<li class="text-warning">Go to <a href="/bot/command/run">this page</a> and run commands as if in Twitch chat</li>
 				</ul>
 			</li>
 		</ul>
 		
 		<h6>Keep in mind:</h6>
 		<ul>
-			<li>If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rejoin</a> command to Supibot.</li>
+			<li id="rename-list-item">If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rejoin channel:(channel name)</a> command to Supibot.</li>
 			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
 			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/detail/suggest">$suggest</a> or <a href="/contact">these methods</a>.
-			<li>If you're unsure about what the bot can do, consult the <code>$help</code>, <code>$help (command name)</code> and <code>$faq</code> commands.</li>
-			<li>Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot".</li>
+			<li>If you're unsure about what the bot can do, consult the <a href="/bot/command/detail/help">$help</a> and <a href="/bot/command/detail/faq">$faq</a> commands.</li>
+			<li class="text-warning">Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot". Make sure your chatters know about this!</li>
 		</ul>
 	`;
 
@@ -105,6 +107,17 @@ module.exports = (function () {
 			],
 			script: sb.Utils.tag.trim `
 				async function submit () {
+					const descriptionElement = document.getElementById("description");	
+					if (descriptionElement.value?.toLowerCase().includes("rename")) {
+						const listItemElement = document.getElementById("rename-list-item");
+						const content = escape(listItemElement.textContent);
+						
+						window.location.href += "#:~:text=" + content;
+						alert("Please check the 'Keep in mind' category to resolve your renaming issues.");
+						
+						return;
+					}					
+					
 					const result = confirm("By confirming, you agree that you read and undrestood all notes regarding adding Supibot.");
 					if (!result) {
 						return;
@@ -121,9 +134,7 @@ module.exports = (function () {
 					button.disabled = true;
 					
 					const platformElement = document.getElementById("platform");
-					const channelElement = document.getElementById("channel-name");
-					const descriptionElement = document.getElementById("description");	
-					
+					const channelElement = document.getElementById("channel-name");					
 					if (channelElement.value?.toLowerCase() !== "${userData.Name}") {
 						const result = confirm("Adding Supibot to someone else's channel will automatically make you that channel's Ambassador. Do you agree to take this responsibility?");
 						if (!result) {
