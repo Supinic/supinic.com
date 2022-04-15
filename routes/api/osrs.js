@@ -51,6 +51,7 @@ module.exports = (function () {
 		"Clue Scrolls (master)",
 		"LMS - Rank",
 		"Soul Wars Zeal",
+		"Guardians of the Rift",
 
 		"Abyssal Sire",
 		"Alchemical Hydra",
