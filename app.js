@@ -4,7 +4,9 @@
 	process.env.PROJECT_TYPE = "site";
 
 	require("./db-access.js");
-	await require("supi-core")("sb", {
+
+	const initializeSbObject = require("supi-core");
+	globalThis.sb = await initializeSbObject({
 		whitelist: [
 			"objects/date",
 			"objects/error",
@@ -32,7 +34,7 @@
 		]
 	});
 
-	// Todo move WebUtils into globals package
+	// @todo move WebUtils as a require (or import) to all files that need it
 	sb.WebUtils = require("./webutils");
 
 	const subroutes = [
