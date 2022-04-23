@@ -305,8 +305,10 @@
 		const requestLogSymbol = Symbol.for("request-log-symbol");
 
 		req[requestLogSymbol] = log.insertId;
+		res.header("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive, noimageindex");
 
-		if (req.headers["user-agent"]?.includes("paloaltonetworks.com")) {
+		const blockedUserAgents = require("./blocked-user-agents.json");
+		if (blockedUserAgents.includes(req.headers("user-agent"))) {
 			res.status(418).send("NOT OK");
 			return;
 		}
