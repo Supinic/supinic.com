@@ -495,21 +495,27 @@
 
 		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
-			const requestID = req[requestLogSymbol] ?? null;
-			const row = await sb.Query.getRow("supinic.com", "Error");
-			row.setValues({
-				Type: "View",
-				Request_ID: requestID,
-				Message: err.message ?? null,
-				Stack: err.stack ?? null
-			});
+			let insertId;
+			if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
+				const requestID = req[requestLogSymbol] ?? null;
+				const row = await sb.Query.getRow("supinic.com", "Error");
+				row.setValues({
+					Type: "View",
+					Request_ID: requestID,
+					Message: err.message ?? null,
+					Stack: err.stack ?? null
+				});
 
-			const { insertId } = await row.save();
+				const result = await row.save();
+				insertId = result.insertId;
+			}
 
 			res.set("Content-Type", "text/html");
 			return res.status(500).render("error", {
 				error: "500 Internal Error",
-				message: `Internal server error encountered (error ID ${insertId})`
+				message: (insertId)
+					? `Internal server error encountered (error ID ${insertId})`
+					: `Internal server error encountered`
 			});
 		}
 		catch (e) {
