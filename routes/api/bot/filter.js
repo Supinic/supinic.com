@@ -189,7 +189,7 @@ module.exports = (function () {
 			.select("User_Alias.Name AS User_Name")
 			.leftJoin({
 				toTable: "Command",
-				toField: "Name"
+				on: "Command.Name = Filter.Command"
 			})
 			.leftJoin("chat_data", "User_Alias")
 			.where("Channel = %n", id)
