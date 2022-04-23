@@ -308,7 +308,7 @@
 		res.header("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive, noimageindex");
 
 		const blockedUserAgents = require("./blocked-user-agents.json");
-		if (blockedUserAgents.includes(req.headers("user-agent"))) {
+		if (blockedUserAgents.includes(req.header("user-agent"))) {
 			res.status(418).send("NOT OK");
 			return;
 		}
