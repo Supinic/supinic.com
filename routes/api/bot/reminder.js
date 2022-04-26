@@ -318,7 +318,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {post} /bot/reminder/<id> Reminder - unset
+	 * @api {delete} /bot/reminder/<id> Reminder - unset
 	 * @apiName UnsetReminder
 	 * @apiDescription Unsets a reminder
 	 * @apiGroup Bot
