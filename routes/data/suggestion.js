@@ -178,7 +178,7 @@ module.exports = (function () {
 			Status: data.status ?? "(pending review)",
 			Priority: priorityString,
 			Text: (data.text)
-				? sb.Utils.escapeHTML(data.text)
+				? parseLinks(sb.Utils.escapeHTML(data.text))
 				: "N/A",
 			Notes: (data.notes)
 				? parseLinks(data.notes)
