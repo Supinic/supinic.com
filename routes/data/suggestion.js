@@ -31,7 +31,7 @@ module.exports = (function () {
 	};
 
 	const parseLinks = (string) => string
-		.replaceAll(/(https?:\/\/\S)+/g, `<a href="$1">$1</a>`)
+		.replaceAll(/(https?:\/\/\S+)/g, `<a href="$1">$1</a>`)
 		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`);
 
 	Router.get("/list", async (req, res) => {
