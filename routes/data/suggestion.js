@@ -30,6 +30,10 @@ module.exports = (function () {
 		res.redirect(urlCallback(name));
 	};
 
+	const parseLinks = (string) => string
+		.replaceAll(/(https?:\/\/\S)+/g, `<a href="$1">$1</a>`)
+		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`);
+
 	Router.get("/list", async (req, res) => {
 		res.render("generic-ajax-list-table", {
 			head: columns.clientside,
@@ -176,7 +180,9 @@ module.exports = (function () {
 			Text: (data.text)
 				? sb.Utils.escapeHTML(data.text)
 				: "N/A",
-			Notes: data.notes ?? "N/A",
+			Notes: (data.notes)
+				? parseLinks(data.notes)
+				: "N/A",
 			"Last update": (data.lastUpdate)
 				? new sb.Date(data.lastUpdate).format("Y-m-d H:i:s")
 				: "N/A"
