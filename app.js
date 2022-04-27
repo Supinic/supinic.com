@@ -474,7 +474,6 @@
 	);
 
 	// 4 params are required (next is unused) - express needs this to recognize the callback as middleware
-	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	app.use(async (err, req, res, next) => {
 		// first - manage URIErrors caused by malformed path params

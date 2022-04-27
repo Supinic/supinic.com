@@ -90,7 +90,9 @@
     }],
     "no-underscore-dangle": "off",
     "no-unneeded-ternary": "warn",
-    "no-unused-vars": "warn",
+    "no-unused-vars": ["warn", {
+      "argsIgnorePattern": "next"
+    }],
     "no-useless-computed-key": "warn",
     "no-useless-constructor": "warn",
     "no-useless-rename": "error",

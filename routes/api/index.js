@@ -89,7 +89,6 @@ module.exports = (function () {
 	}
 
 	// next param is required - Express recognizes four parameters functions as middlewares
-	// eslint-disable no-unused-vars
 	// noinspection JSUnusedLocalSymbols
 	Router.use(async (err, req, res, next) => {
 		const requestLogSymbol = Symbol.for("request-log-symbol");
