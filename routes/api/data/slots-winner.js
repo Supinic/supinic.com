@@ -111,7 +111,7 @@ module.exports = (function () {
 		);
 
 		return sb.WebUtils.apiSuccess(res, data);
-	})
+	});
 
 	return Router;
 })();

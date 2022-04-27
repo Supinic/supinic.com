@@ -294,7 +294,7 @@ module.exports = (function () {
 			level: Math.floor(preciseCombatLevel),
 			fullLevel: preciseCombatLevel,
 			type: combatType
-		}
+		};
 	};
 
 	/**
@@ -372,7 +372,7 @@ module.exports = (function () {
 				const { statusCode, body } = await sb.Got({
 					url: apiURLs.ironman[type],
 					throwHttpErrors: false,
-					searchParams: { player: player }
+					searchParams: { player }
 				});
 
 				if (statusCode !== 404) {

@@ -179,7 +179,7 @@ module.exports = (function () {
 				stats.push(`${sevenTv.body.length} 7TV emotes`);
 			}
 			if (follows.statusCode === 200) {
-				stats.push(`${follows.body.total} followers`)
+				stats.push(`${follows.body.total} followers`);
 			}
 			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
 				const timestamp = Number(recent.body.messages[0].match(/tmi-sent-ts=(\d+)/)?.[1]);

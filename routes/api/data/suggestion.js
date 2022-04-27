@@ -205,7 +205,7 @@ module.exports = (function () {
 
 	Router.get("/list/client", async (req, res) => {
 		const data = await Suggestion.list();
-		const resultData = prettifyData(data)
+		const resultData = prettifyData(data);
 
 		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
@@ -217,7 +217,7 @@ module.exports = (function () {
 			status: [null, "Approved", "Blocked"]
 		});
 
-		const resultData = prettifyData(data)
+		const resultData = prettifyData(data);
 		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
@@ -228,7 +228,7 @@ module.exports = (function () {
 			status: ["Completed", "Denied", "Dismissed", "Dimissed by author", "Moved to Github"]
 		});
 
-		const resultData = prettifyData(data)
+		const resultData = prettifyData(data);
 		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 

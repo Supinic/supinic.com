@@ -56,7 +56,7 @@ module.exports = (function () {
 					name: "Output",
 					type: "memo",
 					disabled: true
-				},
+				}
 			],
 			script: sb.Utils.tag.trim `
 				async function submit () {

@@ -49,7 +49,7 @@ module.exports = (function () {
 				platform: "twitch",
 				channel: null,
 				user: userData.Name,
-				arguments: args.join(" "),
+				arguments: args.join(" ")
 			}
 		});
 
@@ -147,13 +147,11 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:identifier", async (req, res) => {
-		return sb.WebUtils.apiDeprecated(req, res, {
-			original: `/api/bot/command/${req.params.identifier}`,
-			replacement: `/api/bot/command/detail/${req.params.identifier}`,
-			timestamp: new sb.Date("2021-12-31 23:59:59.999").valueOf()
-		});
-	});
+	Router.get("/:identifier", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+		original: `/api/bot/command/${req.params.identifier}`,
+		replacement: `/api/bot/command/detail/${req.params.identifier}`,
+		timestamp: new sb.Date("2021-12-31 23:59:59.999").valueOf()
+	}));
 
 	return Router;
 })();

@@ -20,18 +20,18 @@ module.exports = (function () {
 		const renderData = data.map(i => {
 			const emote = (i.url) ? `<img alt="${i.name}" loading="lazy" class="list-emote" src="${i.url}"/>` : "N/A";
 			const emoteAdded = (i.emoteAdded) ? new sb.Date(i.emoteAdded) : null;
-			const recordAdded =  (i.recordAdded) ? new sb.Date(i.recordAdded): null;
+			const recordAdded = (i.recordAdded) ? new sb.Date(i.recordAdded) : null;
 
 			return {
 				Emote: `<a target="_blank" href="/data/origin/detail/${i.ID}">${emote}</a>`,
 				Name: i.name,
 				"Emote added": {
 					dataOrder: emoteAdded?.valueOf() ?? 0,
-					value: emoteAdded?.format("Y-m-d")  ?? "N/A",
+					value: emoteAdded?.format("Y-m-d") ?? "N/A"
 				},
 				"Origin added": {
 					dataOrder: recordAdded?.valueOf() ?? 0,
-					value: recordAdded?.format("Y-m-d")  ?? "N/A",
+					value: recordAdded?.format("Y-m-d") ?? "N/A"
 				},
 				Type: i.type ?? "N/A"
 			};

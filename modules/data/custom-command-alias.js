@@ -36,7 +36,7 @@ module.exports = (function () {
 					});
 
 				if (aliasIdentifier) {
-					rs.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
+					rs.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier);
 					rs.limit(1);
 				}
 				if (includeArguments) {

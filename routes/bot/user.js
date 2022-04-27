@@ -42,7 +42,7 @@ module.exports = (function () {
 				}
 			]
 		});
-	}
+	};
 
 	Router.get("/alias/find", async (req, res) => {
 		res.render("generic-form", {
@@ -163,7 +163,7 @@ module.exports = (function () {
 			data: printData,
 			head: headerColumns,
 			headerDescriptions: {
-				"Link": "Links the alias to you - as if you used $alias link (user) (alias) with Supibot!"
+				Link: "Links the alias to you - as if you used $alias link (user) (alias) with Supibot!"
 			},
 			pageLength: 25,
 			sortColumn: 0,

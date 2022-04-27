@@ -430,7 +430,7 @@
 				});
 			}
 
-			let githubData = await userData.getDataProperty("github");
+			const githubData = await userData.getDataProperty("github");
 			if (githubData?.login === profile.login) {
 				return res.render("generic", {
 					data: sb.Utils.tag.trim `
