@@ -68,7 +68,10 @@ module.exports = (function () {
 				},
 				Sender: i.author,
 				Recipient: i.target,
-				Text: i.text,
+				Text: sb.WebUtils.linkify(i.text, {
+					rel: "noopener noreferrer",
+					target: "_blank"
+				}),
 				Scheduled: {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
 					value: (schedule)
@@ -218,7 +221,10 @@ module.exports = (function () {
 			Sender: data.sender,
 			Recipient: data.recipient,
 			"Created in channel": data.channel,
-			Text: data.text,
+			Text: sb.WebUtils.linkify(data.text, {
+				rel: "noopener noreferrer",
+				target: "_blank"
+			}),
 			Pending: (data.active) ? "✔" : "❌",
 			Created: new sb.Date(data.created).format("Y-m-d H:i:s"),
 			Scheduled: (data.schedule)

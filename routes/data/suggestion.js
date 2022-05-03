@@ -30,8 +30,7 @@ module.exports = (function () {
 		res.redirect(urlCallback(name));
 	};
 
-	const parseLinks = (string) => string
-		.replaceAll(/(https?:\/\/\S+)/g, `<a href="$1">$1</a>`)
+	const parseLinks = (string) => sb.WebUtils.linkify(string)
 		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`);
 
 	Router.get("/list", async (req, res) => {
