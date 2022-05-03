@@ -330,6 +330,21 @@ module.exports = class WebUtils {
 		return resultParams;
 	}
 
+	/**
+	 * Turns links in text into HTML clickable links.
+	 * @param {string} string
+	 * @param {Object} [options]
+	 * @param {string} [options.rel]
+	 * @param {string} [options.target]
+	 * @returns {string}
+	 */
+	static linkify (string, options = {}) {
+		const target = (options.target) ? `target="${options.target}"` : "";
+		const rel = (options.rel) ? `rel="${options.rel}"` : "";
+
+		return string.replaceAll(/(https?:\/\/\S+)/g, `<a href="$1" ${target} ${rel}>$1</a>`);
+	}
+
 	static async logRequest (req, route) {
 		const row = await sb.Query.getRow("supinic.com", "Log");
 		row.setValues({
