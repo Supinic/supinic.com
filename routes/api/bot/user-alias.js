@@ -7,12 +7,20 @@ const UserAlias = require("../../../modules/chat-data/user-alias.js");
 module.exports = (function () {
 	"use strict";
 
-	const fetchUserData = async (res, type, id) => {
-		const callback = (type === "user-name")
-			? (q) => q.where("Name = %s", id)
-			: (q) => q.where("ID = %n", Number(id));
+	const fetchUserData = async (res, type, identifier) => {
+		let userData;
+		if (type === "user-name") {
+			userData = await UserAlias.selectSingleCustom(q => q.where("Name = %s", identifier));
+		}
+		else {
+			const id = Number(identifier);
+			if (!sb.Utils.isValidInteger(id)) {
+				return sb.WebUtils.apiFail(res, 400, "Malformed numeric ID provided");
+			}
 
-		const userData = await UserAlias.selectSingleCustom(callback);
+			userData = await UserAlias.selectSingleCustom(q => q.where("ID = %n", id));
+		}
+
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
