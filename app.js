@@ -114,6 +114,7 @@
 		}
 	}
 
+	/** @type {Express} */
 	const app = Express();
 	app.use(require("cookie-parser")());
 	app.use(Session({
@@ -291,6 +292,7 @@
 		{ name: "Log out", link: "user/logout" }
 	];
 
+	app.set("query parser", "simple");
 	app.set("view engine", "pug");
 
 	// robots.txt - disallow everything
@@ -299,7 +301,13 @@
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
-	await app.all("*", async (req, res, next) => {
+	app.all("*", async (req, res, next) => {
+		for (const [key, value] of Object.entries(req.query)) {
+			if (Array.isArray(value)) {
+				req.query[key] = value.join(",");
+			}
+		}
+
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await sb.WebUtils.logRequest(req, routeType);
 		const requestLogSymbol = Symbol.for("request-log-symbol");
