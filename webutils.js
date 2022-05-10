@@ -336,9 +336,14 @@ module.exports = class WebUtils {
 	 * @param {Object} [options]
 	 * @param {string} [options.rel]
 	 * @param {string} [options.target]
+	 * @param {string} [options.replacement]
 	 * @returns {string}
 	 */
 	static linkify (string, options = {}) {
+		if (typeof string !== "string") {
+			return options.replacement ?? "N/A";
+		}
+
 		const target = (options.target) ? `target="${options.target}"` : "";
 		const rel = (options.rel) ? `rel="${options.rel}"` : "";
 

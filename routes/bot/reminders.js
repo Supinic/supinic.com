@@ -70,7 +70,8 @@ module.exports = (function () {
 				Recipient: i.target,
 				Text: sb.WebUtils.linkify(i.text, {
 					rel: "noopener noreferrer",
-					target: "_blank"
+					target: "_blank",
+					replacement: "(empty)"
 				}),
 				Scheduled: {
 					dataOrder: (schedule) ? schedule.valueOf() : 0,
