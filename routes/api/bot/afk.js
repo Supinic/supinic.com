@@ -148,7 +148,7 @@ module.exports = (function () {
 		}
 
 		const userData = await sb.User.getMultiple(userList);
-		if (!userData) {
+		if (userData.length === 0) {
 			return sb.WebUtils.apiFail(res, 400, "No proper user identifiers provided");
 		}
 
