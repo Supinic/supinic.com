@@ -117,11 +117,25 @@
 	/** @type {Express} */
 	const app = Express();
 	const qs = require("qs");
-	app.set("query parser", (string) => qs.parse(string, {
-		depth: 0,
-		parseArrays: false,
-		plainObject: true
-	}));
+	app.set("query parser", (string) => {
+		const result = qs.parse(string, {
+			depth: 0,
+			parseArrays: false, // doesn't actually affect top-level arrays
+
+			plainObject: true
+		});
+
+		for (const key of Object.keys(result)) {
+			const value = result[key];
+			if (!Array.isArray(value)) {
+				continue;
+			}
+
+			result[key] = value.join(",");
+		}
+
+		return result;
+	});
 
 	app.use(require("cookie-parser")());
 	app.use(Session({
