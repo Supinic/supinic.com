@@ -4,6 +4,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const headers = ["ID", "Type", "Title", "Created"];
+
 	const formatChangelogList = (req, res, data) => {
 		const renderData = data.map(i => {
 			const created = new sb.Date(i.created);
@@ -21,7 +23,7 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			title: "Changelog entry list",
 			data: renderData,
-			head: Object.keys(renderData[0]),
+			head: headers,
 			pageLength: 50,
 			sortColumn: 3,
 			sortDirection: "desc",
