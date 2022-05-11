@@ -12,7 +12,15 @@ module.exports = (function () {
 	});
 
 	Router.get("/lookup", async (req, res) => {
-		const list = (req.query.ID || []).map(Number).filter(Boolean);
+		if (!req.query.ID) {
+			return sb.WebUtils.apiSuccess(res, []);
+		}
+
+		const rawList = (Array.isArray(req.query.ID))
+			? req.query.ID
+			: req.query.ID.split(",");
+
+		const list = rawList.map(Number).filter(i => sb.Utils.isValidInteger(i));
 		if (list.length === 0) {
 			return sb.WebUtils.apiSuccess(res, []);
 		}
