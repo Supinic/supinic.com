@@ -171,6 +171,11 @@ html
 					tr
 					- var index = 0;
 						each key in head
+							- if (typeof key === "string") {
 							td(class="searchFooter" name=key position=index)
+							- }
+							- else {
+							td(class="searchFooter" name=key.title position=index)
+							- }
 							- index++;
 			- }
