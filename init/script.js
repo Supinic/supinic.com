@@ -36,9 +36,9 @@
 		"data/tables/Config",
 
 		"supinic.com/database",
+		"supinic.com/tables/Log",
 		"supinic.com/tables/Error",
 		"supinic.com/tables/Link_Relay",
-		"supinic.com/tables/Log",
 		"supinic.com/tables/Session"
 	];
 
