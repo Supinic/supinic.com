@@ -24,7 +24,8 @@
   "scripts": {
     "start": "node ./app.js --harmony-nullish --harmony-optional-chaining",
     "lint": "eslint . --ignore-path .gitignore",
-    "lint:fix": "eslint . --fix --ignore-path .gitignore"
+    "lint:fix": "eslint . --fix --ignore-path .gitignore",
+    "init": "node ./init/script.js"
   },
   "author": "Supinic",
   "license": "ISC",
