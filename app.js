@@ -138,29 +138,35 @@
 	});
 
 	app.use(require("cookie-parser")());
-	app.use(Session({
-		secret: sb.Config.get("WEBSITE_SESSION_SECRET", false),
-		resave: false,
-		saveUninitialized: true,
-		cookie: {
-			secure: false,
-			maxAge: 7 * 864e5
-		},
-		store: new MySQLStore({
-			user: process.env.MARIA_USER,
-			host: process.env.MARIA_HOST,
-			password: process.env.MARIA_PASSWORD,
-			database: "supinic.com",
-			schema: {
-				tableName: "Session",
-				columnNames: {
-					session_id: "SID",
-					expires: "Expires",
-					data: "Data"
+
+	if (sb.Config.has("WEBSITE_SESSION_SECRET")) {
+		app.use(Session({
+			secret: sb.Config.get("WEBSITE_SESSION_SECRET", false),
+			resave: false,
+			saveUninitialized: true,
+			cookie: {
+				secure: false,
+				maxAge: 7 * 864e5
+			},
+			store: new MySQLStore({
+				user: process.env.MARIA_USER,
+				host: process.env.MARIA_HOST,
+				password: process.env.MARIA_PASSWORD,
+				database: "supinic.com",
+				schema: {
+					tableName: "Session",
+					columnNames: {
+						session_id: "SID",
+						expires: "Expires",
+						data: "Data"
+					}
 				}
-			}
-		})
-	}));
+			})
+		}));
+	}
+	else {
+		console.warn("Config WEBSITE_SESSION_SECRET is not set up, login sessions are not available");
+	}
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
@@ -179,44 +185,176 @@
 	app.use(Passport.initialize());
 	app.use(Passport.session());
 
-	Passport.serializeUser((user, done) => done(null, user));
-	Passport.deserializeUser((user, done) => done(null, user));
-	Passport.use("twitch", new TwitchStrategy(
-		{
-			authorizationURL: "https://id.twitch.tv/oauth2/authorize",
-			tokenURL: "https://id.twitch.tv/oauth2/token",
-			clientID: sb.Config.get("WEBSITE_TWITCH_CLIENT_ID"),
-			clientSecret: sb.Config.get("WEBSITE_TWITCH_CLIENT_SECRET"),
-			callbackURL: sb.Config.get("WEBSITE_TWITCH_CALLBACK_URL")
-			// state: true
-		},
-		(access, refresh, profile, done) => {
-			profile.accessToken = access;
-			profile.refreshToken = refresh;
-			profile.source = "twitch";
+	const availableTwitchConfigs = [
+		sb.Config.has("WEBSITE_TWITCH_CLIENT_ID"),
+		sb.Config.has("WEBSITE_TWITCH_CLIENT_SECRET"),
+		sb.Config.has("WEBSITE_TWITCH_CALLBACK_URL")
+	];
 
-			done(null, profile);
-		}
-	));
-	Passport.use("github", new GithubStrategy(
-		{
-			authorizationURL: "https://github.com/login/oauth/authorize",
-			tokenURL: "https://github.com/login/oauth/access_token",
-			clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
-			clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
-			callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
-			passReqToCallback: true
-		},
-		(req, access, refresh, profile, done) => {
-			profile.accessToken = access;
-			profile.refreshToken = refresh;
-			profile.source = "github";
+	if (availableTwitchConfigs.every(i => i === true)) {
+		Passport.serializeUser((user, done) => done(null, user));
+		Passport.deserializeUser((user, done) => done(null, user));
+		Passport.use("twitch", new TwitchStrategy(
+			{
+				authorizationURL: "https://id.twitch.tv/oauth2/authorize",
+				tokenURL: "https://id.twitch.tv/oauth2/token",
+				clientID: sb.Config.get("WEBSITE_TWITCH_CLIENT_ID"),
+				clientSecret: sb.Config.get("WEBSITE_TWITCH_CLIENT_SECRET"),
+				callbackURL: sb.Config.get("WEBSITE_TWITCH_CALLBACK_URL")
+				// state: true
+			},
+			(access, refresh, profile, done) => {
+				profile.accessToken = access;
+				profile.refreshToken = refresh;
+				profile.source = "twitch";
 
-			req[Symbol.for("github-profile")] = { profile };
+				done(null, profile);
+			}
+		));
 
-			done(null, profile);
-		}
-	));
+		app.get("/auth/twitch", (req, res, next) => {
+			const { returnTo } = req.query;
+			const state = (returnTo)
+				? Buffer.from(JSON.stringify({ returnTo })).toString("base64")
+				: undefined;
+
+			const authenticator = Passport.authenticate("twitch", { scope: "", state });
+			authenticator(req, res, next);
+		});
+
+		app.get(
+			"/auth/twitch/callback",
+			Passport.authenticate("twitch", { failureRedirect: "/wcs" }),
+			async (req, res) => {
+				try {
+					const { state } = req.query;
+					const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
+					if (typeof returnTo === "string" && returnTo.startsWith("/")) {
+						return res.redirect(returnTo);
+					}
+				}
+				catch {
+					console.warn("Redirect not applicable", res);
+				}
+
+				res.redirect("/contact");
+			}
+		);
+	}
+	else {
+		console.warn("Twitch auth configs are not set up, Twitch login is not available", {
+			configs: ["WEBSITE_TWITCH_CLIENT_ID", "WEBSITE_TWITCH_CLIENT_SECRET", "WEBSITE_TWITCH_CALLBACK_URL"]
+		});
+	}
+
+	const availableGithubConfigs = [
+		sb.Config.has("WEBSITE_GITHUB_CLIENT_ID"),
+		sb.Config.has("WEBSITE_GITHUB_CLIENT_SECRET"),
+		sb.Config.has("WEBSITE_GITHUB_CALLBACK_URL")
+	];
+
+	if (availableGithubConfigs.every(i => i === true)) {
+		Passport.use("github", new GithubStrategy(
+			{
+				authorizationURL: "https://github.com/login/oauth/authorize",
+				tokenURL: "https://github.com/login/oauth/access_token",
+				clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
+				clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
+				callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+				passReqToCallback: true
+			},
+			(req, access, refresh, profile, done) => {
+				profile.accessToken = access;
+				profile.refreshToken = refresh;
+				profile.source = "github";
+
+				req[Symbol.for("github-profile")] = { profile };
+
+				done(null, profile);
+			}
+		));
+
+		app.get("/auth/github", (req, res, next) => {
+			const { userData } = res.locals.authUser ?? {};
+			if (!userData) {
+				return res.status(401).render("error", {
+					message: "401 Unauthorized",
+					error: "You must be logged first in order in to link your Github account"
+				});
+			}
+
+			const authenticator = Passport.authenticate("github");
+			authenticator(req, res, next);
+		});
+
+		app.get(
+			"/auth/github/callback",
+			Passport.authenticate("github",{ session: false }),
+			async (req, res) => {
+				const { userData } = res.locals.authUser ?? {};
+				if (!userData) {
+					return res.status(401).render("error", {
+						message: "401 Unauthorized",
+						error: "You must be logged first in order in to link your Github account"
+					});
+				}
+
+				const { profile } = req[Symbol.for("github-profile")];
+				if (!profile) {
+					throw new sb.Error({
+						message: "No github profile available in callback",
+						args: { req }
+					});
+				}
+
+				const githubData = await userData.getDataProperty("github");
+				if (githubData?.login === profile.login) {
+					return res.render("generic", {
+						data: sb.Utils.tag.trim `
+						<div class="pt-3 text-center">
+							<h4>Your user profile is already connected to this Github profile 🙂</h4>
+						</div>
+					`
+					});
+				}
+
+				const previousString = (githubData)
+					? `Your Twitch account was previously connected to ${githubData.login}.`
+					: "";
+
+				await userData.setDataProperty("github", {
+					created: new sb.Date(profile.created_at).valueOf(),
+					login: profile.login,
+					type: profile.type
+				});
+
+				await sb.Got("Supibot", {
+					url: "user/invalidateCache",
+					searchParams: {
+						name: userData.Name
+					}
+				});
+
+				return res.render("generic", {
+					data: sb.Utils.tag.trim `
+					<div class="pt-3 text-center">
+						<h4>Github connection completed succesfully!</h4>
+						Connected Twitch user
+						<a target="_blank" href="//twitch.tv/${userData.Name}">${userData.Name}</a>
+						to Github user 
+						<a target="_blank" href="//github.com/${profile.login}">${profile.login}</a>						
+						${previousString}
+					</div>
+				`
+				});
+			}
+		);
+	}
+	else {
+		console.warn("Twitch auth configs are not set up, Twitch login is not available", {
+			configs: ["WEBSITE_GITHUB_CLIENT_ID", "WEBSITE_GITHUB_CLIENT_SECRET", "WEBSITE_GITHUB_CALLBACK_URL"]
+		});
+	}
 
 	app.locals.navitems = [
 		{
@@ -389,112 +527,6 @@
 	for (const route of subroutes) {
 		app.use(`/${route}`, require(`./routes/${route}`));
 	}
-
-	// Twitch auth
-	app.get("/auth/twitch", (req, res, next) => {
-		const { returnTo } = req.query;
-		const state = (returnTo)
-			? Buffer.from(JSON.stringify({ returnTo })).toString("base64")
-			: undefined;
-
-		const authenticator = Passport.authenticate("twitch", { scope: "", state });
-		authenticator(req, res, next);
-	});
-
-	app.get(
-		"/auth/twitch/callback",
-		Passport.authenticate("twitch", { failureRedirect: "/wcs" }),
-		async (req, res) => {
-			try {
-				const { state } = req.query;
-				const { returnTo } = JSON.parse(Buffer.from(state, "base64").toString());
-				if (typeof returnTo === "string" && returnTo.startsWith("/")) {
-					return res.redirect(returnTo);
-				}
-			}
-			catch {
-				console.warn("Redirect not applicable", res);
-			}
-
-			res.redirect("/contact");
-		}
-	);
-
-	app.get("/auth/github", (req, res, next) => {
-		const { userData } = res.locals.authUser ?? {};
-		if (!userData) {
-			return res.status(401).render("error", {
-				message: "401 Unauthorized",
-				error: "You must be logged first in order in to link your Github account"
-			});
-		}
-
-		const authenticator = Passport.authenticate("github");
-		authenticator(req, res, next);
-	});
-
-	app.get(
-		"/auth/github/callback",
-		Passport.authenticate("github",{ session: false }),
-		async (req, res) => {
-			const { userData } = res.locals.authUser ?? {};
-			if (!userData) {
-				return res.status(401).render("error", {
-					message: "401 Unauthorized",
-					error: "You must be logged first in order in to link your Github account"
-				});
-			}
-
-			const { profile } = req[Symbol.for("github-profile")];
-			if (!profile) {
-				throw new sb.Error({
-					message: "No github profile available in callback",
-					args: { req }
-				});
-			}
-
-			const githubData = await userData.getDataProperty("github");
-			if (githubData?.login === profile.login) {
-				return res.render("generic", {
-					data: sb.Utils.tag.trim `
-						<div class="pt-3 text-center">
-							<h4>Your user profile is already connected to this Github profile 🙂</h4>
-						</div>
-					`
-				});
-			}
-
-			const previousString = (githubData)
-				? `Your Twitch account was previously connected to ${githubData.login}.`
-				: "";
-
-			await userData.setDataProperty("github", {
-				created: new sb.Date(profile.created_at).valueOf(),
-				login: profile.login,
-				type: profile.type
-			});
-
-			await sb.Got("Supibot", {
-				url: "user/invalidateCache",
-				searchParams: {
-					name: userData.Name
-				}
-			});
-
-			return res.render("generic", {
-				data: sb.Utils.tag.trim `
-					<div class="pt-3 text-center">
-						<h4>Github connection completed succesfully!</h4>
-						Connected Twitch user
-						<a target="_blank" href="//twitch.tv/${userData.Name}">${userData.Name}</a>
-						to Github user 
-						<a target="_blank" href="//github.com/${profile.login}">${profile.login}</a>						
-						${previousString}
-					</div>
-				`
-			});
-		}
-	);
 
 	// 4 params are required (next is unused) - express needs this to recognize the callback as middleware
 	// noinspection JSUnusedLocalSymbols
