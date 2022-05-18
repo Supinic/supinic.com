@@ -496,12 +496,13 @@
 			sb.User.data.delete(data.login);
 			const userData = await sb.User.get(data.login, false);
 
+			const admin = sb.Config.get("ADMIN_USER_NAME");
 			res.locals.authUser = {
 				login: data.login,
 				display: data.display_name,
 				id: data.id,
 				image: data.profile_image_url,
-				admin: data.login === "supinic",
+				admin: data.login === admin,
 				userData
 			};
 		}
@@ -510,10 +511,11 @@
 	});
 
 	app.get("/", async (req, res) => {
+		const adminUserID = sb.Config.get("ADMIN_USER_ID");
 		const streamResponse = await sb.Got("Helix", {
 			url: "streams",
 			searchParams: {
-				user_id: "31400525"
+				user_id: adminUserID
 			}
 		});
 
