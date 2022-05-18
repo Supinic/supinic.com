@@ -31,6 +31,7 @@
 		"chat_data/tables/User_Alias",
 		"chat_data/tables/Custom_Data_Property",
 		"chat_data/tables/User_Alias_Data",
+		"chat_data/tables/Command",
 
 		"data/database",
 		"data/tables/Config",
