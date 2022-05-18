@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS `chat_data`.`Command` (
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;;
+;
