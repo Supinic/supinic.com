@@ -18,6 +18,7 @@ const config = {
 	],
 	sharedDefinitionNames: [
 		"chat_data/database",
+		"chat_data/tables/Command",
 		"chat_data/tables/User_Alias",
 		"chat_data/tables/Custom_Data_Property",
 		"chat_data/tables/User_Alias_Data",
