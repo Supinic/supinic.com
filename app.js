@@ -554,7 +554,7 @@
 		// In the case of "internal auth error" from Twitch - where the user clicks the "Redirect now" button
 		// on the Twitch auth callback page, simply redirect to main page. I assume this error only happens
 		// because the Passport module is trying to auth an already authed user, but I wasn't able to find any
-		// more info about this specific secnario.
+		// more info about this specific scenario.
 		if (req.url.includes("twitch/callback") && err?.name === "InternalOAuthError") {
 			res.redirect("/");
 			return;
