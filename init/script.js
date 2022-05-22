@@ -25,6 +25,7 @@ const config = {
 		"chat_data/tables/Platform",
 		"chat_data/tables/Channel",
 		"chat_data/tables/Filter",
+		"chat_data/tables/Comamnd_Execution",
 
 		"data/database",
 		"data/tables/Config"
