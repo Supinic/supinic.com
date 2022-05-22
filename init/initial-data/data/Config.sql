@@ -3,6 +3,10 @@ INSERT IGNORE INTO `data`.`Config`
 VALUES
 ('ADMIN_USER_ID','REPLACE_ME','string',NULL,0,0,NULL),
 ('ADMIN_USER_NAME','REPLACE_ME','string',NULL,0,0,NULL),
+('API_GOOGLE_YOUTUBE','REPLACE_ME','string',NULL,0,0,NULL),
+('BILIBILI_APP_KEY','REPLACE_ME','string',NULL,1,0,NULL),
+('BILIBILI_PRIVATE_TOKEN','REPLACE_ME','string',NULL,1,0,NULL),
+('BILIBILI_USER_AGENT','REPLACE_ME','string',NULL,0,0,NULL),
 ('COMMAND_PREFIX','$','string',NULL,0,0,NULL),
 ('DEFAULT_USER_AGENT','REPLACE_ME','string',NULL,0,0,NULL),
 ('LOG_USER_CRON','*/10 * * * * *','string',NULL,0,0,'Determines how often newly detected users should be added in a batch.'),
