@@ -22,6 +22,9 @@ const config = {
 		"chat_data/tables/User_Alias",
 		"chat_data/tables/Custom_Data_Property",
 		"chat_data/tables/User_Alias_Data",
+		"chat_data/tables/Platform",
+		"chat_data/tables/Channel",
+		"chat_data/tables/Filter",
 
 		"data/database",
 		"data/tables/Config"
