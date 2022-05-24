@@ -183,77 +183,32 @@ module.exports = (function () {
 			});
 		}
 
-		const properties = {
-			name: "Name",
-			aliases: "Aliases",
-			description: "Description",
-			cooldown: "Cooldown",
-			dynamicDescription: "Dynamic description",
-			author: "Author",
-			lastEdit: "Last edit"
+		const data = {
+			Name: commandData.Name,
+			Aliases: (commandData.Aliases.length === 0)
+				? "N/A"
+				: commandData.Aliases.join(", "),
+			Description: commandData.Description ?? "N/A",
+			Cooldown: `${commandData.Cooldown / 1000} seconds`,
+			Author: commandData.Author ?? "N/A"
 		};
 
-		const commandDefinition = response.body.data;
-		const skip = ["params", "static data", "examples", "rollbackable", "system", "read only", "mention", "skip banphrases", "whitelisted", "code", "latest commit"];
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
-		const data = {};
+		const definition = require(`supibot-package-manager/commands/${commandData.Name}`);
+		if (typeof definition.Dynamic_Description === "function") {
+			const boundFunction = definition.Dynamic_Description.bind(commandData);
+			const options = {
+				getStaticData: () => {
+					console.warn("Deprecated getStaticData() call", commandData.Name);
+					return commandData.staticData;
+				}
+			};
 
-		for (const [key, name] of Object.entries(properties)) {
-			const value = commandDefinition[key];
-			if (key === "dynamicDescription") {
-				if (value) {
-					const descriptionFunction = eval(`(${value})`).bind(commandData);
-					const mockedCommandData = {
-						...commandData,
-						getStaticData: () => {
-							console.debug("Deprecated getStaticData() call", commandData.name);
-							return commandData.staticData;
-						}
-					};
-
-					const result = await descriptionFunction(commandPrefix, mockedCommandData);
-
-					data[name] = result.join("<br>");
-				}
-				else {
-					data[name] = "N/A";
-				}
-			}
-			else if (key === "flags") {
-				if (value === null) {
-					data[name] = "none";
-				}
-				else {
-					const list = value.map(i => `<li>${i}</li>`).join("");
-					data[name] = `<ul>${list}</ul>`;
-				}
-			}
-			else if (key === "lastEdit") {
-				if (value) {
-					const date = new sb.Date(value);
-					data[name] = `${date.format("Y-m-d H:i:s")} (${sb.Utils.timeDelta(date)})`;
-				}
-				else {
-					data[name] = "N/A";
-				}
-			}
-			else if (key === "latestCommit" && value !== null) {
-				data[name] = `<a target="_blank" href="//github.com/Supinic/supibot-package-manager/commit/${value}">${value}</a>`;
-			}
-			else if (key === "aliases") {
-				data[name] = (value && value.length > 0)
-					? value.join(", ")
-					: "N/A";
-			}
-			else if (key === "cooldown") {
-				data[name] = `${value / 1000} seconds`;
-			}
-			else if (value === null) {
-				data[name] = "N/A";
-			}
-			else if (!skip.includes(key.toLowerCase())) {
-				data[name] = value;
-			}
+			const result = await boundFunction(commandPrefix, options);
+			data["Dynamic description"] = result.join("<br>");
+		}
+		else {
+			data["Dynamic description"] = "N/A";
 		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
@@ -261,7 +216,7 @@ module.exports = (function () {
 			const check = await sb.Query.getRecordset(rs => rs
 				.select("ID")
 				.from("chat_data", "Filter")
-				.where("Command = %s", commandDefinition.name)
+				.where("Command = %s", commandData.Name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Opt-out")
 				.where("Active = %b", true)
@@ -278,7 +233,7 @@ module.exports = (function () {
 					toTable: "User_Alias",
 					on: "Filter.Blocked_User = User_Alias.ID"
 				})
-				.where("Command = %s", commandDefinition.name)
+				.where("Command = %s", commandData.Name)
 				.where("User_Alias = %n", auth.userID)
 				.where("Type = %s", "Block")
 				.where("Active = %b", true)
@@ -368,16 +323,16 @@ module.exports = (function () {
 
 		res.render("generic-detail-table", {
 			data,
-			header: `$${commandDefinition.name}`,
-			title: `Command detail - ${commandDefinition.name}`,
+			header: `${commandPrefix}${commandData.Name}`,
+			title: `Command detail - ${commandData.Name}`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Command ${commandDefinition.name}`
+					content: `Command ${commandData.Name}`
 				},
 				{
 					property: "description",
-					content: commandDefinition.description ?? "(no description available)"
+					content: commandData.Description ?? "(no description available)"
 				}
 			]
 		});
