@@ -65,6 +65,12 @@ module.exports = (function () {
 				else if (result.reason === "no-command") {
 					result.reply = "That command does not exist!";
 				}
+				else if (result.reason === "whitelist") {
+					result.reply = "You can't use this command as it whitelisted!";
+				}
+				else {
+					result.reply = `Command execution failed: ${result.reason}`;
+				}
 			}
 
 			return sb.WebUtils.apiSuccess(res, {
