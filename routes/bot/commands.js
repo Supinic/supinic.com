@@ -105,7 +105,13 @@ module.exports = (function () {
 
 		const isDeveloper = Boolean(res.locals.authUser?.userData?.Data.developer);
 		const printData = data
-			.filter(i => isDeveloper || !i.flags?.includes("developer"))
+			.filter(i => {
+				if (isDeveloper) {
+					return true;
+				}
+
+				return (!i.flags?.includes("developer") && !i.flags?.includes("whitelist"));
+			})
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map(i => ({
 				Name: `<a href="/bot/command/detail/${encodeURIComponent(i.name)}">${i.name}</a>`,
