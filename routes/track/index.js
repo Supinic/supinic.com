@@ -178,13 +178,8 @@ module.exports = (function () {
 	};
 
 	Router.get("/lookup", async (req, res) => {
-		const list = (Array.isArray(req.query.ID))
-			? req.query.ID
-			: [req.query.ID];
-
-		const checkedList = list.map(Number).filter(i => sb.Utils.isValidInteger(i)).map(String);
 		await fetchList(req, res, "lookup", {
-			specificIDs: checkedList
+			specificIDs: req.query.ID
 		});
 	});
 
