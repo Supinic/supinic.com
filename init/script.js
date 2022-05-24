@@ -30,7 +30,7 @@ const config = {
 		"data/database",
 		"data/tables/Config"
 	],
-	initialDataFiles: [
+	initialDataFilePaths: [
 		"data/Config"
 	],
 	sharedInitialDataNames: [
