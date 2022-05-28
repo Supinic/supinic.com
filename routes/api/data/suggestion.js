@@ -15,7 +15,7 @@ module.exports = (function () {
 		let userID = null;
 		if (rawUserID || userName) {
 			const userData = await sb.User.get(Number(rawUserID) || userName);
-			userID = userData.ID;
+			userID = userData?.ID;
 		}
 
 		return userID;
