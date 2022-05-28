@@ -250,7 +250,7 @@ module.exports = (function () {
 			);
 
 			if (blocks.length === 0) {
-				data.Blocks = "You are not currently blocking anyone from this command.";
+				data.Blocks = "You are <b>not</b> currently blocking anyone from this command.";
 			}
 			else {
 				const list = blocks.map(i => `<li>${i.Username}</li>`).join("");
