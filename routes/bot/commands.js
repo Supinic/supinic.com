@@ -103,7 +103,11 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "bot/command/list").json();
 
-		const isDeveloper = Boolean(res.locals.authUser?.userData?.Data.developer);
+		let isDeveloper = false;
+		if (res.locals.authUser?.userData) {
+			isDeveloper = Boolean(await res.locals.authUser.userData.getDataProperty("developer"));
+		}
+
 		const printData = data
 			.filter(i => {
 				if (isDeveloper) {
