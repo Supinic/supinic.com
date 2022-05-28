@@ -10,15 +10,20 @@ module.exports = (function () {
 	const nonAdminStatuses = ["Dismissed by author"];
 	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
 
+	/**
+	 * @param {Request} req
+	 * @returns {Promise<string|null>}
+	 */
 	const fetchUserID = async (req) => {
 		const { userID: rawUserID, userName } = req.query;
-		let userID = null;
+
+		let userID;
 		if (rawUserID || userName) {
 			const userData = await sb.User.get(Number(rawUserID) || userName);
 			userID = userData?.ID;
 		}
 
-		return userID;
+		return userID ?? null;
 	};
 
 	const prettifyData = (data) => data.map(i => {
