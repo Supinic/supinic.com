@@ -137,7 +137,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [notes]
 	 **/
 	Router.get("/list", async (req, res) => {
-		const { category, status, userID: rawUserID, userName } = req.query;
+		const { category, status } = req.query;
 
 		const userID = await fetchUserID(req);
 		const data = await Suggestion.list({ category, status, userID });
