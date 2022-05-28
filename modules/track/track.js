@@ -263,7 +263,10 @@ module.exports = (function () {
 			}
 
 			if (options.specificIDs) {
-				queries.push(rs => rs.where("Track.ID IN %n+", options.specificIDs));
+				const specificIDs = options.specificIDs.map(Number).filter(i => sb.Utils.isValidInteger(i));
+				if (specificIDs.length !== 0) {
+					queries.push(rs => rs.where("Track.ID IN %n+", options.specificIDs));
+				}
 			}
 
 			const data = await Track.selectMultipleCustom(rs => {
