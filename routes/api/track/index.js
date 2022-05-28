@@ -272,7 +272,7 @@ module.exports = (function () {
 		}
 		catch (e) {
 			if (e instanceof sb.Error && e.args.reason === "invalid-input") {
-				return sb.WebUtils.apiFail(res, e.args.code ?? 400, e.message);
+				return sb.WebUtils.apiFail(res, e.args.code ?? 400, e.simpleMessage);
 			}
 			else {
 				throw e;
