@@ -15,7 +15,7 @@ module.exports = (function () {
 		let userID = null;
 		if (rawUserID || userName) {
 			const userData = await sb.User.get(Number(rawUserID) || userName);
-			userID = userData.ID;
+			userID = userData?.ID;
 		}
 
 		return userID;
@@ -137,14 +137,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} [notes]
 	 **/
 	Router.get("/list", async (req, res) => {
-		const { category, status, userID: rawUserID, userName } = req.query;
+		const { category, status } = req.query;
 
-		let userID = null;
-		if (rawUserID || userName) {
-			const userData = await sb.User.get(Number(rawUserID) || userName);
-			userID = userData.ID;
-		}
-
+		const userID = await fetchUserID(req);
 		const data = await Suggestion.list({ category, status, userID });
 		return sb.WebUtils.apiSuccess(res, data);
 	});
