@@ -258,6 +258,7 @@ module.exports = (function () {
 	 * @apiSuccess {Object[]} filter List of filters
 	 * @apiSuccess {number} ID
 	 * @apiSuccess {string} type
+	 * @apiSuccess {string} command
 	 * @apiSuccess {number} channel
 	 * @apiSuccess {string} channelName
 	 * @apiSuccess {string} platformName
@@ -276,7 +277,7 @@ module.exports = (function () {
 		}
 
 		const data = await Filter.selectCustom(q => q
-			.select("Filter.ID", "Type", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
+			.select("Filter.ID", "Type", "Command", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("Platform.Name AS Platform_Name")
 			.leftJoin("chat_data", "Channel")
