@@ -67,7 +67,7 @@ module.exports = (function () {
 	 * If alias is not provided<br>
 	 * If the record table.tableID does not exist<br>
 	 * If the alias already exists for record table.tableID
-	 * @apiError {401} Unathorized If session timed out<br>
+	 * @apiError {401} Unauthorized If session timed out<br>
 	 * If not logged in - unauthorized
 	 */
 	Router.post("/", async (req, res) => {
@@ -111,7 +111,7 @@ module.exports = (function () {
 	 * If alias is not provided<br>
 	 * If the record table.tableID does not exist<br>
 	 * If the alias already exists for record table.tableID
-	 * @apiError {401} Unathorized If session timed out<br>
+	 * @apiError {401} Unauthorized If session timed out<br>
 	 * If not logged in - unauthorized
 	 */
 	Router.delete("/", async (req, res) => {
