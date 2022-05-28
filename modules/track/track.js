@@ -199,7 +199,13 @@ module.exports = (function () {
 				);
 
 				if (!userData) {
-					return new Result(false, "addedBy user does not exist");
+					throw new sb.Error({
+						message: "No user exists for parameter `addedbyName`",
+						args: {
+							code: 404,
+							reason: "invalid-input"
+						}
+					});
 				}
 
 				queries.push(rs => rs.where("Added_By = %n", userData.ID));
@@ -207,6 +213,16 @@ module.exports = (function () {
 
 			if (options.addedByID) {
 				const userID = Number(options.addedByID);
+				if (!sb.Utils.isValidInteger(userID)) {
+					throw new sb.Error({
+						message: "Invalid numeric value for parameter `addedByID`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
+				}
+
 				queries.push(rs => rs.where("Added_By = %n", userID));
 			}
 
@@ -219,7 +235,18 @@ module.exports = (function () {
 			}
 
 			if (options.authorID) {
-				queries.push(rs => rs.where("Author.ID = %n", options.authorID));
+				const authorID = Number(options.addedByID);
+				if (!sb.Utils.isValidInteger(authorID)) {
+					throw new sb.Error({
+						message: "Invalid numeric value for parameter `authorID`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
+				}
+
+				queries.push(rs => rs.where("Author.ID = %n", authorID));
 			}
 
 			if (options.includeTags) {
@@ -227,8 +254,19 @@ module.exports = (function () {
 					options.includeTags = [options.includeTags];
 				}
 
-				const string = [...Array(options.includeTags.length)].fill("Tag.ID = %n").join(" OR ");
-				queries.push(rs => rs.where(string, ...options.includeTags));
+				const includeTags = options.includeTags.map(Number).filter(i => sb.Utils.isValidInteger(i));
+				if (includeTags.length === 0) {
+					throw new sb.Error({
+						message: "No valid numeric values provided for parameter `includeTags`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
+				}
+
+				const string = [...Array(includeTags.length)].fill("Tag.ID = %n").join(" OR ");
+				queries.push(rs => rs.where(string, ...includeTags));
 			}
 
 			if (options.excludeTags) {
@@ -236,8 +274,19 @@ module.exports = (function () {
 					options.excludeTags = [options.excludeTags];
 				}
 
-				const string = [...Array(options.excludeTags.length)].fill("Tag.ID = %n").join(" AND ");
-				queries.push(rs => rs.where(string, ...options.excludeTags));
+				const excludeTags = options.excludeTags.map(Number).filter(i => sb.Utils.isValidInteger(i));
+				if (excludeTags.length === 0) {
+					throw new sb.Error({
+						message: "No valid numeric values provided for parameter `excludeTags`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
+				}
+
+				const string = [...Array(excludeTags.length)].fill("Tag.ID = %n").join(" AND ");
+				queries.push(rs => rs.where(string, ...excludeTags));
 			}
 
 			if (options.hasLegacyID) {
@@ -264,9 +313,17 @@ module.exports = (function () {
 
 			if (options.specificIDs) {
 				const specificIDs = options.specificIDs.map(Number).filter(i => sb.Utils.isValidInteger(i));
-				if (specificIDs.length !== 0) {
-					queries.push(rs => rs.where("Track.ID IN %n+", options.specificIDs));
+				if (specificIDs.length === 0) {
+					throw new sb.Error({
+						message: "No valid numeric values provided for parameter `specificIDs`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
 				}
+
+				queries.push(rs => rs.where("Track.ID IN %n+", options.specificIDs));
 			}
 
 			const data = await Track.selectMultipleCustom(rs => {
@@ -318,9 +375,29 @@ module.exports = (function () {
 			let targetUserID = null;
 			if (options.checkUserIDFavourite) {
 				targetUserID = Number(options.checkUserIDFavourite);
+
+				if (!sb.Utils.isValidInteger(targetUserID)) {
+					throw new sb.Error({
+						message: "Invalid numeric value provided for parameter `targetUserID`",
+						args: {
+							code: 400,
+							reason: "invalid-input"
+						}
+					});
+				}
 			}
 			else if (options.checkUsernameFavourite) {
 				const userData = await sb.User.get(options.checkUsernameFavourite);
+				if (!userData) {
+					throw new sb.Error({
+						message: "No user exists for parameter `checkUsernameFavourite`",
+						args: {
+							code: 404,
+							reason: "invalid-input"
+						}
+					});
+				}
+
 				targetUserID = userData?.ID ?? null;
 			}
 

@@ -253,20 +253,31 @@ module.exports = (function () {
 			specificIDs
 		} = req.query;
 
-		const data = await Track.search({
-			addedByID,
-			addedByName,
-			name,
-			hasLegacyID,
-			checkUserIDFavourite,
-			checkUsernameFavourite,
-			includeYoutubeReuploads,
-			authorID: Number(authorID),
-			authorName,
-			specificIDs: (specificIDs) ? specificIDs.split(",").map(Number) : null,
-			includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
-			excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null
-		});
+		let data;
+		try {
+			data = await Track.search({
+				addedByID,
+				addedByName,
+				name,
+				hasLegacyID,
+				checkUserIDFavourite,
+				checkUsernameFavourite,
+				includeYoutubeReuploads,
+				authorID: Number(authorID),
+				authorName,
+				specificIDs: (specificIDs) ? specificIDs.split(",").map(Number) : null,
+				includeTags: (includeTags) ? includeTags.split(",").map(Number) : null,
+				excludeTags: (excludeTags) ? excludeTags.split(",").map(Number) : null
+			});
+		}
+		catch (e) {
+			if (e instanceof sb.Error && e.args.reason === "invalid-input") {
+				return sb.WebUtils.apiFail(res, e.args.code ?? 400, e.message);
+			}
+			else {
+				throw e;
+			}
+		}
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});
