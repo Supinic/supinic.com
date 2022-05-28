@@ -47,12 +47,19 @@ module.exports = (function () {
 			searchParams.set("checkUserIDFavourite", String(userID));
 		}
 
-		const { data: raw } = await sb.Got("Supinic", {
+		const response = await sb.Got("Supinic", {
 			url: "track/search",
 			searchParams: searchParams.toString()
-		}).json();
+		});
 
-		const data = raw.map(i => {
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
+			});
+		}
+
+		const data = response.body.data.map(i => {
 			const obj = {};
 			if (listType !== "todo") {
 				obj["🔁"] = (i.youtubeReuploads.length > 0)
