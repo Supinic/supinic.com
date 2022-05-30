@@ -164,7 +164,7 @@ module.exports = (function () {
 			const now = new sb.Date().addSeconds(30);
 			schedule = new sb.Date(rawSchedule);
 
-			if (!schedule) {
+			if (Number.isNaN(schedule.valueOf())) {
 				return sb.WebUtils.apiFail(res, 400, "Provided schedule date is in an incorrect format");
 			}
 			else if (now >= schedule) {
