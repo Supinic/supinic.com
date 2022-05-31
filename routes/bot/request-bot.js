@@ -24,8 +24,9 @@ module.exports = (function () {
 		
 		<h6>Keep in mind:</h6>
 		<ul>
-			<li id="rename-list-item">If you rename or get banned, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rejoin channel:(channel name)</a> command to Supibot.</li>
 			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
+			<li id="rename-list-item">If you renamed, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rename channel:OldChannelName</a> (no spaces around the colon) command to Supibot.</li>
+			<li id="banned-list-item">If you got banned, same as above, but use the <a href="/bot/command/detail/bot">$bot rejoin channel:ChannelName</a>.</li>
 			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/detail/suggest">$suggest</a> or <a href="/contact">these methods</a>.
 			<li>If you're unsure about what the bot can do, consult the <a href="/bot/command/detail/help">$help</a> and <a href="/bot/command/detail/faq">$faq</a> commands.</li>
 			<li class="text-warning">Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot". Make sure your chatters know about this!</li>
