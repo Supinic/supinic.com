@@ -222,6 +222,10 @@ h2 {
     font-size: 14px;
 }
 
+section {
+    display: flex;
+}
+
 section h1 {
     font-family: "Roboto", monospace, sans-serif;
     font-weight: bold;
@@ -235,6 +239,7 @@ section h1 {
 
 article {
     padding: 14px 0 30px 0;
+    display: flex;
 }
 
 article h1 {
