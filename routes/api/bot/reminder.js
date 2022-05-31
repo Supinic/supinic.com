@@ -151,11 +151,11 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { userID, username, text, private: rawPrivateReminder, schedule: rawSchedule } = req.query;
-		if (!userID && !username) {
+		const { userID: rawUserID, username, text, private: rawPrivateReminder, schedule: rawSchedule } = req.query;
+		if (!rawUserID && !username) {
 			return sb.WebUtils.apiFail(res, 400, "No username or user ID provided");
 		}
-		else if (userID && username) {
+		else if (rawUserID && username) {
 			return sb.WebUtils.apiFail(res, 400, "Both username and user ID provided");
 		}
 
@@ -164,7 +164,7 @@ module.exports = (function () {
 			const now = new sb.Date().addSeconds(30);
 			schedule = new sb.Date(rawSchedule);
 
-			if (!schedule) {
+			if (Number.isNaN(schedule.valueOf())) {
 				return sb.WebUtils.apiFail(res, 400, "Provided schedule date is in an incorrect format");
 			}
 			else if (now >= schedule) {
@@ -173,8 +173,13 @@ module.exports = (function () {
 		}
 
 		const privateReminder = Boolean(rawPrivateReminder);
-		const userIdentifier = (userID) ? Number(userID) : username;
-		const userData = await sb.User.get(userIdentifier, true);
+
+		const userID = Number(rawUserID);
+		if (rawUserID && !sb.Utils.isValidInteger(userID)) {
+			return sb.WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
+		}
+
+		const userData = await sb.User.get(username || userID, true);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 400, "No user matches provided identifier");
 		}
