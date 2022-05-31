@@ -562,28 +562,30 @@
 
 		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
-			let insertId;
-			if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
-				const requestID = req[requestLogSymbol] ?? null;
-				const row = await sb.Query.getRow("supinic.com", "Error");
-				row.setValues({
-					Type: "View",
-					Request_ID: requestID,
-					Message: err.message ?? null,
-					Stack: err.stack ?? null
+			if (err instanceof OAuth2Strategy.AuthorizationError) {
+				const insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
+
+				res.set("Content-Type", "text/html");
+
+				return res.status(401).render("error", {
+					error: "401 Unauthorized",
+					message: `Your authorization failed due to a third party error (error ID ${insertId})`
 				});
-
-				const result = await row.save();
-				insertId = result.insertId;
 			}
+			else {
+				let insertId;
+				if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
+					insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
+				}
 
-			res.set("Content-Type", "text/html");
-			return res.status(500).render("error", {
-				error: "500 Internal Error",
-				message: (insertId)
-					? `Internal server error encountered (error ID ${insertId})`
-					: `Internal server error encountered`
-			});
+				res.set("Content-Type", "text/html");
+				return res.status(500).render("error", {
+					error: "500 Internal Error",
+					message: (insertId)
+						? `Internal server error encountered (error ID ${insertId})`
+						: `Internal server error encountered`
+				});
+			}
 		}
 		catch (e) {
 			console.error("Error while trying to save error", e);

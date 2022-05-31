@@ -95,17 +95,7 @@ module.exports = (function () {
 		try {
 			let insertId = null;
 			if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
-				const requestID = req[requestLogSymbol] ?? null;
-				const row = await sb.Query.getRow("supinic.com", "Error");
-				row.setValues({
-					Type: "API",
-					Request_ID: requestID,
-					Message: err.message ?? null,
-					Stack: err.stack ?? null
-				});
-
-				const result = await row.save();
-				insertId = result.insertId;
+				insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
 			}
 
 			return sb.WebUtils.apiFail(res, 500, "Internal server error", { ID: insertId });

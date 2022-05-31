@@ -379,6 +379,26 @@ module.exports = class WebUtils {
 		WebUtils.videoTypes = Object.fromEntries(data.map(i => [i.ID, { ...i }]));
 	}
 
+	/**
+	 * Logs error based on an Error compatible object
+	 * @param {"API"|"View"} type
+	 * @param {Error} err
+	 * @param {number} [requestID]
+	 * @returns {Promise<number>}
+	 */
+	static async logError (type, err, requestID) {
+		const row = await sb.Query.getRow("supinic.com", "Error");
+		row.setValues({
+			Type: "View",
+			Request_ID: requestID ?? null,
+			Message: err?.message ?? null,
+			Stack: err?.stack ?? null
+		});
+
+		const result = await row.save();
+		return result.insertId;
+	}
+
 	static parseVideoLink (type, link) {
 		const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
 		const fullVideoType = WebUtils.videoTypes[type];
