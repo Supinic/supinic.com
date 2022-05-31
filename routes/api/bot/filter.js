@@ -219,10 +219,18 @@ module.exports = (function () {
 	 * @apiSuccess {string} response
 	 * @apiSuccess {string} reason
 	 * @apiSuccess {Object} data Custom filter data
-	 * @apiError (400) InvalidRequest Command does not exist
+	 * @apiError (400) Invalid Request No command name provided
+	 * @apiError (404) Not Found Command does not exist
 	 */
 	Router.get("/command/:name/list", async (req, res) => {
 		const { name } = req.params;
+		if (!name) {
+			return sb.WebUtils.apiFail(res, 400, "No command provided");
+		}
+		else if (!sb.Command.get(name)) {
+			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
+		}
+
 		const data = await Filter.selectCustom(q => q
 			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
@@ -265,7 +273,6 @@ module.exports = (function () {
 	 * @apiSuccess {string} invocation
 	 * @apiSuccess {string} response
 	 * @apiSuccess {string} reason
-	 * @apiError (400) InvalidRequest Command does not exist
 	 */
 	Router.get("/user/list", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
