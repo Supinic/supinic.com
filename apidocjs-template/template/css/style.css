@@ -769,7 +769,8 @@ div#header {
     }
 }
 
-@media screen and (max-width: 900px) {
-article, section {
-    flex-direction:column;
+@media screen and (max-width: 1000px) {
+    article, section {
+        flex-direction: column;
+    }
 }
