@@ -15,6 +15,9 @@ module.exports = (function () {
 		static async lastDay (channelID, dateIdentifier = sb.Date.now()) {
 			const date = new sb.Date(dateIdentifier);
 			const dateString = date.format("Y-m-d");
+			const before = date.clone().addHours(-24);
+			const beforeString = before.format("Y-m-d");
+
 			const cache = await sb.Cache.getByPrefix(dayActivityPrefix, {
 				keys: {
 					channelID,
@@ -26,16 +29,15 @@ module.exports = (function () {
 				return cache;
 			}
 
-			const previousDay = `STR_TO_DATE(DATE_FORMAT(DATE_SUB("${dateString}", INTERVAL 24 HOUR), "%Y-%m-%d %H:00:00"), "%Y-%m-%d %H:00:00")`;
 			const rawData = await sb.Query.getRecordset(rs => rs
 				.select("Timestamp", "SUM(Amount) AS Amount")
 				.from("chat_data", "Message_Meta_Channel")
 				.where("Channel = %n", channelID)
-				.where({
-					raw: `Timestamp >= ${previousDay}`
-				})
+				.where("Timestamp >= %s", beforeString)
+				.where("Timestamp <= %s", dateString)
 				.groupBy("DAY(Timestamp)", "HOUR(Timestamp)")
 				.orderBy("DAY(Timestamp)", "HOUR(Timestamp)")
+				.limit(24)
 				.fetch()
 			);
 
@@ -68,20 +70,20 @@ module.exports = (function () {
 		}
 
 		static async lastMonth (channelID) {
-			const data = [];
-			const now = new sb.Date().discardTimeUnits("h", "m", "s", "ms");
-			const iteratorDate = now.clone().addDays(-30);
-			while (iteratorDate < now) {
-				const dayData = await MessageThroughput.lastDay(channelID, iteratorDate);
-				data.push({
-					Amount: dayData.reduce((acc, cur) => (acc += cur.Amount ?? 0), 0),
-					Timestamp: iteratorDate.clone()
-				});
+			const nowString = new sb.Date().format("Y-m-d");
+			const beforeString = new sb.Date().addDays(-30).format("Y-m-d");
 
-				iteratorDate.addDays(1);
-			}
-
-			return data;
+			return await sb.Query.getRecordset(rs => rs
+				.select("Timestamp", "SUM(Amount) AS Amount")
+				.from("chat_data", "Message_Meta_Channel")
+				.where("Channel = %n", channelID)
+				.where("Timestamp >= %s", beforeString)
+				.where("Timestamp <= %s", nowString)
+				.groupBy("MONTH(Timestamp)", "DAY(Timestamp)")
+				.orderBy("MONTH(Timestamp)", "DAY(Timestamp)")
+				.limit(30)
+				.fetch()
+			);
 		}
 	}
 
