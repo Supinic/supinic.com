@@ -779,10 +779,10 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
-cron@latest:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/cron/-/cron-2.0.0.tgz#15c6bf37c1cebf6da1d7a688b9ba1c68338bfe6b"
-  integrity sha512-RPeRunBCFr/WEo7WLp8Jnm45F/ziGJiHVvVQEBSDTSGu6uHW49b2FOP2O14DcXlGJRLhwE7TIoDzHHK4KmlL6g==
+cron@^1.8.2:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-1.8.3.tgz#2a61d7b15848716885834ec56ac072f4b9744ebd"
+  integrity sha512-JYR/QZFklJCIPndBLfd/2nU1nSlCMrUdtQ2mGLXSVM/qqqEK7DOrFR0gsEiyeqs0PdWrs0ve1ggH4V7XksDwXg==
   dependencies:
     luxon "^1.23.x"
 
@@ -1954,12 +1954,6 @@ node-releases@^2.0.3:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.5.tgz#280ed5bc3eba0d96ce44897d8aee478bfb3d9666"
   integrity sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==
 
-"node-vlc-http@github:supinic/node-vlc-http":
-  version "1.0.1"
-  resolved "https://codeload.github.com/supinic/node-vlc-http/tar.gz/cacf97ac5a772d99301cbfdd3b5a0820103c1786"
-  dependencies:
-    simple-deep-equal "github:Supinic/simple-deep-equal"
-
 normalize-package-data@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
@@ -2365,7 +2359,7 @@ random-bytes@~1.0.0:
   resolved "https://registry.yarnpkg.com/random-bytes/-/random-bytes-1.0.0.tgz#4f68a1dc0ae58bd3fb95848c30324db75d64360b"
   integrity sha1-T2ih3Arli9P7lYSMMDJNt11kNgs=
 
-random-js@latest:
+random-js@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/random-js/-/random-js-2.1.0.tgz#0c03238b0a4f701f7a4c7303036ade3083d8ee14"
   integrity sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==
@@ -2603,10 +2597,6 @@ side-channel@^1.0.4:
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
 
-"simple-deep-equal@github:Supinic/simple-deep-equal":
-  version "1.0.0"
-  resolved "https://codeload.github.com/Supinic/simple-deep-equal/tar.gz/b601b52a427d47e92ddb9fa50122f1d021dd9d48"
-
 spdx-correct@^3.0.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-3.1.1.tgz#dece81ac9c1e6713e5f7d1b6f17d468fa53d89a9"
@@ -2697,12 +2687,12 @@ strnum@^1.0.4:
 
 "supi-core@github:supinic/supi-core":
   version "2.2.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/f2f2db7ebd08a61e4153d5c0210d566aee202089"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/1bfc3e3a9696ae17f0685d2f0c659ae5009eb123"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.5"
     chrono-node "^2.2.4"
-    cron latest
+    cron "^1.8.2"
     dice-roll-eval "github:jprochazk/dice-roll-eval"
     duration-parser "github:supinic/duration-parser"
     ffprobe "^1.1.0"
@@ -2712,18 +2702,22 @@ strnum@^1.0.4:
     language-iso-codes "github:supinic/language-iso-codes"
     long-timeout "github:supinic/long-timeout"
     mariadb "^2.5.2"
-    node-vlc-http "github:supinic/node-vlc-http"
-    random-js latest
+    random-js "^2.1.0"
     rss-parser "^3.10.0"
+    supibot-package-manager "github:supinic/supibot-package-manager"
     track-link-parser "github:supinic/track-link-parser"
     transliteration "^2.2.0"
-    vm2 "^3.9.2"
+    vm2 "^3.9.6"
 
 "supi-db-init@github:supinic/supi-db-init":
   version "1.0.0"
   resolved "https://codeload.github.com/supinic/supi-db-init/tar.gz/a4cbc38bc382d58abb21885e3d8eb900164f5b46"
   dependencies:
     mariadb "^3.0.0"
+
+"supibot-package-manager@github:supinic/supibot-package-manager":
+  version "1.0.0"
+  resolved "https://codeload.github.com/supinic/supibot-package-manager/tar.gz/94565af3192da92f9a6ceab1d096db64b70e4536"
 
 supports-color@^5.3.0:
   version "5.5.0"
@@ -2885,7 +2879,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-vm2@^3.9.2:
+vm2@^3.9.6:
   version "3.9.9"
   resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.9.tgz#c0507bc5fbb99388fad837d228badaaeb499ddc5"
   integrity sha512-xwTm7NLh/uOjARRBs8/95H0e8fT3Ukw5D/JJWhxMbhKzNh1Nu981jQKvkep9iKYNxzlVrdzD0mlBGkDKZWprlw==
