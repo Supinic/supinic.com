@@ -1,10 +1,21 @@
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
-	const cacheKey = "website-channel-lines";
+	const linesCacheKey = "website-channel-lines";
+	const channelListCacheKey = "website-channel-list";
 
 	class Channel extends TemplateModule {
-		static async list () {
+		/**
+		 * @param {Object} [options]
+		 * @param {boolean} [options.force] Ignore caching and force a new result
+		 * @returns {Promise<Object[]>}
+		 */
+		static async list (options = {}) {
+			let data = await sb.Cache.getByPrefix(channelListCacheKey);
+			if (!options.force && data) {
+				return data;
+			}
+
 			const [channels, informationSchema] = await Promise.all([
 				sb.Query.getRecordset(rs => rs
 					.select("Channel.ID", "Channel.Name", "Channel.Platform", "Channel.Specific_ID", "Channel.Mode")
@@ -20,7 +31,7 @@ module.exports = (function () {
 				Channel.getLinesCache()
 			]);
 
-			return channels.map(channel => {
+			data = channels.map(channel => {
 				const databaseName = (channel.Platform_Name === "Twitch")
 					? channel.Name
 					: `${channel.Platform_Name.toLowerCase()}_${channel.Name}`;
@@ -31,10 +42,14 @@ module.exports = (function () {
 
 				return channel;
 			});
+
+			await sb.Cache.setByPrefix(channelListCacheKey, data, {
+				expiry: 24 * 3_600_000
+			});
 		}
 
 		static async getLinesCache () {
-			const cacheData = await sb.Cache.getByPrefix(cacheKey);
+			const cacheData = await sb.Cache.getByPrefix(linesCacheKey);
 			if (cacheData) {
 				return cacheData;
 			}
@@ -47,7 +62,7 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_line")
 			);
 
-			await sb.Cache.setByPrefix(cacheKey, data, {
+			await sb.Cache.setByPrefix(linesCacheKey, data, {
 				expiry: 24 * 3_600_000
 			});
 
