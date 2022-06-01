@@ -21,19 +21,21 @@ module.exports = (function () {
 	}
 
 	const fetchList = async (req, res, listType, inputData = {}) => {
-		const searchParams = new sb.URLParams().set("includeYoutubeReuploads", "1");
 		let sortColumn = 0;
+		const searchParams = {
+			includeYoutubeReuploads: "1"
+		};
 
 		if (listType === "todo") {
-			searchParams.set("includeTags", "20");
+			searchParams.includeTags = "20";
 			sortColumn = 4;
 		}
 		else if (listType === "gachi") {
-			searchParams.set("includeTags", "6");
+			searchParams.includeTags = "6";
 			sortColumn = 4;
 		}
 		else if (listType === "lookup") {
-			searchParams.set("specificIDs", inputData.specificIDs);
+			searchParams.specificIDs = inputData.specificIDs;
 			sortColumn = 4;
 		}
 		else {
@@ -44,12 +46,12 @@ module.exports = (function () {
 
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);
 		if (userID) {
-			searchParams.set("checkUserIDFavourite", String(userID));
+			searchParams.checkUserIDFavourite = String(userID);
 		}
 
 		const response = await sb.Got("Supinic", {
 			url: "track/search",
-			searchParams: searchParams.toString()
+			searchParams
 		});
 
 		if (response.statusCode !== 200) {

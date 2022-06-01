@@ -19,7 +19,7 @@ module.exports = (function () {
 			});
 		}
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		const searchParams = sb.WebUtils.authenticateLocalRequest(userID);
 		if (target === "lookup") {
 			const ID = (req.query.ID ?? "");
 			searchParams.set("ID", ID);

@@ -130,9 +130,9 @@ module.exports = (function () {
 		const { body: data } = await sb.Got({
 			url: "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
 			responseType: "json",
-			searchParams: new sb.URLParams()
-				.set("item", String(ID))
-				.toString()
+			searchParams: {
+				item: String(ID)
+			}
 		});
 
 		const result = {

@@ -84,10 +84,10 @@ module.exports = (function () {
 		const ID = (req.query.ID ?? "");
 		const response = await sb.Got("Supinic", {
 			url: "/data/origin/lookup",
-			searchParams: new sb.URLParams()
-				.set("ID", ID)
-				.set("skipReplacedEmotes", "true")
-				.toString()
+			searchParams: {
+				ID,
+				skipReplacedEmotes: "true"
+			}
 		});
 
 		if (response.statusCode !== 200) {

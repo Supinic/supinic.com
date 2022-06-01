@@ -315,16 +315,22 @@ module.exports = class WebUtils {
 		return WebUtils.levels[actual] >= WebUtils.levels[required];
 	}
 
+	/**
+	 * Authorizes a local API request that requires authentication
+	 * @param {number} userID
+	 * @param {URLSearchParams} [params]
+	 * @returns {URLSearchParams}
+	 */
 	static authenticateLocalRequest (userID, params) {
 		WebUtils.#localRequests.set(userID, true);
 
-		if (params && !(params instanceof sb.URLParams)) {
+		if (params && !(params instanceof URLSearchParams)) {
 			throw new sb.Error({
-				message: "If provided, params object must be an instance of sb.URLParams"
+				message: "If provided, params object must be an instance of URLSearchParams"
 			});
 		}
 
-		const resultParams = params ?? new sb.URLParams();
+		const resultParams = params ?? new URLSearchParams();
 		resultParams.set("localRequestAuthUser", String(userID));
 
 		return resultParams;
