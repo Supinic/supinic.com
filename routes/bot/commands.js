@@ -271,10 +271,7 @@ module.exports = (function () {
 				? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 				: "everywhere";
 
-			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
-				string = filter.username;
-			}
-			else if (filter.type === "Whitelist") {
+			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping" | filter.type === "Whitelist") {
 				string = (filter.username)
 					? `${filter.username} ${where}`
 					: `everyone ${where}`;
