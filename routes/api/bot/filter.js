@@ -237,10 +237,11 @@ module.exports = (function () {
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("User_Alias.Name AS Username")
 			.select("Platform.Name AS Platform_Name")
-			.select("Blocked.Name AS Blocked_Username")
+			.select("Blocked_User.Name AS Blocked_Username")
 			.leftJoin("chat_data", "Channel")
 			.leftJoin("chat_data", "User_Alias")
 			.leftJoin({
+				alias: "Blocked_User",
 				toTable: "User_Alias",
 				on: "Filter.Blocked_User = User_Alias.ID"
 			})
