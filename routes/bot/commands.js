@@ -270,12 +270,16 @@ module.exports = (function () {
 			const where = (filter.channelName)
 				? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 				: "everywhere";
-			const target = (filter.blockedUsername)
-				? `for ${filter.blockedUsername}`
-				: ``;
 
 			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
-				string = `${filter.username} ${where} ${target}`;
+				const shortWhere = (filter.channelName)
+					? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
+					: "";
+				const target = (filter.blockedUsername)
+					? `for @${filter.blockedUsername}`
+					: ``;
+
+				string = `${filter.username} ${shortWhere} ${target}`;
 			}
 			else if (filter.type === "Whitelist") {
 				string = (filter.username)
