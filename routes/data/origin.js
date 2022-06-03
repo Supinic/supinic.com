@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
 
-	const renderColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
+	const renderColumns = ["Emote", "Name", "Emote added", "Emote removed", "Origin added", "Type"];
 	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
@@ -160,6 +160,9 @@ module.exports = (function () {
 				? linkify(data.text)
 				: "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
+			"Emote deleted": (data.emoteDeleted)
+				? new sb.Date(data.emoteDeleted).format("Y-m-d")
+				: "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			Notes: (data.notes)

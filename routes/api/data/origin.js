@@ -20,6 +20,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [text] Emote origin description
 	 * @apiSuccess {string} [raffle] ISO date string - raffle date
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
+	 * @apiSuccess {string} [emoteDeleted] ISO date string - when the emote was deleted
 	 * @apiSuccess {string} [recordAdded] ISO date string - when the emote origin was added
 	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
 	 * @apiSuccess {string} [author] User name of whoever created the emote
