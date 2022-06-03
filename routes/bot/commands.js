@@ -270,8 +270,14 @@ module.exports = (function () {
 			const where = (filter.channelName)
 				? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 				: "everywhere";
+			const target = (filter.blockedUsername)
+				? `for ${filter.blockedUsername}`
+				: ``;
 
-			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping" | filter.type === "Whitelist") {
+			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
+				string = `${filter.username} ${where} ${target}`;
+			}
+			else if (filter.type === "Whitelist") {
 				string = (filter.username)
 					? `${filter.username} ${where}`
 					: `everyone ${where}`;

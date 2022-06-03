@@ -212,6 +212,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} type
 	 * @apiSuccess {number} userAlias
 	 * @apiSuccess {string} username
+	 * @apiSuccess {string} blockedUsername
 	 * @apiSuccess {number} channel
 	 * @apiSuccess {string} channelName
 	 * @apiSuccess {string} platformName
@@ -236,8 +237,13 @@ module.exports = (function () {
 			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
 			.select("User_Alias.Name AS Username")
 			.select("Platform.Name AS Platform_Name")
+			.select("Blocked.Name AS Blocked_Username")
 			.leftJoin("chat_data", "Channel")
 			.leftJoin("chat_data", "User_Alias")
+			.leftJoin({
+				toTable: "User_Alias",
+				on: "Filter.Blocked_User = User_Alias.ID"
+			})
 			.leftJoin({
 				toTable: "Platform",
 				on: "Channel.Platform = Platform.ID"
