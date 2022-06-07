@@ -5,8 +5,8 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
+	const renderListColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
 
-	const renderColumns = ["Emote", "Name", "Emote added", "Emote removed", "Origin added", "Type"];
 	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
 		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
@@ -39,7 +39,7 @@ module.exports = (function () {
 
 		res.render("generic-list-table", {
 			data: renderData,
-			head: renderColumns,
+			head: renderListColumns,
 			pageLength: 10,
 			sortColumn: 1,
 			sortDirection: "asc",
