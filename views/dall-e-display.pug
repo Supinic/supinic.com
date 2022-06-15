@@ -23,11 +23,15 @@ html
 					img.setAttribute("src", `data:image/png;base64,${base64Image}`);
 					imageWrapper.appendChild(img);
 				}
+
+				const description = document.getElementById("description");
+				description.textContent = result.data.description ?? "(no description available)";
 			});
 
 		style.
-			div#imagesWrapper {
+			div#wrapper {
 				display: flex;
+				flex-direction: column;
 				justify-content: center;
 				align-items: center;
 			}
@@ -39,7 +43,9 @@ html
 			}
 
 			img.grid-image {
-
+				width: 100%;
+				max-height: 100%;
+				object-fit: cover;
 			}
 
 		meta(charset="UTF-8")
@@ -48,9 +54,9 @@ html
 	body
 		block navigation
 
-		h5#title
 
-		div#imagesWrapper
-			div#imagesGrid
-
-		div#description
+		div(id="wrapper")
+			h5(id="title").
+				DALL-E image set
+			div(id="imagesGrid")
+			h6(id="description" class="text-center")
