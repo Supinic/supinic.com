@@ -16,7 +16,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id/exists", async (req, res) => {
-		const exists = await DallE.exists(req.params.id);
+		const exists = await DallE.existsCustom(q => q.where("ID = %s", req.params.id));
 		return sb.WebUtils.apiSuccess(res, { exists });
 	});
 
