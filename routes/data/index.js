@@ -7,6 +7,7 @@ module.exports = (function () {
 		["bad-apple", "bad-apple.js"],
 		["changelog", "changelog.js"],
 		["corona", "corona.js"],
+		["dall-e", "dall-e.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
 		["other", "other.js"],
@@ -15,6 +16,8 @@ module.exports = (function () {
 	];
 
 	for (const [route, file] of subroutes) {
+		// Just doesn't want to use the correct overload.
+		// noinspection JSCheckFunctionSignatures
 		Router.use(`/${route}`, require(`./${file}`));
 	}
 

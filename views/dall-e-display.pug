@@ -1,0 +1,54 @@
+doctype html
+html
+	head
+		block topheader
+		include ./header.pug
+		include ./datatables.pug
+
+		script.
+			const id = "!{extraScript}";
+			window.addEventListener("load", async () => {
+				const response = await fetch(`/api/data/dall-e/detail/${id}`);
+				if (response.status === 404) {
+					alert("Nothing found lol");
+				}
+
+				const result = await response.json();
+				const imageWrapper = document.getElementById("imagesGrid");
+				for (const base64Image of result.data.images) {
+					const img = document.createElement("img");
+					img.classList.add("grid-image");
+					img.setAttribute("src", `data:image/png;base64,${base64Image}`);
+					imageWrapper.appendChild(img);
+				}
+			});
+
+		style.
+			div#imagesWrapper {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			div#imagesGrid {
+				display: inline-grid;
+				gap: 5px;
+				grid-template-columns: repeat(3, 1fr);
+			}
+
+			img.grid-image {
+
+			}
+
+		meta(charset="UTF-8")
+
+		include ./navigation.pug
+	body
+		block navigation
+
+		div#title
+
+		div#imagesWrapper
+			div#imagesGrid
+
+		div#description

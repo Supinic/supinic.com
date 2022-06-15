@@ -11,7 +11,7 @@ module.exports = (function () {
 		if (!data) {
 			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
 		}
-		
+
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
