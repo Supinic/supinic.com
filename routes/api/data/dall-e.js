@@ -8,6 +8,10 @@ module.exports = (function () {
 
 	Router.get("/detail/:id", async (req, res) => {
 		const data = await DallE.getImages(req.params.id);
+		if (!data) {
+			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
+		}
+		
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 

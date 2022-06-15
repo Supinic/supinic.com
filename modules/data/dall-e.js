@@ -5,16 +5,18 @@ module.exports = (function () {
 
 	class DallE extends TemplateModule {
 		static async getImages (id) {
-			const data = await this.selectCustom(q => q
-				.select("Data AS Images", "Created", "Creation_Time")
-				.where("ID = %s", id)
-			);
+			const row = await sb.Query.getRow("data", "DALL-E");
+			await row.load(id, true);
 
-			for (const row of data) {
-				row.Images = row.Images.replace(/\\n/g, "");
+			if (!row.loaded) {
+				return null;
 			}
 
-			return data;
+			return {
+				Created: row.values.Created,
+				Creation_Time: row.values.Creation_Time,
+				Images: row.values.Data.replace(/\\n/g, "")
+			};
 		}
 
 		static get name () { return "dalle"; }
