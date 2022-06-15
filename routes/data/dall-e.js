@@ -5,8 +5,17 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/detail/:id", async (req, res) => {
+		const { id } = req.params;
+		const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/exists`);
+		if (!response.body.data.exists) {
+			return res.status(404).render("error", {
+				error: sb.WebUtils.formatErrorMessage(404),
+				message: "Image set does not exist"
+			});
+		}
+
 		res.render("dall-e-display", {
-			id: req.params.id,
+			id,
 			title: "DALL-E images"
 		});
 	});

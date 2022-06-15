@@ -15,5 +15,10 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	Router.get("/detail/:id/exists", async (req, res) => {
+		const exists = await DallE.exists(req.params.id);
+		return sb.WebUtils.apiSuccess(res, { exists });
+	});
+
 	return Router;
 })();
