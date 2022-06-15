@@ -8,7 +8,7 @@ html
 		script.
 			const id = "!{id}";
 			window.addEventListener("load", async () => {
-				const title = document.createElement("title");
+				const title = document.getElementById("title");
 				const response = await fetch(`/api/data/dall-e/detail/${id}`);
 				if (response.status === 404) {
 					title.text = "No images found";
@@ -28,6 +28,10 @@ html
 			});
 
 		style.
+			#title {
+				padding: 5px;
+			}
+
 			div#wrapper {
 				display: flex;
 				flex-direction: column;
@@ -39,6 +43,7 @@ html
 				display: inline-grid;
 				gap: 5px;
 				grid-template-columns: repeat(3, 1fr);
+				padding: 5px;
 			}
 
 			img.grid-image {
