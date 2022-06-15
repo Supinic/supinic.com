@@ -8,9 +8,11 @@ html
 		script.
 			const id = "!{id}";
 			window.addEventListener("load", async () => {
+				const title = document.createElement("title");
 				const response = await fetch(`/api/data/dall-e/detail/${id}`);
 				if (response.status === 404) {
-					alert("Nothing found lol");
+					title.text = "No images found";
+					return;
 				}
 
 				const result = await response.json();
@@ -46,7 +48,7 @@ html
 	body
 		block navigation
 
-		div#title
+		h5#title
 
 		div#imagesWrapper
 			div#imagesGrid
