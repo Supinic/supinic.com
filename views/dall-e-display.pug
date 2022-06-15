@@ -6,7 +6,7 @@ html
 		include ./datatables.pug
 
 		script.
-			const id = "!{extraScript}";
+			const id = "!{id}";
 			window.addEventListener("load", async () => {
 				const response = await fetch(`/api/data/dall-e/detail/${id}`);
 				if (response.status === 404) {
