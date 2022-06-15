@@ -13,6 +13,7 @@ module.exports = (function () {
 			}
 
 			return {
+				Prompt: row.values.Prompt,
 				Created: row.values.Created,
 				Creation_Time: row.values.Creation_Time,
 				Images: JSON.parse(row.values.Data.replace(/\\n/g, ""))
