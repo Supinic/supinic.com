@@ -41,7 +41,7 @@ module.exports = (function () {
 		const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/preview/${index}`);
 		if (response.statusCode === 400) {
 			return res.status(400).render("error", {
-				error: sb.WebUtils.formatErrorMessage(404),
+				error: sb.WebUtils.formatErrorMessage(400),
 				message: "Invalid parameters provided"
 			});
 		}

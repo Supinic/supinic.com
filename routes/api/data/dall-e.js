@@ -20,7 +20,7 @@ module.exports = (function () {
 		if (!sb.Utils.isValidInteger(index)) {
 			return sb.WebUtils.apiFail(res, 400, "Malformed index provided");
 		}
-		else if (index < 0 || index >= 8) {
+		else if (index < 0 || index > 8) {
 			return sb.WebUtils.apiFail(res, 400, "Index out of bounds <0..8>");
 		}
 
