@@ -11,7 +11,7 @@ module.exports = (function () {
 
 		if (!metaCache.has(id)) {
 			const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/meta`);
-			if (!response.statusCode !== 200) {
+			if (response.statusCode !== 200) {
 				return res.status(response.statusCode).render("error", {
 					error: sb.WebUtils.formatErrorMessage(response.statusCode),
 					message: response.body.error.message
