@@ -18,7 +18,7 @@ module.exports = (function () {
 				});
 			}
 			else {
-				metaCache.add(id, response.body.data);
+				metaCache.set(id, response.body.data);
 			}
 		}
 
