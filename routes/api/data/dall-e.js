@@ -35,9 +35,19 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/detail/:id/exists", async (req, res) => {
-		const exists = await DallE.existsCustom(q => q.where("ID = %s", req.params.id));
-		return sb.WebUtils.apiSuccess(res, { exists });
+	Router.get("/detail/:id/meta", async (req, res) => {
+		const data = await DallE.selectCustom(q => q
+			.select("ID", "Prompt", "Created", "Creation_Time")
+			.where("ID = %s", req.params.id)
+			.single()
+		);
+
+		if (!data) {
+			return sb.WebUtils.apiFail(res, 404, "Image set not found");
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, data);
+		}
 	});
 
 	return Router;
