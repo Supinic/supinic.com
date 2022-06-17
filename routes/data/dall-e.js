@@ -31,7 +31,17 @@ module.exports = (function () {
 
 		res.render("dall-e-display", {
 			id,
-			title: "DALL-E images"
+			title: "DALL-E image set",
+			openGraphDefinition: [
+				{
+					property: "title",
+					content: `DALL-E image set`
+				},
+				{
+					property: "image",
+					content: `https://supinic.com/data/dall-e/detail/${id}/preview/0`
+				}
+			]
 		});
 	});
 
