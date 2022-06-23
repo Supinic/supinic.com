@@ -2,9 +2,18 @@ module.exports = (function () {
 	"use strict";
 
 	const Express = require("express");
+	const compression = require("compression");
+	const zlib = require("zlib");
+
 	const Router = Express.Router();
 
 	const DallE = require("../../../modules/data/dall-e.js");
+
+	Router.use("*", compression({
+		level: zlib.Z_BEST_COMPRESSION,
+		strategy: zlib.Z_RLE,
+		threshold: 5_000 // at least 5kB must be sent in order to trigger compression
+	}));
 
 	Router.get("/detail/:id", async (req, res) => {
 		const data = await DallE.getImages(req.params.id);
