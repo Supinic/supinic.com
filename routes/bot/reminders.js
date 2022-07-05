@@ -64,7 +64,9 @@ module.exports = (function () {
 				Active: (i.active) ? "Yes" : "No",
 				Created: {
 					dataOrder: created.valueOf(),
-					value: created.format("Y-m-d")
+					value: (schedule)
+						? `<div class="hoverable" title="UTC: ${created.toUTCString()}">${sb.Utils.timeDelta(created)}</div>`
+						: "N/A"
 				},
 				Sender: i.author,
 				Recipient: i.target,
