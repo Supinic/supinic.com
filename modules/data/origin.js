@@ -51,6 +51,15 @@ module.exports = (function () {
 			});
 		}
 
+		static async getRelatedEmotes (ID) {
+			const stringReference = `(${ID})`;
+			return await super.selectCustom(q => q
+				.select("ID", "Name")
+				.where("ID <> %s", ID)
+				.where("Description %*like* OR Notes %*like*", stringReference, stringReference)
+			);
+		}
+
 		static parseURL (item) {
 			if (item.Available === "Backup" && item.Backup_Link) {
 				return item.Backup_Link;

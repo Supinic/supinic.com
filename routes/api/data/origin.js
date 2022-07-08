@@ -87,6 +87,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} [reporter] User name of whoever added the emote origin
 	 * @apiSuccess {string} [url] Priority emote image URL - original first, then a backup link, or null if none exist
 	 * @apiSuccess {string} [notes] Custom notes
+	 * @apiSuccess {Object[]} relatedEmotes The list of other emotes that have the current one linked in their descriptions or notes
+	 * @apiSuccess {number} relatedEmotes.ID
+	 * @apiSuccess {string} relatedEmotes.name
 	 **/
 	Router.get("/detail/:id", async (req, res) => {
 		const { id } = req.params;
@@ -95,12 +98,16 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
 		}
 
-		const items = await Origin.fetch(originID);
-		if (items.length === 0) {
+		const [data] = await Origin.fetch(originID);
+		if (!data) {
 			return sb.WebUtils.apiFail(res, 404, "No origin exists for provided ID");
 		}
 
-		return sb.WebUtils.apiSuccess(res, items[0]);
+		const relatedEmotes = await Origin.getRelatedEmotes(originID);
+		return sb.WebUtils.apiSuccess(res, {
+			...data,
+			relatedEmotes
+		});
 	});
 
 	Router.get("/image/:id", async (req, res) => {
