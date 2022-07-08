@@ -106,7 +106,7 @@ module.exports = (function () {
 		const relatedEmotes = await Origin.getRelatedEmotes(originID);
 		return sb.WebUtils.apiSuccess(res, {
 			...data,
-			relatedEmotes
+			Related_Emotes: relatedEmotes
 		});
 	});
 
