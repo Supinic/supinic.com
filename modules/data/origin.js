@@ -53,11 +53,13 @@ module.exports = (function () {
 
 		static async getRelatedEmotes (ID) {
 			const stringReference = `(${ID})`;
-			return await super.selectCustom(q => q
+			const data = await super.selectCustom(q => q
 				.select("ID", "Name")
 				.where("ID <> %n", ID)
 				.where("Text %*like* OR Notes %*like*", stringReference, stringReference)
 			);
+
+			return data.filter(i => i.ID !== ID);
 		}
 
 		static parseURL (item) {
