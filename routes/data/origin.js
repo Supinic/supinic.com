@@ -147,7 +147,7 @@ module.exports = (function () {
 
 		const relatedEmotesList = data.relatedEmotes.map(i => `[${i.name}](${i.ID})`).join("");
 		const relatedEmotes = (relatedEmotesList.length > 0)
-			? `<br>${linkify(relatedEmotesList)}`
+			? `${linkify(relatedEmotesList)}<br>`
 			: "";
 		const sameNameEmotesButton = sb.Utils.tag.trim `
 			<a
