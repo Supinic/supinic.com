@@ -150,7 +150,7 @@ module.exports = (function () {
 		const sameNameEmotesButton = sb.Utils.tag.trim `
 			<a
 			    href="/data/origin/list?columnName=${encodeURIComponent(data.name)}"
-				class="btn btn-primary"
+				class="btn btn-primary my-2"
 				role="button"
 		    >
 		        Emotes with the same name
