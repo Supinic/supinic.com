@@ -145,6 +145,18 @@ module.exports = (function () {
 			raffleDetails.push(`won by ${data.raffleWinner}`);
 		}
 
+		const relatedEmotesList = data.relatedEmotes.map(i => `[${i.name}](${i.ID})`).join("");
+		const relatedEmotes = linkify(relatedEmotesList);
+		const sameNameEmotesButton = sb.Utils.tag.trim `
+			<a
+			    href="/data/origin/list?columnName=${encodeURIComponent(data.name)}"
+				class="btn btn-primary"
+				role="button"
+		    >
+		        Emotes with the same name
+		    </a>
+	    `;
+
 		const tier = (data.tier) ? `Tier ${data.tier}` : "";
 		const renderData = {
 			ID: data.ID,
@@ -165,15 +177,7 @@ module.exports = (function () {
 				: "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
-			"Related emotes": sb.Utils.tag.trim `
-				<a
-				    href="/data/origin/list?columnName=${encodeURIComponent(data.name)}"
-					class="btn btn-primary"
-					role="button"
-			    >
-			        Emotes with the same name
-			    </a>
-		    `,
+			"Related emotes": `${relatedEmotes}<br>${sameNameEmotesButton}`,
 			Notes: (data.notes)
 				? linkify(data.notes)
 					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
