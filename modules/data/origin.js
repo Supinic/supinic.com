@@ -56,7 +56,7 @@ module.exports = (function () {
 			return await super.selectCustom(q => q
 				.select("ID", "Name")
 				.where("ID <> %n", ID)
-				.where("Description %*like* OR Notes %*like*", stringReference, stringReference)
+				.where("Text %*like* OR Notes %*like*", stringReference, stringReference)
 			);
 		}
 
