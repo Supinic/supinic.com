@@ -146,7 +146,9 @@ module.exports = (function () {
 		}
 
 		const relatedEmotesList = data.relatedEmotes.map(i => `[${i.name}](${i.ID})`).join("");
-		const relatedEmotes = linkify(relatedEmotesList);
+		const relatedEmotes = (relatedEmotesList.length > 0)
+			? `<br>${linkify(relatedEmotesList)}`
+			: "";
 		const sameNameEmotesButton = sb.Utils.tag.trim `
 			<a
 			    href="/data/origin/list?columnName=${encodeURIComponent(data.name)}"
@@ -177,7 +179,7 @@ module.exports = (function () {
 				: "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
-			"Related emotes": `${relatedEmotes}<br>${sameNameEmotesButton}`,
+			"Related emotes": `${relatedEmotes}${sameNameEmotesButton}`,
 			Notes: (data.notes)
 				? linkify(data.notes)
 					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
