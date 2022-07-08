@@ -165,6 +165,15 @@ module.exports = (function () {
 				: "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
+			"Related emotes": sb.Utils.tag.trim `
+				<a
+				    href="/data/origin/list?columnName=${encodeURIComponent(data.name)}"
+					class="btn btn-primary"
+					role="button"
+			    >
+			        Emotes with the same name
+			    </a>
+		    `,
 			Notes: (data.notes)
 				? linkify(data.notes)
 					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
