@@ -51,6 +51,7 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "bot/song-request/queue").json();
 
 		res.render("generic-list-table", {
+			title: "Current song request queue at Supinic",
 			data: await print(data, "ID", "Status"),
 			head: header,
 			pageLength: 10
@@ -62,6 +63,7 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "bot/song-request/history").json();
 
 		res.render("generic-list-table", {
+			title: "History of song requests at Supinic",
 			data: await print(data, "Added"),
 			head: header,
 			pageLength: 25,
