@@ -48,7 +48,7 @@ module.exports = (function () {
 			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
 			await renamedRow.load(previousChannel.ID);
 			renamedRow.values.Mode = "Inactive";
-			await renamedRow.save();
+			await renamedRow.save({ skipLoad: true });
 
 			const announcement = `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${previousChannel.Name}.`;
 			if (currentChannel) {
@@ -182,10 +182,16 @@ module.exports = (function () {
 				stats.push(`${follows.body.total} followers`);
 			}
 			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
-				const timestamp = Number(recent.body.messages[0].match(/tmi-sent-ts=(\d+)/)?.[1]);
-				const delta = sb.Utils.timeDelta(new sb.Date(timestamp));
+				const lastMessage = recent.body.messages.pop();
+				const messageTimestamp = Number(recent.body.messages[0].match(/rm-received-ts=(\d+)/)?.[1]);
 
-				stats.push(`last recent-message sent ${delta}`);
+				if (!sb.Utils.isValidInteger(messageTimestamp)) {
+					stats.push(`last recent-message sent: (unknown). dump: ${lastMessage}`);
+				}
+				else {
+					const delta = sb.Utils.timeDelta(new sb.Date(messageTimestamp));
+					stats.push(`last recent-message sent: ${delta}.`);
+				}
 			}
 			if (stream.statusCode === 200 && stream.body.lastBroadcast.startedAt) {
 				const delta = sb.Utils.timeDelta(new sb.Date(stream.body.lastBroadcast.startedAt));
