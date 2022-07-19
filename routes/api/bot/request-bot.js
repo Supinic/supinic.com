@@ -183,7 +183,7 @@ module.exports = (function () {
 			}
 			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
 				const lastMessage = recent.body.messages.pop();
-				const messageTimestamp = Number(recent.body.messages[0].match(/rm-received-ts=(\d+)/)?.[1]);
+				const messageTimestamp = Number(lastMessage.match(/rm-received-ts=(\d+)/)?.[1]);
 
 				if (!sb.Utils.isValidInteger(messageTimestamp)) {
 					stats.push(`last recent-message sent: (unknown). dump: ${lastMessage}`);
