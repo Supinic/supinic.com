@@ -129,7 +129,6 @@ module.exports = (function () {
 	 * @apiParam {string} [username] Target user's name. Mutually exclusive with userID.
 	 * @apiParam {string} [text] The text of the reminder itself. Can be omitted, in which case a default message will be used.
 	 * @apiParam {date} [schedule] ISO string of datetime for given reminder to fire at.
-	 * @apiParam {boolean} [schedule] ISO string of datetime for given reminder to fire at. Only uses Twitch channel of Supibot.
 	 * @apiParam {number} [private] If true, the parameter will be sent privately. Defaults to false.
 	 * @apiSuccess {number} reminderID ID of the reminder that was just created.
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
@@ -151,7 +150,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { userID: rawUserID, username, text, private: rawPrivateReminder, schedule: rawSchedule } = req.query;
+		const { userID: rawUserID, username, text, private: rawPrivateReminder } = req.query;
 		if (!rawUserID && !username) {
 			return sb.WebUtils.apiFail(res, 400, "No username or user ID provided");
 		}
@@ -159,22 +158,8 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Both username and user ID provided");
 		}
 
-		let schedule = null;
-		if (rawSchedule) {
-			const now = new sb.Date().addSeconds(30);
-			schedule = new sb.Date(rawSchedule);
-
-			if (Number.isNaN(schedule.valueOf())) {
-				return sb.WebUtils.apiFail(res, 400, "Provided schedule date is in an incorrect format");
-			}
-			else if (now >= schedule) {
-				return sb.WebUtils.apiFail(res, 400, "Schedules must be set at least 30 seconds in the future");
-			}
-		}
-
-		const privateReminder = Boolean(rawPrivateReminder);
-
 		const userID = Number(rawUserID);
+		const privateReminder = Boolean(rawPrivateReminder);
 		if (rawUserID && !sb.Utils.isValidInteger(userID)) {
 			return sb.WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
 		}
@@ -215,29 +200,20 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Target user has blocked you from reminding them");
 		}
 
-		const { success, cause } = await sb.Reminder.checkLimits(auth.userID, userData.ID, schedule);
+		const { success, cause } = await sb.Reminder.checkLimits(auth.userID, userData.ID);
 		if (!success) {
 			return sb.WebUtils.apiFail(res, 403, cause);
 		}
 
-		const platformID = (schedule || privateReminder) ? 1 : null;
-		const targetChannelID = (schedule && !privateReminder) ? 37 : null;
 		const newReminder = await Reminder.insertCustom({
 			User_From: auth.userID,
 			User_To: userData.ID,
-			Channel: targetChannelID,
-			Platform: platformID,
-			Schedule: schedule ?? null,
+			Channel: null,
+			Platform: 1,
+			Schedule: null,
 			Text: text || "(no message)",
 			Active: true,
 			Private_Message: privateReminder
-		});
-
-		await sb.Got("Supibot", {
-			url: "reminder/reloadSpecific",
-			searchParams: {
-				ID: newReminder.insertId
-			}
 		});
 
 		const ID = newReminder.insertId;
