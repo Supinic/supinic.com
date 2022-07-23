@@ -52,6 +52,7 @@ module.exports = (function () {
 		"LMS - Rank",
 		"Soul Wars Zeal",
 		"Guardians of the Rift",
+		"PVP Arena",
 
 		"Abyssal Sire",
 		"Alchemical Hydra",
