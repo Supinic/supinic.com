@@ -50,9 +50,9 @@ module.exports = (function () {
 		"Clue Scrolls (elite)",
 		"Clue Scrolls (master)",
 		"LMS - Rank",
+		"PVP Arena",
 		"Soul Wars Zeal",
 		"Guardians of the Rift",
-		"PVP Arena",
 
 		"Abyssal Sire",
 		"Alchemical Hydra",
