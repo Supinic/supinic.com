@@ -38,7 +38,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
 		}
 
-		if (req.params.direct) {
+		if (req.query.direct) {
 			const buffer = Buffer.from(data.Images[index], "base64");
 			return res.status(200)
 				.type("png")
