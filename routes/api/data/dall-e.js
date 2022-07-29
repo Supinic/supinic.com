@@ -38,10 +38,18 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
 		}
 
-		return sb.WebUtils.apiSuccess(res, {
-			index,
-			image: data.Images[index] ?? null
-		});
+		if (req.params.direct) {
+			const buffer = Buffer.from(data.Images[index], "base64");
+			return res.status(200)
+				.type("png")
+				.send(buffer);
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, {
+				index,
+				image: data.Images[index] ?? null
+			});
+		}
 	});
 
 	Router.get("/detail/:id/meta", async (req, res) => {
