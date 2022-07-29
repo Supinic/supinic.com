@@ -18,13 +18,10 @@ module.exports = (function () {
 		});
 
 		if (!words) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Channel does not have any Markov module configured"
-			});
+			return res.set("Content-Type", "text/plain").send("Channel either has no Markov module configured, or there are no words available at the moment");
 		}
 		else if (words.length === 0) {
-			return res.set("Content-Type", "text/plain").send("No words available");
+			return res.set("Content-Type", "text/plain").send("No words available at the moment");
 		}
 		else {
 			return res.set("Content-Type", "text/plain").send(words.join("\n"));
