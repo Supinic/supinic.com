@@ -321,9 +321,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "18.6.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.2.tgz#ffc5f0f099d27887c8d9067b54e55090fcd54126"
-  integrity sha512-KcfkBq9H4PI6Vpu5B/KoPeuVDAbmi+2mDBqGPGUgoL7yXQtcWGu2vJWmmRkneWK3Rh0nIAX192Aa87AqKHYChQ==
+  version "18.6.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.3.tgz#4e4a95b6fe44014563ceb514b2598b3e623d1c98"
+  integrity sha512-6qKpDtoaYLM+5+AFChLhHermMQxc3TOEFIDzrZLPRGHPrLEwqFkkT5Kx3ju05g6X7uDPazz3jHbKPX0KzCjntg==
 
 "@types/node@^17.0.10":
   version "17.0.45"
@@ -2661,7 +2661,7 @@ strnum@^1.0.4:
 
 "supi-core@github:supinic/supi-core":
   version "2.2.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/6d5ab718d36b64ee7e0c121f78e82b249d274723"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/86e4a2aa31c937725a9a617e96c9b7c525af660e"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.12"
@@ -2691,7 +2691,7 @@ strnum@^1.0.4:
 
 "supibot-package-manager@github:supinic/supibot-package-manager":
   version "1.0.0"
-  resolved "https://codeload.github.com/supinic/supibot-package-manager/tar.gz/d554c93f6b0656ee497fcea77658987f91fdb5d0"
+  resolved "https://codeload.github.com/supinic/supibot-package-manager/tar.gz/6cc83753eb39fff534f761c1dc01f62367a07aa2"
 
 supports-color@^5.3.0:
   version "5.5.0"
