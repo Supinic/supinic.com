@@ -16,7 +16,7 @@ module.exports = (function () {
 		}
 
 		const crypto = require("crypto");
-		const hash = crypto.createHash("md4");
+		const hash = crypto.createHash("md5");
 
 		const digest = hash
 			.update(url)
