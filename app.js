@@ -145,7 +145,7 @@
 			saveUninitialized: true,
 			cookie: {
 				secure: false,
-				maxAge: 7 * 864e5
+				maxAge: 30 * 864e5
 			},
 			store: new MySQLStore({
 				user: process.env.MARIA_USER,
