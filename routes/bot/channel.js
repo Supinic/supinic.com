@@ -45,47 +45,43 @@ module.exports = (function () {
 	});
 
 	Router.get("/:id", async (req, res) => {
+		res.redirect(`/bot/channel/detail/${req.params.id}`);
+	});
+
+	Router.get("/detail/:id", async (req, res) => {
 		const channelID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(channelID)) {
 			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Target channel has no activity data"
+				error: "400 Bad Request",
+				message: "Channel ID is not valid"
 			});
 		}
 
-		const channelData = await Channel.selectSingleCustom(q => q
-			.select("Platform.Name AS Platform_Name")
-			.select("Platform.Message_Limit AS Platform_Message_Limit")
-			.join("chat_data", "Platform")
-			.where("Channel.ID = %n", channelID)
-		);
-		if (!channelData) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Target channel has no activity data"
-			});
-		}
+		const { data } = await sb.Got("Supinic", `bot/channel/detail/${channelID}`).json();
 
-		const data = {
-			ID: channelData.ID,
-			Name: channelData.Name,
-			Platform: channelData.Platform_Name,
-			"Platform ID": channelData.Specific_ID,
-			"Bot mode": channelData.Mode,
-			"Banphrase API": channelData.Banphrase_API_URL ?? "N/A",
-			"Message limit": channelData.Message_Limit ?? channelData.Platform_Message_Limit,
-			Description: channelData.Description ?? "N/A",
-			Activity: `<a href="/bot/channel/${channelData.ID}/activity">Activity charts</a>`,
-			Filters: `<a href="/bot/channel/${channelData.ID}/filter/list">List of filters</a>`
+		const ambassadorsBody = data.ambassadorList.map(i => `<li>${i.name}</li>`).join("");
+		const ambassadorsHTML = `<ul>${ambassadorsBody}</ul>`;
+
+		const renderData = {
+			ID: data.ID,
+			Name: data.name,
+			Platform: data.platformName,
+			"Platform ID": data.specificID,
+			"Bot mode": data.botMode,
+			"Banphrase API URL": data.banphraseURL ?? "N/A",
+			Description: data.description ?? "N/A",
+			Ambassadors: ambassadorsHTML,
+			Activity: `<a href="/bot/channel/detail/${data.ID}/activity">Activity charts</a>`,
+			Filters: `<a href="/bot/channel/detail/${data.ID}/filter/list">List of filters</a>`
 		};
 
 		res.render("generic-detail-table", {
-			title: `Detail - Channel ${channelData.ID} - Supibot`,
-			data
+			title: `Detail - Channel ${data.ID} - Supibot`,
+			data: renderData
 		});
 	});
 
-	Router.get("/:id/activity", async (req, res) => {
+	Router.get("/detail/:id/activity", async (req, res) => {
 		const channelID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(channelID)) {
 			return res.status(404).render("error", {
@@ -130,7 +126,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/:id/filter/list", async (req, res) => {
+	Router.get("/detail/:id/filter/list", async (req, res) => {
 		const channelID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(channelID)) {
 			return res.status(404).render("error", {

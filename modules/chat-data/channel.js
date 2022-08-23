@@ -69,6 +69,30 @@ module.exports = (function () {
 			return data;
 		}
 
+		/**
+		 * @param {number} channelID
+		 * @returns {Promise<*[]>}
+		 */
+		static async getAmbassadorList (channelID) {
+			const row = await sb.Query.getRow("chat_data", "Channel_Data");
+			await row.load({ Channel: channelID, Property: "ambassadors" }, true);
+			if (!row.loaded) {
+				return [];
+			}
+
+			const result = [];
+			const userIDs = JSON.parse(row.values.Value);
+			for (const userID of userIDs) {
+				const userData = await sb.User.get(userID);
+				result.push({
+					ID: userData.ID,
+					name: userData.Name
+				});
+			}
+
+			return result;
+		}
+
 		static get name () { return "channel"; }
 		static get database () { return "chat_data"; }
 		static get table () { return "Channel"; }

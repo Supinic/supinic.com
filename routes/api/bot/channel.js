@@ -100,5 +100,39 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data);
 	});
 
+	Router.get("/detail/:id", async (req, res) => {
+		const channelID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+		}
+
+		const channelData = await Channel.selectSingleCustom(q => q
+			.select("Platform.Name AS Platform_Name")
+			.select("Platform.Message_Limit AS Platform_Message_Limit")
+			.join("chat_data", "Platform")
+			.where("Channel.ID = %n", channelID)
+		);
+
+		if (!channelData) {
+			return sb.WebUtils.apiFail(res, 404, "Channel ID does not exist");
+		}
+
+		const ambassadorList = await Channel.getAmbassadorList(channelID);
+		const data = {
+			ID: channelData.ID,
+			name: channelData.Name,
+			platform: channelData.Platform_Name,
+			platformID: channelData.Specific_ID,
+			botMode: channelData.Mode,
+			banphraseURL: channelData.Banphrase_API_URL ?? null,
+			description: channelData.Description ?? null,
+			ambassadorList
+		};
+
+		return sb.WebUtils.apiSuccess(res, data, {
+			skipCaseConversion: true
+		});
+	});
+
 	return Router;
 })();
