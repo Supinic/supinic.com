@@ -60,13 +60,15 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", `bot/channel/detail/${channelID}`).json();
 
 		const ambassadorsBody = data.ambassadorList.map(i => `<li>${i.name}</li>`).join("");
-		const ambassadorsHTML = `<ul>${ambassadorsBody}</ul>`;
+		const ambassadorsHTML = (data.ambassadorList.length === 0)
+			? `No ambassadors`
+			: `<ul>${ambassadorsBody}</ul>`;
 
 		const renderData = {
 			ID: data.ID,
 			Name: data.name,
-			Platform: data.platformName,
-			"Platform ID": data.specificID,
+			Platform: data.platform,
+			"Platform ID": data.platformID,
 			"Bot mode": data.botMode,
 			"Banphrase API URL": data.banphraseURL ?? "N/A",
 			Description: data.description ?? "N/A",
