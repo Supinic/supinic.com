@@ -143,13 +143,13 @@ module.exports = (function () {
 			User: i.userName ?? "(all)",
 			Command: i.commandName ?? "(all)",
 			Created: new sb.Date(i.created).format("Y-m-d H:i"),
-			Reason: i.reason ?? "N/A"
+			Issuer: i.issuerName
 		}));
 
 		res.render("generic-list-table", {
 			title: `Filters - Channel ${channelID} - Supibot`,
 			data: printData,
-			head: ["ID", "User", "Command", "Created", "Reason"],
+			head: ["ID", "User", "Command", "Created", "Issuer"],
 			pageLength: 10
 		});
 	});
