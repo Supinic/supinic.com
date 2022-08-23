@@ -175,7 +175,7 @@ module.exports = (function () {
 				: "N/A",
 			"Emote added": (authorDetails.length !== 0) ? authorDetails.join(", ") : "N/A",
 			"Emote deleted": (data.emoteDeleted)
-				? new sb.Date(data.emoteDeleted).format("Y-m-d")
+				? `on ${new sb.Date(data.emoteDeleted).format("Y-m-d")}`
 				: "N/A",
 			"Raffle details": (raffleDetails.length !== 0) ? raffleDetails.join(", ") : "N/A",
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
