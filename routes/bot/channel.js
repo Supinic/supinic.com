@@ -30,7 +30,7 @@ module.exports = (function () {
 					? sb.Utils.formatByteSize(i.byteLength)
 					: "N/A"
 			},
-			ID: `<a href="/bot/channel/${i.ID}">${i.ID}</a>`
+			ID: `<a href="/bot/channel/detail/${i.ID}">${i.ID}</a>`
 		}));
 
 		res.render("generic-list-table", {
