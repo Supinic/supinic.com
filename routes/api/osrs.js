@@ -96,6 +96,8 @@ module.exports = (function () {
 		"Thermonuclear Smoke Devil",
 		"TzKal-Zuk",
 		"TzTok-Jad",
+		"Tombs of Amascut",
+		"Tombs of Amascut: Expert Mode",
 		"Venenatis",
 		"Vet'ion",
 		"Vorkath",
