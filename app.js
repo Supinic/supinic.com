@@ -190,6 +190,7 @@
 			items: [
 				{ name: "FAQ", link: "data/faq/list" },
 				{ name: "Request Supibot", link: "bot/request-bot/form" },
+				{ name: "Run a Supibot command", link: "bot/command/run" },
 				{ separator: true },
 				{ name: "Aliases - find by user", link: "bot/user/alias/find" },
 				{ name: "Channel list", link: "bot/channel/list" },
@@ -263,7 +264,6 @@
 	];
 	app.locals.loginItems = [
 		{ name: "Command aliases", link: "user/alias/list" },
-		{ name: "Run a Supibot command", link: "bot/command/run" },
 		{ separator: true },
 		{ name: "Reminders - active", link: "bot/reminder/list" },
 		{ name: "Reminders - history", link: "bot/reminder/history" },
