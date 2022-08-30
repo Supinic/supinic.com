@@ -37,11 +37,7 @@ module.exports = (function () {
 			+ "\t\t<lastBuildDate>"}${latest.toUTCString()}</lastBuildDate>\n`
 			+ `\t\t<webMaster>supinic@pm.me (Supinic)</webMaster>\n`
 			+ `\t\t<category>Gachimuchi</category>\n`
-			+ `\t\t<image>\n`
-			+ `\t\t\t<title>Gachi RSS</title>\n`
-			+ `\t\t\t<url>https://supinic.com/static/img/gachiRSS.png</url>\n`
-			+ `\t\t\t<link>https://supinic.com/gachi/list</link>\n`
-			+ `\t\t</image>\n${
+			+ `${
 				rssData.join("\n")
 			}\t</channel>`
 			+ `</rss>`
