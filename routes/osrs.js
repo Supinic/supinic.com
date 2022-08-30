@@ -38,5 +38,9 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/toa/calculator", async (req, res) => {
+		res.render("toa-calculator");
+	});
+
 	return Router;
 })();
