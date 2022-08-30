@@ -37,7 +37,7 @@ module.exports = (function () {
 			`,
 			extraCSS: `
 				textarea.loading {
-				    background-image: url("/public/img/ppCircle.gif");
+				    background-image: url("/static/img/ppCircle.gif");
 				    background-repeat: no-repeat;
 				    background-position: center;
 				    background-size: contain;

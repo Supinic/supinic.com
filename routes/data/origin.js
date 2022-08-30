@@ -4,7 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const IMAGE_NOT_FOUND_URL = "/public/img/cross.png";
+	const IMAGE_NOT_FOUND_URL = "/static/img/cross.png";
 	const renderListColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
 
 	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");

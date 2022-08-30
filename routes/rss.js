@@ -39,7 +39,7 @@ module.exports = (function () {
 			+ `\t\t<category>Gachimuchi</category>\n`
 			+ `\t\t<image>\n`
 			+ `\t\t\t<title>Gachi RSS</title>\n`
-			+ `\t\t\t<url>https://supinic.com/public/img/gachiRSS.png</url>\n`
+			+ `\t\t\t<url>https://supinic.com/static/img/gachiRSS.png</url>\n`
 			+ `\t\t\t<link>https://supinic.com/gachi/list</link>\n`
 			+ `\t\t</image>\n${
 				rssData.join("\n")

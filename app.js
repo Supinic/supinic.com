@@ -170,12 +170,12 @@
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 
-	app.use("/public", Express.static(`${__dirname}/public/`, {
+	app.use("/public", Express.static(`${__dirname}/static/`, {
 		etag: true,
 		maxAge: "1 day",
 		lastModified: true
 	}));
-	app.use("/static", Express.static(`${__dirname}/public/`, {
+	app.use("/static", Express.static(`${__dirname}/static/`, {
 		etag: true,
 		maxAge: "1 day",
 		lastModified: true

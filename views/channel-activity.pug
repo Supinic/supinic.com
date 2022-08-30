@@ -4,8 +4,8 @@ html
 		block topheader
 		include ./header.pug
 		include ./navigation.pug
-			
-		script(src="/public/js/Chart.js")
+
+		script(src="/static/js/Chart.js")
 		script.
 			const zf2 = (number) => ("00" + number).slice(-2);
 			const now = new Date();
@@ -90,7 +90,7 @@ html
 		meta(charset="UTF-8")
 	body
 		block navigation
-		center 
+		center
 			h1 #!{channelName}
 		div
 			canvas#hour-chart

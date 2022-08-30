@@ -8,9 +8,9 @@ html
 		script.
 			$(document).ready(() => {
 				const type = `!{favourite}`;
-				const spinner = `<img alt="Loading" height=32 width=32 src="/public/img/ppCircle.gif">`;
-				const active = `<img alt="Favourite" height=32 width=32 src="/public/img/favourite-star.png">`;
-				const inactive = `<img alt="Not favourite" height=32 width=32 src="/public/img/favourite-star-off.png">`;
+				const spinner = `<img alt="Loading" height=32 width=32 src="/static/img/ppCircle.gif">`;
+				const active = `<img alt="Favourite" height=32 width=32 src="/static/img/favourite-star.png">`;
+				const inactive = `<img alt="Not favourite" height=32 width=32 src="/static/img/favourite-star-off.png">`;
 				const noLogin = `<i>Log in to use the favourite button!</i>`;
 				let available = true;
 
@@ -38,7 +38,7 @@ html
 						.catch(i => i.json());
 
 					available = true;
-					
+
 					if (data.statusCode === 403) {
 						$("#favourite").html(noLogin);
 					}
@@ -69,7 +69,7 @@ html
 			}
 	body
 		block navigation
-		
+
 		div(id="track_wrapper")
 			table(id="track", class="table table-striped table-bordered")
 				tbody

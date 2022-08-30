@@ -1,6 +1,5 @@
 /.idea
 /node_modules
 /archived
-/public
 /apidocs
 db-access.js

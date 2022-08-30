@@ -30,11 +30,11 @@ html
 			!{extraCSS}
 		- }
 
-		script(type="module" src="/public/js/utils.js")
+		script(type="module" src="/static/js/utils.js")
 
 		script.
 			$(document).ready(async () => {
-				globalThis.utils = await import("/public/js/utils.js");
+				globalThis.utils = await import("/static/js/utils.js");
 
 				const rawHeaders = !{JSON.stringify(head)};
 				const headers = rawHeaders.map(i => (typeof i === "string") ? { data: i } : i);
@@ -152,7 +152,7 @@ html
 			h5.
 				Loading...
 			br
-			img(alt="Loading" src="/public/img/ppCircle.gif")
+			img(alt="Loading" src="/static/img/ppCircle.gif")
 		- }
 
 		table(id="table", class="table table-striped table-bordered")

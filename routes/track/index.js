@@ -67,7 +67,7 @@ module.exports = (function () {
 				obj["🔁"] = (i.youtubeReuploads.length > 0)
 					? sb.Utils.tag.trim `
 						<a href="/track/redirect/${i.youtubeReuploads[0]}">
-							<img class="reupload" src="/public/img/youtube-logo.png">
+							<img class="reupload" src="/static/img/youtube-logo.png">
 						</a>
 					`
 					: "";
@@ -124,13 +124,13 @@ module.exports = (function () {
 				    background-size: contain;
 			    }
 			    div.favourite.active { 
-			        background-image: url("/public/img/favourite-star.png");
+			        background-image: url("/static/img/favourite-star.png");
 			    }
 			    div.favourite.inactive { 
-			        background-image: url("/public/img/favourite-star-off.png");
+			        background-image: url("/static/img/favourite-star-off.png");
 			    }
 			    div.favourite.loading {
-			        background-image: url("/public/img/ppCircle.gif");
+			        background-image: url("/static/img/ppCircle.gif");
 			    }
 			`,
 			extraScript: sb.Utils.tag.trim `

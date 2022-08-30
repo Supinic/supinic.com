@@ -292,7 +292,7 @@ module.exports = (function () {
 					content: "OK"
 			    }
 			    div.link-alias.loading {
-			        background-image: url("/public/img/ppCircle.gif");
+			        background-image: url("/static/img/ppCircle.gif");
 			    }
 				div.hoverable {
 					cursor: pointer;
