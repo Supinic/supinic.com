@@ -175,6 +175,12 @@
 		maxAge: "1 day",
 		lastModified: true
 	}));
+	app.use("/static", Express.static(`${__dirname}/public/`, {
+		etag: true,
+		maxAge: "1 day",
+		lastModified: true
+	}));
+
 	app.use("/api", Express.static(`${__dirname}/apidocs/`));
 
 	// app.use(CacheController({
