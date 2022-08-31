@@ -5,45 +5,7 @@ html
         include ./header.pug
         include ./navigation.pug
 
-        style.
-            li.invocation {
-                background-color: inherit;
-                cursor: pointer;
-                margin: 0;
-            }
-
-            li.invocation.selected {
-                background-color: #264422;
-            }
-
-            li[summary=icon] {
-                height: 32px;
-                background-repeat: no-repeat;
-                background-position: left;
-            }
-
-            ul#invocations-list {
-                grid-area: 1/1/3/2;
-            }
-
-            ul#summary {
-                grid-area: 1/2/2/3;
-            }
-
-            ul#buttons {
-                grid-area: 2/2/3/3;
-            }
-
-            ul#buttons > li {
-                padding-bottom: 5px;
-            }
-
-            div#base {
-                display: grid;
-                grid-template-columns: auto 200px;
-                grid-template-rows: 200px auto;
-            }
-
+        link(rel="stylesheet" href="/static/css/toa-calculator.css")
         script(type="module" src="/static/js/toa-calculator.js")
 
     body
