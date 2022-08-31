@@ -253,7 +253,8 @@
 		{
 			name: "Other",
 			items: [
-				{ name: "Bad Apple!!", link: "data/bad-apple/list" }
+				{ name: "Bad Apple!!", link: "data/bad-apple/list" },
+				{ name: "OSRS Raids 3 calculator", link: "osrs/toa/calculator" }
 			]
 		},
 		{
