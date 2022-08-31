@@ -3,10 +3,11 @@ html
     head
         block topheader
         include ./header.pug
-        include ./navigation.pug
 
         link(rel="stylesheet" href="/static/css/toa-calculator.css")
         script(type="module" src="/static/js/toa-calculator.js")
+
+        include ./navigation.pug
 
     body
         block navigation
