@@ -33,8 +33,8 @@ const data = {
 			"min": 300,
 			"max": 600,
 			"icon": "https://oldschool.runescape.wiki/images/Tombs_of_Amascut_-_Expert_Mode_icon.png"
-		}	
-	],	
+		}
+	],
 	"attributes": [
 		{
 		  "name": "damage",
@@ -503,9 +503,9 @@ const data = {
 				{
 					"id": 42,
 					"name": "Overclocked",
-					"description": "The Phantoms will attack faster in the final phase of the fight.",
+					"description": "The Warden will attack faster in the final phase of the fight.",
 					"level": 15,
-					"summary": "third phase - phantoms attack faster"
+					"summary": "third phase - warden slams faster"
 				},
 				{
 					"id": 43,
