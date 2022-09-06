@@ -34,7 +34,7 @@ module.exports = (function () {
 		"Thieving",
 		"Slayer",
 		"Farming",
-		"Runecrafting",
+		"Runecraft",
 		"Hunter",
 		"Construction"
 	];
