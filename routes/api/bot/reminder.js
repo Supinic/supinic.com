@@ -4,7 +4,6 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const Filter = require("../../../modules/chat-data/filter.js");
 	const Reminder = require("../../../modules/chat-data/reminder.js");
 
 	const fetchReminderDetail = async (req, res) => {
@@ -125,21 +124,15 @@ module.exports = (function () {
 	 * @apiDescription Posts a new reminder to a target user. If the reminder is timed and non-private, it will always fire in the Twitch channel of Supibot.
 	 * @apiGroup Bot
 	 * @apiPermission login
-	 * @apiParam {number} [userID] Target user's internal Supibot ID. Mutually exclusive with username.
 	 * @apiParam {string} [username] Target user's name. Mutually exclusive with userID.
 	 * @apiParam {string} [text] The text of the reminder itself. Can be omitted, in which case a default message will be used.
 	 * @apiParam {date} [schedule] ISO string of datetime for given reminder to fire at.
-	 * @apiParam {number} [private] If true, the parameter will be sent privately. Defaults to false.
+	 * @apiParam {number} [private] If provided (any value), the parameter will be sent privately. Defaults to false.
 	 * @apiSuccess {number} reminderID ID of the reminder that was just created.
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
-	 * If both id and name were used at the same time<br>
-	 * If target user does not exist
+	 * If the proxied command fails in any other way as described in Supibot
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
 	 * @apiError (403) AccessDenied Insufficient user level
-	 * @apiError (403) Forbidden Target user has opted out from being reminded at all<br>
-	 * Target user has opted out from being reminded a by you<br>
-	 * You have too many pending reminders<br>
-	 * Target has too many pending reminders
 	 */
 	Router.post("/", async (req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
@@ -150,88 +143,49 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { userID: rawUserID, username, text, private: rawPrivateReminder } = req.query;
-		if (!rawUserID && !username) {
-			return sb.WebUtils.apiFail(res, 400, "No username or user ID provided");
+		const { username } = req.query;
+		if (!username) {
+			return sb.WebUtils.apiFail(res, 400, "No target username provided");
 		}
-		else if (rawUserID && username) {
-			return sb.WebUtils.apiFail(res, 400, "Both username and user ID provided");
-		}
-
-		const userID = Number(rawUserID);
-		const privateReminder = Boolean(rawPrivateReminder);
-		if (rawUserID && !sb.Utils.isValidInteger(userID)) {
-			return sb.WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
+		else if (/\s+/.test(username)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed username provided - whitespace is not allowed");
 		}
 
-		const userData = await sb.User.get(username || userID, true);
-		if (!userData) {
-			return sb.WebUtils.apiFail(res, 400, "No user matches provided identifier");
+		const reminderText = req.query.text ?? "";
+		const privateParameter = (Boolean(req.query.private))
+			? "private:true"
+			: "";
+
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: "command/execute",
+				searchParams: {
+					invocation: "remind",
+					platform: "twitch",
+					channel: null,
+					user: userData.Name,
+					arguments: `${username} ${reminderText} ${privateParameter}` ,
+					skipGlobalBan: "false"
+				}
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
 		}
 
-		const banCheck = await Filter.selectSingleCustom(q => q
-			.where("User_Alias = %n", userData.ID)
-			.where("Command = %s", "remind")
-			.where("Active = %b", true)
-			.where("Type = %s", "Blacklist")
-		);
-		if (banCheck) {
-			return sb.WebUtils.apiFail(res, 403, "You have been banned from the reminder command in at least one instance, and therefore cannot use the API to set reminders");
-		}
-
-		const optoutCheck = await Filter.selectSingleCustom(q => q
-			.where("User_Alias = %n", userData.ID)
-			.where("Command = %s", "remind")
-			.where("Active = %b", true)
-			.where("Type = %s", "Opt-out")
-		);
-		if (optoutCheck) {
-			return sb.WebUtils.apiFail(res, 403, "Target user opted out from reminders");
-		}
-
-		const blockCheck = await Filter.selectSingleCustom(q => q
-			.where("User_Alias = %n", userData.ID)
-			.where("Blocked_User = %n", auth.userID)
-			.where("Command = %s", "remind")
-			.where("Active = %b", true)
-			.where("Type = %s", "Block")
-		);
-		if (blockCheck) {
-			return sb.WebUtils.apiFail(res, 403, "Target user has blocked you from reminding them");
-		}
-
-		const { success, cause } = await sb.Reminder.checkLimits(auth.userID, userData.ID);
-		if (!success) {
-			return sb.WebUtils.apiFail(res, 403, cause);
-		}
-
-		const newReminder = await Reminder.insertCustom({
-			User_From: auth.userID,
-			User_To: userData.ID,
-			Channel: null,
-			Platform: 1,
-			Schedule: null,
-			Text: text || "(no message)",
-			Active: true,
-			Private_Message: privateReminder
-		});
-
-		const ID = newReminder.insertId;
-		const { body, statusCode } = await sb.Got("Supibot", {
-			url: "reminder/reloadSpecific",
-			searchParams: { ID }
-		});
-
-		if (statusCode !== 200 || !body.data.active.includes(ID)) {
-			return sb.WebUtils.apiSuccess(res, {
-				reminderID: ID,
-				botResult: body,
-				message: "Warning - reminder created successfully, but bot failed to reload reminders"
+		const { result } = response.body.data;
+		if (result.success === false) {
+			return sb.WebUtils.apiFail(res, 400, {
+				reply: result.reply
 			});
 		}
 		else {
 			return sb.WebUtils.apiSuccess(res, {
-				reminderID: ID
+				reply: result.reply
 			});
 		}
 	});
