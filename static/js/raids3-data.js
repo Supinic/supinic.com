@@ -198,7 +198,7 @@ const data = {
 					"id": 12,
 					"name": "Walk the Path",
 					"description": "Completing a path during the raid will cause other paths to level up.",
-					"level": 45,
+					"level": 50,
 					"summary": "other paths level up when one is completed",
 					"data": {
 						"pathLevelUpOnCompletion": true
@@ -226,7 +226,7 @@ const data = {
 					"id": 14,
 					"name": "Pathfinder",
 					"description": "All paths will level up twice upon entering the raid.",
-					"level": 25,
+					"level": 40,
 					"summary": "+2 all path level",
 					"data": {
 						"pathLevelUpOnEntry": 2
@@ -236,7 +236,7 @@ const data = {
 					"id": 15,
 					"name": "Pathmaster",
 					"description": "All paths will level up three times upon entering the raid.",
-					"level": 40,
+					"level": 50,
 					"summary": "+3 all path level",
 					"data": {
 						"pathLevelUpOnEntry": 3
@@ -282,7 +282,7 @@ const data = {
 					"id": 18,
 					"name": "On a Diet",
 					"description": "Food will no longer heal you within the raid.",
-					"level": 20,
+					"level": 15,
 					"icon": "https://oldschool.runescape.wiki/images/Invocations_-_On_a_Diet_icon.png",
 					"summary": "no food",
 					"data": {
@@ -366,7 +366,7 @@ const data = {
 					"id": 26,
 					"name": "Arterial Spray",
 					"description": "The radius and healing of Zebak's blood magic will be increased.",
-					"level": 5,
+					"level": 10,
 					"summary": "blood magic is more effective",
 					"requires": ["Not Just a Head"]
 				},
@@ -374,7 +374,7 @@ const data = {
 					"id": 27,
 					"name": "Blood Thinners",
 					"description": "Zebak's blood magic spawns will be split into three.",
-					"level": 10,
+					"level": 5,
 					"summary": "blood spawns split into three",
 					"requires": ["Not Just a Head"]
 				},
@@ -382,7 +382,7 @@ const data = {
 					"id": 28,
 					"name": "Upset Stomach",
 					"description": "Zebak's acid pools will have increased spread and jugs will be less effective.",
-					"level": 5,
+					"level": 10,
 					"summary": "acid pools are bigger, jugs are weaker"
 				}
 			]
@@ -440,14 +440,14 @@ const data = {
 					"id": 34,
 					"name": "Lively Larvae",
 					"description": "More of the eggs launched during the Mass Incubation attack will be dark brown (hatches Agile Scarabs).",
-					"level": 10,
+					"level": 5,
 					"summary": "more scarabs hatch from eggs"
 				},
 				{
 					"id": 35,
 					"name": "More Overlords",
 					"description": "An additional scarab reinforcement is added during the shield charging phases; the first shield phase adds a Soldier Scarab, while the second shield phase adds a Spitting Scarab.",
-					"level": 10,
+					"level": 15,
 					"summary": "one more big scarab during charge phases"
 				},
 				{
@@ -490,7 +490,7 @@ const data = {
 					"id": 40,
 					"name": "Acceleration",
 					"description": "The Wardens will attack quicker and the obelisk will charge at a faster rate in the second phase of the fight.",
-					"level": 15,
+					"level": 10,
 					"summary": "second phase - faster attacks and charge"
 				},
 				{
@@ -504,14 +504,14 @@ const data = {
 					"id": 42,
 					"name": "Overclocked",
 					"description": "The Warden will attack faster in the final phase of the fight.",
-					"level": 15,
+					"level": 10,
 					"summary": "third phase - warden slams faster"
 				},
 				{
 					"id": 43,
 					"name": "Overclocked 2",
 					"description": "The Wardens will attack faster in the second phase of the fight.",
-					"level": 15,
+					"level": 10,
 					"summary": "second phase - warden attacks faster",
 					"requires": ["Overclocked"]
 				},
