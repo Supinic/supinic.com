@@ -164,7 +164,7 @@ module.exports = (function () {
 					invocation: "remind",
 					platform: "twitch",
 					channel: null,
-					user: userData.Name,
+					user: username,
 					arguments: `${username} ${reminderText} ${privateParameter}` ,
 					skipGlobalBan: "false"
 				}
@@ -177,7 +177,14 @@ module.exports = (function () {
 			});
 		}
 
-		const { result } = response.body.data;
+		const { data, error } = response.body;
+		if (!data || response.statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, response.statusCode, {
+				reply: error?.message
+			});
+		}
+
+		const { result } = data;
 		if (result.success === false) {
 			return sb.WebUtils.apiFail(res, 400, {
 				reply: result.reply
