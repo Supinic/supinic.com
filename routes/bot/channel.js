@@ -163,7 +163,7 @@ module.exports = (function () {
 			});
 		}
 
-		const response = await sb.Got("Supinic", `/bot/channel/${channelID}/alias/list`);
+		const response = await sb.Got("Supinic", `/bot/channel/detail/${channelID}/alias/list`);
 
 		const headerColumns = ["Name", "Invocation", "Created"];
 		const printData = response.body.data.map(alias => {
