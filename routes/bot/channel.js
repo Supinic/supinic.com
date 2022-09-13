@@ -154,5 +154,61 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/detail/:id/alias/list", async (req, res) => {
+		const channelID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return res.status(404).render("error", {
+				error: "404 Not found",
+				message: "Target channel has no filter data"
+			});
+		}
+
+		const response = await sb.Got("Supinic", `/bot/channel/${channelID}/alias/list`);
+
+		const headerColumns = ["Name", "Invocation", "Created"];
+		const printData = response.body.data.map(alias => {
+			const created = (alias.created) ? new sb.Date(alias.created) : null;
+			const name = (alias.description)
+				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
+				: alias.name;
+
+			const link = (alias.linkAuthor && alias.linkName)
+				? `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`
+				: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`;
+
+			const invocation = (alias.linkAuthor && alias.linkName)
+				? `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`
+				: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`);
+
+			return {
+				Name: {
+					value: link,
+					dataOrder: alias.name
+				},
+				Invocation: invocation,
+				Created: {
+					dataOrder: created ?? 0,
+					value: (created) ? created.format("Y-m-d") : "N/A"
+				},
+				Link: `<div alias-owner="${username}" alias-name="${alias.name}" class="link-alias active"></div>`,
+				Unset: `
+					<a class="delete-alias btn btn-warning" role="button" alias-name="${alias.name}" aria-controls>
+						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
+						</div>
+					</a>
+				`
+			};
+		});
+
+		res.render("generic-list-table", {
+			data: printData,
+			head: headerColumns,
+			pageLength: 25,
+			sortColumn: 0,
+			sortDirection: "asc",
+			specificFiltering: true
+		});
+	});
+
 	return Router;
 })();
