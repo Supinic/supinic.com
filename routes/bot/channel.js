@@ -168,17 +168,8 @@ module.exports = (function () {
 		const headerColumns = ["Name", "Invocation", "Created"];
 		const printData = response.body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
-			const name = (alias.description)
-				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
-				: alias.name;
-
-			const link = (alias.linkAuthor && alias.linkName)
-				? `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`
-				: `<a href="/bot/user/${username}/alias/detail/${alias.name}">${name}</a>`;
-
-			const invocation = (alias.linkAuthor && alias.linkName)
-				? `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`
-				: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`);
+			const link = `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`
+			const invocation = `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`;
 
 			return {
 				Name: {
