@@ -190,7 +190,6 @@ module.exports = (function () {
 					dataOrder: created ?? 0,
 					value: (created) ? created.format("Y-m-d") : "N/A"
 				},
-				Link: `<div alias-owner="${username}" alias-name="${alias.name}" class="link-alias active"></div>`,
 				Unset: `
 					<a class="delete-alias btn btn-warning" role="button" alias-name="${alias.name}" aria-controls>
 						<div class="spinner-border spinner-border-sm inactive" role="status" aria-hidden="true">
