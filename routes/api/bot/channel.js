@@ -166,7 +166,7 @@ module.exports = (function () {
 		}
 
 		const data = await CustomCommandAlias.fetchForUser({
-			userID: userData.ID,
+			userID: channelID,
 			includeArguments: true
 		});
 
@@ -203,7 +203,7 @@ module.exports = (function () {
 		}
 
 		const data = await CustomCommandAlias.fetchForUser({
-			userID: userData.ID,
+			userID: channelID,
 			aliasIdentifier: req.params.alias,
 			includeArguments: true
 		});
