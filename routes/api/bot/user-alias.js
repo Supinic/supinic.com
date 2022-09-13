@@ -119,7 +119,8 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = await CustomCommandAlias.fetchForUser(userData.ID, {
+		const data = await CustomCommandAlias.fetchForUser({
+			userID: userData.ID,
 			includeArguments: Boolean(includeArguments)
 		});
 
@@ -150,7 +151,8 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const aliasData = await CustomCommandAlias.fetchForUser(userData.ID, {
+		const aliasData = await CustomCommandAlias.fetchForUser({
+			userID: userData.ID,
 			aliasIdentifier: alias,
 			includeArguments: true
 		});

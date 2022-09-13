@@ -1,10 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
+const Channel = require("../../../modules/chat-data/channel");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Channel = require("../../../modules/chat-data/channel");
 
 	/**
 	 * @api {get} /bot/channel/list/ Channel - list
@@ -132,6 +134,81 @@ module.exports = (function () {
 		return sb.WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
+	});
+
+	/**
+	 * @api {get} /bot/channel/detail/:ID/alias/list List channel published command aliases
+	 * @apiName GetChannelCommandAliases
+	 * @apiDescription For a specified channel, this endpoint lists all of its published command aliases.
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiParam {string} includeArguments If any value is passed, the alias `arguments` body will be returned also.
+	 * @apiSuccess {Object[]} alias
+	 * @apiSuccess {string} alias.name
+	 * @apiSuccess {string} alias.invocation Main command of the custom alias
+	 * @apiSuccess {string} alias.created ISO date string
+	 * @apiSuccess {string} alias.edited ISO date string
+	 * @apiSuccess {string} alias.description
+	 * @apiSuccess {string} alias.linkAuthor If the alias is a link to another, this is its author name
+	 * @apiSuccess {string} alias.linkName If the alias is a link to another, this is the linked alias name
+	 * @apiSuccess {string[]} [alias.arguments] Body of the alias as a string array. Will be omitted unless `includeArguments` is provided.
+	 * @apiError (404) NotFound Channel was not found
+	 */
+	Router.get("/detail/:channel/alias/list", async (req, res) => {
+		const channelID = Number(req.params.channel);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+		}
+
+		const exists = await Channel.exists(channelID);
+		if (!exists) {
+			return sb.WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
+		}
+
+		const data = await CustomCommandAlias.fetchForUser({
+			userID: userData.ID,
+			includeArguments: true
+		});
+
+		return sb.WebUtils.apiSuccess(res, data);
+	});
+
+	/**
+	 * @api {get} /bot/channel/detail/:ID/alias/:aliasName List channel published command aliases
+	 * @apiName GetChannelCommandAliasDetail
+	 * @apiDescription For a specified channel and its alias name, this endpoint lists its details
+	 * @apiGroup Bot
+	 * @apiPermission any
+	 * @apiParam {string} includeArguments If any value is passed, the alias `arguments` body will be returned also.
+	 * @apiSuccess {Object[]} alias
+	 * @apiSuccess {string} alias.name
+	 * @apiSuccess {string} alias.invocation Main command of the custom alias
+	 * @apiSuccess {string} alias.created ISO date string
+	 * @apiSuccess {string} alias.edited ISO date string
+	 * @apiSuccess {string} alias.description
+	 * @apiSuccess {string} alias.linkAuthor If the alias is a link to another, this is its author name
+	 * @apiSuccess {string} alias.linkName If the alias is a link to another, this is the linked alias name
+	 * @apiSuccess {string[]} [alias.arguments] Body of the alias as a string array. Will be omitted unless `includeArguments` is provided.
+	 * @apiError (404) NotFound Channel was not found
+	 */
+	Router.get("/detail/:channel/alias/detail/:alias", async (req, res) => {
+		const channelID = Number(req.params.channel);
+		if (!sb.Utils.isValidInteger(channelID)) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+		}
+
+		const exists = await Channel.exists(channelID);
+		if (!exists) {
+			return sb.WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
+		}
+
+		const data = await CustomCommandAlias.fetchForUser({
+			userID: userData.ID,
+			aliasIdentifier: req.params.alias,
+			includeArguments: true
+		});
+
+		return sb.WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

@@ -1,17 +1,26 @@
 module.exports = (function () {
 	"use strict";
 
-	const TemplateModule = require("../template.js");
+	class CustomCommandAlias extends require("../template.js") {
+		static async fetchForUser (options = {}) {
+			const {
+				aliasIdentifier,
+				channelID,
+				includeArguments,
+				userID
+			} = options;
 
-	class CustomCommandAlias extends TemplateModule {
-		static async fetchForUser (userID, options = {}) {
-			if (!userID) {
+			if (!userID && !channelID) {
 				throw new sb.Error({
-					message: "No user ID provided"
+					message: "No channel or user ID provided"
+				});
+			}
+			else if (userID && channelID) {
+				throw new sb.Error({
+					message: "Both channel or user ID provided"
 				});
 			}
 
-			const { aliasIdentifier, includeArguments } = options;
 			const data = await CustomCommandAlias.selectCustom(rs => {
 				rs.select("Custom_Command_Alias.Name")
 					.select("Custom_Command_Alias.Invocation")
@@ -20,8 +29,6 @@ module.exports = (function () {
 					.select("Custom_Command_Alias.Description")
 					.select("ParentAuthor.Name AS Link_Author")
 					.select("ParentAlias.Name AS Link_Name")
-					.where("Custom_Command_Alias.User_Alias = %n", userID)
-					.where("Custom_Command_Alias.Channel IS NULL")
 					.leftJoin({
 						alias: "ParentAlias",
 						toDatabase: "data",
@@ -34,6 +41,15 @@ module.exports = (function () {
 						toTable: "User_Alias",
 						on: "ParentAlias.User_Alias = ParentAuthor.ID"
 					});
+
+				if (userID) {
+					rs.where("Custom_Command_Alias.User_Alias = %n", userID);
+					rs.where("Custom_Command_Alias.Channel IS NULL");
+				}
+				else if (channelID) {
+					rs.where("Custom_Command_Alias.Channel = %n", channelID);
+					rs.where("Custom_Command_Alias.User_Alias IS NULL");
+				}
 
 				if (aliasIdentifier) {
 					rs.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier);
