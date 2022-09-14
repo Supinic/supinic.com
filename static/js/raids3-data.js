@@ -179,11 +179,11 @@ const data = {
 				{
 					"id": 11,
 					"name": "No Help Needed",
-					"description": "The Helpful Spirit will not offer any items.",
+					"description": "The quantity of items offered by the Helpful Spirit will be reduced to 10%.",
 					"level": 40,
-					"summary": "no supplies",
+					"summary": "1/10 supplies",
 					"data": {
-						"suppliesPercentage": 0
+						"suppliesPercentage": 10
 					}
 				}
 			]
@@ -262,10 +262,10 @@ const data = {
 				},
 				{
 					"id": 17,
-					"name": "Silent Prayers",
-					"description": "Protection prayers will be 25% less effective within the raid.",
+					"name": "Deadly Prayers",
+					"description": "Prayer is drained by 20% of damage taken.",
 					"level": 35,
-					"summary": "-25% protection prayers effect",
+					"summary": "prayer is drained by 20% of damage taken (not prevented)",
 					"data": {
 						"prayerEffectivenessDelta": -25
 					}
@@ -337,14 +337,14 @@ const data = {
 					"id": 23,
 					"name": "Stay Vigilant",
 					"description": "Akkha will randomly swap between attack styles and protection prayers rather than at set intervals.",
-					"level": 10,
+					"level": 15,
 					"summary": "prayer swap timing is random"
 				},
 				{
 					"id": 24,
 					"name": "Feeling Special?",
 					"description": "Akkha's detonate special attack will trigger in more directions, his memory special attack will be faster and his trail special attack will spawn additional orbs.",
-					"level": 15,
+					"level": 20,
 					"summary": "special attacks speed up and are more effective"
 				}
 			]
@@ -382,7 +382,7 @@ const data = {
 					"id": 28,
 					"name": "Upset Stomach",
 					"description": "Zebak's acid pools will have increased spread and jugs will be less effective.",
-					"level": 10,
+					"level": 15,
 					"summary": "acid pools are bigger, jugs are weaker"
 				}
 			]
