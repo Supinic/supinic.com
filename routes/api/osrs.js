@@ -339,30 +339,43 @@ module.exports = (function () {
 			}
 		};
 
-		const response = await sb.Got({
+		let initialResponse = await sb.Got({
 			url,
 			searchParams: { player },
 			retry: 0,
 			throwHttpErrors: false
 		});
 
-		if (response.redirectUrls.length !== 0) {
-			return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
-				redirectUrl: response.url
+		if (initialResponse.statusCode === 404 && req.query.seasonal) {
+			// If the user was not found on the "main" highscores, attempt to check their presence on the ironman-only
+			// highscores. Some early accounts will show up in the less populated ranks, rather than the main one.
+			// One more thing to note here: early HCIM or UIM will also have the same ranks issue as mains vs. ironmen,
+			// but I believe that case is too niche to be considered. Although, that might be changed in the future.
+			initialResponse = await sb.Got({
+				url: url.ironman.regular,
+				searchParams: { player },
+				retry: 0,
+				throwHttpErrors: false
 			});
 		}
-		else if (response.statusCode !== 200) {
-			if (response.statusCode === 404) {
+
+		if (initialResponse.redirectUrls.length !== 0) {
+			return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
+				redirectUrl: initialResponse.url
+			});
+		}
+		else if (initialResponse.statusCode !== 200) {
+			if (initialResponse.statusCode === 404) {
 				return sb.WebUtils.apiFail(res, 404, "Player not found");
 			}
 			else {
 				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
-					externalResponse: response.body
+					externalResponse: initialResponse.body
 				});
 			}
 		}
 
-		let rawData = response.body;
+		let rawData = initialResponse.body;
 		const mainTotalXP = Number(rawData.split("\n")[0].split(",")[2]);
 
 		if (!result.seasonal) {
@@ -423,7 +436,7 @@ module.exports = (function () {
 			// higher - hence, the account must have been de-ironed. Use the main data.
 			const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
 			if (totalXP < mainTotalXP) {
-				rawData = response.body;
+				rawData = initialResponse.body;
 				result.ironman.abandoned = true;
 			}
 		}
