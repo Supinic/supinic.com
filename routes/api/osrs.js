@@ -346,7 +346,7 @@ module.exports = (function () {
 			throwHttpErrors: false
 		});
 
-		if (initialResponse.statusCode === 404 && req.query.seasonal) {
+		if (initialResponse.statusCode === 404 && !req.query.seasonal) {
 			// If the user was not found on the "main" highscores, attempt to check their presence on the ironman-only
 			// highscores. Some early accounts will show up in the less populated ranks, rather than the main one.
 			// One more thing to note here: early HCIM or UIM will also have the same ranks issue as mains vs. ironmen,
