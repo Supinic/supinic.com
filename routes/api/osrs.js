@@ -352,7 +352,7 @@ module.exports = (function () {
 			// One more thing to note here: early HCIM or UIM will also have the same ranks issue as mains vs. ironmen,
 			// but I believe that case is too niche to be considered. Although, that might be changed in the future.
 			initialResponse = await sb.Got({
-				url: url.ironman.regular,
+				url: apiURLs.ironman.regular,
 				searchParams: { player },
 				retry: 0,
 				throwHttpErrors: false
