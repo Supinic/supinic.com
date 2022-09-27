@@ -124,6 +124,20 @@ module.exports = class WebUtils {
 	}
 
 	/**
+	 * Handles a request's error response
+	 * @param {Express.response} res
+	 * @param {number} statusCode
+	 * @param {string} [message]
+	 * @returns {Express.response}
+	 */
+	static handleError (res, statusCode, message) {
+		return res.status(statusCode).render("error", {
+			error: sb.WebUtils.formatErrorMessage(statusCode),
+			message: message ?? "(no error message)"
+		});
+	}
+
+	/**
 	 * Determines whether or not a provided user ID has been globally banned from the projects.
 	 * @param {number} userID
 	 * @returns {Promise<boolean>}
