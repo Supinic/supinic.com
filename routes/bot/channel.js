@@ -164,6 +164,9 @@ module.exports = (function () {
 		}
 
 		const response = await sb.Got("Supinic", `/bot/channel/detail/${channelID}/alias/list`);
+		if (response.statusCode !== 200) {
+			return sb.WebUtils.handleError(res, response.statusCode, response.body.error?.message);
+		}
 
 		const headerColumns = ["Name", "Invocation", "Created"];
 		const printData = response.body.data.map(alias => {
