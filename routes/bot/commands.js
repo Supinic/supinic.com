@@ -177,10 +177,10 @@ module.exports = (function () {
 
 	Router.get("/detail/:identifier", async (req, res) => {
 		const identifier = encodeURIComponent(req.params.identifier);
-		const response = await sb.Got("Supibot", {
-			url: "command/info",
+		const response = await sb.Got("Supinic", {
+			url: `command/detail/${identifier}`,
 			searchParams: {
-				command: identifier
+				includeDynamicDescription: "true"
 			}
 		});
 
