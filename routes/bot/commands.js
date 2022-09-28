@@ -307,16 +307,16 @@ module.exports = (function () {
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
 			data,
-			header: `${commandPrefix}${commandData.Name}`,
-			title: `Command detail - ${commandData.Name}`,
+			header: `${commandPrefix}${info.name}`,
+			title: `Command detail - ${info.name}`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Command ${commandData.Name}`
+					content: `Command ${info.name}`
 				},
 				{
 					property: "description",
-					content: commandData.Description ?? "(no description available)"
+					content: info.description ?? "(no description available)"
 				}
 			]
 		});
