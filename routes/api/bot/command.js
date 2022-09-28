@@ -126,12 +126,17 @@ module.exports = (function () {
 	 * @apiSuccess {string} [command.dynamicDescription]
 	 */
 	Router.get("/detail/:identifier", async (req, res) => {
+		const searchParams = {
+			command: req.params.identifier
+		};
+
+		if (req.params.includeDynamicDescription) {
+			searchParams.includeDynamicDescription = "true";
+		}
+
 		const response = await sb.Got("Supibot", {
 			url: "command/info",
-			searchParams: {
-				command: req.params.identifier,
-				includeDynamicDescription: String(Boolean(req.query.includeDynamicDescription))
-			}
+			searchParams
 		});
 
 		if (response.statusCode !== 200) {
