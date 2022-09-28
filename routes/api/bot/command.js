@@ -110,6 +110,9 @@ module.exports = (function () {
 	 * @apiName GetCommandData
 	 * @apiDescription Fetches full data for a specific command.
 	 * @apiGroup Bot
+	 * @apiParam {string} includeDynamicDescription If true, the dynamic description will be provided.
+	 * Otherwise, `null` will always be present.
+	 * This is to prevent large swathes of string data from being sent if not necessary
 	 * @apiPermission any
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} [command.aliases]
@@ -117,40 +120,25 @@ module.exports = (function () {
 	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
 	 * @apiSuccess {string} command.author
-	 * @apiSuccess {string} command.code
 	 * @apiSuccess {Object[]} [command.params]
 	 * @apiSuccess {string} command.params.name
 	 * @apiSuccess {string} command.params.type
-	 * @apiSuccess {string} [command.staticData]
 	 * @apiSuccess {string} [command.dynamicDescription]
 	 */
 	Router.get("/detail/:identifier", async (req, res) => {
-		const commandData = sb.Command.get(req.params.identifier);
-		if (!commandData) {
-			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
-		}
-
-		const definition = sb.Command.definitions.find(i => i.Name === commandData.Name);
-		if (!definition) {
-			return sb.WebUtils.apiFail(res, 404, "Command definition does not exist");
-		}
-
-		return sb.WebUtils.apiSuccess(res, {
-			Name: definition.Name,
-			Aliases: definition.Aliases,
-			Flags: definition.Flags,
-			Description: definition.Description,
-			Cooldown: definition.Cooldown,
-			Author: definition.Author,
-			Code: definition.Code.toString(),
-			Params: definition.Params ?? [],
-			Static_Data: (definition.Static_Data)
-				? definition.Static_Data.toString()
-				: null,
-			Dynamic_Description: (definition.Dynamic_Description)
-				? definition.Dynamic_Description.toString()
-				: null
+		const response = await sb.Got("Supibot", {
+			url: "command/info",
+			searchParams: {
+				command: req.params.identifier,
+				includeDynamicDescription: String(Boolean(req.query.includeDynamicDescription))
+			}
 		});
+
+		if (response.statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? null);
+		}
+
+		return sb.WebUtils.apiSuccess(res, response.body.data.info);
 	});
 
 	Router.get("/:identifier", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
