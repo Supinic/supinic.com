@@ -138,7 +138,9 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? null);
 		}
 
-		return sb.WebUtils.apiSuccess(res, response.body.data.info);
+		return sb.WebUtils.apiSuccess(res, response.body.data.info, {
+			skipCaseConversion: true
+		});
 	});
 
 	Router.get("/:identifier", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
