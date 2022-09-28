@@ -130,7 +130,7 @@ module.exports = (function () {
 			command: req.params.identifier
 		};
 
-		if (req.params.includeDynamicDescription) {
+		if (req.query.includeDynamicDescription) {
 			searchParams.includeDynamicDescription = "true";
 		}
 
