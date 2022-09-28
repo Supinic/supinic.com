@@ -197,7 +197,9 @@ module.exports = (function () {
 			Description: commandInfo.description ?? "N/A",
 			Cooldown: `${commandInfo.cooldown / 1000} seconds`,
 			Author: commandInfo.author ?? "N/A",
-			"Dynamic description": commandInfo.dynamicDescription
+			"Dynamic description": (commandInfo.dynamicDescription)
+				? commandInfo.dynamicDescription.join("<br>")
+				: "N/A"
 		};
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
