@@ -188,16 +188,16 @@ module.exports = (function () {
 			return sb.WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
-		const { info } = response.body.data;
+		const commandInfo = response.body.data;
 		const data = {
-			Name: info.name,
-			Aliases: (info.aliases.length === 0)
+			Name: commandInfo.name,
+			Aliases: (commandInfo.aliases.length === 0)
 				? "N/A"
-				: info.aliases.join(", "),
-			Description: info.description ?? "N/A",
-			Cooldown: `${info.cooldown / 1000} seconds`,
-			Author: info.author ?? "N/A",
-			"Dynamic description": info.dynamicDescription
+				: commandInfo.aliases.join(", "),
+			Description: commandInfo.description ?? "N/A",
+			Cooldown: `${commandInfo.cooldown / 1000} seconds`,
+			Author: commandInfo.author ?? "N/A",
+			"Dynamic description": commandInfo.dynamicDescription
 		};
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
@@ -307,16 +307,16 @@ module.exports = (function () {
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
 			data,
-			header: `${commandPrefix}${info.name}`,
-			title: `Command detail - ${info.name}`,
+			header: `${commandPrefix}${commandInfo.name}`,
+			title: `Command detail - ${commandInfo.name}`,
 			openGraphDefinition: [
 				{
 					property: "title",
-					content: `Command ${info.name}`
+					content: `Command ${commandInfo.name}`
 				},
 				{
 					property: "description",
-					content: info.description ?? "(no description available)"
+					content: commandInfo.description ?? "(no description available)"
 				}
 			]
 		});
