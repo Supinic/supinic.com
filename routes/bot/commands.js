@@ -176,78 +176,44 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier", async (req, res) => {
-		const commandData = sb.Command.get(req.params.identifier);
-		if (!commandData) {
-			return res.status(404).render("error", {
-				error: "404 Not Found",
-				message: "Command does not exist"
-			});
-		}
+		const identifier = encodeURIComponent(req.params.identifier);
+		const response = await sb.Got("Supibot", {
+			url: "command/info",
+			searchParams: {
+				command: identifier
+			}
+		});
 
-		const identifier = encodeURIComponent(commandData.Name);
-		const response = await sb.Got("Supinic", `bot/command/detail/${identifier}`);
 		if (response.statusCode !== 200) {
-			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
-				message: response.body.error?.message ?? "N/A"
-			});
+			return sb.WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
+		const { info } = response.body.data;
 		const data = {
-			Name: commandData.Name,
-			Aliases: (commandData.Aliases.length === 0)
+			Name: info.name,
+			Aliases: (info.aliases.length === 0)
 				? "N/A"
-				: commandData.Aliases.join(", "),
-			Description: commandData.Description ?? "N/A",
-			Cooldown: `${commandData.Cooldown / 1000} seconds`,
-			Author: commandData.Author ?? "N/A"
+				: info.aliases.join(", "),
+			Description: info.description ?? "N/A",
+			Cooldown: `${info.cooldown / 1000} seconds`,
+			Author: info.author ?? "N/A",
+			"Dynamic description": info.dynamicDescription
 		};
-
-		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
-		const definition = require(`supibot-package-manager/commands/${commandData.Name}`);
-		if (typeof definition.Dynamic_Description === "function") {
-			const boundFunction = definition.Dynamic_Description.bind(commandData);
-			const options = {
-				getStaticData: () => {
-					console.warn("Deprecated getStaticData() call", commandData.Name);
-					return commandData.staticData;
-				}
-			};
-
-			const result = await boundFunction(commandPrefix, options);
-			data["Dynamic description"] = result.join("<br>");
-		}
-		else {
-			data["Dynamic description"] = "N/A";
-		}
 
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
-			const check = await sb.Query.getRecordset(rs => rs
-				.select("ID")
-				.from("chat_data", "Filter")
-				.where("Command = %s", commandData.Name)
-				.where("User_Alias = %n", auth.userID)
-				.where("Type = %s", "Opt-out")
-				.where("Active = %b", true)
-				.single()
-			);
+			const response = await sb.Got("Supibot", {
+				url: "command/userFilters",
+				searchParams: {
+					userID: auth.userID,
+					command: identifier
+				}
+			});
 
-			const status = (check?.ID) ? "are" : "are <b>not</b>";
-			data.Optout = `You ${status} opted out from this command`;
+			const { optout, blocks } = response.body;
 
-			const blocks = await sb.Query.getRecordset(rs => rs
-				.select("User_Alias.Name AS Username")
-				.from("chat_data", "Filter")
-				.join({
-					toTable: "User_Alias",
-					on: "Filter.Blocked_User = User_Alias.ID"
-				})
-				.where("Command = %s", commandData.Name)
-				.where("User_Alias = %n", auth.userID)
-				.where("Type = %s", "Block")
-				.where("Active = %b", true)
-			);
+			const optoutStatus = (optout) ? "are" : "are <b>not</b>";
+			data.Optout = `You ${optoutStatus} opted out from this command`;
 
 			if (blocks.length === 0) {
 				data.Blocks = "You are <b>not</b> currently blocking anyone from this command.";
@@ -338,6 +304,7 @@ module.exports = (function () {
 
 		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${identifier}/index.js">Open in new tab</a>`;
 
+		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
 			data,
 			header: `${commandPrefix}${commandData.Name}`,
