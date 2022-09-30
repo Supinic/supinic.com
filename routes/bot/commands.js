@@ -229,7 +229,7 @@ module.exports = (function () {
 					data.Blocks = "You are <b>not</b> currently blocking anyone from this command.";
 				}
 				else {
-					const list = blocks.map(i => `<li>${i.Username}</li>`)
+					const list = blocks.map(i => `<li>${i.blockedUsername}</li>`)
 						.join("");
 					data.Blocks = `You are curently blocking the following users from this command: <ul>${list}</ul>`;
 				}
