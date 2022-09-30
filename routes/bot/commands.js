@@ -220,7 +220,7 @@ module.exports = (function () {
 				const {
 					optout,
 					blocks
-				} = response.body;
+				} = response.body.data;
 
 				const optoutStatus = (optout) ? "are" : "are <b>not</b>";
 				data.Optout = `You ${optoutStatus} opted out from this command`;
