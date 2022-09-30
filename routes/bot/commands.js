@@ -212,17 +212,27 @@ module.exports = (function () {
 				}
 			});
 
-			const { optout, blocks } = response.body;
-
-			const optoutStatus = (optout) ? "are" : "are <b>not</b>";
-			data.Optout = `You ${optoutStatus} opted out from this command`;
-
-			if (blocks.length === 0) {
-				data.Blocks = "You are <b>not</b> currently blocking anyone from this command.";
+			if (response.statusCode !== 200) {
+				data.Optout = "Optout data could not be loaded!";
+				data.Blocks = "Blocks data could not be loaded!";
 			}
 			else {
-				const list = blocks.map(i => `<li>${i.Username}</li>`).join("");
-				data.Blocks = `You are curently blocking the following users from this command: <ul>${list}</ul>`;
+				const {
+					optout,
+					blocks
+				} = response.body;
+
+				const optoutStatus = (optout) ? "are" : "are <b>not</b>";
+				data.Optout = `You ${optoutStatus} opted out from this command`;
+
+				if (blocks.length === 0) {
+					data.Blocks = "You are <b>not</b> currently blocking anyone from this command.";
+				}
+				else {
+					const list = blocks.map(i => `<li>${i.Username}</li>`)
+						.join("");
+					data.Blocks = `You are curently blocking the following users from this command: <ul>${list}</ul>`;
+				}
 			}
 		}
 
