@@ -10,7 +10,7 @@
     "express-async-errors": "latest",
     "express-cache-controller": "^1.1.0",
     "express-mysql-session": "^2.1.8",
-    "express-rate-limit": "^6.5.1",
+    "express-rate-limit": "^6.6.0",
     "express-session": "^1.17.3",
     "memorystore": "^1.6.7",
     "passport": "^0.6.0",
@@ -39,10 +39,10 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.18.9",
-    "@babel/eslint-parser": "^7.18.9",
-    "eslint": "^8.20.0",
-    "eslint-plugin-unicorn": "^43.0.2",
+    "@babel/core": "^7.19.3",
+    "@babel/eslint-parser": "^7.19.1",
+    "eslint": "^8.24.0",
+    "eslint-plugin-unicorn": "^44.0.1",
     "supi-db-init": "github:supinic/supi-db-init"
   }
 }
