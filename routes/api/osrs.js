@@ -342,7 +342,9 @@ module.exports = (function () {
 		let initialResponse = await sb.Got({
 			url,
 			searchParams: { player },
-			retry: 0,
+			retry: {
+				request: 0
+			},
 			throwHttpErrors: false
 		});
 
@@ -354,7 +356,9 @@ module.exports = (function () {
 			initialResponse = await sb.Got({
 				url: apiURLs.ironman.regular,
 				searchParams: { player },
-				retry: 0,
+				retry: {
+					request: 0
+				},
 				throwHttpErrors: false
 			});
 		}
