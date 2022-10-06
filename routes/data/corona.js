@@ -65,7 +65,7 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", `/data/corona/region/${region}/latest`).json();
+		const { data } = await sb.Got("Supinic", `data/corona/region/${region}/latest`).json();
 		if (data.length === 0) {
 			res.status(404).render("error", {
 				error: "404 Not Found",

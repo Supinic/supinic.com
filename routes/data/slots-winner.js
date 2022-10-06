@@ -25,7 +25,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { data } = await sb.Got("Supinic", `/data/slots-winner/detail/${req.params.id}`).json();
+		const { data } = await sb.Got("Supinic", `data/slots-winner/detail/${req.params.id}`).json();
 
 		const printData = {
 			Odds: sb.Utils.round(data.odds, 3),

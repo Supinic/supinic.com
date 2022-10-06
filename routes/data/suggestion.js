@@ -111,7 +111,7 @@ module.exports = (function () {
 
 	Router.get("/stats/user/:user", async (req, res) => {
 		const escaped = encodeURIComponent(req.params.user);
-		const { statusCode, body } = await sb.Got("Supinic", `/data/suggestion/stats/user/${escaped}`);
+		const { statusCode, body } = await sb.Got("Supinic", `data/suggestion/stats/user/${escaped}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),

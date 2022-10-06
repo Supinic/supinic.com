@@ -53,7 +53,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", `/data/bad-apple/detail/${req.params.id}`);
+		const { statusCode, body } = await sb.Got("Supinic", `data/bad-apple/detail/${req.params.id}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
 				error: sb.WebUtils.formatErrorMessage(statusCode),
