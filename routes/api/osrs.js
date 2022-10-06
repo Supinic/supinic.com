@@ -343,7 +343,7 @@ module.exports = (function () {
 			url,
 			searchParams: { player },
 			retry: {
-				request: 0
+				limit: 0
 			},
 			throwHttpErrors: false
 		});
@@ -357,7 +357,7 @@ module.exports = (function () {
 				url: apiURLs.ironman.regular,
 				searchParams: { player },
 				retry: {
-					request: 0
+					limit: 0
 				},
 				throwHttpErrors: false
 			});
