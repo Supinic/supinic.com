@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/activity/list", async (req, res) => {
-		const { data: rawData } = await sb.Got("Supinic", "/osrs/activity/list").json();
+		const { data: rawData } = await sb.Got("Supinic", "osrs/activity/list").json();
 		const printData = rawData.map(row => {
 			const { afk, hourly } = row.data;
 			const hourlyExperience = sb.Utils.round(Object.values(hourly.out.experience)[0], 0);

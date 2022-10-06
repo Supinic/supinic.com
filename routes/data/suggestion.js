@@ -69,7 +69,7 @@ module.exports = (function () {
 	// --- miscellaneous endpoints ---
 
 	Router.get("/stats", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/suggestion/stats").json();
+		const { data } = await sb.Got("Supinic", "data/suggestion/stats").json();
 		const printData = data
 			.filter(i => i.total >= 10)
 			.map(i => ({

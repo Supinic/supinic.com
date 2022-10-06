@@ -66,7 +66,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got("Supinic", {
-			url: "/data/origin/list",
+			url: "data/origin/list",
 			searchParams: {
 				skipReplacedEmotes: "true"
 			}
@@ -83,7 +83,7 @@ module.exports = (function () {
 	Router.get("/lookup", async (req, res) => {
 		const ID = (req.query.ID ?? "");
 		const response = await sb.Got("Supinic", {
-			url: "/data/origin/lookup",
+			url: "data/origin/lookup",
 			searchParams: {
 				ID,
 				skipReplacedEmotes: "true"

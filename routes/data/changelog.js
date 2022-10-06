@@ -41,7 +41,7 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/changelog/list").json();
+		const { data } = await sb.Got("Supinic", "data/changelog/list").json();
 		formatChangelogList(req, res, data);
 	});
 
@@ -52,7 +52,7 @@ module.exports = (function () {
 		}
 
 		const { data } = await sb.Got("Supinic", {
-			url: "/data/changelog/lookup",
+			url: "data/changelog/lookup",
 			searchParams: {
 				ID: req.query.ID // should always be comma-separated string
 			}

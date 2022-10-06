@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/faq/list").json();
+		const { data } = await sb.Got("Supinic", "data/faq/list").json();
 		const renderData = data.map(i => ({
 			Question: i.question,
 			Answer: i.answer,

@@ -42,9 +42,9 @@ module.exports = (function () {
 				: "N/A"
 		}
 	}));
-	
+
 	Router.get("/global/latest", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/corona/global/latest").json();
+		const { data } = await sb.Got("Supinic", "data/corona/global/latest").json();
 		const printData = formatData(data);
 
 		res.render("generic-list-table", {

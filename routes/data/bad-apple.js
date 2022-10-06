@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "/data/bad-apple/list").json();
+		const { data } = await sb.Got("Supinic", "data/bad-apple/list").json();
 		const renderData = data.map(i => {
 			const notesString = (i.notes) ? " 📝" : "";
 			const detailLink = `<a href="/data/bad-apple/detail/${i.ID}">${i.ID}${notesString}</a>`;
