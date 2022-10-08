@@ -15,7 +15,7 @@ module.exports = (function () {
 		threshold: 5_000 // at least 5kB must be sent in order to trigger compression
 	}));
 
-	Router.get("/client/list", async (req, res) => {
+	Router.get("/list/client", async (req, res) => {
 		const data = await DallE.getAll();
 		const resultData = data.map(i => ({
 			ID: `<a href="/data/dall-e/detail/${i.ID}">${i.ID}</a>`,
