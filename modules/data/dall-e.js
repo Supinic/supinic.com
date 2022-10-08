@@ -20,6 +20,13 @@ module.exports = (function () {
 			};
 		}
 
+		static async getAll () {
+			return await sb.Query.getRecordset(rs => rs
+				.select("ID", "Prompt", "Created")
+				.from("data", "DALL-E")
+			);
+		}
+
 		static get name () { return "dalle"; }
 		static get database () { return "data"; }
 		static get table () { return "DALL-E"; }

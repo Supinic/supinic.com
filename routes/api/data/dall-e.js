@@ -15,6 +15,17 @@ module.exports = (function () {
 		threshold: 5_000 // at least 5kB must be sent in order to trigger compression
 	}));
 
+	Router.get("/client/list", async (req, res) => {
+		const data = await DallE.getAll();
+		const resultData = data.map(i => ({
+			ID: `<a href="/data/dall-e/detail/${i.ID}">${i.ID}</a>`,
+			Prompt: sb.Utils.wrapString(i.Prompt, 150),
+			Created: i.Created.format("Y-m-d H:i")
+		}));
+
+		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+	});
+
 	Router.get("/detail/:id", async (req, res) => {
 		const data = await DallE.getImages(req.params.id);
 		if (!data) {

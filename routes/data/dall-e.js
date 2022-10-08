@@ -6,6 +6,17 @@ module.exports = (function () {
 
 	const metaCache = new Map();
 
+	Router.get("/list", async (req, res) => {
+		res.render("generic-ajax-list-table", {
+			head: ["ID", "Prompt", "Created"],
+			url: "https://supinic.com/api/data/dall-e/list/client",
+			sortDirection: "desc",
+			sortColumn: 2,
+			pageLength: 50,
+			specificFiltering: true
+		});
+	});
+
 	Router.get("/detail/:id", async (req, res) => {
 		const { id } = req.params;
 
