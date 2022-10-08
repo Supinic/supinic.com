@@ -13,7 +13,15 @@ module.exports = (function () {
 			sortDirection: "desc",
 			sortColumn: 2,
 			pageLength: 50,
-			specificFiltering: true
+			specificFiltering: true,
+			extraCSS: `
+				th[aria-label^="ID"] {
+					min-width: 100px;
+				}			
+				th[aria-label^="Created"] {
+					min-width: 85px;
+				}
+			`
 		});
 	});
 
