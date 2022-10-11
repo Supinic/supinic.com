@@ -36,7 +36,7 @@ module.exports = (function () {
 						toTable: "User_Alias",
 						on: "Reminder.User_To = RTarget.ID"
 					})
-					.where("Type = %s", "Reminder")
+					.where("Type = %s OR Type = %s", "Reminder", "Deferred")
 					.where("RAuthor.ID = %n OR RTarget.ID = %n", userID, userID);
 
 				if (type === "active") {
