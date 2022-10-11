@@ -222,6 +222,7 @@ module.exports = (function () {
 			Sender: data.sender,
 			Recipient: data.recipient,
 			"Created in channel": data.channel,
+			Type: data.type,
 			Text: sb.WebUtils.linkify(data.text, {
 				rel: "noopener noreferrer",
 				target: "_blank"

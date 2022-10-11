@@ -252,6 +252,7 @@ module.exports = (function () {
 			Channel: data.Channel_Name,
 			Platform: data.Platform_Name,
 			Text: data.Text,
+			Type: data.Type,
 			Created: data.Created,
 			Schedule: data.Schedule,
 			Active: data.Active,
