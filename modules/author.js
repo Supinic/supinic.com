@@ -95,12 +95,12 @@ module.exports = (function () {
 				: [];
 
 			if (row.values.User_Alias) {
-				const userData = await sb.Query.getRow("chat_data", "User_Alias");
-				await userData.load(row.values.User_Alias);
+				const userRow = await sb.Query.getRow("chat_data", "User_Alias");
+				await userRow.load(row.values.User_Alias);
 
 				data.User_Alias = {
-					ID: userData.values.ID,
-					Name: userData.values.Name
+					ID: userRow.values.ID,
+					Name: userRow.values.Name
 				};
 			}
 

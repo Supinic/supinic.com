@@ -1,16 +1,13 @@
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
-	const Result = require("../result.js");
+
+	const User = require("../chat-data/user-alias.js");
 
 	class Reminder extends TemplateModule {
 		static async listByUser (userIdentifier, type = "all", specific = []) {
-			if (typeof userIdentifier !== "string" && typeof userIdentifier !== "number") {
-				return new Result(false, "Reminder listByUser: invalid identifier type");
-			}
-
 			let userID = userIdentifier;
 			if (typeof userIdentifier === "string") {
-				const userData = await sb.User.get(userIdentifier);
+				const userData = await User.getByName(userIdentifier);
 				if (!userData) {
 					return [];
 				}

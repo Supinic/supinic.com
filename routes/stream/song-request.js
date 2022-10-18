@@ -5,9 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const print = async (data, ...extraFields) => {
-		const users = await sb.User.getMultiple(data.map(i => i.userAlias));
 		return data.map(track => {
-			const user = users.find(i => track.userAlias === i.ID);
 			const startTime = (track.startTime)
 				? sb.Utils.formatTime(track.startTime, true)
 				: "0:00";
@@ -16,7 +14,7 @@ module.exports = (function () {
 				: sb.Utils.formatTime(Number(track.length), true);
 
 			const obj = {
-				User: user.Name,
+				User: track.username,
 				Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
 				Segment: {
 					dataOrder: (track.startTime || track.endTime)

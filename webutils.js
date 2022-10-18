@@ -1,3 +1,5 @@
+const User = require("./modules/chat-data/user-alias.js");
+
 module.exports = class WebUtils {
 	static #localRequests = new Map();
 	static #requestMessages = {
@@ -172,17 +174,17 @@ module.exports = class WebUtils {
 			let userData;
 			const userID = Number(req.query.auth_user);
 			if (!sb.Utils.isValidInteger(userID)) {
-				userData = await sb.User.get(req.query.auth_user);
+				userData = await User.getByName(req.query.auth_user);
 			}
 			else {
-				userData = await sb.User.get(userID);
+				userData = await User.getByID(userID);
 			}
 
 			if (!userData) {
 				return { error: "User identifier (query) is not valid a valid ID number" };
 			}
 
-			const authKey = await userData.getDataProperty("authKey");
+			const authKey = await User.getDataProperty(userData.ID, "authKey");
 			if (!authKey || authKey !== req.query.auth_key) {
 				return {
 					error: "Access denied",
@@ -198,7 +200,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			const level = await userData.getDataProperty("trackLevel");
+			const level = await User.getDataProperty(userData.ID, "trackLevel");
 			return {
 				banned,
 				level: level ?? "login",
@@ -224,7 +226,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			const userData = await sb.User.get(userID);
+			const userData = await User.getByID(userID);
 			if (!userData) {
 				return {
 					error: "Authorized user does not exist",
@@ -232,7 +234,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			const storedAuthKey = await userData.getDataProperty("authKey");
+			const storedAuthKey = await User.getDataProperty(userData.ID, "authKey");
 			if (!storedAuthKey || storedAuthKey !== authKey) {
 				return {
 					error: "Access denied",
@@ -248,7 +250,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			const level = await userData.getDataProperty("trackLevel");
+			const level = await User.getDataProperty(userData.ID, "trackLevel");
 			return {
 				banned,
 				level: level ?? "login",
@@ -268,7 +270,7 @@ module.exports = class WebUtils {
 
 			WebUtils.#localRequests.delete(userID);
 
-			const userData = await sb.User.get(userID);
+			const userData = await User.getByID(userID);
 			if (!userData) {
 				return {
 					level: "none",
@@ -284,7 +286,7 @@ module.exports = class WebUtils {
 				};
 			}
 
-			const level = await userData.getDataProperty("trackLevel");
+			const level = await User.getDataProperty(userData.ID, "trackLevel");
 			return {
 				banned,
 				level: level ?? "login",
@@ -306,7 +308,7 @@ module.exports = class WebUtils {
 			};
 		}
 		else {
-			const level = await res.locals.authUser.userData.getDataProperty("trackLevel");
+			const level = await User.getDataProperty( res.locals.authUser.userData.ID, "trackLevel");
 			return {
 				level: level ?? "login",
 				userID: res.locals.authUser.userData.ID,

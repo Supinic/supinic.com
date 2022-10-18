@@ -327,18 +327,22 @@
 		}
 
 		if (req.session.passport?.user?.source === "twitch") {
+			const User = require("./modules/chat-data/user-alias.js");
 			const data = req.session.passport.user.data[0];
+			const userData = await User.getByName(data.login);
+			if (!userData) {
+				return res.status(401).render("error", {
+					error: "202 Accepted",
+					message: `Your Twitch account has not been seen by Supibot before. Make sure to send at least one message in a channel with Supibot before continuing. This page will automatically refresh in 30 seconds.`,
+					extraScript: `window.onload = () => setTimeout(() => location.reload(), 30000);`
+				});
+			}
 
-			sb.User.data.delete(data.login);
-			const userData = await sb.User.get(data.login, false);
-
-			const admin = sb.Config.get("ADMIN_USER_NAME");
 			res.locals.authUser = {
 				login: data.login,
 				display: data.display_name,
 				id: data.id,
 				image: data.profile_image_url,
-				admin: data.login === admin,
 				userData
 			};
 		}
@@ -472,6 +476,7 @@
 			"/auth/github/callback",
 			Passport.authenticate("github",{ session: false }),
 			async (req, res) => {
+				const User = require("./modules/chat-data/user-alias.js");
 				const { userData } = res.locals.authUser ?? {};
 				if (!userData) {
 					return res.status(401).render("error", {
@@ -488,7 +493,7 @@
 					});
 				}
 
-				const githubData = await userData.getDataProperty("github");
+				const githubData = await User.getDataProperty(userData.ID, "github");
 				if (githubData?.login === profile.login) {
 					return res.render("generic", {
 						data: sb.Utils.tag.trim `
@@ -503,11 +508,11 @@
 					? `Your Twitch account was previously connected to ${githubData.login}.`
 					: "";
 
-				await userData.setDataProperty("github", {
+				await User.setDataProperty(userData.ID, "github", JSON.stringify({
 					created: new sb.Date(profile.created_at).valueOf(),
 					login: profile.login,
 					type: profile.type
-				});
+				}));
 
 				await sb.Got("Supibot", {
 					url: "user/invalidateCache",

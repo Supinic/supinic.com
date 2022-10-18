@@ -1,3 +1,4 @@
+const User = require("../../../modules/chat-data/user-alias");
 module.exports = (function () {
 	"use strict";
 
@@ -156,7 +157,14 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
 		}
 
-		const userData = await sb.User.get(username || userID);
+		let userData;
+		if (username) {
+			userData = await User.getByName(username);
+		}
+		else if (userID) {
+			userData = await User.getByID(userID);
+		}
+
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 400, "User does not exist");
 		}

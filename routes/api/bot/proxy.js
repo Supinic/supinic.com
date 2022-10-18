@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Channel = require("../../../modules/chat-data/channel.js");
+	const User = require("../../../modules/chat-data/user-alias.js");
 
 	const partOrJoin = async (type, req, res) => {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
@@ -35,7 +36,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "Channel does not exist");
 		}
 
-		const banWavePartPermissions = await auth.userData.getDataProperty("banWavePartPermissions");
+		const banWavePartPermissions = await User.getDataProperty(auth.userData.ID, "banWavePartPermissions");
 		if (!banWavePartPermissions) {
 			return sb.WebUtils.apiFail(res, 401, "Endpoint requires banwave-part permissions");
 		}

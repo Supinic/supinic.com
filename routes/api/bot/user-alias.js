@@ -2,7 +2,7 @@ const Express = require("express");
 const Router = Express.Router();
 
 const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
-const UserAlias = require("../../../modules/chat-data/user-alias.js");
+const User = require("../../../modules/chat-data/user-alias.js");
 
 module.exports = (function () {
 	"use strict";
@@ -10,7 +10,7 @@ module.exports = (function () {
 	const fetchUserData = async (res, type, identifier) => {
 		let userData;
 		if (type === "user-name") {
-			userData = await UserAlias.selectSingleCustom(q => q.where("Name = %s", identifier));
+			userData = await User.selectSingleCustom(q => q.where("Name = %s", identifier));
 		}
 		else {
 			const id = Number(identifier);
@@ -18,7 +18,7 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 400, "Malformed numeric ID provided");
 			}
 
-			userData = await UserAlias.selectSingleCustom(q => q.where("ID = %n", id));
+			userData = await User.selectSingleCustom(q => q.where("ID = %n", id));
 		}
 
 		if (!userData) {
@@ -41,7 +41,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const aliasOwnerData = await sb.User.get(req.params.username);
+		const aliasOwnerData = await User.getByName(req.params.username);
 		if (!aliasOwnerData) {
 			return sb.WebUtils.apiFail(res, 404, "Provided user does not exist");
 		}
@@ -85,7 +85,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 404, "No such alias exists");
 		}
 
-		const userData = await sb.User.get(aliasData.User_Alias);
+		const userData = await User.getByID(aliasData.User_Alias);
 		aliasData.User_Name = userData.Name;
 		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
 
@@ -114,7 +114,7 @@ module.exports = (function () {
 		const { name } = req.params;
 		const { includeArguments } = req.query;
 
-		const userData = await sb.User.get(name);
+		const userData = await User.getByName(name);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
@@ -146,7 +146,7 @@ module.exports = (function () {
 	 */
 	Router.get("/:name/alias/detail/:alias", async (req, res) => {
 		const { name, alias } = req.params;
-		const userData = await sb.User.get(name);
+		const userData = await User.getByName(name);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
@@ -181,7 +181,7 @@ module.exports = (function () {
 	 */
 	Router.get("/:username/data/list", async (req, res) => {
 		const { username } = req.params;
-		const userData = await sb.User.get(username);
+		const userData = await User.getByName(username);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}
@@ -209,7 +209,7 @@ module.exports = (function () {
 		);
 
 		const promises = propertyList.map(async (property) => {
-			const value = await userData.getDataProperty(property.Name, { force: true });
+			const value = await User.getDataProperty(userData.ID, property.Name);
 			return {
 				name: property.Name,
 				value,

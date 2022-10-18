@@ -7,6 +7,7 @@ module.exports = (function () {
 	const Badge = require("../../../modules/bot-data/badge.js");
 	const ChannelBot = require("../../../modules/bot-data/bot.js");
 	const Level = require("../../../modules/bot-data/level.js");
+	const User = require("../../../modules/chat-data/user-alias.js");
 
 	/**
 	 * @api {get} /bot-program/badge/list Badge - list
@@ -93,7 +94,7 @@ module.exports = (function () {
 		const promises = rawData.map(async (bot) => {
 			const userData = (bot.Author === null)
 				? null
-				: await sb.User.get(bot.Author);
+				: await User.getByID(bot.Author);
 
 			const badgeData = await sb.Query.getRecordset(rs => rs
 				.select("Badge", "Notes")
@@ -152,7 +153,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const botData = await sb.User.get(auth.userID);
+		const botData = await User.getByID(auth.userID);
 		const exists = await ChannelBot.existsCustom(q => q
 			.where("Bot_Alias = %n", botData.ID)
 		);

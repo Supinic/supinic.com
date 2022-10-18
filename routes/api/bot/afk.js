@@ -5,7 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const AFK = require("../../../modules/chat-data/afk.js");
-	const Filter = require("../../../modules/chat-data/filter.js");
+	const User = require("../../../modules/chat-data/user-alias.js");
 
 	/**
 	 * @api {get} /bot/afk/list AFK - Get list
@@ -64,8 +64,18 @@ module.exports = (function () {
 		else if (username && userID) {
 			return sb.WebUtils.apiFail(res, 400, "Both user name and ID provided");
 		}
+		else if (userID && !sb.Utils.isValidInteger(Number(userID))) {
+			return sb.WebUtils.apiFail(res, 400, "Malformed ID provided");
+		}
 
-		const userData = await sb.User.get(Number(userID) || username);
+		let userData;
+		if (userID) {
+			userData = await User.getByID(Number(userID));
+		}
+		else if (username) {
+			userData = await User.getByName(username);
+		}
+
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 400, "Provided user identifier could not be resolved");
 		}

@@ -4,6 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const User = require("../../../modules/chat-data/user-alias.js");
 	const Suggestion = require("../../../modules/data/suggestion.js");
 	const Columns = require("../../../modules/internal/columns.js");
 
@@ -12,18 +13,18 @@ module.exports = (function () {
 
 	/**
 	 * @param {Request} req
-	 * @returns {Promise<string|null>}
+	 * @returns {Promise<number|null>}
 	 */
 	const fetchUserID = async (req) => {
-		const { userID: rawUserID, userName } = req.query;
-
-		let userID;
-		if (rawUserID || userName) {
-			const userData = await sb.User.get(Number(rawUserID) || userName);
-			userID = userData?.ID;
+		let userData;
+		if (req.query.userID) {
+			userData = await User.getByID(Number(req.query.userID));
+		}
+		else if (req.query.userName) {
+			userData = await User.getByName(req.query.userName);
 		}
 
-		return userID ?? null;
+		return (userData) ? userData.ID : null;
 	};
 
 	const prettifyData = (data) => data.map(i => {
@@ -113,7 +114,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} stat.userAmount Total amount of given user's suggestions with given status
 	 **/
 	Router.get("/stats/user/:user", async (req, res) => {
-		const userData = await sb.User.get(req.params.user);
+		const userData = await User.getByName(req.params.user);
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 404, "User not found");
 		}

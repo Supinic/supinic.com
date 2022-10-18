@@ -4,6 +4,8 @@ module.exports = (function () {
 	const linesCacheKey = "website-channel-lines";
 	const channelListCacheKey = "website-channel-list";
 
+	const User = require("../chat-data/user-alias.js");
+
 	class Channel extends TemplateModule {
 		/**
 		 * @param {Object} [options]
@@ -83,7 +85,7 @@ module.exports = (function () {
 			const result = [];
 			const userIDs = JSON.parse(row.values.Value);
 			for (const userID of userIDs) {
-				const userData = await sb.User.get(userID);
+				const userData = await User.getByID(userID);
 				result.push({
 					ID: userData.ID,
 					name: userData.Name

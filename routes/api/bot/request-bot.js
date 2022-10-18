@@ -7,6 +7,7 @@ module.exports = (function () {
 	const Channel = require("../../../modules/chat-data/channel.js");
 	const Platform = require("../../../modules/chat-data/platform.js");
 	const Suggestion = require("../../../modules/data/suggestion.js");
+	const User = require("../../../modules/chat-data/user-alias.js");
 
 	Router.post("/", async (req, res) => {
 		const { userID } = await sb.WebUtils.getUserLevel(req, res);
@@ -28,7 +29,7 @@ module.exports = (function () {
 		}
 
 		if (renamedChannel) {
-			const userData = await sb.User.get(userID);
+			const userData = await User.getByID(userID);
 			const previousChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
 			const currentChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", userData.Name));
 
@@ -39,7 +40,7 @@ module.exports = (function () {
 				return sb.WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
 			}
 
-			const currentChannelID = userData.Twitch_ID ?? await sb.Utils.getTwitchID(userData.Name);
+			const currentChannelID = await sb.Utils.getTwitchID(userData.Name);
 			const previousChannelID = previousChannel.Specific_ID;
 			if (currentChannelID !== previousChannelID) {
 				return sb.WebUtils.apiFail(res, 400, "Renaming verification did not pass");
@@ -104,7 +105,7 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
 		}
 
-		const userData = await sb.User.get(userID);
+		const userData = await User.getByID(userID);
 		if (platformData.Name === "twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
 			const { mods } = await sb.Got("Leppunen", `twitch/modsvips/${escapedChannel}`).json();

@@ -11,7 +11,7 @@ module.exports = (function () {
 	const TrackTag = require("./track-tag.js");
 	const VideoType = require("../data/video-type.js");
 	const TrackRelationship = require("./track-relationship.js");
-	const UserAlias = require("../chat-data/user-alias.js");
+	const User = require("../chat-data/user-alias.js");
 
 	class Track extends TemplateModule {
 		static async list (specificIDs) {
@@ -100,9 +100,9 @@ module.exports = (function () {
 
 			data.Added_By = "N/A";
 			if (row.values.Added_By) {
-				const userData = await sb.Query.getRow("chat_data", "User_Alias");
-				await userData.load(row.values.Added_By);
-				data.Added_By = userData.values.Name;
+				const userRow = await sb.Query.getRow("chat_data", "User_Alias");
+				await userRow.load(row.values.Added_By);
+				data.Added_By = userRow.values.Name;
 			}
 
 			data.Parsed_Link = "N/A";
@@ -194,7 +194,7 @@ module.exports = (function () {
 			const queries = [];
 
 			if (options.addedByName) {
-				const userData = await UserAlias.selectSingleCustom(q => q
+				const userData = await User.selectSingleCustom(q => q
 					.where("Name = %s", options.addedByName)
 				);
 
@@ -387,7 +387,7 @@ module.exports = (function () {
 				}
 			}
 			else if (options.checkUsernameFavourite) {
-				const userData = await sb.User.get(options.checkUsernameFavourite);
+				const userData = await User.getByName(options.checkUsernameFavourite);
 				if (!userData) {
 					throw new sb.Error({
 						message: "No user exists for parameter `checkUsernameFavourite`",

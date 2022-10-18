@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const Track = require("../../../modules/track/track.js");
+	const User = require("../../../modules/chat-data/user-alias.js");
 	const UserFavourite = require("../../../modules/track/user-favourite.js");
 
 	Router.get("/user/:userID/track/:trackID", async (req, res) => {
@@ -56,7 +57,7 @@ module.exports = (function () {
 
 	Router.get("/user/:id", async (req, res) => {
 		const { id } = req.params;
-		const userData = await sb.User.get(Number(id));
+		const userData = await User.getByID(Number(id));
 		if (!userData) {
 			return sb.WebUtils.apiFail(res, 400, "Provided user ID does not exist");
 		}

@@ -5,6 +5,7 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	const CommandExecution = require("../../modules/chat-data/command-execution.js");
+	const User = require("../../modules/chat-data/user-alias.js");
 
 	const baseGithubCommandPath = "https://github.com/Supinic/supibot-package-manager/tree/master/commands";
 	const filterTypeMap = {
@@ -105,7 +106,8 @@ module.exports = (function () {
 
 		let isDeveloper = false;
 		if (res.locals.authUser?.userData) {
-			isDeveloper = Boolean(await res.locals.authUser.userData.getDataProperty("developer"));
+			const flag = await User.getDataProperty(res.locals.authUser.userData.ID, "developer");
+			isDeveloper = Boolean(flag);
 		}
 
 		const printData = data

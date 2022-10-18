@@ -4,6 +4,8 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
+	const User = require("../../modules/chat-data/user-alias.js");
+
 	Router.use("/", async (req, res, next) => {
 		if (!res.locals.authUser) {
 			return res.status(401).render("error", {
@@ -38,7 +40,7 @@ module.exports = (function () {
 			.update(crypto.randomBytes(256).toString())
 			.digest("hex");
 
-		await userData.setDataProperty("authKey", authKey);
+		await User.setDataProperty(userData.ID, "authKey", authKey);
 
 		await sb.Got("Supibot", {
 			url: "user/invalidateCache",
@@ -53,7 +55,7 @@ module.exports = (function () {
 	Router.delete("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
 
-		await userData.setDataProperty("authKey", null);
+		await User.setDataProperty(userData.ID, "authKey", null);
 
 		await sb.Got("Supibot", {
 			url: "user/invalidateCache",
@@ -67,7 +69,8 @@ module.exports = (function () {
 
 	Router.get("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
-		const authKey = await userData.getDataProperty("authKey");
+
+		const authKey = await User.getDataProperty(userData.ID, "authKey");
 		const hasKey = Boolean(authKey);
 
 		const fieldDisabled = (hasKey) ? "" : "disabled";

@@ -8,7 +8,9 @@ module.exports = (function () {
 
 		static getNormalizedQueue (callback) {
 			return sb.Query.getRecordset(rs => {
-				rs.select("*")
+				rs
+					.select("Song_Request.*")
+					.select("User_Alias.Name AS Username")
 					.select(`
 						(CASE 
 							WHEN (Start_Time IS NOT NULL AND End_Time IS NOT NULL) THEN (End_Time - Start_Time)
@@ -18,7 +20,8 @@ module.exports = (function () {
 							END
 						) AS Duration
 					`)
-					.from("chat_data", "Song_Request");
+					.from("chat_data", "Song_Request")
+					.join("chat_data", "User_Alias");
 
 				if (typeof callback === "function") {
 					callback(rs);

@@ -41,9 +41,9 @@ module.exports = (function () {
 
 			data.Added_By = "N/A";
 			if (row.values.Added_By) {
-				const userData = await sb.Query.getRow("chat_data", "User_Alias");
-				await userData.load(row.values.Added_By);
-				data.Added_By = userData.values.Name;
+				const userRow = await sb.Query.getRow("chat_data", "User_Alias");
+				await userRow.load(row.values.Added_By);
+				data.Added_By = userRow.values.Name;
 			}
 
 			data.Parsed_Link = "N/A";
