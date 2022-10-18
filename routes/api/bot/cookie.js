@@ -116,8 +116,7 @@ module.exports = (function () {
 		}));
 
 		// Only return users that have at least eaten, received or gifted a single cookie.
-		const filteredData = data.filter(i => (i.eaten.daily !== 0 || i.donated !== 0 || i.received !== 0));
-		sb.WebUtils.apiSuccess(res, filteredData, {
+		sb.WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
 	});
