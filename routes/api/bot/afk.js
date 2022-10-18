@@ -93,73 +93,8 @@ module.exports = (function () {
 		});
 	});
 
-	/**
-	 * @api {get} /bot/afk/checkMultiple AFK - Check multiple
-	 * @apiName CheckMultipleAFK
-	 * @apiDescription Checks if a specific user is AFK, and provides the AFK status object if they are.
-	 * @apiGroup Bot
-	 * @apiPermission none
-	 * @apiParam {string} [username] Comma-separated list of usernames, mutually exclusive with `userID`
-	 * @apiParam {string} [userID] Comma-separated list of usernames, mutually exclusive with `username`
-	 * @apiSuccess {Status[]} results AFK statuses for queried users. Same definition as in endpoint CheckUserAFK.
-	 * @apiSuccess {number} status.ID Status ID
-	 * @apiSuccess {number} status.userAlias
-	 * @apiSuccess {string} status.started The start date of the AFK status, as an ISO string
-	 * @apiSuccess {string} status.text If set, the custom message associated with the AFK status
-	 * @apiSuccess {string} status.status Type of AFK status
-	 * @apiSuccess {boolean} status.silent
-	 * @apiSuccess {string} status.name Username of given user
-	 * @apiSuccess {string} [status.twitchID] Twitch ID
-	 * @apiError (400) InvalidRequest If neither `username` nor `userID` were provided<br>
-	 * If both `username` and `userID` were provided<br>
-	 * If provided `username` or `userID` do not resolve to an actual user
-	 */
 	Router.get("/checkMultiple", async (req, res) => {
-		const { username, userID } = req.query;
-		if (!username && !userID) {
-			return sb.WebUtils.apiFail(res, 400, "No user name or ID provided");
-		}
-		else if (username && userID) {
-			return sb.WebUtils.apiFail(res, 400, "Both user name and ID provided");
-		}
-
-		let userList;
-		if (username) {
-			userList = username.split(",");
-			if (userList.some(i => i.length < 2)) {
-				const invalidUsernames = userList.filter(i => i.length < 2).map(i => `"${i}"`).join(",");
-				return sb.WebUtils.apiFail(
-					res,
-					400,
-					`Invalid usernames provided: ${invalidUsernames}`
-				);
-			}
-		}
-		else {
-			userList = userID.split(",").map(Number);
-			if (userList.some(i => !sb.Utils.isValidInteger(i))) {
-				const invalidUserIDs = userList.filter(i => !sb.Utils.isValidInteger(i)).map(i => `"${i}"`).join(",");
-				return sb.WebUtils.apiFail(
-					res,
-					400,
-					`Invalid user IDs provided: ${invalidUserIDs}`
-				);
-			}
-		}
-
-		const userData = await sb.User.getMultiple(userList);
-		if (userData.length === 0) {
-			return sb.WebUtils.apiFail(res, 400, "No proper user identifiers provided");
-		}
-
-		const data = await AFK.selectMultipleCustom(q => q
-			.select("User_Alias.Name", "User_Alias.Twitch_ID")
-			.where("User_Alias IN %n+", userData.map(i => i.ID))
-			.where("Active = %b", true)
-			.join("chat_data", "User_Alias")
-		);
-
-		return sb.WebUtils.apiSuccess(res, data);
+		return sb.WebUtils.apiFail(res, 410, "Endpoint removed, use api/bot/afk/check");
 	});
 
 	/**
