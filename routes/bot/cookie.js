@@ -5,19 +5,12 @@ module.exports = (function () {
 	const Router = Express.Router();
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "bot/cookie/list").json();
-		const printData = data.map(i => ({
-			User: i.user,
-			Total: i.eaten.daily + i.eaten.received + i.legacy.daily + i.legacy.received,
-			Daily: i.eaten.daily + i.legacy.daily,
-			Donated: i.donated + i.legacy.donated,
-			Received: i.received + i.legacy.received
-		}));
-
-		res.render("generic-list-table", {
-			data: printData,
-			head: Object.keys(printData[0]),
-			pageLength: 100
+		res.render("generic-ajax-list-table", {
+			head: ["User", "Total", "Daily", "Donated", "Received"],
+			url: "https://supinic.com/api/bot/cookie/list/client",
+			sortDirection: "desc",
+			sortColumn: 1,
+			pageLength: 50
 		});
 	});
 

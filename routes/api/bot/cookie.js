@@ -6,6 +6,21 @@ module.exports = (function () {
 
 	const User = require("../../../modules/chat-data/user-alias.js");
 
+	const fetchAllCookieData = async () => await sb.Query.getRecordset(rs => rs
+		.select("User_Alias.Name AS Username")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.daily'), INT) AS Eaten_Daily")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.received'), INT) AS Eaten_Received")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.total.donated'), INT) AS Donated")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.total.received'), INT) AS Received")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.daily'), INT) AS Legacy_Daily")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.received'), INT) AS Legacy_Received")
+		.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.donated'), INT) AS Legacy_Donated")
+		.from("chat_data", "User_Alias_Data")
+		.join("chat_data", "User_Alias")
+		.where("Property = %s", "cookie")
+		.where("Value IS NOT NULL")
+	);
+
 	/**
 	 * @api {get} /bot/cookie/check/ Cookie - Specific user stats
 	 * @apiName GetCookieStatus
@@ -85,21 +100,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} legacy.received
 	 */
 	Router.get("/list", async (req, res) => {
-		const cookieData = await sb.Query.getRecordset(rs => rs
-			.select("User_Alias.Name AS Username")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.daily'), INT) AS Eaten_Daily")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.received'), INT) AS Eaten_Received")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.total.donated'), INT) AS Donated")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.total.received'), INT) AS Received")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.daily'), INT) AS Legacy_Daily")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.received'), INT) AS Legacy_Received")
-			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.donated'), INT) AS Legacy_Donated")
-			.from("chat_data", "User_Alias_Data")
-			.join("chat_data", "User_Alias")
-			.where("Property = %s", "cookie")
-			.where("Value IS NOT NULL")
-		);
-
+		const cookieData = await fetchAllCookieData();
 		const data = cookieData.map(i => ({
 			user: i.Username,
 			eaten: {
@@ -115,7 +116,21 @@ module.exports = (function () {
 			}
 		}));
 
-		// Only return users that have at least eaten, received or gifted a single cookie.
+		sb.WebUtils.apiSuccess(res, data, {
+			skipCaseConversion: true
+		});
+	});
+
+	Router.get("/list/client", async (req, res) => {
+		const cookieData = await fetchAllCookieData();
+		const data = cookieData.map(i => ({
+			User: i.Username,
+			Total: i.Eaten_Daily + i.Eaten_Received + i.Legacy_Daily + i.Legacy_Received,
+			Daily: i.Eaten_Daily + i.Legacy_Daily,
+			Donated: i.Donated + i.Legacy_Donated,
+			Received: i.Received + i.Legacy_Received,
+		}));
+
 		sb.WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
