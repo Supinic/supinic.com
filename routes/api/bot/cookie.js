@@ -4,7 +4,7 @@ module.exports = (function () {
 	const Express = require("express");
 	const Router = Express.Router();
 
-	const ExtraUserData = require("../../../modules/chat-data/extra-user-data");
+	const User = require("../../../modules/chat-data/user-alias.js");
 
 	/**
 	 * @api {get} /bot/cookie/check/ Cookie - Specific user stats
@@ -39,56 +39,87 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "id must be a valid ID integer");
 		}
 
-		const userData = await sb.User.get(name || id);
-		if (!userData) {
-			return sb.WebUtils.apiFail(res, 400, "User does not exist");
+		const userID = await User.selectCustom(rs => rs
+			.select("ID")
+			.where({ condition: (name) }, "User_Alias.Name = %s", name)
+			.where({ condition: (rawID) }, "User_Alias.ID = %n", id)
+		);
+
+		if (!userID) {
+			return sb.WebUtils.apiFail(res, 404, "User does not exist");
 		}
 
-		const extraData = (await ExtraUserData.selectSingleCustom(q => q
-			.where("User_Alias = %n", userData.ID)
-		)) || { Cookie_Today: false };
+		const cookieData = await sb.Query.getRecordset(rs => rs
+			.select("Value")
+			.from("chat_data", "User_Alias_Data")
+			.where("Property = %s", "cookie")
+			.where("User_Alias = %n", userID)
+			.single()
+			.limit(1)
+		);
 
-		return sb.WebUtils.apiSuccess(res, {
-			available: !extraData.Cookie_Today,
-			gifted: extraData.Cookie_Is_Gifted || false,
-			total: extraData.Cookies_Total || 0,
-			gifts: {
-				sent: extraData.Cookie_Gifts_Sent || 0,
-				received: extraData.Cookie_Gifts_Received || 0
-			}
-		});
+		if (!cookieData) {
+			return sb.WebUtils.apiSuccess(res, {});
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, JSON.parse(cookieDate));
+		}
 	});
 
 	/**
 	 * @api {get} /bot/cookie/list/ Cookie - Total stats
 	 * @apiName ListCookieStats
-	 * @apiDescription Gets a total list of all cookies eaten, grouped by each user
+	 * @apiDescription Fetches cookie statistics for all users
 	 * @apiGroup Bot
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} data
-	 * @apiSuccess {string} user If true, the user's cookie is gifted, and they cannot gift it again
-	 * @apiSuccess {number} total Total amount of cookies consumed by the user
-	 * @apiSuccess {number} daily Daily cookies eaten
-	 * @apiSuccess {number} gifted Total amount of cookies gifted away
-	 * @apiSuccess {number} received Total amount of cookies received as gifts
+	 * @apiSuccess {string} user
+	 * @apiSuccess {Object} eaten
+	 * @apiSuccess {number} eaten.daily
+	 * @apiSuccess {number} eaten.received
+	 * @apiSuccess {number} donated
+	 * @apiSuccess {number} received
+	 * @apiSuccess {Object} legacy
+	 * @apiSuccess {number} legacy.daily
+	 * @apiSuccess {number} legacy.donated
+	 * @apiSuccess {number} legacy.received
 	 */
 	Router.get("/list", async (req, res) => {
-		const rawData = await ExtraUserData.list();
-		const data = rawData.map(i => {
-			const total = i.Cookies_Total + i.Cookie_Gifts_Received - i.Cookie_Gifts_Sent + i.Cookie_Today;
-			const daily = i.Cookies_Total - i.Cookie_Gifts_Sent;
-			return {
-				User: i.Name,
-				Total: (total < 0) ? 0 : total,
-				Daily: (daily < 0) ? 0 : daily,
-				Gifted: i.Cookie_Gifts_Sent,
-				Received: i.Cookie_Gifts_Received
-			};
-		});
+		const cookieData = await sb.Query.getRecordset(rs => rs
+			.select("User_Alias.Name AS Username")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.daily'), INT) AS Eaten_Daily")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.total.eaten.received'), INT) AS Eaten_Received")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.total.donated'), INT) AS Donated")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.total.received'), INT) AS Received")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.daily'), INT) AS Legacy_Daily")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.received'), INT) AS Legacy_Received")
+			.select("CONVERT(JSON_EXTRACT(Value, '$.legacy.donated'), INT) AS Legacy_Donated")
+			.from("chat_data", "User_Alias_Data")
+			.join("chat_data", "User_Alias")
+			.where("Property = %s", "cookie")
+			.where("Value IS NOT NULL")
+		);
+
+		const data = cookieData.map(i => ({
+			user: i.Username,
+			eaten: {
+				daily: i.Eaten_Daily,
+				received: i.Eaten_Received,
+			},
+			donated: i.Donated,
+			received: i.Received,
+			legacy: {
+				daily: i.Legacy_Daily,
+				donated: i.Legacy_Donated,
+				received: i.Legacy_Received,
+			}
+		}));
 
 		// Only return users that have at least eaten, received or gifted a single cookie.
-		const filteredData = data.filter(i => (i.Total !== 0 || i.Gifted !== 0 || i.Received !== 0));
-		sb.WebUtils.apiSuccess(res, filteredData);
+		const filteredData = data.filter(i => (i.eaten.daily !== 0 || i.donated !== 0 || i.received !== 0));
+		sb.WebUtils.apiSuccess(res, filteredData, {
+			skipCaseConversion: true
+		});
 	});
 
 	return Router;

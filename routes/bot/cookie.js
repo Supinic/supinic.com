@@ -8,10 +8,10 @@ module.exports = (function () {
 		const { data } = await sb.Got("Supinic", "bot/cookie/list").json();
 		const printData = data.map(i => ({
 			User: i.user,
-			Total: i.total,
-			Daily: i.daily,
-			Gifted: i.gifted,
-			Received: i.received
+			Total: i.eaten.daily + i.eaten.received + i.legacy.daily + i.legacy.received,
+			Daily: i.eaten.daily + i.legacy.daily,
+			Donated: i.donated + i.legacy.donated,
+			Received: i.received + i.legacy.received
 		}));
 
 		res.render("generic-list-table", {
