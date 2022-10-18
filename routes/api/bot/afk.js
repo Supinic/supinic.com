@@ -169,8 +169,7 @@ module.exports = (function () {
 	 * @apiGroup Bot
 	 * @apiPermission login
 	 * @apiParam {string} [text] If set, this is the custom AFK text message. Otherwise, "(no message)" is used.
-	 * @apiParam {string} [status] If set, this is the type of AFK used. If not, defaults to "afk". If set, must be one of ["afk", "brb", "food", "gn", "lurk", "poop", "shower", "work"]
-	 * @apiSuccess {number} statusID If everything is successful, then this is the ID of the AFK status.
+	 * @apiSuccess {strimg} response Command response
 	 * @apiError (400) InvalidRequest If invalid AFK type has been provided<br>
 	 * If the user is already AFK
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
@@ -185,48 +184,44 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const banCheck = await Filter.selectSingleCustom(q => q
-			.where("User_Alias = %n", auth.userID)
-			.where("Command = %s", "afk")
-			.where("Active = %b", true)
-			.where("Type = %s", "Blacklist")
-		);
-		if (banCheck) {
-			return sb.WebUtils.apiFail(res, 403, "You have been banned from the AFK command in at least one instance, and therefore cannot use the API to set AFK statuses");
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: "command/execute",
+				searchParams: {
+					invocation: "afk",
+					platform: "twitch",
+					channel: null,
+					user: auth.userData.Name,
+					arguments: req.params.text.join(" "),
+				}
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
 		}
 
-		const check = await AFK.selectSingleCustom(q => q
-			.where("User_Alias = %n", auth.userID)
-			.where("Active = %b", true)
-		);
-		if (check && check.Active) {
-			return sb.WebUtils.apiFail(res, 400, "You are already AFK");
+		const { data, error } = response.body;
+		if (!data || response.statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, response.statusCode, {
+				reply: error?.message
+			});
 		}
 
-		const { text, status = "afk" } = req.query;
-		if (!AFK.statuses.includes(status)) {
-			return sb.WebUtils.apiFail(res, 400, `Invalid AFK status provided. Available: ${AFK.statuses.join(", ")}`);
+		const { result } = data;
+		if (result.success === false) {
+			return sb.WebUtils.apiFail(res, 400, {
+				reply: result.reply
+			});
 		}
-
-		const newStatus = await AFK.insert({
-			User_Alias: auth.userID,
-			Active: true,
-			Text: text || "(no message)",
-			Status: status,
-			Started: new sb.Date(),
-			Silent: false
-		});
-
-		await sb.Got("Supibot", {
-			url: "afk/reloadSpecific",
-			searchParams: {
-				ID: newStatus.insertId
-			}
-		});
-
-		return sb.WebUtils.apiSuccess(res, {
-			statusID: newStatus.insertId
-		});
+		else {
+			return sb.WebUtils.apiSuccess(res, {
+				reply: result.reply
+			});
+		}
 	});
 
 	/**
