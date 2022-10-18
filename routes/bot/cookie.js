@@ -6,7 +6,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		res.render("generic-ajax-list-table", {
-			head: ["User", "Total", "Daily", "Donated", "Received"],
+			head: ["User", "Daily", "Donated", "Received", "Total"],
 			url: "https://supinic.com/api/bot/cookie/list/client",
 			sortDirection: "desc",
 			sortColumn: 1,
