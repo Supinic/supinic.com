@@ -1,17 +1,14 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Author = require("../../../modules/track/author.js");
+const Tag = require("../../../modules/track/tag.js");
+const Track = require("../../../modules/track/track.js");
+const TrackAuthor = require("../../../modules/track/track-author.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Author = require("../../../modules/track/author.js");
-	// const Config = require("../../../modules/data/config.js");
-	const Tag = require("../../../modules/track/tag.js");
-	const Track = require("../../../modules/track/track.js");
-	const TrackAuthor = require("../../../modules/track/track-author.js");
-	// const VideoType = require("../../../modules/data/video-type.js");
-	// const TrackTag = require("../../../modules/track/track-tag.js");
-	// const UserAlias = require("../../../modules/chat-data/user-alias.js");
 
 	const allowedConnectTables = ["Author", "Table"];
 	const allowedAuthorTypes = [
@@ -41,35 +38,35 @@ module.exports = (function () {
 
 	const linkOrUnlink = async (type, req, res) => {
 		if (!res || !res.locals) {
-			return sb.WebUtils.apiFail(res, 401, "Session timed out");
+			return WebUtils.apiFail(res, 401, "Session timed out");
 		}
 		else if (!res.locals.authUser) {
-			return sb.WebUtils.apiFail(res, 401, "Not logged in");
+			return WebUtils.apiFail(res, 401, "Not logged in");
 		}
 
 		const { trackID: rawTrackID, targetTable, targetID: rawTargetID, role } = req.query;
 		if (!rawTrackID || !targetTable || !rawTargetID) {
-			return sb.WebUtils.apiFail(res, 400, "Required parameters: trackID, targetTable, targetID");
+			return WebUtils.apiFail(res, 400, "Required parameters: trackID, targetTable, targetID");
 		}
 		else if (!allowedConnectTables.includes(targetTable)) {
-			return sb.WebUtils.apiFail(res, 400, `targetTable must be one of: ${allowedConnectTables.join(", ")}`);
+			return WebUtils.apiFail(res, 400, `targetTable must be one of: ${allowedConnectTables.join(", ")}`);
 		}
 		else if (targetTable === "Author" && (!role || !allowedAuthorTypes.includes(role))) {
-			return sb.WebUtils.apiFail(res, 400, `For Author, role must be provided and be one of: ${allowedAuthorTypes.join(", ")}`);
+			return WebUtils.apiFail(res, 400, `For Author, role must be provided and be one of: ${allowedAuthorTypes.join(", ")}`);
 		}
 
 		const trackID = Number(rawTrackID);
 		if (!sb.Utils.isValidInteger(trackID)) {
-			return sb.WebUtils.apiFail(res, 400, "trackID is not a valid numeric ID");
+			return WebUtils.apiFail(res, 400, "trackID is not a valid numeric ID");
 		}
 
 		const targetID = Number(rawTargetID);
 		if (!sb.Utils.isValidInteger(targetID)) {
-			return sb.WebUtils.apiFail(res, 400, "targetID is not a valid numeric ID");
+			return WebUtils.apiFail(res, 400, "targetID is not a valid numeric ID");
 		}
 
 		if (!await Track.exists(trackID)) {
-			return sb.WebUtils.apiFail(res, 400, "Track ID does not exist");
+			return WebUtils.apiFail(res, 400, "Track ID does not exist");
 		}
 
 		let targetExists = false;
@@ -81,7 +78,7 @@ module.exports = (function () {
 		}
 
 		if (targetExists === false) {
-			return sb.WebUtils.apiFail(res, 400, `Target ID (${targetTable}.${targetID}) does not exist`);
+			return WebUtils.apiFail(res, 400, `Target ID (${targetTable}.${targetID}) does not exist`);
 		}
 
 		let result = {};
@@ -102,13 +99,13 @@ module.exports = (function () {
 		}
 
 		if (result.success) {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				success: true,
 				type
 			});
 		}
 		else {
-			return sb.WebUtils.apiFail(res, 400, result.toString());
+			return WebUtils.apiFail(res, 400, result.toString());
 		}
 	};
 
@@ -144,12 +141,12 @@ module.exports = (function () {
 	 *  This will be available at a later date (when the method to add such a track is implemented)
 	 */
 	Router.post("/", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
 		}
 
 		const { link } = req.query;
@@ -158,10 +155,10 @@ module.exports = (function () {
 		});
 
 		if (!result.success) {
-			return sb.WebUtils.apiFail(res, 400, result.toString());
+			return WebUtils.apiFail(res, 400, result.toString());
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				trackID: result.data.ID,
 				message: result.toString()
 			});
@@ -197,7 +194,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const rawData = await Track.list();
 		const list = formatListResponse(rawData);
-		return sb.WebUtils.apiSuccess(res, list);
+		return WebUtils.apiSuccess(res, list);
 	});
 
 	/**
@@ -272,14 +269,14 @@ module.exports = (function () {
 		}
 		catch (e) {
 			if (e instanceof sb.Error && e.args.reason === "invalid-input") {
-				return sb.WebUtils.apiFail(res, e.args.code ?? 400, e.simpleMessage);
+				return WebUtils.apiFail(res, e.args.code ?? 400, e.simpleMessage);
 			}
 			else {
 				throw e;
 			}
 		}
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -299,19 +296,19 @@ module.exports = (function () {
 	Router.get("/resolve/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed track ID");
+			return WebUtils.apiFail(res, 400, "Malformed track ID");
 		}
 
 		const row = await Track.getRow(ID);
 		if (!row) {
-			return sb.WebUtils.apiFail(res, 404, "Track ID does not exist");
+			return WebUtils.apiFail(res, 404, "Track ID does not exist");
 		}
 
-		await sb.WebUtils.loadVideoTypes();
-		const link = sb.WebUtils.parseVideoLink(row.values.Video_Type, row.values.Link);
-		const videoType = sb.WebUtils.videoTypes[row.values.Video_Type].Parser_Name;
+		await WebUtils.loadVideoTypes();
+		const link = WebUtils.parseVideoLink(row.values.Video_Type, row.values.Link);
+		const videoType = WebUtils.videoTypes[row.values.Video_Type].Parser_Name;
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			ID,
 			link,
 			Video_Type: videoType,
@@ -337,7 +334,7 @@ module.exports = (function () {
 	Router.get("/present", async (req, res) => {
 		const link = req.query.url;
 		if (!link) {
-			return sb.WebUtils.apiFail(res, 400, "No URL provided");
+			return WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
 		let parsedLink = null;
@@ -345,11 +342,11 @@ module.exports = (function () {
 			parsedLink = sb.Utils.linkParser.parseLink(link);
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 400, "Cannot parse given link");
+			return WebUtils.apiFail(res, 400, "Cannot parse given link");
 		}
 
 		const presentTrack = await Track.present(parsedLink);
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			present: Boolean(presentTrack),
 			ID: (presentTrack) ? presentTrack.ID : null,
 			link,
@@ -407,17 +404,17 @@ module.exports = (function () {
 	 * @apiError (403) Forbidden Insufficient level (at least moderator required)
 	 */
 	Router.delete("/connect", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { level } = await sb.WebUtils.getUserLevel(req, res);
+		const { level } = await WebUtils.getUserLevel(req, res);
 		if (level !== "moderator" && level !== "admin") {
-			sb.WebUtils.apiFail(res, 403, "Insufficient level (requires moderator)");
+			WebUtils.apiFail(res, 403, "Insufficient level (requires moderator)");
 		}
 
 		return await linkOrUnlink("unlink", req, res);
@@ -447,18 +444,18 @@ module.exports = (function () {
 		reuploadID = Number(reuploadID);
 
 		if (reuploadLink && reuploadID && sb.Utils.isValidInteger(reuploadID)) {
-			return sb.WebUtils.apiFail(res, 400, "Cannot specify both reuploadLink and reuploadID");
+			return WebUtils.apiFail(res, 400, "Cannot specify both reuploadLink and reuploadID");
 		}
 		else if (!reuploadLink && !sb.Utils.isValidInteger(reuploadID)) {
-			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of reuploadLink or reuploadID");
+			return WebUtils.apiFail(res, 400, "Must specify exactly one of reuploadLink or reuploadID");
 		}
 		else if (!sb.Utils.isValidInteger(existingID)) {
-			return sb.WebUtils.apiFail(res, 400, "Must specify existingID");
+			return WebUtils.apiFail(res, 400, "Must specify existingID");
 		}
 
 		if (reuploadID) {
 			if (!await Track.exists(reuploadID)) {
-				return sb.WebUtils.apiFail(res, 400, "Provided reuploadID does not exist");
+				return WebUtils.apiFail(res, 400, "Provided reuploadID does not exist");
 			}
 
 			const track = await Track.selectSingleCustom(q => q
@@ -478,10 +475,10 @@ module.exports = (function () {
 
 		const result = await Track.addReupload(existingID, reuploadLink, user.ID);
 		if (!result.success) {
-			return sb.WebUtils.apiFail(res, 400, result.toString());
+			return WebUtils.apiFail(res, 400, result.toString());
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				success: true,
 				message: result.toString()
 			});
@@ -506,30 +503,30 @@ module.exports = (function () {
 	 * @apiError (403) Forbidden If provided user level is not sufficient (at least "login")
 	 */
 	Router.post("/todo", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Insufficient user level: At least \"login\" required");
 		}
 
 		const { url } = req.query;
 		if (!url) {
-			return sb.WebUtils.apiFail(res, 400, "No url provided");
+			return WebUtils.apiFail(res, 400, "No url provided");
 		}
 		else if (!sb.Utils.linkParser.autoRecognize(url)) {
-			return sb.WebUtils.apiFail(res, 400, "Provided url could not be parsed");
+			return WebUtils.apiFail(res, 400, "Provided url could not be parsed");
 		}
 
 		const todoTag = await Tag.selectSingleCustom(q => q.where("Name = %s", "Todo"));
 		const result = await Track.add(url, todoTag.ID, res.locals.authUser.userData.ID);
 
 		if (result.success === true) {
-			return sb.WebUtils.apiSuccess(res, { success: true });
+			return WebUtils.apiSuccess(res, { success: true });
 		}
 		else {
-			return sb.WebUtils.apiFail(res, 400, result.toString());
+			return WebUtils.apiFail(res, 400, result.toString());
 		}
 	});
 

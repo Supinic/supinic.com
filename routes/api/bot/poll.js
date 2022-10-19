@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Poll = require("../../../modules/chat-data/poll.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Poll = require("../../../modules/chat-data/poll.js");
 
 	/**
 	 * @api {get} /bot/poll/list Poll - List
@@ -53,7 +54,7 @@ module.exports = (function () {
 			};
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

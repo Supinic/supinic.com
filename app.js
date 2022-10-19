@@ -33,9 +33,7 @@
 		]
 	});
 
-	// @todo move WebUtils as a require (or import) to all files that need it
-	sb.WebUtils = require("./webutils");
-
+	const WebUtils = require("./utils/webutils.js");
 	const subroutes = [
 		"api",
 		"bot",
@@ -298,7 +296,7 @@
 
 	app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
-		const log = await sb.WebUtils.logRequest(req, routeType);
+		const log = await WebUtils.logRequest(req, routeType);
 		const requestLogSymbol = Symbol.for("request-log-symbol");
 
 		req[requestLogSymbol] = log.insertId;
@@ -550,7 +548,7 @@
 		if (err instanceof URIError) {
 			if (req.path.includes("/api")) {
 				res.set("Content-Type", "application/json");
-				return sb.WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
+				return WebUtils.apiFail(res, 400, "Malformed URI parameter(s)");
 			}
 			else {
 				res.set("Content-Type", "text/html");
@@ -575,7 +573,7 @@
 		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
 			if (err instanceof OAuth2Strategy.AuthorizationError) {
-				const insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
+				const insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
 
 				res.set("Content-Type", "text/html");
 
@@ -587,7 +585,7 @@
 			else {
 				let insertId;
 				if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
-					insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
+					insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
 				}
 
 				res.set("Content-Type", "text/html");

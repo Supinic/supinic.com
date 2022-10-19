@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Origin = require("../../../modules/data/origin.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Origin = require("../../../modules/data/origin.js");
 
 	/**
 	 * @api {get} /data/origin/list Origin - List
@@ -33,10 +34,10 @@ module.exports = (function () {
 		const data = await Origin.fetch();
 		if (req.query.skipReplacedEmotes) {
 			const filtered = data.filter(i => !i.Replaced);
-			return sb.WebUtils.apiSuccess(res, filtered);
+			return WebUtils.apiSuccess(res, filtered);
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data);
 		}
 	});
 
@@ -51,7 +52,7 @@ module.exports = (function () {
 	Router.get("/lookup", async (req, res) => {
 		const { ID } = req.query;
 		if (!ID) {
-			return sb.WebUtils.apiSuccess(res, []);
+			return WebUtils.apiSuccess(res, []);
 		}
 
 		const numberIDs = (typeof ID === "string")
@@ -59,11 +60,11 @@ module.exports = (function () {
 			: ID.map(Number);
 
 		if (numberIDs.some(i => !sb.Utils.isValidInteger(i))) {
-			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+			return WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
 		}
 
 		const data = await Origin.fetch(...numberIDs);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -95,16 +96,16 @@ module.exports = (function () {
 		const { id } = req.params;
 		const originID = Number(id);
 		if (!sb.Utils.isValidInteger(originID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
+			return WebUtils.apiFail(res, 400, "Malformed origin ID provided");
 		}
 
 		const [data] = await Origin.fetch(originID);
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "No origin exists for provided ID");
+			return WebUtils.apiFail(res, 404, "No origin exists for provided ID");
 		}
 
 		const relatedEmotes = await Origin.getRelatedEmotes(originID);
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			...data,
 			Related_Emotes: relatedEmotes
 		});
@@ -114,12 +115,12 @@ module.exports = (function () {
 		const { id } = req.params;
 		const originID = Number(id);
 		if (!sb.Utils.isValidInteger(originID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed origin ID provided");
+			return WebUtils.apiFail(res, 400, "Malformed origin ID provided");
 		}
 
 		const row = await Origin.getRow(originID);
 		if (!row) {
-			return sb.WebUtils.apiFail(res, 404, "Emote not found");
+			return WebUtils.apiFail(res, 404, "Emote not found");
 		}
 
 		const url = Origin.parseURL(row.valuesObject);

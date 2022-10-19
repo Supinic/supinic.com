@@ -1,12 +1,14 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
+const skillExperienceData = require("./osrs-xp.json");
+const reversedSkillExperienceData = skillExperienceData.reverse();
+const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const skillExperienceData = require("./osrs-xp.json");
-	const reversedSkillExperienceData = skillExperienceData.reverse();
-	const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
 
 	// The ordering of these following skills and activities is **very** important!
 	// Old School Runescape API does not provide any info about its values and instead relies on the ordering of
@@ -364,16 +366,16 @@ module.exports = (function () {
 		}
 
 		if (initialResponse.redirectUrls.length !== 0) {
-			return sb.WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
+			return WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
 				redirectUrl: initialResponse.url
 			});
 		}
 		else if (initialResponse.statusCode !== 200) {
 			if (initialResponse.statusCode === 404) {
-				return sb.WebUtils.apiFail(res, 404, "Player not found");
+				return WebUtils.apiFail(res, 404, "Player not found");
 			}
 			else {
-				return sb.WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
+				return WebUtils.apiFail(res, 502, "Old School Runescape API error encountered", {
 					externalResponse: initialResponse.body
 				});
 			}
@@ -496,7 +498,7 @@ module.exports = (function () {
 			result.combatLevel = combatLevelData.level;
 		}
 
-		return sb.WebUtils.apiSuccess(res, result, {
+		return WebUtils.apiSuccess(res, result, {
 			skipCaseConversion: true
 		});
 	});
@@ -511,25 +513,25 @@ module.exports = (function () {
 		const list = await Promise.all(IDs.map(i => fetchActivityData(i)));
 		if (list.some(i => i.success === false)) {
 			const failed = list.filter(i => i.success === false);
-			return sb.WebUtils.apiFail(res, 400, { failed });
+			return WebUtils.apiFail(res, 400, { failed });
 		}
 
 		const data = list.map(i => i.total);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/activity/detail/:ID", async (req, res) => {
 		const ID = Number(req.params.ID);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed activity ID");
+			return WebUtils.apiFail(res, 400, "Malformed activity ID");
 		}
 
 		const result = await fetchActivityData(ID);
 		if (result.success === false) {
-			return sb.WebUtils.apiFail(res, result.statusCode, result.message);
+			return WebUtils.apiFail(res, result.statusCode, result.message);
 		}
 
-		return sb.WebUtils.apiSuccess(res, result.total);
+		return WebUtils.apiSuccess(res, result.total);
 	});
 
 	Router.get("/comparisons", async (req, res) => {

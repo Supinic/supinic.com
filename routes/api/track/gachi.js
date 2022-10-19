@@ -1,9 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Track = require("../../../modules/track/track.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Track = require("../../../modules/track/track.js");
 
 	/**
 	 * @api {get} /track/gachi/random Random Gachimuchi track
@@ -54,12 +56,12 @@ module.exports = (function () {
 
 		const response = await sb.Got("Supinic", `track/detail/${track.ID}`);
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.message, {
+			return WebUtils.apiFail(res, response.statusCode, response.body.message, {
 				causeData: response.body
 			});
 		}
 
-		return sb.WebUtils.apiSuccess(res, response.body.data);
+		return WebUtils.apiSuccess(res, response.body.data);
 	});
 
 	return Router;

@@ -1,8 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const headers = ["ID", "Type", "Title", "Created"];
 
@@ -65,7 +68,7 @@ module.exports = (function () {
 		const { statusCode, body } = await sb.Got("Supinic", `data/changelog/detail/${req.params.id}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(statusCode),
+				error: WebUtils.formatErrorMessage(statusCode),
 				message: body.error.message
 			});
 		}

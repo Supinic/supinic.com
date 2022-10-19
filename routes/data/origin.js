@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const IMAGE_NOT_FOUND_URL = "/static/img/cross.png";
 	const renderListColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
@@ -92,7 +94,7 @@ module.exports = (function () {
 
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				error: WebUtils.formatErrorMessage(response.statusCode),
 				message: response.body.error?.message ?? "N/A"
 			});
 		}
@@ -111,7 +113,7 @@ module.exports = (function () {
 		const response = await sb.Got("Supinic", `data/origin/detail/${id}`);
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				error: WebUtils.formatErrorMessage(response.statusCode),
 				message: response.body.error?.message ?? "N/A"
 			});
 		}

@@ -1,11 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Gachi = require("../modules/gachi.js");
+
 module.exports = (function () {
 	"use strict";
-	
-	const Gachi = require("../modules/gachi.js");
-	const Express = require("express");
-	const Router = Express.Router();
-
-	Gachi.init();
 
 	Router.get("/list", async (req, res) => {
 		const data = await Gachi.getAll();

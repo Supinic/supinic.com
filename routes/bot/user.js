@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const createAliasDetailTable = (res, aliasData) => {
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
@@ -111,7 +113,7 @@ module.exports = (function () {
 			});
 		}
 
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		let headerColumns;
 		if (auth.userData) {
 			if (auth.userData.Name === username.toLowerCase()) {

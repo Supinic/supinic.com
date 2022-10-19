@@ -1,8 +1,8 @@
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	Router.get("/activity/list", async (req, res) => {
 		const { data: rawData } = await sb.Got("Supinic", "osrs/activity/list").json();

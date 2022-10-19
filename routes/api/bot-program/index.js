@@ -1,13 +1,14 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Badge = require("../../../modules/bot-data/badge.js");
+const ChannelBot = require("../../../modules/bot-data/bot.js");
+const Level = require("../../../modules/bot-data/level.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Badge = require("../../../modules/bot-data/badge.js");
-	const ChannelBot = require("../../../modules/bot-data/bot.js");
-	const Level = require("../../../modules/bot-data/level.js");
-	const User = require("../../../modules/chat-data/user-alias.js");
 
 	/**
 	 * @api {get} /bot-program/badge/list Badge - list
@@ -24,7 +25,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/badge/list", async (req, res) => {
 		const data = await Badge.selectAll();
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -38,7 +39,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/level/list", async (req, res) => {
 		const data = await Level.selectAll();
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -127,7 +128,7 @@ module.exports = (function () {
 		});
 
 		const data = await Promise.all(promises);
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			bots: data,
 			badges: badgeList
 		});
@@ -145,12 +146,12 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
 	Router.put("/bot/active", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const botData = await User.getByID(auth.userID);
@@ -159,7 +160,7 @@ module.exports = (function () {
 		);
 
 		if (!exists) {
-			return sb.WebUtils.apiFail(res, 400, "You are not being tracked as a bot");
+			return WebUtils.apiFail(res, 400, "You are not being tracked as a bot");
 		}
 
 		await ChannelBot.updateCustom(
@@ -167,7 +168,7 @@ module.exports = (function () {
 			q => q.where("Bot_Alias = %n", botData.ID)
 		);
 
-		return sb.WebUtils.apiSuccess(res, { success: true });
+		return WebUtils.apiSuccess(res, { success: true });
 	});
 
 	return Router;

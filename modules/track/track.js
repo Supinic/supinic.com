@@ -1,17 +1,19 @@
+const Result = require("../result.js");
+const TemplateModule = require("../template.js");
+
+const Author = require("./author.js");
+const Tag = require("./tag.js");
+const TrackAuthor = require("./track-author.js");
+const TrackTag = require("./track-tag.js");
+const VideoType = require("../data/video-type.js");
+const TrackRelationship = require("./track-relationship.js");
+const User = require("../chat-data/user-alias.js");
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
 	const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
-	const Result = require("../result.js");
-	const TemplateModule = require("../template.js");
-
-	const Author = require("./author.js");
-	const Tag = require("./tag.js");
-	const TrackAuthor = require("./track-author.js");
-	const TrackTag = require("./track-tag.js");
-	const VideoType = require("../data/video-type.js");
-	const TrackRelationship = require("./track-relationship.js");
-	const User = require("../chat-data/user-alias.js");
 
 	class Track extends TemplateModule {
 		static async list (specificIDs) {
@@ -401,11 +403,11 @@ module.exports = (function () {
 				targetUserID = userData?.ID ?? null;
 			}
 
-			await sb.WebUtils.loadVideoTypes();
+			await WebUtils.loadVideoTypes();
 			for (let i = data.length - 1; i >= 0; i--) {
 				const track = data[i];
 
-				track.Parsed_Link = sb.WebUtils.parseVideoLink(track.Video_Type, track.Link);
+				track.Parsed_Link = WebUtils.parseVideoLink(track.Video_Type, track.Link);
 
 				if (targetUserID !== null) {
 					if (!track.Fan) {

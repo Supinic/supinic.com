@@ -1,10 +1,11 @@
 // noinspection JSUnusedLocalSymbols
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const rules = sb.Utils.tag.trim `
 	    <h6>Before requesting:</h6>
@@ -34,7 +35,7 @@ module.exports = (function () {
 	`;
 
 	Router.get("/form", async (req, res) => {
-		const { userData } = await sb.WebUtils.getUserLevel(req, res);
+		const { userData } = await WebUtils.getUserLevel(req, res);
 		if (!userData) {
 			return res.render("generic", {
 				data: `

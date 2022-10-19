@@ -1,15 +1,16 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const User = require("../../../modules/chat-data/user-alias.js");
+const Suggestion = require("../../../modules/data/suggestion.js");
+const Columns = require("../../../modules/internal/columns.js");
+const WebUtils = require("../../../utils/webutils.js");
+
+const nonAdminStatuses = ["Dismissed by author"];
+const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const User = require("../../../modules/chat-data/user-alias.js");
-	const Suggestion = require("../../../modules/data/suggestion.js");
-	const Columns = require("../../../modules/internal/columns.js");
-
-	const nonAdminStatuses = ["Dismissed by author"];
-	const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
 
 	/**
 	 * @param {Request} req
@@ -53,7 +54,7 @@ module.exports = (function () {
 	 */
 	Router.get("/status/list", async (req, res) => {
 		const data = await Columns.getEnumColumnOptions("data", "Suggestion", "Status");
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -66,7 +67,7 @@ module.exports = (function () {
 	 */
 	Router.get("/category/list", async (req, res) => {
 		const data = await Columns.getEnumColumnOptions("data", "Suggestion", "Category");
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -88,16 +89,16 @@ module.exports = (function () {
 		if (req.query.limit) {
 			limit = Number(req.query.limit);
 			if (!sb.Utils.isValidInteger(limit)) {
-				return sb.WebUtils.apiFail(res, 400, "Invalid integer provided as limit");
+				return WebUtils.apiFail(res, 400, "Invalid integer provided as limit");
 			}
 		}
 
 		const data = await Suggestion.stats();
 		if (limit) {
-			return sb.WebUtils.apiSuccess(res, data.slice(0, limit));
+			return WebUtils.apiSuccess(res, data.slice(0, limit));
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data);
 		}
 	});
 
@@ -116,11 +117,11 @@ module.exports = (function () {
 	Router.get("/stats/user/:user", async (req, res) => {
 		const userData = await User.getByName(req.params.user);
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 404, "User not found");
+			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
 		const data = await Suggestion.userStats(userData.ID);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -147,7 +148,7 @@ module.exports = (function () {
 
 		const userID = await fetchUserID(req);
 		const data = await Suggestion.list({ category, status, userID });
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -174,7 +175,7 @@ module.exports = (function () {
 			status: [null, "Approved", "Blocked"]
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -201,14 +202,14 @@ module.exports = (function () {
 			status: ["Completed", "Denied", "Dismissed", "Dimissed by author", "Moved to Github"]
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/list/client", async (req, res) => {
 		const data = await Suggestion.list();
 		const resultData = prettifyData(data);
 
-		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+		return WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	Router.get("/list/active/client", async (req, res) => {
@@ -219,7 +220,7 @@ module.exports = (function () {
 		});
 
 		const resultData = prettifyData(data);
-		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+		return WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	Router.get("/list/resolved/client", async (req, res) => {
@@ -230,7 +231,7 @@ module.exports = (function () {
 		});
 
 		const resultData = prettifyData(data);
-		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+		return WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	/**
@@ -243,7 +244,7 @@ module.exports = (function () {
 	Router.get("/meta", async (req, res) => {
 		const columns = ["Author", "Text", "Status", "Priority", "Update", "ID"];
 		const count = await Suggestion.count();
-		return sb.WebUtils.apiSuccess(res, { columns, count });
+		return WebUtils.apiSuccess(res, { columns, count });
 	});
 
 	/**
@@ -267,7 +268,7 @@ module.exports = (function () {
 	Router.get("/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed suggestion ID");
+			return WebUtils.apiFail(res, 400, "Malformed suggestion ID");
 		}
 
 		const data = await Suggestion.selectSingleCustom(q => q
@@ -277,13 +278,13 @@ module.exports = (function () {
 		);
 
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "Suggestion does not exist");
+			return WebUtils.apiFail(res, 404, "Suggestion does not exist");
 		}
 		else {
 			data.User_ID = data.User_Alias;
 			delete data.User_Alias;
 
-			return sb.WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data);
 		}
 	});
 
@@ -312,31 +313,31 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
 	Router.put("/", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const { ID: rawID, category, text, addendum, notes, status } = req.query;
 		const ID = Number(rawID);
 
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid ID provided");
+			return WebUtils.apiFail(res, 400, "Invalid ID provided");
 		}
 
 		const row = await Suggestion.getRow(ID);
 		if (row === null) {
-			return sb.WebUtils.apiFail(res, 400, "Suggestion ID does not exists");
+			return WebUtils.apiFail(res, 400, "Suggestion ID does not exists");
 		}
 		else if (text && addendum) {
-			return sb.WebUtils.apiFail(res, 400, "Cannot use both addendum and text parameters in the same request");
+			return WebUtils.apiFail(res, 400, "Cannot use both addendum and text parameters in the same request");
 		}
 
 		// If the user has admin level, let them do whatever.
-		if (sb.WebUtils.compareLevels(auth.level, "admin")) {
+		if (WebUtils.compareLevels(auth.level, "admin")) {
 			row.setValues({
 				Category: category ?? row.values.Category,
 				Notes: notes ?? row.values.Notes,
@@ -347,13 +348,13 @@ module.exports = (function () {
 		// Otherwise, restrictions apply.
 		else {
 			if (row.values.User_Alias !== auth.userID) {
-				return sb.WebUtils.apiFail(res, 400, "You cannot edit this suggestion - it does not belong to you");
+				return WebUtils.apiFail(res, 400, "You cannot edit this suggestion - it does not belong to you");
 			}
 			else if (lockedStatuses.includes(row.values.Status)) {
-				return sb.WebUtils.apiFail(res, 400, "You cannot edit this suggestion - its status has been locked");
+				return WebUtils.apiFail(res, 400, "You cannot edit this suggestion - its status has been locked");
 			}
 			else if (status && !nonAdminStatuses.includes(status)) {
-				return sb.WebUtils.apiFail(res, 400, "Cannot set this status");
+				return WebUtils.apiFail(res, 400, "Cannot set this status");
 			}
 
 			row.setValues({
@@ -372,10 +373,10 @@ module.exports = (function () {
 		}
 		catch (e) {
 			console.error(e);
-			return sb.WebUtils.apiFail(res, 400, "Error raised while saving suggestion - check your status/category");
+			return WebUtils.apiFail(res, 400, "Error raised while saving suggestion - check your status/category");
 		}
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			success: true
 		});
 	});

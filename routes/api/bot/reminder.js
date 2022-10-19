@@ -1,31 +1,32 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Reminder = require("../../../modules/chat-data/reminder.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Reminder = require("../../../modules/chat-data/reminder.js");
-
 	const fetchReminderDetail = async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const reminderID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(reminderID)) {
-			return sb.WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
+			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
 		}
 
 		const row = await Reminder.getRow(reminderID);
 		if (!row) {
-			return sb.WebUtils.apiFail(res, 400, "Reminder ID does not exist");
+			return WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
 		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
-			return sb.WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
+			return WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
 
 		const data = await Reminder.selectSingleCustom(q => q
@@ -60,16 +61,16 @@ module.exports = (function () {
 	};
 
 	const fetchReminderList = async (req, res, type = "all", specific = []) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const data = await Reminder.listByUser(auth.userID, type, specific);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	};
 
 	/**
@@ -135,20 +136,20 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.post("/", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const { username } = req.query;
 		if (!username) {
-			return sb.WebUtils.apiFail(res, 400, "No target username provided");
+			return WebUtils.apiFail(res, 400, "No target username provided");
 		}
 		else if (/\s+/.test(username)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed username provided - whitespace is not allowed");
+			return WebUtils.apiFail(res, 400, "Malformed username provided - whitespace is not allowed");
 		}
 
 		const reminderText = req.query.text ?? "";
@@ -171,7 +172,7 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
@@ -179,19 +180,19 @@ module.exports = (function () {
 
 		const { data, error } = response.body;
 		if (!data || response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, {
+			return WebUtils.apiFail(res, response.statusCode, {
 				reply: error?.message
 			});
 		}
 
 		const { result } = data;
 		if (result.success === false) {
-			return sb.WebUtils.apiFail(res, 400, {
+			return WebUtils.apiFail(res, 400, {
 				reply: result.reply
 			});
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reply: result.reply
 			});
 		}
@@ -200,7 +201,7 @@ module.exports = (function () {
 	Router.get("/lookup", async (req, res) => {
 		const { ID } = req.query;
 		if (!ID) {
-			return sb.WebUtils.apiSuccess(res, []);
+			return WebUtils.apiSuccess(res, []);
 		}
 
 		const numberIDs = (typeof ID === "string")
@@ -208,7 +209,7 @@ module.exports = (function () {
 			: ID.map(Number);
 
 		if (numberIDs.some(i => !sb.Utils.isValidInteger(i))) {
-			return sb.WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
+			return WebUtils.apiFail(res, 400, "One or more invalid IDs requested");
 		}
 
 		return await fetchReminderList(req, res, "specific", numberIDs);
@@ -244,7 +245,7 @@ module.exports = (function () {
 		}
 
 		const { data } = check;
-		return sb.WebUtils.apiSuccess(res, ({
+		return WebUtils.apiSuccess(res, ({
 			ID: data.ID,
 			Sender: data.Sender_Name,
 			Recipient: data.Recipient_Name,
@@ -283,7 +284,7 @@ module.exports = (function () {
 
 		const { reminderID: ID, row } = check;
 		if (row.values.Active === false) {
-			return sb.WebUtils.apiFail(res, 400, "Reminder has been unset already");
+			return WebUtils.apiFail(res, 400, "Reminder has been unset already");
 		}
 
 		row.values.Active = false;
@@ -296,14 +297,14 @@ module.exports = (function () {
 		});
 
 		if (statusCode !== 200) {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reminderID: ID,
 				botResult: body,
 				message: "Reminder unset successfully - but the bot failed to reload"
 			});
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reminderID: ID,
 				botResult: body,
 				message: "Reminder unset successfully"

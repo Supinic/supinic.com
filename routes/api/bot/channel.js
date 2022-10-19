@@ -3,10 +3,10 @@ const Router = Express.Router();
 
 const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
 const Channel = require("../../../modules/chat-data/channel");
+const WebUtils = require("../../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
-
 
 	/**
 	 * @api {get} /bot/channel/list/ Channel - list
@@ -51,7 +51,7 @@ module.exports = (function () {
 			return (i.Platform_Name.toLowerCase() === platform);
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -71,17 +71,17 @@ module.exports = (function () {
 	Router.get("/previousList", async (req, res) => {
 		const { twitchUserID, username } = req.query;
 		if (!username && !twitchUserID) {
-			return sb.WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
+			return WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
 		}
 		else if (username && twitchUserID) {
-			return sb.WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
+			return WebUtils.apiFail(res, 400, "Exactly one parameter must be provided: username or twitchUserID");
 		}
 
 		let userID = twitchUserID;
 		if (username) {
 			userID = await sb.Utils.getTwitchID(username);
 			if (!userID) {
-				return sb.WebUtils.apiFail(res, 404, "Provided username does not exist on Twitch");
+				return WebUtils.apiFail(res, 404, "Provided username does not exist on Twitch");
 			}
 		}
 
@@ -99,13 +99,13 @@ module.exports = (function () {
 			return q;
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
 		const channelID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(channelID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+			return WebUtils.apiFail(res, 400, "Malformed channel ID");
 		}
 
 		const channelData = await Channel.selectSingleCustom(q => q
@@ -116,7 +116,7 @@ module.exports = (function () {
 		);
 
 		if (!channelData) {
-			return sb.WebUtils.apiFail(res, 404, "Channel ID does not exist");
+			return WebUtils.apiFail(res, 404, "Channel ID does not exist");
 		}
 
 		const ambassadorList = await Channel.getAmbassadorList(channelID);
@@ -131,7 +131,7 @@ module.exports = (function () {
 			ambassadorList
 		};
 
-		return sb.WebUtils.apiSuccess(res, data, {
+		return WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
 	});
@@ -157,12 +157,12 @@ module.exports = (function () {
 	Router.get("/detail/:channel/alias/list", async (req, res) => {
 		const channelID = Number(req.params.channel);
 		if (!sb.Utils.isValidInteger(channelID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+			return WebUtils.apiFail(res, 400, "Malformed channel ID");
 		}
 
 		const exists = await Channel.exists(channelID);
 		if (!exists) {
-			return sb.WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
+			return WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
 		}
 
 		const data = await CustomCommandAlias.fetchForUser({
@@ -170,7 +170,7 @@ module.exports = (function () {
 			includeArguments: true
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -194,12 +194,12 @@ module.exports = (function () {
 	Router.get("/detail/:channel/alias/detail/:alias", async (req, res) => {
 		const channelID = Number(req.params.channel);
 		if (!sb.Utils.isValidInteger(channelID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+			return WebUtils.apiFail(res, 400, "Malformed channel ID");
 		}
 
 		const exists = await Channel.exists(channelID);
 		if (!exists) {
-			return sb.WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
+			return WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
 		}
 
 		const data = await CustomCommandAlias.fetchForUser({
@@ -208,7 +208,7 @@ module.exports = (function () {
 			includeArguments: true
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

@@ -1,8 +1,8 @@
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	Router.get("/markov/:channelID/words", async (req, res) => {
 		const channelID = Number(req.params.channelID);

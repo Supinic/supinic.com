@@ -1,4 +1,4 @@
-const User = require("./modules/chat-data/user-alias.js");
+const User = require("../modules/chat-data/user-alias.js");
 
 module.exports = class WebUtils {
 	static #localRequests = new Map();
@@ -118,6 +118,10 @@ module.exports = class WebUtils {
 		res.redirect(`${replacement}?${stringify(obj)}`);
 	}
 
+	/**
+	 * @param {number} statusCode
+	 * @returns {string}
+	 */
 	static formatErrorMessage (statusCode) {
 		const message = WebUtils.#requestMessages[statusCode];
 		return (message)
@@ -134,7 +138,7 @@ module.exports = class WebUtils {
 	 */
 	static handleError (res, statusCode, message) {
 		return res.status(statusCode).render("error", {
-			error: sb.WebUtils.formatErrorMessage(statusCode),
+			error: WebUtils.formatErrorMessage(statusCode),
 			message: message ?? "(no error message)"
 		});
 	}

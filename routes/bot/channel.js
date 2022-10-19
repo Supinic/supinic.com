@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Channel = require("../../modules/chat-data/channel.js");
+const Throughput = require("../../modules/messages.js");
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Channel = require("../../modules/chat-data/channel.js");
-	const Throughput = require("../../modules/messages.js");
 
 	Router.get("/list", async (req, res) => {
 		const { data: rawData } = await sb.Got("Supinic", "bot/channel/list").json();
@@ -165,7 +166,7 @@ module.exports = (function () {
 
 		const response = await sb.Got("Supinic", `ot/channel/detail/${channelID}/alias/list`);
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.handleError(res, response.statusCode, response.body.error?.message);
+			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
 		const headerColumns = ["Name", "Invocation", "Created"];

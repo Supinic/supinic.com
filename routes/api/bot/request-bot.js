@@ -1,23 +1,24 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Channel = require("../../../modules/chat-data/channel.js");
+const Platform = require("../../../modules/chat-data/platform.js");
+const Suggestion = require("../../../modules/data/suggestion.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Channel = require("../../../modules/chat-data/channel.js");
-	const Platform = require("../../../modules/chat-data/platform.js");
-	const Suggestion = require("../../../modules/data/suggestion.js");
-	const User = require("../../../modules/chat-data/user-alias.js");
-
 	Router.post("/", async (req, res) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		const { userID } = await WebUtils.getUserLevel(req, res);
 		if (!userID) {
-			return sb.WebUtils.apiFail(res, 401, "Not logged in");
+			return WebUtils.apiFail(res, 401, "Not logged in");
 		}
 
 		const { description, platform, renamedChannel, targetChannel } = req.body;
 		if (!targetChannel && !renamedChannel) {
-			return sb.WebUtils.apiFail(res, 400, "No target or rename channel provided");
+			return WebUtils.apiFail(res, 400, "No target or rename channel provided");
 		}
 
 		const platformData = await Platform.selectSingleCustom(q => q
@@ -25,7 +26,7 @@ module.exports = (function () {
 		);
 
 		if (!platformData) {
-			return sb.WebUtils.apiFail(res, 404, "Provided platform has not been found");
+			return WebUtils.apiFail(res, 404, "Provided platform has not been found");
 		}
 
 		if (renamedChannel) {
@@ -34,16 +35,16 @@ module.exports = (function () {
 			const currentChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", userData.Name));
 
 			if (!previousChannel) {
-				return sb.WebUtils.apiFail(res, 400, "Provided channel has not been found");
+				return WebUtils.apiFail(res, 400, "Provided channel has not been found");
 			}
 			else if (previousChannel.Name === userData.Name) {
-				return sb.WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
+				return WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
 			}
 
 			const currentChannelID = await sb.Utils.getTwitchID(userData.Name);
 			const previousChannelID = previousChannel.Specific_ID;
 			if (currentChannelID !== previousChannelID) {
-				return sb.WebUtils.apiFail(res, 400, "Renaming verification did not pass");
+				return WebUtils.apiFail(res, 400, "Renaming verification did not pass");
 			}
 
 			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
@@ -74,7 +75,7 @@ module.exports = (function () {
 				});
 			}
 
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				success: true,
 				suggestionID: null
 			});
@@ -89,20 +90,20 @@ module.exports = (function () {
 			if (exists.Mode === "Inactive") {
 				const { inactiveReason = "unknown" } = JSON.parse(exists.Data ?? "{}");
 
-				return sb.WebUtils.apiFail(
+				return WebUtils.apiFail(
 					res,
 					409,
 					`The bot has been removed from target channel, reason: ${inactiveReason}`
 				);
 			}
 			else {
-				return sb.WebUtils.apiFail(res, 400, "Target channel already has the bot");
+				return WebUtils.apiFail(res, 400, "Target channel already has the bot");
 			}
 		}
 
 		const twitchChannelID = await sb.Utils.getTwitchID(targetChannel);
 		if (platformData.Name === "Twitch" && twitchChannelID === null) {
-			return sb.WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
+			return WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
 		}
 
 		const userData = await User.getByID(userID);
@@ -112,7 +113,7 @@ module.exports = (function () {
 			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {
-				return sb.WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
+				return WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
 			}
 		}
 
@@ -124,7 +125,7 @@ module.exports = (function () {
 		);
 
 		if (requestPending) {
-			return sb.WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
+			return WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
 		}
 
 		let extraNotes = "";
@@ -212,7 +213,7 @@ module.exports = (function () {
 			Notes: `Requested via website form`
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			success: true,
 			suggestionID: insertId
 		});

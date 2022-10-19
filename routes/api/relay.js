@@ -1,18 +1,19 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const LinkRelay = require("../../modules/internal/relay.js");
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const LinkRelay = require("../../modules/internal/relay.js");
 
 	Router.post("/", async (req, res) => {
 		const { url } = req.body;
 		if (!url) {
-			return sb.WebUtils.apiFail(res, 404, "No URL provided");
+			return WebUtils.apiFail(res, 404, "No URL provided");
 		}
 		else if (!url.startsWith("/")) {
-			return sb.WebUtils.apiFail(res, 400, "URL must being with a single slash");
+			return WebUtils.apiFail(res, 400, "URL must being with a single slash");
 		}
 
 		const crypto = require("crypto");
@@ -28,7 +29,7 @@ module.exports = (function () {
 
 		const exists = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));
 		if (exists) {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				created: false,
 				identifier: digest,
 				link: `https://supinic.com/relay/${digest}`
@@ -41,7 +42,7 @@ module.exports = (function () {
 			Type: "Local"
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			created: true,
 			identifier: digest,
 			link: `https://supinic.com/relay/${digest}`
@@ -52,10 +53,10 @@ module.exports = (function () {
 		const { digest } = req.params;
 		const relay = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));
 		if (!relay) {
-			return sb.WebUtils.apiFail(res, 404, "No such relay exists");
+			return WebUtils.apiFail(res, 404, "No such relay exists");
 		}
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			hash: relay.Hash,
 			link: relay.Link,
 			type: relay.Type,

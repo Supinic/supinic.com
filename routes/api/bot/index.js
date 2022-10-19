@@ -1,8 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
 	const subroutes = [
 		["afk", "afk.js"],
 		["channel", "channel.js"],
@@ -40,7 +43,7 @@ module.exports = (function () {
 	 * @apiSuccess {string} [lastSeen] If the bot verifies, this is the date of last verification - as ISO string
 	 * @apiSuccess {number} [lastSeenTimestamp] If the bot verifies, this is the date of last verification - as timestamp
 	 **/
-	Router.get("/active", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+	Router.get("/active", async (req, res) => WebUtils.apiDeprecated(req, res, {
 		original: "/api/bot/active",
 		replacement: "/api/bot-program/bot/list",
 		timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()
@@ -57,7 +60,7 @@ module.exports = (function () {
 	 * @apiError (401) Unauthorized Authorization failed
 	 * @apiError (403) AccessDenied Not logged in
 	 **/
-	Router.put("/active", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+	Router.put("/active", async (req, res) => WebUtils.apiDeprecated(req, res, {
 		original: "/api/bot/active",
 		replacement: "/api/bot-program/bot/active",
 		timestamp: new sb.Date("2020-03-31 23:59:59.999").valueOf()

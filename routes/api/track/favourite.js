@@ -1,38 +1,39 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Track = require("../../../modules/track/track.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+const UserFavourite = require("../../../modules/track/user-favourite.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Track = require("../../../modules/track/track.js");
-	const User = require("../../../modules/chat-data/user-alias.js");
-	const UserFavourite = require("../../../modules/track/user-favourite.js");
 
 	Router.get("/user/:userID/track/:trackID", async (req, res) => {
 		const { userID: rawUserID, trackID: rawTrackID } = req.params;
 		const userID = Number(rawUserID);
 		const trackID = Number(rawTrackID);
 		if (!userID || !trackID) {
-			return sb.WebUtils.apiFail(res, 400, "Track or user ID not provided properly");
+			return WebUtils.apiFail(res, 400, "Track or user ID not provided properly");
 		}
 
 		const data = await UserFavourite.get({ trackID, userID });
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.put("/track/:id", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const { id } = req.params;
 		const trackID = Number(id);
 		if (!trackID) {
-			return sb.WebUtils.apiFail(res, 400, "Track ID not provided properly");
+			return WebUtils.apiFail(res, 400, "Track ID not provided properly");
 		}
 
 		const exists = await UserFavourite.get({ trackID, userID: auth.userID });
@@ -48,7 +49,7 @@ module.exports = (function () {
 			UserFavourite.getActiveForTrack(trackID)
 		]);
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			success: true,
 			active: currentStatus.Active,
 			amount: currentActiveList.length
@@ -59,21 +60,21 @@ module.exports = (function () {
 		const { id } = req.params;
 		const userData = await User.getByID(Number(id));
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 400, "Provided user ID does not exist");
+			return WebUtils.apiFail(res, 400, "Provided user ID does not exist");
 		}
 
 		const data = await UserFavourite.getForUser(userData.ID);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/track/:id", async (req, res) => {
 		const trackID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(trackID) || !await Track.exists(trackID)) {
-			return sb.WebUtils.apiFail(res, 400, "Provided track ID does not exist");
+			return WebUtils.apiFail(res, 400, "Provided track ID does not exist");
 		}
 
 		const data = await UserFavourite.getForTrack(trackID);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/list", async (req, res) => {
@@ -90,7 +91,7 @@ module.exports = (function () {
 				on: "Track.ID = User_Favourite.Track"
 			})
 		);
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

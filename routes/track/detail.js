@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	Router.get("/", async (req, res) => res.sendStatus(200));
 
@@ -118,7 +120,7 @@ module.exports = (function () {
 		};
 
 		let favourite = "none";
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			// data can be null (if no favourite exists) or a proper API response
 			const { data } = await sb.Got("Supinic", {

@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Gachi = require("../../modules/gachi.js");
+
 module.exports = (function () {
 	"use strict";
-	const Express = require("express");
-	const Router = Express.Router();
-	const Gachi = require("../../modules/gachi.js");
 
 	const fail = (res, data) => {
 		res.type("application/json")

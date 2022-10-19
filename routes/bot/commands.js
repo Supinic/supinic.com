@@ -1,26 +1,27 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const CommandExecution = require("../../modules/chat-data/command-execution.js");
+const User = require("../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../utils/webutils.js");
+
+const baseGithubCommandPath = "https://github.com/Supinic/supibot-package-manager/tree/master/commands";
+const filterTypeMap = {
+	Blacklist: "These users/channels are banned from this command",
+	Whitelist: "Only these users/channels can use this command",
+	"Opt-out": "These users opted out from this command",
+	Arguments: "Disabled specific arguments",
+	"Offline-only": "Only available while channel is offline",
+	"Online-only": "Only available while channel is online",
+	Unmention: "These users will not be mentioned by this command",
+	Unping: "These users will not be \"pinged\" by this command"
+};
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const CommandExecution = require("../../modules/chat-data/command-execution.js");
-	const User = require("../../modules/chat-data/user-alias.js");
-
-	const baseGithubCommandPath = "https://github.com/Supinic/supibot-package-manager/tree/master/commands";
-	const filterTypeMap = {
-		Blacklist: "These users/channels are banned from this command",
-		Whitelist: "Only these users/channels can use this command",
-		"Opt-out": "These users opted out from this command",
-		Arguments: "Disabled specific arguments",
-		"Offline-only": "Only available while channel is offline",
-		"Online-only": "Only available while channel is online",
-		Unmention: "These users will not be mentioned by this command",
-		Unping: "These users will not be \"pinged\" by this command"
-	};
-
 	Router.get("/run", async (req, res) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		const { userID } = await WebUtils.getUserLevel(req, res);
 		if (!userID) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
@@ -187,7 +188,7 @@ module.exports = (function () {
 		});
 
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.handleError(res, response.statusCode, response.body.error?.message);
+			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
 		const commandInfo = response.body.data;
@@ -204,7 +205,7 @@ module.exports = (function () {
 				: "N/A"
 		};
 
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			const response = await sb.Got("Supibot", {
 				url: "filter/userCommand",
@@ -337,7 +338,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		return sb.WebUtils.apiFail(res, 410, "Endpoint retired");
+		return WebUtils.apiFail(res, 410, "Endpoint retired");
 	});
 
 	Router.get("/channel/:channel/", async (req, res) => {

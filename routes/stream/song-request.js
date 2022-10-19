@@ -1,8 +1,8 @@
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const print = async (data, ...extraFields) => {
 		return data.map(track => {

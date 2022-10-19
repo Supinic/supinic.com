@@ -1,19 +1,20 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Channel = require("../../../modules/chat-data/channel.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Channel = require("../../../modules/chat-data/channel.js");
-	const User = require("../../../modules/chat-data/user-alias.js");
-
 	const partOrJoin = async (type, req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		let query;
@@ -24,7 +25,7 @@ module.exports = (function () {
 			query = (q) => q.where("Specific_ID = %s", req.body.channelID);
 		}
 		else {
-			return sb.WebUtils.apiFail(res, 400, "Endpoint requires channelName or channelID");
+			return WebUtils.apiFail(res, 400, "Endpoint requires channelName or channelID");
 		}
 
 		const channel = await Channel.selectSingleCustom(q => {
@@ -33,15 +34,15 @@ module.exports = (function () {
 			return q;
 		});
 		if (!channel) {
-			return sb.WebUtils.apiFail(res, 404, "Channel does not exist");
+			return WebUtils.apiFail(res, 404, "Channel does not exist");
 		}
 
 		const banWavePartPermissions = await User.getDataProperty(auth.userData.ID, "banWavePartPermissions");
 		if (!banWavePartPermissions) {
-			return sb.WebUtils.apiFail(res, 401, "Endpoint requires banwave-part permissions");
+			return WebUtils.apiFail(res, 401, "Endpoint requires banwave-part permissions");
 		}
 		else if (!banWavePartPermissions.includes(channel.ID)) {
-			return sb.WebUtils.apiFail(res, 401, "You don't have banwave-part permission for this channel");
+			return WebUtils.apiFail(res, 401, "You don't have banwave-part permission for this channel");
 		}
 
 		let response;
@@ -54,17 +55,17 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
 		}
 
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
+			return WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, { message: "OK" });
+			return WebUtils.apiSuccess(res, { message: "OK" });
 		}
 	};
 

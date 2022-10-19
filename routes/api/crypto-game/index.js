@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Asset = require("../../../modules/crypto-game/asset.js");
+const Portfolio = require("../../../modules/crypto-game/portfolio.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Asset = require("../../../modules/crypto-game/asset.js");
-	const Portfolio = require("../../../modules/crypto-game/portfolio.js");
 
 	/**
 	 * @api {get} /crypto-game/asset/list Crypto-game asset list with prices
@@ -23,7 +24,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/asset/list", async (req, res) => {
 		const data = await Asset.selectAll();
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -36,7 +37,7 @@ module.exports = (function () {
 	 **/
 	Router.get("/portfolio/list", async (req, res) => {
 		const data = await Portfolio.getList();
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

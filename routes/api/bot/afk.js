@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const AFK = require("../../../modules/chat-data/afk.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const AFK = require("../../../modules/chat-data/afk.js");
-	const User = require("../../../modules/chat-data/user-alias.js");
 
 	/**
 	 * @api {get} /bot/afk/list AFK - Get list
@@ -32,7 +33,7 @@ module.exports = (function () {
 			Silent: Boolean(i.Silent)
 		}));
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -59,13 +60,13 @@ module.exports = (function () {
 	Router.get("/check", async (req, res) => {
 		const { username, userID } = req.query;
 		if (!username && !userID) {
-			return sb.WebUtils.apiFail(res, 400, "No user name or ID provided");
+			return WebUtils.apiFail(res, 400, "No user name or ID provided");
 		}
 		else if (username && userID) {
-			return sb.WebUtils.apiFail(res, 400, "Both user name and ID provided");
+			return WebUtils.apiFail(res, 400, "Both user name and ID provided");
 		}
 		else if (userID && !sb.Utils.isValidInteger(Number(userID))) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed ID provided");
+			return WebUtils.apiFail(res, 400, "Malformed ID provided");
 		}
 
 		let userData;
@@ -77,7 +78,7 @@ module.exports = (function () {
 		}
 
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 400, "Provided user identifier could not be resolved");
+			return WebUtils.apiFail(res, 400, "Provided user identifier could not be resolved");
 		}
 
 		const rawData = await AFK.selectSingleCustom(q => q
@@ -87,7 +88,7 @@ module.exports = (function () {
 			.join("chat_data", "User_Alias")
 		);
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			status: (rawData)
 				? {
 					ID: rawData.ID,
@@ -104,7 +105,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/checkMultiple", async (req, res) => {
-		return sb.WebUtils.apiFail(res, 410, "Endpoint removed, use api/bot/afk/check");
+		return WebUtils.apiFail(res, 410, "Endpoint removed, use api/bot/afk/check");
 	});
 
 	/**
@@ -121,12 +122,12 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.post("/", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		let response;
@@ -143,7 +144,7 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
@@ -151,19 +152,19 @@ module.exports = (function () {
 
 		const { data, error } = response.body;
 		if (!data || response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, {
+			return WebUtils.apiFail(res, response.statusCode, {
 				reply: error?.message
 			});
 		}
 
 		const { result } = data;
 		if (result.success === false) {
-			return sb.WebUtils.apiFail(res, 400, {
+			return WebUtils.apiFail(res, 400, {
 				reply: result.reply
 			});
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reply: result.reply
 			});
 		}
@@ -182,12 +183,12 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.post("/unset", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const check = await AFK.selectSingleCustom(q => q
@@ -195,7 +196,7 @@ module.exports = (function () {
 			.where("Active = %b", true)
 		);
 		if (!check || !check.Active) {
-			return sb.WebUtils.apiFail(res, 400, "You are not AFK, and as such cannot unset the status");
+			return WebUtils.apiFail(res, 400, "You are not AFK, and as such cannot unset the status");
 		}
 
 		await AFK.update(check.ID, { Active: false });
@@ -206,7 +207,7 @@ module.exports = (function () {
 			}
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			statusID: check.ID,
 			message: "Unset successfully"
 		});

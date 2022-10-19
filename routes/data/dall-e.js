@@ -1,10 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
+const metaCache = new Map();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const metaCache = new Map();
 
 	Router.get("/list", async (req, res) => {
 		res.render("generic-ajax-list-table", {
@@ -32,7 +34,7 @@ module.exports = (function () {
 			const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/meta`);
 			if (response.statusCode !== 200) {
 				return res.status(response.statusCode).render("error", {
-					error: sb.WebUtils.formatErrorMessage(response.statusCode),
+					error: WebUtils.formatErrorMessage(response.statusCode),
 					message: response.body.error.message
 				});
 			}
@@ -68,7 +70,7 @@ module.exports = (function () {
 		const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/preview/${index}`);
 		if (response.statusCode === 400) {
 			return res.status(400).render("error", {
-				error: sb.WebUtils.formatErrorMessage(400),
+				error: WebUtils.formatErrorMessage(400),
 				message: "Invalid parameters provided"
 			});
 		}

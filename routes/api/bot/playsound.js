@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Config = require("../../../modules/data/config.js");
+const Playsound = require("../../../modules/data/playsound.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Config = require("../../../modules/data/config.js");
-	const Playsound = require("../../../modules/data/playsound.js");
 
 	/**
 	 * @api {get} /bot/playsound/enabled Playsound - Enabled
@@ -20,7 +21,7 @@ module.exports = (function () {
 			.where("Name = %s", "PLAYSOUNDS_ENABLED")
 		);
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			enabled: Boolean(Number(status.Value))
 		});
 	});
@@ -45,7 +46,7 @@ module.exports = (function () {
 			notes: i.Notes
 		}))
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

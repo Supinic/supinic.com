@@ -1,7 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-	const Express = require("express");
-	const Router = Express.Router();
 
 	/**
 	 * @api {get} /trackData/fetch/ Fetch track data
@@ -30,7 +33,7 @@ module.exports = (function () {
 	Router.get("/fetch", async (req, res) => {
 		const url = req.query.url;
 		if (!url) {
-			sb.WebUtils.apiFail(res, 400, "No URL provided");
+			WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
 		try {
@@ -39,10 +42,10 @@ module.exports = (function () {
 				data.createdTimestamp = data.created.valueOf();
 			}
 
-			return sb.WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data);
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 400, "Link could not be parsed");
+			return WebUtils.apiFail(res, 400, "Link could not be parsed");
 		}
 	});
 
@@ -60,18 +63,18 @@ module.exports = (function () {
 	Router.get("/available", async (req, res) => {
 		const url = req.query.url;
 		if (!url) {
-			sb.WebUtils.apiFail(res, 400, "No URL provided");
+			WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
 		try {
 			const isAvailable = await sb.Utils.linkParser.checkAvailable(url);
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				available: isAvailable,
 				link: url
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 400, "Link could not be parsed");
+			return WebUtils.apiFail(res, 400, "Link could not be parsed");
 		}
 	});
 

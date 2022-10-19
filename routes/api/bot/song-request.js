@@ -1,12 +1,13 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Config = require("../../../modules/data/config.js");
+const SongRequest = require("../../../modules/chat-data/song-request.js");
+const VideoType = require("../../../modules/data/video-type.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Config = require("../../../modules/data/config.js");
-	const SongRequest = require("../../../modules/chat-data/song-request.js");
-	const VideoType = require("../../../modules/data/video-type.js");
 
 	/**
 	 * @api {get} /bot/song-request/state Song Request - State
@@ -21,7 +22,7 @@ module.exports = (function () {
 			.where("Name = %s", "SONG_REQUESTS_STATE")
 		);
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			state: state.Value
 		});
 	});
@@ -62,7 +63,7 @@ module.exports = (function () {
 			return track;
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -104,7 +105,7 @@ module.exports = (function () {
 			return track;
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

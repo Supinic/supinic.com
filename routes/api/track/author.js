@@ -1,9 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Author = require("../../../modules/track/author.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Author = require("../../../modules/track/author.js");
 
 	/**
 	 * @api {get} /track/author/list/ Author - List
@@ -24,7 +26,7 @@ module.exports = (function () {
 	 */
 	Router.get("/list", async (req, res) => {
 		const data = await Author.list();
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -55,7 +57,7 @@ module.exports = (function () {
 			normalizedName
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			list: sb.Utils.convertCaseObject(data, "snake", "camel")
 		});
 	});
@@ -85,15 +87,15 @@ module.exports = (function () {
 	Router.get("/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "No ID provided");
+			return WebUtils.apiFail(res, 400, "No ID provided");
 		}
 
 		const authorData = await Author.get(ID);
 		if (!authorData) {
-			return sb.WebUtils.apiFail(res, 404, "Author ID does not exist");
+			return WebUtils.apiFail(res, 404, "Author ID does not exist");
 		}
 
-		return sb.WebUtils.apiSuccess(res, authorData);
+		return WebUtils.apiSuccess(res, authorData);
 	});
 
 	return Router;

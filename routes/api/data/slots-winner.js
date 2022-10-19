@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const SlotsWinner = require("../../../modules/data/slots-winner.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const SlotsWinner = require("../../../modules/data/slots-winner.js");
 
 	/**
 	 * @api {get} /data/slots-winner/list Slots Winner - List
@@ -32,7 +33,7 @@ module.exports = (function () {
 			.where("Odds >= %n", 2.0)
 		);
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -62,7 +63,7 @@ module.exports = (function () {
 			.limit(100)
 		);
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -85,7 +86,7 @@ module.exports = (function () {
 	Router.get("/detail/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid ID provided");
+			return WebUtils.apiFail(res, 400, "Invalid ID provided");
 		}
 
 		const data = await SlotsWinner.selectSingleCustom(rs => rs
@@ -98,7 +99,7 @@ module.exports = (function () {
 		);
 
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "Provided ID does not exist");
+			return WebUtils.apiFail(res, 404, "Provided ID does not exist");
 		}
 
 		data.Rank = await SlotsWinner.selectCustom(rs => rs
@@ -110,7 +111,7 @@ module.exports = (function () {
 			.flat("Rank")
 		);
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

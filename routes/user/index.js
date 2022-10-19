@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const User = require("../../modules/chat-data/user-alias.js");
 
@@ -153,7 +155,7 @@ module.exports = (function () {
 		const { userData } = res.locals.authUser;
 		const escapedUsername = encodeURIComponent(userData.Name);
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(userData.ID, null);
+		const searchParams = WebUtils.authenticateLocalRequest(userData.ID, null);
 		const response = await sb.Got("Supinic", {
 			url: `bot/user/${escapedUsername}/data/list`,
 			searchParams: searchParams.toString()
@@ -161,12 +163,12 @@ module.exports = (function () {
 
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				error: WebUtils.formatErrorMessage(response.statusCode),
 				message: response.body.error.message
 			});
 		}
 
-		const filterSearchParams = sb.WebUtils.authenticateLocalRequest(userData.ID, null);
+		const filterSearchParams = WebUtils.authenticateLocalRequest(userData.ID, null);
 		const filterResponse = await sb.Got("Supinic", {
 			url: `bot/filter/user/list`,
 			searchParams: filterSearchParams.toString()
@@ -174,7 +176,7 @@ module.exports = (function () {
 
 		if (filterResponse.statusCode !== 200) {
 			return res.status(filterResponse.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(filterResponse.statusCode),
+				error: WebUtils.formatErrorMessage(filterResponse.statusCode),
 				message: filterResponse.body.error.message
 			});
 		}

@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const commandRunQueryThreshold = 50_000;
 
@@ -15,34 +17,34 @@ module.exports = (function () {
 	 * @apiPermission login
 	 */
 	Router.post("/run", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const { userData } = auth;
 		const prefix = sb.Config.get("COMMAND_PREFIX");
 		if (!prefix) {
-			return sb.WebUtils.apiFail(res, 503, "Website configuration error - variable \"COMMAND_PREFIX\"");
+			return WebUtils.apiFail(res, 503, "Website configuration error - variable \"COMMAND_PREFIX\"");
 		}
 
 		const { query } = req.body;
 		if (!query) {
-			return sb.WebUtils.apiFail(res, 400, "No command query provided");
+			return WebUtils.apiFail(res, 400, "No command query provided");
 		}
 		else if (!query.startsWith(prefix)) {
-			return sb.WebUtils.apiFail(res, 400, "Command query must begin with the command prefix");
+			return WebUtils.apiFail(res, 400, "Command query must begin with the command prefix");
 		}
 		else if (query.length > commandRunQueryThreshold) {
-			return sb.WebUtils.apiFail(res, 400, `Command query is too long, ${query.length}/${commandRunQueryThreshold} characters`);
+			return WebUtils.apiFail(res, 400, `Command query is too long, ${query.length}/${commandRunQueryThreshold} characters`);
 		}
 
 		const [command, ...args] = query.split(/\s+/);
 		if (!command.startsWith(prefix)) {
-			return sb.WebUtils.apiFail(res, 400, "Command invocation must begin with the command prefix");
+			return WebUtils.apiFail(res, 400, "Command invocation must begin with the command prefix");
 		}
 
 		let invocation = command;
@@ -62,7 +64,7 @@ module.exports = (function () {
 		});
 
 		if (response.body.error) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
+			return WebUtils.apiFail(res, response.statusCode, response.body.error.message);
 		}
 		else {
 			const { result } = response.body.data;
@@ -81,7 +83,7 @@ module.exports = (function () {
 				}
 			}
 
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reply: result.reply ?? "(no message)"
 			});
 		}
@@ -108,17 +110,17 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
 		}
 
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
+			return WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, response.body.data, {
+			return WebUtils.apiSuccess(res, response.body.data, {
 				skipCaseConversion: true
 			});
 		}
@@ -159,15 +161,15 @@ module.exports = (function () {
 		});
 
 		if (response.statusCode !== 200) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? null);
+			return WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? null);
 		}
 
-		return sb.WebUtils.apiSuccess(res, response.body.data.info, {
+		return WebUtils.apiSuccess(res, response.body.data.info, {
 			skipCaseConversion: true
 		});
 	});
 
-	Router.get("/:identifier", async (req, res) => sb.WebUtils.apiDeprecated(req, res, {
+	Router.get("/:identifier", async (req, res) => WebUtils.apiDeprecated(req, res, {
 		original: `/api/bot/command/${req.params.identifier}`,
 		replacement: `/api/bot/command/detail/${req.params.identifier}`,
 		timestamp: new sb.Date("2021-12-31 23:59:59.999").valueOf()

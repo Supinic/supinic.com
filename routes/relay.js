@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	Router.get("/:digest", async (req, res) => {
 		const { digest } = req.params;
@@ -13,7 +15,7 @@ module.exports = (function () {
 
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(response.statusCode),
+				error: WebUtils.formatErrorMessage(response.statusCode),
 				message: response.body.error?.message ?? "N/A"
 			});
 		}

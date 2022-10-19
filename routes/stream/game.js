@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Game = require("../../modules/stream/game.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Game = require("../../modules/stream/game.js");
 
 	Router.get("/detail/:game", async (req, res) => {
 		const identifier = req.params.game.replace(/_/g, " ");

@@ -1,8 +1,8 @@
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	Router.get("/video-request/history", async (req, res) => {
 		const { data } = await sb.Got("Supinic", "cytube/video-request/history").json();

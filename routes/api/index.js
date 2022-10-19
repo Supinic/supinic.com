@@ -1,23 +1,26 @@
+const Express = require("express");
+const RateLimiter = require("express-rate-limit");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
+const subroutes = [
+	["bot", "bot"],
+	["bot-program", "bot-program"],
+	["crypto-game", "crypto-game"],
+	["cytube", "cytube"],
+	["data", "data"],
+	["gachi", "gachi.js"],
+	["osrs", "osrs.js"],
+	["relay", "relay.js"],
+	["test", "test.js"],
+	["track", "track"],
+	["trackData", "trackData.js"]
+];
+
 // noinspection JSUnusedLocalSymbols
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const RateLimiter = require("express-rate-limit");
-	const Router = Express.Router();
-	const subroutes = [
-		["bot", "bot"],
-		["bot-program", "bot-program"],
-		["crypto-game", "crypto-game"],
-		["cytube", "cytube"],
-		["data", "data"],
-		["gachi", "gachi.js"],
-		["osrs", "osrs.js"],
-		["relay", "relay.js"],
-		["test", "test.js"],
-		["track", "track"],
-		["trackData", "trackData.js"]
-	];
 
 	// Rate limit for API endpoints
 	Router.use("/*", RateLimiter({
@@ -81,7 +84,7 @@ module.exports = (function () {
 			array.sort();
 		}
 
-		sb.WebUtils.apiSuccess(res, endpoints);
+		WebUtils.apiSuccess(res, endpoints);
 	});
 
 	for (const [route, file] of subroutes) {
@@ -95,14 +98,14 @@ module.exports = (function () {
 		try {
 			let insertId = null;
 			if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
-				insertId = await sb.WebUtils.logError("View", err, req[requestLogSymbol]);
+				insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
 			}
 
-			return sb.WebUtils.apiFail(res, 500, "Internal server error", { ID: insertId });
+			return WebUtils.apiFail(res, 500, "Internal server error", { ID: insertId });
 		}
 		catch (e) {
 			console.error("Error while trying to save error", e);
-			return sb.WebUtils.apiFail(
+			return WebUtils.apiFail(
 				res,
 				500,
 				"Internal server error while processing another error",
@@ -112,7 +115,7 @@ module.exports = (function () {
 	});
 	// eslint-enable no-unused-vars
 
-	Router.all("*", (req, res) => sb.WebUtils.apiFail(res, 404, "Not found"));
+	Router.all("*", (req, res) => WebUtils.apiFail(res, 404, "Not found"));
 
 	return Router;
 })();

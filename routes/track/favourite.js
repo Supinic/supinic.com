@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const prettify = (res, data, userID) => {
 		const printData = data.filter(i => i.active && i.userAlias === userID).map(i => ({
@@ -69,7 +71,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/list", async (req, res) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		const { userID } = await WebUtils.getUserLevel(req, res);
 		if (!userID) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",

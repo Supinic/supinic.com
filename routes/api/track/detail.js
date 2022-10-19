@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Track = require("../../../modules/track/track.js");
+const Favourite = require("../../../modules/track/user-favourite.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Track = require("../../../modules/track/track.js");
-	const Favourite = require("../../../modules/track/user-favourite.js");
 
 	/**
 	 * @api {get} /track/detail/:id Track - Get detail
@@ -41,24 +42,24 @@ module.exports = (function () {
 	 *     ID is out of bounds (does not exist)
 	 */
 	Router.get("/:id", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		const id = Number(req.params.id);
 		if (!id) {
-			return sb.WebUtils.apiFail(res, 400, "Provided ID is not a valid integer");
+			return WebUtils.apiFail(res, 400, "Provided ID is not a valid integer");
 		}
 		else if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
 
 		const trackData = await Track.get(id);
 		if (trackData === null) {
-			return sb.WebUtils.apiFail(res, 404, "Track ID not found");
+			return WebUtils.apiFail(res, 404, "Track ID not found");
 		}
 		else {
 			const favourites = await Favourite.getForTrack(id);
 			trackData.Favourites = favourites.filter(i => i.Active).length;
 
-			return sb.WebUtils.apiSuccess(res, trackData);
+			return WebUtils.apiSuccess(res, trackData);
 		}
 	});
 

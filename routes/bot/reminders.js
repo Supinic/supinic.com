@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const columns = {
 		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
@@ -11,7 +13,7 @@ module.exports = (function () {
 	};
 
 	const formatReminderList = async (req, res, target) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		const { userID } = await WebUtils.getUserLevel(req, res);
 		if (!userID) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
@@ -19,7 +21,7 @@ module.exports = (function () {
 			});
 		}
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(userID);
+		const searchParams = WebUtils.authenticateLocalRequest(userID);
 		if (target === "lookup") {
 			const ID = (req.query.ID ?? "");
 			searchParams.set("ID", ID);
@@ -33,7 +35,7 @@ module.exports = (function () {
 
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(statusCode),
+				error: WebUtils.formatErrorMessage(statusCode),
 				message: body.error.message
 			});
 		}
@@ -68,7 +70,7 @@ module.exports = (function () {
 				},
 				Sender: i.author,
 				Recipient: i.target,
-				Text: sb.WebUtils.linkify(i.text, {
+				Text: WebUtils.linkify(i.text, {
 					rel: "noopener noreferrer",
 					target: "_blank",
 					replacement: "(empty)"
@@ -187,7 +189,7 @@ module.exports = (function () {
 	Router.get("/lookup", async (req, res) => await formatReminderList(req, res, "lookup"));
 
 	Router.get("/:id", async (req, res) => {
-		const { userID } = await sb.WebUtils.getUserLevel(req, res);
+		const { userID } = await WebUtils.getUserLevel(req, res);
 		if (!userID) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
@@ -198,12 +200,12 @@ module.exports = (function () {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
 			return res.status(400).render("error", {
-				error: sb.WebUtils.formatErrorMessage(400),
+				error: WebUtils.formatErrorMessage(400),
 				message: "Malformed reminder ID"
 			});
 		}
 
-		const searchParams = sb.WebUtils.authenticateLocalRequest(userID, null);
+		const searchParams = WebUtils.authenticateLocalRequest(userID, null);
 		const { statusCode, body } = await sb.Got("Supinic", {
 			url: `bot/reminder/${ID}`,
 			searchParams: searchParams.toString()
@@ -211,7 +213,7 @@ module.exports = (function () {
 
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(statusCode),
+				error: WebUtils.formatErrorMessage(statusCode),
 				message: body.error.message
 			});
 		}
@@ -223,7 +225,7 @@ module.exports = (function () {
 			Recipient: data.recipient,
 			"Created in channel": data.channel,
 			Type: data.type,
-			Text: sb.WebUtils.linkify(data.text, {
+			Text: WebUtils.linkify(data.text, {
 				rel: "noopener noreferrer",
 				target: "_blank"
 			}),

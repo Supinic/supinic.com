@@ -1,11 +1,12 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Place = require("../../../modules/corona/place.js");
+const Status = require("../../../modules/corona/status.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Place = require("../../../modules/corona/place.js");
-	const Status = require("../../../modules/corona/status.js");
 
 	/**
 	 * @api {get} /data/corona/global/latest Corona - Latest data
@@ -19,7 +20,7 @@ module.exports = (function () {
 		const countryIDs = (await Place.getCountries()).map(i => i.ID);
 		const data = (await Status.latest()).filter(status => countryIDs.includes(status.Place));
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -34,13 +35,13 @@ module.exports = (function () {
 	Router.get("/region/:region/latest", async (req, res) => {
 		const { region } = req.params;
 		if (!region) {
-			return sb.WebUtils.apiFail(res, 400, "No region provided");
+			return WebUtils.apiFail(res, 400, "No region provided");
 		}
 
 		const regionIDs = (await Place.getRegions(region)).map(i => i.ID);
 		const data = (await Status.latest()).filter(status => regionIDs.includes(status.Place));
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

@@ -1,13 +1,13 @@
+const Express = require("express");
+const compression = require("compression");
+const zlib = require("zlib");
+const Router = Express.Router();
+
+const DallE = require("../../../modules/data/dall-e.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const compression = require("compression");
-	const zlib = require("zlib");
-
-	const Router = Express.Router();
-
-	const DallE = require("../../../modules/data/dall-e.js");
 
 	Router.use("*", compression({
 		level: zlib.Z_BEST_COMPRESSION,
@@ -23,30 +23,30 @@ module.exports = (function () {
 			Created: i.Created.format("Y-m-d H:i")
 		}));
 
-		return sb.WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
+		return WebUtils.apiSuccess(res, resultData, { skipCaseConversion: true });
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
 		const data = await DallE.getImages(req.params.id);
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
+			return WebUtils.apiFail(res, 404, "Image set does not exist");
 		}
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/detail/:id/preview/:index", async (req, res) => {
 		const index = Number(req.params.index);
 		if (!sb.Utils.isValidInteger(index)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed index provided");
+			return WebUtils.apiFail(res, 400, "Malformed index provided");
 		}
 		else if (index < 0 || index > 8) {
-			return sb.WebUtils.apiFail(res, 400, "Index out of bounds <0..8>");
+			return WebUtils.apiFail(res, 400, "Index out of bounds <0..8>");
 		}
 
 		const data = await DallE.getImages(req.params.id);
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "Image set does not exist");
+			return WebUtils.apiFail(res, 404, "Image set does not exist");
 		}
 
 		if (req.query.direct) {
@@ -56,7 +56,7 @@ module.exports = (function () {
 				.send(buffer);
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				index,
 				image: data.Images[index] ?? null
 			});
@@ -71,10 +71,10 @@ module.exports = (function () {
 		);
 
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "Image set not found");
+			return WebUtils.apiFail(res, 404, "Image set not found");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data);
 		}
 	});
 

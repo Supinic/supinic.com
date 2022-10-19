@@ -3,6 +3,7 @@ const Router = Express.Router();
 
 const CustomCommandAlias = require("../../../modules/data/custom-command-alias.js");
 const User = require("../../../modules/chat-data/user-alias.js");
+const WebUtils = require("../../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
@@ -15,17 +16,17 @@ module.exports = (function () {
 		else {
 			const id = Number(identifier);
 			if (!sb.Utils.isValidInteger(id)) {
-				return sb.WebUtils.apiFail(res, 400, "Malformed numeric ID provided");
+				return WebUtils.apiFail(res, 400, "Malformed numeric ID provided");
 			}
 
 			userData = await User.selectSingleCustom(q => q.where("ID = %n", id));
 		}
 
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 404, "User not found");
+			return WebUtils.apiFail(res, 404, "User not found");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				ID: userData.ID,
 				name: userData.Name
 			});
@@ -33,17 +34,17 @@ module.exports = (function () {
 	};
 
 	Router.get("/alias/link/:username/:alias", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const aliasOwnerData = await User.getByName(req.params.username);
 		if (!aliasOwnerData) {
-			return sb.WebUtils.apiFail(res, 404, "Provided user does not exist");
+			return WebUtils.apiFail(res, 404, "Provided user does not exist");
 		}
 
 		const aliasData = await CustomCommandAlias.selectSingleCustom(q => q
@@ -52,7 +53,7 @@ module.exports = (function () {
 		);
 
 		if (!aliasData) {
-			return sb.WebUtils.apiFail(res, 404, "Provided user does not own the provided alias");
+			return WebUtils.apiFail(res, 404, "Provided user does not own the provided alias");
 		}
 
 		const response = await sb.Got("Supibot", {
@@ -66,7 +67,7 @@ module.exports = (function () {
 			}
 		});
 
-		return sb.WebUtils.apiSuccess(res, response.body.data, {
+		return WebUtils.apiSuccess(res, response.body.data, {
 			skipCaseConversion: true
 		});
 	});
@@ -74,7 +75,7 @@ module.exports = (function () {
 	Router.get("/alias/detail/:id", async (req, res) => {
 		const ID = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(ID)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed ID provided");
+			return WebUtils.apiFail(res, 400, "Malformed ID provided");
 		}
 
 		const aliasData = await CustomCommandAlias.selectSingleCustom(rs => rs
@@ -82,14 +83,14 @@ module.exports = (function () {
 		);
 
 		if (!aliasData) {
-			return sb.WebUtils.apiFail(res, 404, "No such alias exists");
+			return WebUtils.apiFail(res, 404, "No such alias exists");
 		}
 
 		const userData = await User.getByID(aliasData.User_Alias);
 		aliasData.User_Name = userData.Name;
 		aliasData.Arguments = (aliasData.Arguments) ? JSON.parse(aliasData.Arguments) : [];
 
-		return sb.WebUtils.apiSuccess(res, aliasData);
+		return WebUtils.apiSuccess(res, aliasData);
 	});
 
 	/**
@@ -116,7 +117,7 @@ module.exports = (function () {
 
 		const userData = await User.getByName(name);
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 404, "User not found");
+			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
 		const data = await CustomCommandAlias.fetchForUser({
@@ -124,7 +125,7 @@ module.exports = (function () {
 			includeArguments: Boolean(includeArguments)
 		});
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -148,7 +149,7 @@ module.exports = (function () {
 		const { name, alias } = req.params;
 		const userData = await User.getByName(name);
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 404, "User not found");
+			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
 		const aliasData = await CustomCommandAlias.fetchForUser({
@@ -158,12 +159,12 @@ module.exports = (function () {
 		});
 
 		if (!aliasData) {
-			return sb.WebUtils.apiFail(res, 404, "User has no such alias");
+			return WebUtils.apiFail(res, 404, "User has no such alias");
 		}
 
 		aliasData.User_Name = userData.Name;
 
-		return sb.WebUtils.apiSuccess(res, aliasData);
+		return WebUtils.apiSuccess(res, aliasData);
 	});
 
 	/**
@@ -183,19 +184,19 @@ module.exports = (function () {
 		const { username } = req.params;
 		const userData = await User.getByName(username);
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 404, "User not found");
+			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		if (auth.userData.Name !== userData.Name) {
-			return sb.WebUtils.apiFail(res, 403, "Cannot list another user's data");
+			return WebUtils.apiFail(res, 403, "Cannot list another user's data");
 		}
 
 		const propertyList = await sb.Query.getRecordset(rs => rs
@@ -218,7 +219,7 @@ module.exports = (function () {
 		});
 
 		const propertyData = await Promise.all(promises);
-		return sb.WebUtils.apiSuccess(res, propertyData);
+		return WebUtils.apiSuccess(res, propertyData);
 	});
 
 	/**

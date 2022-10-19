@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const VideoRequest = require("../../../modules/cytube/video-request.js");
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const VideoRequest = require("../../../modules/cytube/video-request.js");
 
 	/**
 	 * @api {get} /cytube/video-request/history Cytube video request history
@@ -22,7 +23,7 @@ module.exports = (function () {
 	 * @apiSuccess {number} request.length Video length in seconds
 	 **/
 	Router.get("/video-request/history", async (req, res) => {
-		await sb.WebUtils.loadVideoTypes();
+		await WebUtils.loadVideoTypes();
 		const rawData = await VideoRequest.selectMultipleCustom(q => q
 			.select("User_Alias.Name AS Username")
 			.join({
@@ -39,12 +40,12 @@ module.exports = (function () {
 			Username: i.Username,
 			Link: i.Link,
 			Video_Type: i.Type,
-			Full_Link: sb.WebUtils.parseVideoLink(i.Type, i.Link),
+			Full_Link: WebUtils.parseVideoLink(i.Type, i.Link),
 			Posted: i.Posted,
 			Length: i.Length
 		}));
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

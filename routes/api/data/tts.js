@@ -1,12 +1,14 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
 	Router.get("/google/list", async (req, res) => {
 		const data = sb.Config.get("TTS_LOCALE_DATA");
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/streamelements/list", async (req, res) => {
@@ -17,7 +19,7 @@ module.exports = (function () {
 			}
 		}
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

@@ -1,10 +1,13 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Alias = require("../../../modules/track/alias.js");
+const WebUtils = require("../../../utils/webutils.js");
+
+const allowedTables = ["Author", "Track"];
+
 module.exports = (function () {
 	"use strict";
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Alias = require("../../../modules/track/alias.js");
-	const allowedTables = ["Author", "Track"];
 
 	const checkValidity = async (req, res) => {
 		if (!res || !res.locals) {
@@ -73,12 +76,12 @@ module.exports = (function () {
 	Router.post("/", async (req, res) => {
 		const valid = await checkValidity(req, res);
 		if (valid.error) {
-			return sb.WebUtils.apiFail(res, valid.code, valid.error);
+			return WebUtils.apiFail(res, valid.code, valid.error);
 		}
 
 		const [table, tableID, alias, exists] = valid.data;
 		if (exists) {
-			return sb.WebUtils.apiFail(res, 400, `Alias "${alias}" for ${table}.${tableID} already exists`);
+			return WebUtils.apiFail(res, 400, `Alias "${alias}" for ${table}.${tableID} already exists`);
 		}
 
 		await Alias.insertCustom({
@@ -89,7 +92,7 @@ module.exports = (function () {
 			Added_On: new sb.Date()
 		});
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			success: true
 		});
 	});
@@ -117,17 +120,17 @@ module.exports = (function () {
 	Router.delete("/", async (req, res) => {
 		const valid = await checkValidity(req, res);
 		if (valid.error) {
-			return sb.WebUtils.apiFail(res, valid.code, valid.error);
+			return WebUtils.apiFail(res, valid.code, valid.error);
 		}
 
-		const { level } = await sb.WebUtils.getUserLevel(req, res);
+		const { level } = await WebUtils.getUserLevel(req, res);
 		if (level !== "moderator" && level !== "admin") {
-			return sb.WebUtils.apiFail(res, 403, "Insufficient level");
+			return WebUtils.apiFail(res, 403, "Insufficient level");
 		}
 
 		const [table, tableID, alias, exists] = valid.data;
 		if (!exists) {
-			return sb.WebUtils.apiFail(res, 400, `Alias "${alias}" for ${table}.${tableID} does not exists`);
+			return WebUtils.apiFail(res, 400, `Alias "${alias}" for ${table}.${tableID} does not exists`);
 		}
 
 		await Alias.deleteCustom(q => q
@@ -136,7 +139,7 @@ module.exports = (function () {
 			.where("Name = %s", alias)
 		);
 
-		return sb.WebUtils.apiSuccess(res, {
+		return WebUtils.apiSuccess(res, {
 			success: true
 		});
 	});

@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const firstCommandExecution = new sb.Date("2019-02-28 23:26:36");
 	const oldCommandExecutions = 938178;
@@ -15,7 +17,7 @@ module.exports = (function () {
 	Router.get("/", async (req, res) => {
 		const cacheData = await sb.Cache.getByPrefix(cacheKey);
 		if (cacheData) {
-			return sb.WebUtils.apiSuccess(res, cacheData, {
+			return WebUtils.apiSuccess(res, cacheData, {
 				skipCaseConversion: true
 			});
 		}
@@ -145,7 +147,7 @@ module.exports = (function () {
 			expiry: 3_600_000
 		});
 
-		return sb.WebUtils.apiSuccess(res, data, {
+		return WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
 	});

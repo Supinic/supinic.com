@@ -1,11 +1,12 @@
 const User = require("../../../modules/chat-data/user-alias");
+const Filter = require("../../../modules/chat-data/filter");
+const WebUtils = require("../../../utils/webutils.js");
+
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Filter = require("../../../modules/chat-data/filter");
 
 	const filterTypeMap = {
 		block: {
@@ -19,17 +20,17 @@ module.exports = (function () {
 	};
 
 	const handleFilterEndpoint = async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res, { ignoreGlobalBan: true });
+		const auth = await WebUtils.getUserLevel(req, res, { ignoreGlobalBan: true });
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const { type } = req.body;
 		if (!filterTypeMap[type]) {
-			return sb.WebUtils.apiFail(res, 400, "Invalid filter type provided");
+			return WebUtils.apiFail(res, 400, "Invalid filter type provided");
 		}
 
 		const { userData } = auth;
@@ -67,7 +68,7 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
@@ -75,12 +76,12 @@ module.exports = (function () {
 
 		const { result } = response.body.data;
 		if (result.success === false) {
-			return sb.WebUtils.apiFail(res, 400, {
+			return WebUtils.apiFail(res, 400, {
 				reply: result.reply
 			});
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, {
+			return WebUtils.apiSuccess(res, {
 				reply: result.reply
 			});
 		}
@@ -146,15 +147,15 @@ module.exports = (function () {
 	Router.get("/check", async (req, res) => {
 		const { username, userID: rawUserID, command } = req.query;
 		if ((!username && !rawUserID) || !command) {
-			return sb.WebUtils.apiFail(res, 400, "Username and command name must be provided");
+			return WebUtils.apiFail(res, 400, "Username and command name must be provided");
 		}
 		else if (username && rawUserID) {
-			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of user name/id");
+			return WebUtils.apiFail(res, 400, "Must specify exactly one of user name/id");
 		}
 
 		const userID = Number(rawUserID);
 		if (rawUserID && !sb.Utils.isValidInteger(userID)) {
-			return sb.WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
+			return WebUtils.apiFail(res, 400, "User ID must be a valid ID integer");
 		}
 
 		let userData;
@@ -166,7 +167,7 @@ module.exports = (function () {
 		}
 
 		if (!userData) {
-			return sb.WebUtils.apiFail(res, 400, "User does not exist");
+			return WebUtils.apiFail(res, 400, "User does not exist");
 		}
 
 		const rawList = await Filter.selectMultipleCustom(rs => rs
@@ -183,13 +184,13 @@ module.exports = (function () {
 			Changed: i.Changed
 		}));
 
-		return sb.WebUtils.apiSuccess(res, filterList);
+		return WebUtils.apiSuccess(res, filterList);
 	});
 
 	Router.get("/channel/:id/list", async (req, res) => {
 		const id = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(id)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed channel ID");
+			return WebUtils.apiFail(res, 400, "Malformed channel ID");
 		}
 
 		const data = await Filter.selectMultipleCustom(q => q
@@ -211,7 +212,7 @@ module.exports = (function () {
 			.where("Type = %s", "Blacklist")
 		);
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	/**
@@ -240,7 +241,7 @@ module.exports = (function () {
 	Router.get("/command/:name/list", async (req, res) => {
 		const { name } = req.params;
 		if (!name) {
-			return sb.WebUtils.apiFail(res, 400, "No command provided");
+			return WebUtils.apiFail(res, 400, "No command provided");
 		}
 
 		let response;
@@ -253,17 +254,17 @@ module.exports = (function () {
 			});
 		}
 		catch (e) {
-			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
 			});
 		}
 
 		if (response.body.error) {
-			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
+			return WebUtils.apiFail(res, response.statusCode, response.body.error.message);
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, response.body.data, { skipCaseConversion: true });
+			return WebUtils.apiSuccess(res, response.body.data, { skipCaseConversion: true });
 		}
 	});
 
@@ -285,12 +286,12 @@ module.exports = (function () {
 	 * @apiSuccess {string} reason
 	 */
 	Router.get("/user/list", async (req, res) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
-			return sb.WebUtils.apiFail(res, auth.errorCode, auth.error);
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
-			return sb.WebUtils.apiFail(res, 403, "Endpoint requires login");
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
 		const data = await Filter.selectCustom(q => q
@@ -313,7 +314,7 @@ module.exports = (function () {
 			}
 		}
 
-		return sb.WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	return Router;

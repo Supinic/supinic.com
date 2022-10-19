@@ -1,8 +1,8 @@
+const Express = require("express");
+const Router = Express.Router();
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const pretty = (value) => (value === null) ? "N/A" : sb.Utils.groupDigits(value);
 	const formatData = (data) => data.map(i => ({

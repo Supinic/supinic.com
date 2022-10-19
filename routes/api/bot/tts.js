@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const Config = require("../../../modules/data/config.js");
+
 module.exports = (function () {
 	"use strict";
 
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const Config = require("../../../modules/data/config.js");
 
 	Router.get("/enabled", async (req, res) => {
 		const status = await Config.selectSingleCustom(q => q

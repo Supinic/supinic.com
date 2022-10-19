@@ -1,10 +1,11 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../../utils/webutils.js");
+const User = require("../../../modules/chat-data/user-alias.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
-
-	const User = require("../../../modules/chat-data/user-alias.js");
 
 	const fetchAllCookieData = async () => await sb.Query.getRecordset(rs => rs
 		.select("User_Alias.Name AS Username")
@@ -43,15 +44,15 @@ module.exports = (function () {
 	Router.get("/check", async (req, res) => {
 		const { name, id: rawID } = req.query;
 		if (!name && !rawID) {
-			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of name/id");
+			return WebUtils.apiFail(res, 400, "Must specify exactly one of name/id");
 		}
 		else if (name && rawID) {
-			return sb.WebUtils.apiFail(res, 400, "Must specify exactly one of name/id");
+			return WebUtils.apiFail(res, 400, "Must specify exactly one of name/id");
 		}
 
 		const id = Number(rawID);
 		if (rawID && !sb.Utils.isValidInteger(id)) {
-			return sb.WebUtils.apiFail(res, 400, "id must be a valid ID integer");
+			return WebUtils.apiFail(res, 400, "id must be a valid ID integer");
 		}
 
 		const userID = await User.selectCustom(rs => rs
@@ -61,7 +62,7 @@ module.exports = (function () {
 		);
 
 		if (!userID) {
-			return sb.WebUtils.apiFail(res, 404, "User does not exist");
+			return WebUtils.apiFail(res, 404, "User does not exist");
 		}
 
 		const cookieData = await sb.Query.getRecordset(rs => rs
@@ -74,10 +75,10 @@ module.exports = (function () {
 		);
 
 		if (!cookieData) {
-			return sb.WebUtils.apiSuccess(res, {});
+			return WebUtils.apiSuccess(res, {});
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, JSON.parse(cookieDate));
+			return WebUtils.apiSuccess(res, JSON.parse(cookieDate));
 		}
 	});
 
@@ -116,7 +117,7 @@ module.exports = (function () {
 			}
 		}));
 
-		sb.WebUtils.apiSuccess(res, data, {
+		WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
 	});
@@ -131,7 +132,7 @@ module.exports = (function () {
 			Received: i.Received + i.Legacy_Received,
 		}));
 
-		sb.WebUtils.apiSuccess(res, data, {
+		WebUtils.apiSuccess(res, data, {
 			skipCaseConversion: true
 		});
 	});

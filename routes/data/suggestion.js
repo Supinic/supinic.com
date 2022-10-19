@@ -1,8 +1,10 @@
+const Express = require("express");
+const Router = Express.Router();
+
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
 
 	const columns = {
 		all: ["Author", "Text", "Status", "Priority", "Update", "ID"],
@@ -12,14 +14,14 @@ module.exports = (function () {
 	};
 
 	const redirect = async (req, res, urlCallback) => {
-		const auth = await sb.WebUtils.getUserLevel(req, res);
+		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
 				message: "Your session timed out, please log in again"
 			});
 		}
-		else if (!sb.WebUtils.compareLevels(auth.level, "login")) {
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
 			return res.status(401).render("error", {
 				error: "401 Unauthorized",
 				message: "You must be logged in before viewing your suggestion statistics"
@@ -30,7 +32,7 @@ module.exports = (function () {
 		res.redirect(urlCallback(name));
 	};
 
-	const parseLinks = (string) => sb.WebUtils.linkify(string)
+	const parseLinks = (string) => WebUtils.linkify(string)
 		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`);
 
 	Router.get("/list", async (req, res) => {
@@ -114,7 +116,7 @@ module.exports = (function () {
 		const { statusCode, body } = await sb.Got("Supinic", `data/suggestion/stats/user/${escaped}`);
 		if (statusCode !== 200) {
 			return res.status(statusCode).render("error", {
-				error: sb.WebUtils.formatErrorMessage(statusCode),
+				error: WebUtils.formatErrorMessage(statusCode),
 				message: body.error.message
 			});
 		}
