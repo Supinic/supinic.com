@@ -87,22 +87,31 @@ module.exports = (function () {
 	 * @apiPermission any
 	 * @apiSuccess {Array} command List of commands
 	 * @apiSuccess {string} command.name
-	 * @apiSuccess {string[]} [command.aliases]
-	 * @apiSuccess {string} [command.description]
+	 * @apiSuccess {string[]} command.aliases
+	 * @apiSuccess {string|null} command.description
 	 * @apiSuccess {number} command.cooldown
-	 * @apiSuccess {object} command.flags
+	 * @apiSuccess {string[]} command.flags
 	 */
 	Router.get("/list", async (req, res) => {
-		const commandsData = sb.Command.definitions;
-		const data = commandsData.map(i => ({
-			Name: i.Name,
-			Aliases: i.Aliases ?? [],
-			Description: i.Description,
-			Cooldown: i.Cooldown,
-			Flags: i.Flags ?? []
-		}));
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: `command/list`
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
+		}
 
-		return sb.WebUtils.apiSuccess(res, data);
+		if (response.statusCode !== 200) {
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
+		}
+		else {
+			return sb.WebUtils.apiSuccess(res, response.body.data);
+		}
 	});
 
 	/**
