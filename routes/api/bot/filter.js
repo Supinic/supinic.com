@@ -242,40 +242,29 @@ module.exports = (function () {
 		if (!name) {
 			return sb.WebUtils.apiFail(res, 400, "No command provided");
 		}
-		else if (!sb.Command.get(name)) {
-			return sb.WebUtils.apiFail(res, 404, "Command does not exist");
+
+		let response;
+		try {
+			response = await sb.Got("Supibot", {
+				url: "filter/command",
+				searchParams: {
+					command: name
+				}
+			});
+		}
+		catch (e) {
+			return sb.WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
+				code: e.code,
+				errorMessage: e.message
+			});
 		}
 
-		const data = await Filter.selectCustom(q => q
-			.select("Filter.ID", "Type", "User_Alias", "Channel", "Invocation", "Response", "Reason", "Filter.Data")
-			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
-			.select("User_Alias.Name AS Username")
-			.select("Platform.Name AS Platform_Name")
-			.select("Blocked.Name AS Blocked_Username")
-			.leftJoin("chat_data", "Channel")
-			.leftJoin("chat_data", "User_Alias")
-			.leftJoin({
-				alias: "Blocked",
-				toTable: "User_Alias",
-				on: "Filter.Blocked_User = Blocked.ID"
-			})
-			.leftJoin({
-				toTable: "Platform",
-				on: "Channel.Platform = Platform.ID"
-			})
-			.where("Command = %s", name)
-			.where("Active = %b", true)
-			.where("Type NOT IN %s+", ["Block"])
-			.where("Channel IS NULL OR Channel.Mode <> %s", "Inactive")
-		);
-
-		for (const item of data) {
-			if (item.Data) {
-				item.Data = JSON.parse(item.Data);
-			}
+		if (response.body.error) {
+			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error.message);
 		}
-
-		return sb.WebUtils.apiSuccess(res, data);
+		else {
+			return sb.WebUtils.apiSuccess(res, response.body.data, { skipCaseConversion: true });
+		}
 	});
 
 	/**

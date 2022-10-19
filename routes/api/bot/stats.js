@@ -26,7 +26,7 @@ module.exports = (function () {
 			totalUsers,
 			activeUsers,
 			{ Bytes: chatLineSize, Line_Count: chatLines },
-			commands,
+			commandListResponse,
 			commandsSinceRestart,
 			newCommandExecutions,
 			totalAFKs,
@@ -62,7 +62,7 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_line")
 				.single()
 			),
-			sb.Command.data.length,
+			sb.Got("Supibot", { url: "command/list" }),
 			sb.Runtime.commands,
 			sb.Query.getRecordset(rs => rs
 				.select("COUNT(*) AS Total")
@@ -121,7 +121,7 @@ module.exports = (function () {
 				total: chatLines
 			},
 			commands: {
-				active: commands,
+				active: commandListResponse.body?.data?.length ?? null,
 				countTotal: oldCommandExecutions + newCommandExecutions,
 				countSinceRestart: commandsSinceRestart,
 				firstExecution: firstCommandExecution

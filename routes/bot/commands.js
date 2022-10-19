@@ -207,7 +207,7 @@ module.exports = (function () {
 		const auth = await sb.WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			const response = await sb.Got("Supibot", {
-				url: "command/userFilters",
+				url: "filter/userCommand",
 				searchParams: {
 					userID: auth.userID,
 					command: identifier
@@ -337,16 +337,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier/code", async (req, res) => {
-		const commandData = sb.Command.get(req.params.identifier);
-		if (!commandData) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Command does not exist"
-			});
-		}
-
-		const redirectUrl = `${baseGithubCommandPath}/${commandData.Name}/index.js`;
-		res.redirect(redirectUrl);
+		return sb.WebUtils.apiFail(res, 410, "Endpoint retired");
 	});
 
 	Router.get("/channel/:channel/", async (req, res) => {

@@ -31,26 +31,19 @@ module.exports = (function () {
 	 * @apiDescription Fetches the full list of currently available playsounds
 	 * @apiGroup Stream
 	 * @apiPermission any
-	 * @apiSuccess {number} commandCooldown Cooldown of the command itself in milliseconds
 	 * @apiSuccess {Object[]} playsounds List of playsounds
 	 * @apiSuccess {string} playsounds.name Playsound name to trigger
-	 * @apiSuccess {string} playsounds.filename Playsound filename as it appears drive
-	 * @apiSuccess {number} playsounds.cooldown Playsound coolodwn in milliseconds
+	 * @apiSuccess {string} playsounds.filename Playsound filename as it appears on the drive
 	 * @apiSuccess {string} [playsounds.notes] Additional info
 	 */
 	Router.get("/list", async (req, res) => {
-		const command = sb.Command.get("playsound");
 		const playsounds = await Playsound.selectAll();
-
-		const data = {
-			commandCooldown: command.Cooldown,
-			playsounds: playsounds.map(i => ({
-				name: i.Name,
-				filename: i.Filename,
-				cooldown: i.Cooldown,
-				notes: i.Notes
-			}))
-		};
+		const data = playsounds.map(i => ({
+			name: i.Name,
+			filename: i.Filename,
+			cooldown: i.Cooldown,
+			notes: i.Notes
+		}))
 
 		return sb.WebUtils.apiSuccess(res, data);
 	});

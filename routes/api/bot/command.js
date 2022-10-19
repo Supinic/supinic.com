@@ -24,7 +24,11 @@ module.exports = (function () {
 		}
 
 		const { userData } = auth;
-		const { prefix, prefixRegex } = sb.Command;
+		const prefix = sb.Config.get("COMMAND_PREFIX");
+		if (!prefix) {
+			return sb.WebUtils.apiFail(res, 503, "Website configuration error - variable \"COMMAND_PREFIX\"");
+		}
+
 		const { query } = req.body;
 		if (!query) {
 			return sb.WebUtils.apiFail(res, 400, "No command query provided");
@@ -41,7 +45,11 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, 400, "Command invocation must begin with the command prefix");
 		}
 
-		const invocation = command.replace(prefixRegex, "");
+		let invocation = command;
+		if (invocation.startsWith(prefix)) {
+			invocation = invocation.replace(prefix, "");
+		}
+
 		const response = await sb.Got("Supibot", {
 			url: "command/execute",
 			searchParams: {
@@ -110,7 +118,9 @@ module.exports = (function () {
 			return sb.WebUtils.apiFail(res, response.statusCode, response.body.error?.message ?? "N/A");
 		}
 		else {
-			return sb.WebUtils.apiSuccess(res, response.body.data);
+			return sb.WebUtils.apiSuccess(res, response.body.data, {
+				skipCaseConversion: true
+			});
 		}
 	});
 
