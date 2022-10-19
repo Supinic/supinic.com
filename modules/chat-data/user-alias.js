@@ -53,7 +53,13 @@ module.exports = (function () {
 
 		static async setDataProperty (userID, propertyName, value) {
 			const row = await sb.Query.getRow("chat_data", "User_Alias_Data");
-			await row.load({ User_Alias: userID, Property: propertyName });
+			await row.load({ User_Alias: userID, Property: propertyName }, true);
+			if (!row.loaded) {
+				row.setValues({
+					User_Alias: userID,
+					Property: propertyName
+				});
+			}
 
 			row.values.Value = value;
 
