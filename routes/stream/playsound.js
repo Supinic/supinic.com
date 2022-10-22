@@ -4,10 +4,8 @@ const Router = Express.Router();
 module.exports = (function () {
 	"use strict";
 
-
 	Router.get("/list", async (req, res) => {
-		const { data: { playsounds } } = await sb.Got("Supinic", "bot/playsound/list").json();
-
+		const { data: playsounds } = await sb.Got("Supinic", "bot/playsound/list").json();
 		const data = playsounds.map(i => ({
 			Name: i.name,
 			Cooldown: {
