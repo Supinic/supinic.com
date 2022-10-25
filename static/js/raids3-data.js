@@ -284,7 +284,7 @@ const data = {
 					"description": "Food will no longer heal you within the raid.",
 					"level": 15,
 					"icon": "https://oldschool.runescape.wiki/images/Invocations_-_On_a_Diet_icon.png",
-					"summary": "no food",
+					"summary": "no food (raid: silk dressing, honey locust)",
 					"data": {
 						"foodDisabled": true
 					}
@@ -295,7 +295,7 @@ const data = {
 					"description": "Potions which restore health will no longer have an effect within the raid.",
 					"level": 30,
 					"icon": "https://oldschool.runescape.wiki/images/Invocations_-_Dehydration_icon.png",
-					"summary": "no healing potions",
+					"summary": "no healing potions (raid: nectar, ambrosia)",
 					"data": {
 						"healingPotionsDisabled": true
 					}
@@ -324,7 +324,7 @@ const data = {
 					"name": "Double Trouble",
 					"description": "Akkha will do two special attacks at once.",
 					"level": 20,
-					"summary": "two specials"
+					"summary": "two specials are done at once"
 				},
 				{
 					"id": 22,
@@ -338,14 +338,14 @@ const data = {
 					"name": "Stay Vigilant",
 					"description": "Akkha will randomly swap between attack styles and protection prayers rather than at set intervals.",
 					"level": 15,
-					"summary": "prayer swap timing is random"
+					"summary": "prayer and attack style swap timing is random (⚠ applies to P3 warden)"
 				},
 				{
 					"id": 24,
 					"name": "Feeling Special?",
 					"description": "Akkha's detonate special attack will trigger in more directions, his memory special attack will be faster and his trail special attack will spawn additional orbs.",
 					"level": 20,
-					"summary": "special attacks speed up and are more effective"
+					"summary": "detonate in more directions, 2t switch during simon says, more spawn orbs in front of player"
 				}
 			]
 		},
@@ -360,14 +360,14 @@ const data = {
 					"name": "Not Just a Head",
 					"description": "Zebak will gain access to blood magic.",
 					"level": 15,
-					"summary": "blood magic enabled"
+					"summary": "casts blood blitz + spawns a blood cloud"
 				},
 				{
 					"id": 26,
 					"name": "Arterial Spray",
 					"description": "The radius and healing of Zebak's blood magic will be increased.",
 					"level": 10,
-					"summary": "blood magic is more effective",
+					"summary": "blood magic has more damage and range",
 					"requires": ["Not Just a Head"]
 				},
 				{
@@ -375,7 +375,7 @@ const data = {
 					"name": "Blood Thinners",
 					"description": "Zebak's blood magic spawns will be split into three.",
 					"level": 5,
-					"summary": "blood spawns split into three",
+					"summary": "three blood spawns instead of one",
 					"requires": ["Not Just a Head"]
 				},
 				{
@@ -383,7 +383,7 @@ const data = {
 					"name": "Upset Stomach",
 					"description": "Zebak's acid pools will have increased spread and jugs will be less effective.",
 					"level": 15,
-					"summary": "acid pools are bigger, jugs are weaker"
+					"summary": "acid pools are bigger, jugs wash away 3x3 instead of 5x5 area"
 				}
 			]
 		},
@@ -412,7 +412,7 @@ const data = {
 					"name": "Jungle Japes",
 					"description": "Ba-Ba's baboons will occasionally drop a banana peel on the floor. If the peels are stepped or run over, the player takes 20-25 damage and is left stunned for 3 seconds.",
 					"level": 5,
-					"summary": "monkeys drop banana peels"
+					"summary": "monkeys drop banana peels - stun when stepped on"
 				},
 				{
 					"id": 32,
@@ -441,7 +441,7 @@ const data = {
 					"name": "Lively Larvae",
 					"description": "More of the eggs launched during the Mass Incubation attack will be dark brown (hatches Agile Scarabs).",
 					"level": 5,
-					"summary": "more scarabs hatch from eggs"
+					"summary": "more eggs that hatch scarabs"
 				},
 				{
 					"id": 35,
@@ -455,21 +455,21 @@ const data = {
 					"name": "Blowing Mud",
 					"description": "Kephri's dung special will be twice as potent.",
 					"level": 10,
-					"summary": "dung attack is stronger"
+					"summary": "dung attack targets +1 player (no effect in solo)"
 				},
 				{
 					"id": 37,
 					"name": "Medic!",
 					"description": "Kephri will have continuous shield scarab spawns.",
 					"level": 15,
-					"summary": "healing swarms keep spawning"
+					"summary": "healing swarms spawn even out of charge phases"
 				},
 				{
 					"id": 38,
 					"name": "Aerial Assault",
 					"description": "Kephri's main attack will do significantly more damage and AoE increased from 1x1 to 3x3.",
 					"level": 10,
-					"summary": "fireball attack has increased aoe and damage"
+					"summary": "fireball attack is 3x3 and does more damage (⚠ applies to P3 warden)"
 				}
 			]
 		},
@@ -484,35 +484,35 @@ const data = {
 					"name": "Ancient Haste",
 					"description": "The Wardens will charge at a faster rate in the first phase of the fight.",
 					"level": 10,
-					"summary": "first phase - faster charge"
+					"summary": "P1: faster obelisk charge"
 				},
 				{
 					"id": 40,
 					"name": "Acceleration",
 					"description": "The Wardens will attack quicker and the obelisk will charge at a faster rate in the second phase of the fight.",
 					"level": 10,
-					"summary": "second phase - faster attacks and charge"
+					"summary": "P2: faster obelisk charge and warden attacks"
 				},
 				{
 					"id": 41,
 					"name": "Penetration",
 					"description": "The Wardens obelisk attacks will be significantly more potent in the second phase of the fight.",
 					"level": 10,
-					"summary": "second phase - more obelisk damage"
+					"summary": "P2: more obelisk damage, disables prayers"
 				},
 				{
 					"id": 42,
 					"name": "Overclocked",
 					"description": "The Warden will attack faster in the final phase of the fight.",
 					"level": 10,
-					"summary": "third phase - warden slams faster"
+					"summary": "P3: 1t faster slam"
 				},
 				{
 					"id": 43,
 					"name": "Overclocked 2",
 					"description": "The Wardens will attack faster in the second phase of the fight.",
 					"level": 10,
-					"summary": "second phase - warden attacks faster",
+					"summary": "P3: 2t faster slam",
 					"requires": ["Overclocked"]
 				},
 				{
@@ -520,7 +520,7 @@ const data = {
 					"name": "Insanity",
 					"description": "The Warden will become unstoppable. Not for the faint of heart.",
 					"level": 50,
-					"summary": "third phase - faster slam, red skulls, lightning, tiles falloff rate, and slams continue instead of resetting",
+					"summary": "P3: 3t faster slam, faster red skulls, lightning, tiles falloff rate, and slams continue instead of resetting",
 					"requires": ["Overclocked", "Overclocked 2"]
 				}
 			]
