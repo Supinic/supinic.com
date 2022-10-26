@@ -264,7 +264,7 @@ const data = {
 					"id": 17,
 					"name": "Deadly Prayers",
 					"description": "Prayer is drained by 20% of damage taken.",
-					"level": 35,
+					"level": 20,
 					"summary": "prayer is drained by 20% of damage taken (not prevented)",
 					"data": {
 						"prayerEffectivenessDelta": -25
