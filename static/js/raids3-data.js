@@ -314,38 +314,45 @@ const data = {
 			]
 		},
 		{
-			"title": "Akkha",
+			"title": "Kephri",
 			"unique": false,
 			"boss": true,
-			"icon": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+			"icon": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
 			"list": [
 				{
-					"id": 21,
-					"name": "Double Trouble",
-					"description": "Akkha will do two special attacks at once.",
-					"level": 20,
-					"summary": "two specials are done at once"
+					"id": 34,
+					"name": "Lively Larvae",
+					"description": "More of the eggs launched during the Mass Incubation attack will be dark brown (hatches Agile Scarabs).",
+					"level": 5,
+					"summary": "more eggs that hatch scarabs"
 				},
 				{
-					"id": 22,
-					"name": "Keep Back",
-					"description": "Akkha's ranged and magic attacks will also do melee damage to anyone next to him.",
-					"level": 10,
-					"summary": "range + magic attacks do melee splash"
-				},
-				{
-					"id": 23,
-					"name": "Stay Vigilant",
-					"description": "Akkha will randomly swap between attack styles and protection prayers rather than at set intervals.",
+					"id": 35,
+					"name": "More Overlords",
+					"description": "An additional scarab reinforcement is added during the shield charging phases; the first shield phase adds a Soldier Scarab, while the second shield phase adds a Spitting Scarab.",
 					"level": 15,
-					"summary": "prayer and attack style swap timing is random (⚠ applies to P3 warden)"
+					"summary": "one more big scarab during charge phases"
 				},
 				{
-					"id": 24,
-					"name": "Feeling Special?",
-					"description": "Akkha's detonate special attack will trigger in more directions, his memory special attack will be faster and his trail special attack will spawn additional orbs.",
-					"level": 20,
-					"summary": "detonate in more directions, 2t switch during simon says, more spawn orbs in front of player"
+					"id": 36,
+					"name": "Blowing Mud",
+					"description": "Kephri's dung special will be twice as potent.",
+					"level": 10,
+					"summary": "dung attack targets +1 player (no effect in solo)"
+				},
+				{
+					"id": 37,
+					"name": "Medic!",
+					"description": "Kephri will have continuous shield scarab spawns.",
+					"level": 15,
+					"summary": "healing swarms spawn even out of charge phases"
+				},
+				{
+					"id": 38,
+					"name": "Aerial Assault",
+					"description": "Kephri's main attack will do significantly more damage and AoE increased from 1x1 to 3x3.",
+					"level": 10,
+					"summary": "fireball attack is 3x3 and does more damage (⚠ applies to P3 warden)"
 				}
 			]
 		},
@@ -384,6 +391,42 @@ const data = {
 					"description": "Zebak's acid pools will have increased spread and jugs will be less effective.",
 					"level": 15,
 					"summary": "acid pools are bigger, jugs wash away 3x3 instead of 5x5 area"
+				}
+			]
+		},
+		{
+			"title": "Akkha",
+			"unique": false,
+			"boss": true,
+			"icon": "https://oldschool.runescape.wiki/images/Akkha_icon.png",
+			"list": [
+				{
+					"id": 21,
+					"name": "Double Trouble",
+					"description": "Akkha will do two special attacks at once.",
+					"level": 20,
+					"summary": "two specials are done at once"
+				},
+				{
+					"id": 22,
+					"name": "Keep Back",
+					"description": "Akkha's ranged and magic attacks will also do melee damage to anyone next to him.",
+					"level": 10,
+					"summary": "range + magic attacks do melee splash"
+				},
+				{
+					"id": 23,
+					"name": "Stay Vigilant",
+					"description": "Akkha will randomly swap between attack styles and protection prayers rather than at set intervals.",
+					"level": 15,
+					"summary": "prayer and attack style swap timing is random (⚠ applies to P3 warden)"
+				},
+				{
+					"id": 24,
+					"name": "Feeling Special?",
+					"description": "Akkha's detonate special attack will trigger in more directions, his memory special attack will be faster and his trail special attack will spawn additional orbs.",
+					"level": 20,
+					"summary": "detonate in more directions, 2t switch during simon says, more spawn orbs in front of player"
 				}
 			]
 		},
@@ -427,49 +470,6 @@ const data = {
 					"description": "Ba-Ba's rolling boulders will move quicker and spawn slightly faster.",
 					"level": 10,
 					"summary": "boulders spawn and roll faster"
-				}
-			]
-		},
-		{
-			"title": "Kephri",
-			"unique": false,
-			"boss": true,
-			"icon": "https://oldschool.runescape.wiki/images/Kephri_icon.png",
-			"list": [
-				{
-					"id": 34,
-					"name": "Lively Larvae",
-					"description": "More of the eggs launched during the Mass Incubation attack will be dark brown (hatches Agile Scarabs).",
-					"level": 5,
-					"summary": "more eggs that hatch scarabs"
-				},
-				{
-					"id": 35,
-					"name": "More Overlords",
-					"description": "An additional scarab reinforcement is added during the shield charging phases; the first shield phase adds a Soldier Scarab, while the second shield phase adds a Spitting Scarab.",
-					"level": 15,
-					"summary": "one more big scarab during charge phases"
-				},
-				{
-					"id": 36,
-					"name": "Blowing Mud",
-					"description": "Kephri's dung special will be twice as potent.",
-					"level": 10,
-					"summary": "dung attack targets +1 player (no effect in solo)"
-				},
-				{
-					"id": 37,
-					"name": "Medic!",
-					"description": "Kephri will have continuous shield scarab spawns.",
-					"level": 15,
-					"summary": "healing swarms spawn even out of charge phases"
-				},
-				{
-					"id": 38,
-					"name": "Aerial Assault",
-					"description": "Kephri's main attack will do significantly more damage and AoE increased from 1x1 to 3x3.",
-					"level": 10,
-					"summary": "fireball attack is 3x3 and does more damage (⚠ applies to P3 warden)"
 				}
 			]
 		},
