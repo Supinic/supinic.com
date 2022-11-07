@@ -8,7 +8,7 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const data = await FAQ.selectAll();
+		const data = await FAQ.selectMultipleCustom(rs => rs.where("Hidden = %b", false))
 		return WebUtils.apiSuccess(res, data);
 	});
 
