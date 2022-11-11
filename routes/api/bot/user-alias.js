@@ -200,7 +200,8 @@ module.exports = (function () {
 		}
 
 		const propertyList = await sb.Query.getRecordset(rs => rs
-			.select("Custom_Data_Property.Name", "Custom_Data_Property.Type")
+			.select("Property", "Value")
+			.select("Custom_Data_Property.Type")
 			.from("chat_data", "User_Alias_Data")
 			.join({
 				toTable: "Custom_Data_Property",
@@ -209,16 +210,24 @@ module.exports = (function () {
 			.where("User_Alias = %n", userData.ID)
 		);
 
-		const promises = propertyList.map(async (property) => {
-			const value = await User.getDataProperty(userData.ID, property.Name);
+		const propertyData = propertyList.map(i => {
+			let value = i.Value;
+			if (i.Type === "object" || i.Type === "array") {
+				try {
+					value = JSON.parse(value);
+				}
+				catch {
+					value = null;
+				}
+			}
+
 			return {
-				name: property.Name,
+				name: i.Property,
 				value,
-				type: property.Type
-			};
+				type: i.Type
+			}
 		});
 
-		const propertyData = await Promise.all(promises);
 		return WebUtils.apiSuccess(res, propertyData);
 	});
 
