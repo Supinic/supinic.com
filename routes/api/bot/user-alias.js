@@ -228,7 +228,9 @@ module.exports = (function () {
 			}
 		});
 
-		return WebUtils.apiSuccess(res, propertyData);
+		return WebUtils.apiSuccess(res, propertyData, {
+			skipCaseConversion: true
+		});
 	});
 
 	/**
