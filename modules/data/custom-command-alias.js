@@ -21,7 +21,7 @@ module.exports = (function () {
 			on: "ParentAlias.User_Alias = ParentAuthor.ID"
 		});
 
-	const fetchWrapper = async (rs, options, callback) => {
+	const fetchWrapper = async (options, callback) => {
 		const data = await CustomCommandAlias.selectCustom(rs => {
 			fetchAliasBasics(rs);
 			callback(rs);
@@ -89,7 +89,7 @@ module.exports = (function () {
 				});
 			}
 
-			return await fetchWrapper(rs, options, rs => rs.where("Channel = %n", channelID));
+			return await fetchWrapper(options, rs => rs.where("Channel = %n", channelID));
 		}
 
 		static async fetchListForUser (userID, options = {}) {
@@ -99,7 +99,7 @@ module.exports = (function () {
 				});
 			}
 
-			return await fetchWrapper(rs, options, rs => rs.where("User_Alias = %n", userID));
+			return await fetchWrapper(options, rs => rs.where("User_Alias = %n", userID));
 		}
 
 		static get name () { return "custom-command-alias"; }
