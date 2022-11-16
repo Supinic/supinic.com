@@ -81,7 +81,7 @@ module.exports = (function () {
 
 			delete aliasData.ID;
 
-			aliasData.childAliasData = childAliasData;
+			aliasData.Child_Alias_Data = childAliasData;
 			return aliasData;
 		}
 
