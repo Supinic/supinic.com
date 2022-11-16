@@ -20,9 +20,10 @@ module.exports = (function () {
 			const [copies, links] = sb.Utils.splitByCondition(aliasData.childAliasData, i => i.type === "copy");
 			const copyItems = copies
 				.sort((a, b) => a.username.localeCompare(b.username))
-				.map(i => `<li>${i.username}</li>`);
+				.map(i => `<li>${i.username}</li>`)
+				.join("");
 
-			const copyList = `<ul id="copies" class="collapse">${copyItems.join("")}</ul>`;
+			const copyList = `<ul id="copies" class="collapse">${copyItems || "<i>(none)</i>"}</ul>`;
 			const copySection = sb.Utils.tag.trim `
 				<a
 				 class="btn btn-primary"
@@ -39,9 +40,10 @@ module.exports = (function () {
 
 			const linkItems = links
 				.sort((a, b) => a.username.localeCompare(b.username))
-				.map(i => `<li>${i.username}</li>`);
+				.map(i => `<li>${i.username}</li>`)
+				.join("");
 
-			const linkList = `<ul id="links" class="collapse">${linkItems.join("")}</ul>`;
+			const linkList = `<ul id="links" class="collapse">${linkItems || "<i>(none)</i>"}</ul>`;
 			const linkSection = sb.Utils.tag.trim `
 				<a
 				 class="btn btn-primary"
