@@ -60,7 +60,9 @@ module.exports = (function () {
 				.limit(1)
 			);
 
+			const [aliasData] = data;
 			let childAliasData = null;
+
 			if (options.includeChildAliasData) {
 				childAliasData = await CustomCommandAlias.selectCustom(rs => rs
 					.select("Owner.Name AS Username")
@@ -71,13 +73,11 @@ module.exports = (function () {
 						toTable: "User_Alias",
 						on: "Custom_Command_Alias.User_Alias = Owner.ID"
 					})
-					.where("Parent = %n", data[0].ID)
+					.where("Parent = %n", aliasData.ID)
 				);
 			}
 
-			const [aliasData] = data;
 			aliasData.childAliasData = childAliasData;
-
 			return aliasData;
 		}
 
