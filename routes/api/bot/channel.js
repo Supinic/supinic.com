@@ -165,8 +165,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
 		}
 
-		const data = await CustomCommandAlias.fetchForUser({
-			channelID,
+		const data = await CustomCommandAlias.fetchListForChannel(channelID, {
 			includeArguments: true
 		});
 
@@ -202,9 +201,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Channel with provided ID does not exist");
 		}
 
-		const data = await CustomCommandAlias.fetchForUser({
-			channelID,
-			aliasIdentifier: req.params.alias,
+		const data = await CustomCommandAlias.fetchDetailForChannel(channelID, req.params.alias, {
 			includeArguments: true
 		});
 

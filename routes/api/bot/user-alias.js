@@ -120,8 +120,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const data = await CustomCommandAlias.fetchForUser({
-			userID: userData.ID,
+		const data = await CustomCommandAlias.fetchListForUser(userData.ID, {
 			includeArguments: Boolean(includeArguments)
 		});
 
@@ -153,9 +152,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const aliasData = await CustomCommandAlias.fetchForUser({
-			userID: userData.ID,
-			aliasIdentifier: alias,
+		const aliasData = await CustomCommandAlias.fetchDetailForUser(userData.ID, alias, {
 			includeArguments: true,
 			includeChildAliasData: Boolean(req.query.includeChildAliasData)
 		});

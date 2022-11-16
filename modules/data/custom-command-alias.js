@@ -1,82 +1,68 @@
 module.exports = (function () {
 	"use strict";
 
+	const fetchAliasBasics = (rs) => rs.select("Custom_Command_Alias.Name")
+		.select("Custom_Command_Alias.Invocation")
+		.select("Custom_Command_Alias.Created")
+		.select("Custom_Command_Alias.Edited")
+		.select("Custom_Command_Alias.Description")
+		.select("ParentAuthor.Name AS Link_Author")
+		.select("ParentAlias.Name AS Link_Name")
+		.leftJoin({
+			alias: "ParentAlias",
+			toDatabase: "data",
+			toTable: "Custom_Command_Alias",
+			on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
+		})
+		.leftJoin({
+			alias: "ParentAuthor",
+			toDatabase: "chat_data",
+			toTable: "User_Alias",
+			on: "ParentAlias.User_Alias = ParentAuthor.ID"
+		});
+
+	const fetchWrapper = async (rs, options, callback) => {
+		const data = await CustomCommandAlias.selectCustom(rs => {
+			fetchAliasBasics(rs);
+			callback(rs);
+
+			if (options.includeArguments) {
+				rs.select("Custom_Command_Alias.Arguments");
+			}
+
+			return rs;
+		});
+
+		if (options.includeArguments) {
+			for (const item of data) {
+				item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
+			}
+		}
+
+		return data;
+	};
+
 	class CustomCommandAlias extends require("../template.js") {
-		static async fetchForUser (options = {}) {
-			const {
-				aliasIdentifier,
-				channelID,
-				includeArguments,
-				includeChildAliasData,
-				userID
-			} = options;
+		static async fetchDetailForChannel (channelID, aliasIdentifier, options = {}) {
+			const data = fetchWrapper(channelID, options, rs => rs
+				.where("Channel = %n", userID)
+				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
+				.limit(1)
+			);
 
-			if (!userID && !channelID) {
-				throw new sb.Error({
-					message: "No channel or user ID provided"
-				});
-			}
-			else if (userID && channelID) {
-				throw new sb.Error({
-					message: "Both channel or user ID provided"
-				});
-			}
+			return data[0];
+		}
 
-			const data = await CustomCommandAlias.selectCustom(rs => {
-				rs.select("Custom_Command_Alias.Name")
-					.select("Custom_Command_Alias.Invocation")
-					.select("Custom_Command_Alias.Created")
-					.select("Custom_Command_Alias.Edited")
-					.select("Custom_Command_Alias.Description")
-					.select("ParentAuthor.Name AS Link_Author")
-					.select("ParentAlias.Name AS Link_Name")
-					.leftJoin({
-						alias: "ParentAlias",
-						toDatabase: "data",
-						toTable: "Custom_Command_Alias",
-						on: "Custom_Command_Alias.Parent = ParentAlias.ID AND Custom_Command_Alias.Invocation IS NULL"
-					})
-					.leftJoin({
-						alias: "ParentAuthor",
-						toDatabase: "chat_data",
-						toTable: "User_Alias",
-						on: "ParentAlias.User_Alias = ParentAuthor.ID"
-					});
+		static async fetchDetailForUser (userID, aliasIdentifier, options = {}) {
+			const data = await fetchWrapper(rs, options, rs => rs
+				.where("User_Alias = %n", userID)
+				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
+				.limit(1)
+			);
 
-				if (userID) {
-					rs.where("Custom_Command_Alias.User_Alias = %n", userID);
-					rs.where("Custom_Command_Alias.Channel IS NULL");
-				}
-				else if (channelID) {
-					rs.where("Custom_Command_Alias.Channel = %n", channelID);
-					rs.where("Custom_Command_Alias.User_Alias IS NULL");
-				}
-
-				if (aliasIdentifier) {
-					rs.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier);
-					rs.limit(1);
-				}
-				if (includeArguments) {
-					rs.select("Custom_Command_Alias.Arguments");
-				}
-
-				return rs;
-			});
-
-			if (includeArguments) {
-				for (const item of data) {
-					item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
-				}
-			}
-
-			if (data[0] && includeChildAliasData) {
-				if (!aliasIdentifier) {
-					throw new sb.Error({
-						message: "Cannot use `includeChildAliasOwners` without specifying `aliasIdentifier`"
-					});
-				}
-
-				data[0].childAliases = await CustomCommandAlias.selectCustom(rs => rs
+			let childAliasData = null;
+			if (options.includeChildAliasData) {
+				childAliasData = await CustomCommandAlias.selectCustom(rs => rs
 					.select("Owner.Name AS Username")
 					.select("CASE WHEN Invocation IS NULL THEN 'link' ELSE 'copy' END AS Alias_Type")
 					.join({
@@ -89,7 +75,30 @@ module.exports = (function () {
 				);
 			}
 
-			return (aliasIdentifier) ? data[0] : data;
+			const [aliasData] = data;
+			aliasData.childAliasData = childAliasData;
+
+			return aliasData;
+		}
+
+		static async fetchListForChannel (channelID, options = {}) {
+			if (!channelID) {
+				throw new sb.Error({
+					message: "No channel ID provided"
+				});
+			}
+
+			return await fetchWrapper(rs, options, rs => rs.where("Channel = %n", channelID));
+		}
+
+		static async fetchListForUser (userID, options = {}) {
+			if (!userID) {
+				throw new sb.Error({
+					message: "No channel ID provided"
+				});
+			}
+
+			return await fetchWrapper(rs, options, rs => rs.where("User_Alias = %n", userID));
 		}
 
 		static get name () { return "custom-command-alias"; }
