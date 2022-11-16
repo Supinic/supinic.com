@@ -239,13 +239,18 @@ module.exports = (function () {
 			}
 		}
 
-		const { data: filterData } = await sb.Got("Supinic", `bot/filter/command/${identifier}/list`).json();
-		const restrictions = {};
-
-		for (const filter of filterData) {
-			if (!restrictions[filter.type]) {
-				restrictions[filter.type] = [];
+		const filterResponse = await sb.Got("Supibot", {
+			url: `filter/command/${identifier}/list`,
+			throwHttpErrors: false,
+			searchParams: {
+				command: identifier
 			}
+		});
+
+		const filterData = (filterResponse.statusCode === 200) ? filterResponse.body.data : [];
+		const restrictions = {};
+		for (const filter of filterData) {
+			restrictions[filter.type] ??= [];
 
 			let string;
 			const where = (filter.channelName)
