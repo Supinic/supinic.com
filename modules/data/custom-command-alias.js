@@ -56,7 +56,7 @@ module.exports = (function () {
 		static async fetchDetailForUser (userID, aliasIdentifier, options = {}) {
 			const data = await fetchWrapper(options, rs => rs
 				.select("Custom_Command_Alias.ID")
-				.select("CASE WHEN (Custom_Command_Alias.Parent IS NULL) THEN 'main' WHEN (Custom_Command_Alias.Invocation IS NULL) THEN 'link' ELSE 'copy' END AS Alias_Type")
+				.select("CASE WHEN (Custom_Command_Alias.Parent IS NULL) THEN 'main' WHEN (Custom_Command_Alias.Invocation IS NULL) THEN 'link' ELSE 'copy' END AS Type")
 				.where("Custom_Command_Alias.User_Alias = %n", userID)
 				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
 				.limit(1)
