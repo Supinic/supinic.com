@@ -45,7 +45,7 @@ module.exports = (function () {
 	class CustomCommandAlias extends require("../template.js") {
 		static async fetchDetailForChannel (channelID, aliasIdentifier, options = {}) {
 			const data = fetchWrapper(channelID, options, rs => rs
-				.where("Channel = %n", userID)
+				.where("Custom_Command_Alias.Channel = %n", userID)
 				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
 				.limit(1)
 			);
@@ -55,8 +55,8 @@ module.exports = (function () {
 
 		static async fetchDetailForUser (userID, aliasIdentifier, options = {}) {
 			const data = await fetchWrapper(rs, options, rs => rs
-				.select("CASE WHEN (Parent IS NULL) THEN 'main' ELSE IF (Invocation IS NULL) THEN 'link' ELSE 'copy' END AS Alias_Type")
-				.where("User_Alias = %n", userID)
+				.select("CASE WHEN (Custom_Command_Alias.Parent IS NULL) THEN 'main' ELSE IF (Custom_Command_Alias.Invocation IS NULL) THEN 'link' ELSE 'copy' END AS Alias_Type")
+				.where("Custom_Command_Alias.User_Alias = %n", userID)
 				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
 				.limit(1)
 			);
@@ -67,14 +67,14 @@ module.exports = (function () {
 			if (options.includeChildAliasData) {
 				childAliasData = await CustomCommandAlias.selectCustom(rs => rs
 					.select("Owner.Name AS Username")
-					.select("CASE WHEN Invocation IS NULL THEN 'link' ELSE 'copy' END AS Alias_Type")
+					.select("CASE WHEN Custom_Command_Alias.Invocation IS NULL THEN 'link' ELSE 'copy' END AS Alias_Type")
 					.join({
 						alias: "Owner",
 						toDatabase: "chat_data",
 						toTable: "User_Alias",
 						on: "Custom_Command_Alias.User_Alias = Owner.ID"
 					})
-					.where("Parent = %n", aliasData.ID)
+					.where("Custom_Command_Alias.Parent = %n", aliasData.ID)
 				);
 			}
 
@@ -89,7 +89,7 @@ module.exports = (function () {
 				});
 			}
 
-			return await fetchWrapper(options, rs => rs.where("Channel = %n", channelID));
+			return await fetchWrapper(options, rs => rs.where("Custom_Command_Alias.Channel = %n", channelID));
 		}
 
 		static async fetchListForUser (userID, options = {}) {
@@ -99,7 +99,7 @@ module.exports = (function () {
 				});
 			}
 
-			return await fetchWrapper(options, rs => rs.where("User_Alias = %n", userID));
+			return await fetchWrapper(options, rs => rs.where("Custom_Command_Alias.User_Alias = %n", userID));
 		}
 
 		static get name () { return "custom-command-alias"; }
