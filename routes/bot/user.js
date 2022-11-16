@@ -16,7 +16,7 @@ module.exports = (function () {
 			: "N/A";
 
 		let copyLinkString = "N/A";
-		if (aliasData.type !== "main" && aliasData.childAliasData) {
+		if (aliasData.type === "main" && aliasData.childAliasData) {
 			const [copies, links] = sb.Utils.splitByCondition(aliasData.childAliasData, i => i.type === "copy");
 			const copyItems = copies
 				.sort((a, b) => a.username.localeCompare(b.username))
