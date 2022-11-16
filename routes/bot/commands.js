@@ -240,10 +240,10 @@ module.exports = (function () {
 		}
 
 		const filterResponse = await sb.Got("Supibot", {
-			url: `filter/command/${identifier}/list`,
+			url: `filter/command`,
 			throwHttpErrors: false,
 			searchParams: {
-				command: identifier
+				identifier
 			}
 		});
 
