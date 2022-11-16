@@ -7,6 +7,7 @@ module.exports = (function () {
 				aliasIdentifier,
 				channelID,
 				includeArguments,
+				includeChildAliasData,
 				userID
 			} = options;
 
@@ -66,6 +67,26 @@ module.exports = (function () {
 				for (const item of data) {
 					item.Arguments = (item.Arguments) ? JSON.parse(item.Arguments) : [];
 				}
+			}
+
+			if (data[0] && includeChildAliasData) {
+				if (!aliasIdentifier) {
+					throw new sb.Error({
+						message: "Cannot use `includeChildAliasOwners` without specifying `aliasIdentifier`"
+					});
+				}
+
+				data[0].childAliases = await CustomCommandAlias.selectCustom(rs => rs
+					.select("Owner.Name AS Username")
+					.select("CASE WHEN Invocation IS NULL THEN 'link' ELSE 'copy' END AS Alias_Type")
+					.join({
+						alias: "Owner",
+						toDatabase: "chat_data",
+						toTable: "User_Alias",
+						on: "Custom_Command_Alias.User_Alias = Owner.ID"
+					})
+					.where("Parent = %n", data[0].ID)
+				);
 			}
 
 			return (aliasIdentifier) ? data[0] : data;

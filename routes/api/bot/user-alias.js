@@ -129,11 +129,12 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/user/:name/alias/list Detail of specific command alias
+	 * @api {get} /bot/user/:name/alias/detail/:alias Detail of specific command alias
 	 * @apiName GetUserCommandAliasDetail
 	 * @apiDescription For a specified user and their alias, this endpoint lists its details
 	 * @apiGroup Bot
 	 * @apiPermission any
+	 * @apiParam {*} [includeChildAliasData] if any value is provided, additional data will be provided about links/copies
 	 * @apiSuccess {string} name
 	 * @apiSuccess {string} invocation Main command of the custom alias
 	 * @apiSuccess {string} created ISO date string
@@ -155,7 +156,8 @@ module.exports = (function () {
 		const aliasData = await CustomCommandAlias.fetchForUser({
 			userID: userData.ID,
 			aliasIdentifier: alias,
-			includeArguments: true
+			includeArguments: true,
+			includeChildAliasData: Boolean(req.query.includeChildAliasData)
 		});
 
 		if (!aliasData) {
