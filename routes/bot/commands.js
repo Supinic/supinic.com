@@ -308,7 +308,7 @@ module.exports = (function () {
 				 role="button"
 				 data-toggle="collapse"
 		         aria-expanded="false"
-		         aria-controls=""${type.toLowerCase()}"
+		         aria-controls="${type.toLowerCase()}"
 		         style="margin:3px"
 	            >
 	                ${filterTypeMap[type] ?? type}

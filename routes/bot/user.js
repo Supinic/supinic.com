@@ -15,6 +15,50 @@ module.exports = (function () {
 			? `${aliasData.invocation} ${args.join(" ")}`
 			: "N/A";
 
+		let copyLinkString = "N/A";
+		if (aliasData.type !== "main" && aliasData.childAliasData) {
+			const [copies, links] = sb.Utils.splitByCondition(aliasData.childAliasData, i => i.type === "copy");
+			const copyItems = copies
+				.sort((a, b) => a.username.localeCompare(b.username))
+				.map(i => `<li>${i.username}</li>`);
+
+			const copyList = `<ul id="copies" class="collapse">${copyItems.join("")}</ul>`;
+			const copySection = sb.Utils.tag.trim `
+				<a
+				 class="btn btn-primary"
+				 href="#copies"
+				 role="button"
+				 data-toggle="collapse"
+		         aria-expanded="false"
+		         aria-controls="copies"
+		         style="margin:3px"
+	            >
+	                Copies
+                </a>
+            `;
+
+			const linkItems = links
+				.sort((a, b) => a.username.localeCompare(b.username))
+				.map(i => `<li>${i.username}</li>`);
+
+			const linkList = `<ul id="links" class="collapse">${linkItems.join("")}</ul>`;
+			const linkSection = sb.Utils.tag.trim `
+				<a
+				 class="btn btn-primary"
+				 href="#links"
+				 role="button"
+				 data-toggle="collapse"
+		         aria-expanded="false"
+		         aria-controls="links"
+		         style="margin:3px"
+	            >
+	                Links
+                </a>
+            `;
+
+			copyLinkString  = `${copySection}${copyList}<br>${linkSection}${linkList}`
+		}
+
 		res.render("generic-detail-table", {
 			title: `Alias ${aliasData.name} of user ${aliasData.userName}`,
 			data: {
@@ -27,7 +71,8 @@ module.exports = (function () {
 					: "N/A",
 				Invocation: (aliasData.invocation)
 					? `<code>${sb.Utils.escapeHTML(invocation)}</code>`
-					: "N/A"
+					: "N/A",
+				"Copies/Links": copyLinkString
 			},
 			openGraphDefinition: [
 				{
@@ -83,7 +128,10 @@ module.exports = (function () {
 	Router.get("/alias/detail/:id", async (req, res) => {
 		const response = await sb.Got("Supinic", {
 			url: `bot/user/alias/detail/${req.params.id}`,
-			throwHttpErrors: false
+			throwHttpErrors: false,
+			searchParams: {
+				includeChildAliasData: true
+			}
 		});
 
 		if (response.statusCode !== 200) {
