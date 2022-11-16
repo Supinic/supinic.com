@@ -63,6 +63,10 @@ module.exports = (function () {
 			);
 
 			const [aliasData] = data;
+			if (!aliasData) {
+				return null;
+			}
+
 			let childAliasData = null;
 
 			if (options.includeChildAliasData) {
