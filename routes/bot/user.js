@@ -378,7 +378,10 @@ module.exports = (function () {
 		const { alias, username } = req.params;
 		const response = await sb.Got("Supinic", {
 			url: `bot/user/${encodeURIComponent(username)}/alias/detail/${alias}`,
-			throwHttpErrors: false
+			throwHttpErrors: false,
+			searchParams: {
+				includeChildAliasData: true
+			}
 		});
 
 		if (response.statusCode !== 200) {
