@@ -157,10 +157,7 @@ module.exports = (function () {
 		});
 
 		if (statusCode !== 200) {
-			return res.status(404).render("error", {
-				error: statusCode,
-				message: body.error.message
-			});
+			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
 		const auth = await WebUtils.getUserLevel(req, res);
