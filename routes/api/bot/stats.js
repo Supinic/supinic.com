@@ -30,9 +30,7 @@ module.exports = (function () {
 			{ Bytes: chatLineSize, Line_Count: chatLines },
 			commandListResponse,
 			totalAFKs,
-			activeAFKs,
-			totalReminders,
-			activeReminders,
+			totalReminders
 		] = await Promise.all([
 			sb.Query.getRecordset(rs => rs
 				.select("TABLE_NAME AS Name", "(DATA_LENGTH + INDEX_LENGTH) AS Total")
@@ -41,7 +39,7 @@ module.exports = (function () {
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Query.getRecordset(rs => rs
-				.select("Platform.Name")
+				.select("LOWER(Platform.Name)")
 				.from("chat_data", "Channel")
 				.join("chat_data", "Platform")
 				.where("Mode <> %s", "Inactive")
@@ -69,22 +67,8 @@ module.exports = (function () {
 				.flat("Total")
 			),
 			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
-				.from("chat_data", "AFK")
-				.where("Active = %b", true)
-				.single()
-				.flat("Total")
-			),
-			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "Reminder")
-				.single()
-				.flat("Total")
-			),
-			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
-				.from("chat_data", "Reminder")
-				.where("Active = %b", true)
 				.single()
 				.flat("Total")
 			)
@@ -99,7 +83,7 @@ module.exports = (function () {
 
 		const data = {
 			channels: {
-				active: platformChannels,
+				...platformChannels,
 				metaSize: getSize(tableSizes, "Message_Meta_Channel")
 			},
 			users: {
@@ -118,12 +102,10 @@ module.exports = (function () {
 				firstExecution: firstCommandExecution
 			},
 			afk: {
-				active: activeAFKs,
 				total: totalAFKs,
 				size: getSize(tableSizes, "AFK")
 			},
 			reminders: {
-				active: activeReminders,
 				total: totalReminders,
 				size: getSize(tableSizes, "Reminder")
 			}

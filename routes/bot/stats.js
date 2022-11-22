@@ -6,8 +6,12 @@ module.exports = (function () {
 
 	const stringMap = {
 		channels: {
-			active: "Channels Supibot is active in",
-			metaSize: "Size of channel-related meta-data"
+			total: "Total channels Supibot is active in",
+			twitch: "Twitch channels Supibot is active in",
+			discord: "Discord servers Supibot is active in",
+			irc: "IRC channels Supibot is active in",
+			cytube: "Cytube rooms Supibot is active in",
+			metaSize: "Size of channel-related data"
 		},
 		users: {
 			active: "Active users in all channels Supibot is in",
