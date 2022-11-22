@@ -23,7 +23,7 @@ module.exports = (function () {
 				.map(i => `<li>${i.username}</li>`)
 				.join("");
 
-			const copyItemsString = `${copyItems.length} copies<br>${copyItems || "<i>(none)</i>"}` ;
+			const copyItemsString = `${copies.length} copies<br>${copyItems || "<i>(none)</i>"}` ;
 			const copyList = `<ul id="copies" class="collapse">${copyItemsString}</ul>`;
 			const copySection = sb.Utils.tag.trim `
 				<a
@@ -44,7 +44,7 @@ module.exports = (function () {
 				.map(i => `<li>${i.username}</li>`)
 				.join("");
 
-			const linkItemsString = `${linkItems.length} links<br>${linkItems || "<i>(none)</i>"}` ;
+			const linkItemsString = `${links.length} links<br>${linkItems || "<i>(none)</i>"}` ;
 			const linkList = `<ul id="links" class="collapse">${linkItemsString}</ul>`;
 			const linkSection = sb.Utils.tag.trim `
 				<a
