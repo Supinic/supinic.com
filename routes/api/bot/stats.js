@@ -39,7 +39,7 @@ module.exports = (function () {
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Query.getRecordset(rs => rs
-				.select("LOWER(Platform.Name)")
+				.select("LOWER(Platform.Name) AS Name")
 				.from("chat_data", "Channel")
 				.join("chat_data", "Platform")
 				.where("Mode <> %s", "Inactive")
