@@ -24,18 +24,15 @@ module.exports = (function () {
 
 		const [
 			tableSizes,
-			activeChannels,
+			channelsData,
 			totalUsers,
 			activeUsers,
 			{ Bytes: chatLineSize, Line_Count: chatLines },
 			commandListResponse,
-			commandsSinceRestart,
-			newCommandExecutions,
 			totalAFKs,
 			activeAFKs,
 			totalReminders,
 			activeReminders,
-			activeFilters
 		] = await Promise.all([
 			sb.Query.getRecordset(rs => rs
 				.select("TABLE_NAME AS Name", "(DATA_LENGTH + INDEX_LENGTH) AS Total")
@@ -44,11 +41,11 @@ module.exports = (function () {
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
+				.select("Platform.Name")
 				.from("chat_data", "Channel")
+				.join("chat_data", "Platform")
 				.where("Mode <> %s", "Inactive")
-				.single()
-				.flat("Total")
+				.flat("Name")
 			),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
@@ -65,13 +62,6 @@ module.exports = (function () {
 				.single()
 			),
 			sb.Got("Supibot", { url: "command/list" }),
-			sb.Runtime.commands,
-			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
-				.from("chat_data", "Command_Execution")
-				.single()
-				.flat("Total")
-			),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "AFK")
@@ -94,22 +84,22 @@ module.exports = (function () {
 			sb.Query.getRecordset(rs => rs
 				.select("COUNT(*) AS Total")
 				.from("chat_data", "Reminder")
-				.where("Active = %b", true)
-				.single()
-				.flat("Total")
-			),
-			sb.Query.getRecordset(rs => rs
-				.select("COUNT(*) AS Total")
-				.from("chat_data", "Filter")
 				.where("Active = %b", true)
 				.single()
 				.flat("Total")
 			)
 		]);
 
+		const platformChannels = { total: 0 };
+		for (const platformName of channelsData) {
+			platformChannels[platformName] ??= 0;
+			platformChannels[platformName]++;
+			platformChannels.total++;
+		}
+
 		const data = {
 			channels: {
-				active: activeChannels,
+				active: platformChannels,
 				metaSize: getSize(tableSizes, "Message_Meta_Channel")
 			},
 			users: {
@@ -124,8 +114,7 @@ module.exports = (function () {
 			},
 			commands: {
 				active: commandListResponse.body?.data?.length ?? null,
-				countTotal: oldCommandExecutions + newCommandExecutions,
-				countSinceRestart: commandsSinceRestart,
+				// countTotal: oldCommandExecutions + newCommandExecutions,
 				firstExecution: firstCommandExecution
 			},
 			afk: {
@@ -137,9 +126,6 @@ module.exports = (function () {
 				active: activeReminders,
 				total: totalReminders,
 				size: getSize(tableSizes, "Reminder")
-			},
-			filters: {
-				active: activeFilters
 			}
 		};
 

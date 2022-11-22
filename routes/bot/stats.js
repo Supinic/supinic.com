@@ -50,7 +50,11 @@ module.exports = (function () {
 					continue;
 				}
 
-				if (subKey === "size" || subKey === "metaSize") {
+				if (subValue !== null && typeof subValue === "object") {
+					const items = Object.entries(subValue).map(([name, value]) => `<li>${name}: ${value}</li>`);
+					printData[resultKey] = `<ul>${items.join("")}</ul>`;
+				}
+				else if (subKey === "size" || subKey === "metaSize") {
 					printData[resultKey] = sb.Utils.formatByteSize(subValue);
 				}
 				else {
