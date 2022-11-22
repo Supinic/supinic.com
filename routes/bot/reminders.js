@@ -7,9 +7,9 @@ module.exports = (function () {
 	"use strict";
 
 	const columns = {
-		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
-		history: ["ID", "Created", "Sender", "Recipient", "Scheduled", "Cancelled"],
-		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Cancelled", "Unset"]
+		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Private", "Unset"],
+		history: ["ID", "Created", "Sender", "Recipient", "Scheduled", "Cancelled", "Private"],
+		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Cancelled", "Private", "Unset"]
 	};
 
 	const formatReminderList = async (req, res, target) => {
@@ -81,6 +81,7 @@ module.exports = (function () {
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A"
 				},
+				Private: (i.privateMessage) ? "✔" : "❌",
 				Cancelled: cancelled,
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `
