@@ -11,7 +11,7 @@ module.exports = (function () {
 			discord: "Discord servers Supibot is active in",
 			irc: "IRC channels Supibot is active in",
 			cytube: "Cytube rooms Supibot is active in",
-			metaSize: "Size of channel-related data"
+			metaSize: "Size of channel-related meta-data"
 		},
 		users: {
 			active: "Active users in all channels Supibot is in",
@@ -19,7 +19,7 @@ module.exports = (function () {
 			size: "Size of all users and their custom data",
 			metaSize: "Size of user-related meta-data (e.g. \"Last seen\")"
 		},
-		chatlines: {
+		chatLines: {
 			size: "Size the chat line logs take up",
 			total: "Total amount of saved chat lines"
 		},

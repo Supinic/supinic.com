@@ -9,7 +9,15 @@ module.exports = (function () {
 	const firstCommandExecution = new sb.Date("2019-02-28 23:26:36");
 	const oldCommandExecutions = 938178;
 
-	const fetchSizeTables = ["AFK", "Message_Meta_Channel", "Message_Meta_User_Alias", "Reminder", "User_Alias"];
+	const fetchSizeTables = [
+		"AFK",
+		"Channel_Data",
+		"Message_Meta_Channel",
+		"Message_Meta_User_Alias",
+		"Reminder",
+		"User_Alias",
+		"User_Alias_Data"
+	];
 	const cacheKey = "website-bot-stats";
 
 	const getSize = (data, tableName) => data.find(i => i.Name === tableName).Total;
@@ -27,7 +35,7 @@ module.exports = (function () {
 			channelsData,
 			totalUsers,
 			activeUsers,
-			{ Bytes: chatLineSize, Line_Count: chatLines },
+			logsSizeResponse,
 			commandListResponse,
 			totalAFKs,
 			totalReminders
@@ -52,13 +60,7 @@ module.exports = (function () {
 				.flat("Total")
 			),
 			sb.Cache.getKeysByPrefix("sb-user-*", {}),
-			sb.Query.getRecordset(rs => rs
-				.select("(SUM(DATA_LENGTH) + SUM(INDEX_LENGTH)) AS Bytes")
-				.select("SUM(AUTO_INCREMENT) AS Line_Count")
-				.from("INFORMATION_SCHEMA", "TABLES")
-				.where("TABLE_SCHEMA = %s", "chat_line")
-				.single()
-			),
+			sb.Got("RaspberryPi4", { url: "ssd/size" }),
 			sb.Got("Supibot", { url: "command/list" }),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
@@ -84,17 +86,16 @@ module.exports = (function () {
 		const data = {
 			channels: {
 				...platformChannels,
-				metaSize: getSize(tableSizes, "Message_Meta_Channel")
+				metaSize: getSize(tableSizes, "Channel_Data") + getSize(tableSizes, "Message_Meta_Channel")
 			},
 			users: {
 				active: activeUsers.length,
 				total: totalUsers,
-				size: getSize(tableSizes, "User_Alias"),
+				size: getSize(tableSizes, "User_Alias_Data"),
 				metaSize: getSize(tableSizes, "Message_Meta_User_Alias")
 			},
 			chatLines: {
-				size: chatLineSize,
-				total: chatLines
+				size: logsSizeResponse.body?.data?.size ?? null
 			},
 			commands: {
 				active: commandListResponse.body?.data?.length ?? null,
