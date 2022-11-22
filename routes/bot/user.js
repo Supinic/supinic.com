@@ -58,7 +58,7 @@ module.exports = (function () {
                 </a>
             `;
 
-			copyLinkString  = `${copySection}${copyList}<br>${linkSection}${linkList}`
+			copyLinkString = `${copySection}${copyList}<br>${linkSection}${linkList}`
 		}
 
 		res.render("generic-detail-table", {

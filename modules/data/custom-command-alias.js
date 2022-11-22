@@ -72,7 +72,7 @@ module.exports = (function () {
 			if (options.includeChildAliasData) {
 				childAliasData = await CustomCommandAlias.selectCustom(rs => rs
 					.select("Owner.Name AS Username")
-					.select("CASE WHEN Custom_Command_Alias.Invocation IS NULL THEN 'link' ELSE 'copy' END AS Alias_Type")
+					.select("CASE WHEN Custom_Command_Alias.Invocation IS NULL THEN 'link' ELSE 'copy' END AS Type")
 					.join({
 						alias: "Owner",
 						toDatabase: "chat_data",
