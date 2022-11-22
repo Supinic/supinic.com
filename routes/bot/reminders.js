@@ -81,7 +81,7 @@ module.exports = (function () {
 						? `<div class="hoverable" title="UTC: ${schedule.toUTCString()}">${sb.Utils.timeDelta(schedule)}</div>`
 						: "N/A"
 				},
-				Private: (i.privateMessage) ? "✔" : "❌",
+				Private: (i.privateMessage) ? "Yes" : "No",
 				Cancelled: cancelled,
 				ID: `<a target="_blank" href="/bot/reminder/${i.ID}">${i.ID}</a>`,
 				Unset: `
