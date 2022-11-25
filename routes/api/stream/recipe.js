@@ -12,13 +12,15 @@ module.exports = (function () {
 			.select("Name", "Suggested_By")
 			.select("Stream.Date")
 			.leftJoin({
-				fromTable: "Stream_Recipe",
-				fromField: "Recipe",
-				toTable: "Recipe",
-				toField: "Name",
+				toDatabase: "stream",
+				toTable: "Stream_Recipe",
 				on: "Recipe.Name = Stream_Recipe.Recipe"
 			})
-			.leftJoin("stream", "Stream")
+			.leftJoin({
+				toDatabase: "stream",
+				toTable: "Stream",
+				on: "Stream_Recipe.Stream = Stream.Video_ID"
+			})
 		);
 
 		return WebUtils.apiSuccess(res, data);
@@ -28,20 +30,22 @@ module.exports = (function () {
 		if (!req.params.recipe) {
 			return sb.WebUtils.apiFail(res, 400, "No recipe identifier provided");
 		}
-		
+
 		const data = await Recipe.selectSingleCustom(rs => rs
 			.select("Stream.Date")
 			.leftJoin({
-				fromTable: "Stream_Recipe",
-				fromField: "Recipe",
-				toTable: "Recipe",
-				toField: "Name",
+				toDatabase: "stream",
+				toTable: "Stream_Recipe",
 				on: "Recipe.Name = Stream_Recipe.Recipe"
 			})
-			.leftJoin("stream", "Stream")
+			.leftJoin({
+				toDatabase: "stream",
+				toTable: "Stream",
+				on: "Stream_Recipe.Stream = Stream.Video_ID"
+			})
 			.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", req.params.recipe)
 		);
-		
+
 		if (!data) {
 			return sb.WebUtils.apiFail(res, 404, "No recipe found");
 		}
