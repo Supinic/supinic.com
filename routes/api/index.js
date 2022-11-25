@@ -13,6 +13,7 @@ const subroutes = [
 	["gachi", "gachi.js"],
 	["osrs", "osrs.js"],
 	["relay", "relay.js"],
+	["stream", "stream"],
 	["test", "test.js"],
 	["track", "track"],
 	["trackData", "trackData.js"]
