@@ -1,14 +1,13 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const Recipe = require("../../modules/stream/recipe.js");
 const WebUtils = require("../../utils/webutils");
 
 module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const response = await sb.Got("Supinic", "stream/recipe/list").json();
+		const response = await sb.Got("Supinic", "stream/recipe/list");
 		const printData = response.body.data.map(recipe => ({
 			Name: `<a href="/stream/recipe/detail/${encodeURIComponent(recipe.name)}">${recipe.name}</a>`,
 			"Suggested by": recipe.suggestedBy ?? "N/A",
@@ -25,7 +24,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:recipe", async (req, res) => {
-		const response = await sb.Got("Supinic", `stream/recipe/detail/${encodeURIComponent(req.params.recipe)}`).json();
+		const response = await sb.Got("Supinic", `stream/recipe/detail/${encodeURIComponent(req.params.recipe)}`);
 		if (response.statusCode !== 200) {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
