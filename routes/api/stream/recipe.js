@@ -10,7 +10,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		const data = await Recipe.selectCustom(rs => rs
 			.select("Name", "Suggested_By")
-			.select("Stream.Date")
+			.select("DATE_FORMAT(Stream.Date, '%Y-%m-%d') AS Date")
 			.leftJoin({
 				toDatabase: "stream",
 				toTable: "Stream_Recipe",
@@ -32,7 +32,7 @@ module.exports = (function () {
 		}
 
 		const data = await Recipe.selectSingleCustom(rs => rs
-			.select("Stream.Date")
+			.select("DATE_FORMAT(Stream.Date, '%Y-%m-%d') AS Date")
 			.leftJoin({
 				toDatabase: "stream",
 				toTable: "Stream_Recipe",
