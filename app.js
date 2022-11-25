@@ -240,6 +240,7 @@
 		{
 			name: "Stream",
 			items: [
+				{ name: "Cooking streams", link: "stream/recipe/list" },
 				{ name: "Cytube history", link: "cytube/video-request/history" },
 				{ name: "TTS voices", link: "stream/tts" },
 				{ name: "Playsounds", link: "stream/playsound/list" },
