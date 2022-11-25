@@ -52,6 +52,8 @@
 	];
 
 	const port = 80;
+	const bodyParser = require("body-parser");
+
 	const Express = require("express");
 	require("express-async-errors");
 
@@ -163,8 +165,8 @@
 		console.warn("Config WEBSITE_SESSION_SECRET is not set up, login sessions are not available");
 	}
 
-	app.use(Express.bodyParser.json());
-	app.use(Express.bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: true }));
 
 	app.use("/public", Express.static(`${__dirname}/static/`, {
 		etag: true,
