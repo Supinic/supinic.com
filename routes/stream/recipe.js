@@ -37,7 +37,7 @@ module.exports = (function () {
 			URL: (recipe.url)
 				? recipe.url.split("\n").map(i => WebUtils.linkify(i)).join("<br>")
 				: "N/A",
-			Ingredients: recipe.url ?? "N/A",
+			Ingredients: recipe.ingredients ?? "N/A",
 			Procedure: recipe.procedure ?? "N/A",
 			Notes: recipe.notes ?? "N/A"
 		};
