@@ -43,7 +43,7 @@ module.exports = (function () {
 				toTable: "Stream",
 				on: "Stream_Recipe.Stream = Stream.Video_ID"
 			})
-			.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", req.params.recipe)
+			.where("Recipe.Name COLLATE utf8mb4_bin = %s", req.params.recipe)
 		);
 
 		if (!data) {
