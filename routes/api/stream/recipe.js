@@ -34,6 +34,7 @@ module.exports = (function () {
 		const data = await Recipe.selectSingleCustom(rs => rs
 			.select("DATE_FORMAT(Stream.Date, '%Y-%m-%d') AS Date")
 			.select("Stream.Video_ID AS Video_ID")
+			.select("Stream_Recipe.Preview AS Preview")
 			.select("Stream_Recipe.Timestamp AS Timestamp")
 			.leftJoin({
 				toDatabase: "stream",
