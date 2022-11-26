@@ -30,9 +30,12 @@ module.exports = (function () {
 		}
 
 		const recipe = response.body.data;
+		const timestamp = (recipe.timestamp) ? `?t=${recipe.timestamp}` : "";
 		const printData = {
 			Name: recipe.name,
-			"Streamed on": recipe.date ?? "(not yet)",
+			"Streamed on": (recipe.date)
+				? `<a href="//twitch.tv/videos/${recipe.videoID}${timestamp}">${recipe.date}</a>`
+				: "(not yet)",
 			"Suggested by": recipe.suggestedBy,
 			URL: (recipe.url)
 				? recipe.url.split("\n").map(i => WebUtils.linkify(i)).join("<br>")
