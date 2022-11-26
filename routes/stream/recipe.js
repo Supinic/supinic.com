@@ -55,11 +55,20 @@ module.exports = (function () {
 				: "N/A",
 			Ingredients: ingredientsString,
 			Procedure: procedureString,
-			Notes: (recipe.notes) ? WebUtils.linkify(recipe.notes) : "N/A"
+			Notes: (recipe.notes) ? WebUtils.linkify(recipe.notes) : "N/A",
+			Preview: (recipe.preview)
+				? `<img id="recipe-preview" src="${recipe.preview}"></img>`
+				: "N/A"
 		};
 
 		res.render("generic-detail-table", {
-			data: printData
+			data: printData,
+			extraCSS: `
+				img#recipe-preview {
+					max-width: 640px;
+					max-height: 480px;
+				}
+			`
 		});
 	});
 
