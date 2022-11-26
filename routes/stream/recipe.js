@@ -31,6 +31,19 @@ module.exports = (function () {
 
 		const recipe = response.body.data;
 		const timestamp = (recipe.timestamp) ? `?t=${recipe.timestamp}s` : "";
+
+		let ingredientsString = "N/A";
+		if (recipe.ingredients) {
+			const list = recipe.ingredients.split(/\r?\n/).map(i => `<li>${i}</li>`).join("");
+			ingredientsString = `<ul>${list}</ul>`;
+		}
+
+		let procedureString = "N/A";
+		if (recipe.procedure) {
+			const list = recipe.procedure.split(/\r?\n/).map(i => `<li>${i}</li>`).join("");
+			procedureString = `<ol>${list}</ol>`;
+		}
+
 		const printData = {
 			Name: recipe.name,
 			"Streamed on": (recipe.date)
@@ -40,9 +53,9 @@ module.exports = (function () {
 			URL: (recipe.url)
 				? recipe.url.split("\n").map(i => WebUtils.linkify(i)).join("<br>")
 				: "N/A",
-			Ingredients: recipe.ingredients ?? "N/A",
-			Procedure: recipe.procedure ?? "N/A",
-			Notes: recipe.notes ?? "N/A"
+			Ingredients: ingredientsString,
+			Procedure: procedureString,
+			Notes: (recipe.notes) ? WebUtils.linkify(recipe.notes) : "N/A"
 		};
 
 		res.render("generic-detail-table", {
