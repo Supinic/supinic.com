@@ -30,7 +30,7 @@ module.exports = (function () {
 		}
 
 		const recipe = response.body.data;
-		const timestamp = (recipe.timestamp) ? `?t=${recipe.timestamp}` : "";
+		const timestamp = (recipe.timestamp) ? `?t=${recipe.timestamp}s` : "";
 		const printData = {
 			Name: recipe.name,
 			"Streamed on": (recipe.date)
