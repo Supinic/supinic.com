@@ -33,7 +33,7 @@ module.exports = (function () {
 		const [
 			tableSizes,
 			channelCountData,
-			discordGuildCount,
+			discordGuildData,
 			totalUsers,
 			activeUsers,
 			logsSizeResponse,
@@ -74,9 +74,10 @@ module.exports = (function () {
 
 		const data = {
 			channels: {
+				total: channelCountData.total ?? 0,
 				twitch: channelCountData.platforms?.twitch ?? 0,
 				discord: channelCountData.platforms?.discord ?? 0,
-				"discord-guilds": discordGuildCount ?? 0,
+				"discord-guilds": discordGuildData.count ?? 0,
 				cytube: channelCountData.platforms?.cytube ?? 0,
 				irc: channelCountData.platforms?.irc ?? 0,
 				metaSize: getSize(tableSizes, "Channel_Data")
