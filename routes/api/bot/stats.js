@@ -32,7 +32,8 @@ module.exports = (function () {
 
 		const [
 			tableSizes,
-			channelsData,
+			channelCountData,
+			discordGuildCount,
 			totalUsers,
 			activeUsers,
 			logsSizeResponse,
@@ -46,13 +47,8 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_data")
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
-			sb.Query.getRecordset(rs => rs
-				.select("LOWER(Platform.Name) AS Name")
-				.from("chat_data", "Channel")
-				.join("chat_data", "Platform")
-				.where("Mode <> %s", "Inactive")
-				.flat("Name")
-			),
+			sb.Got("Supibot", { url: "channel/stats" }),
+			sb.Got("Supibot", { url: "platform/discordGuildCount" }),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "User_Alias")
@@ -85,7 +81,11 @@ module.exports = (function () {
 
 		const data = {
 			channels: {
-				...platformChannels,
+				twitch: channelCountData.platforms?.twitch ?? 0,
+				discord: channelCountData.platforms?.discord ?? 0,
+				"discord-guilds": discordGuildCount ?? 0,
+				cytube: channelCountData.platforms?.cytube ?? 0,
+				irc: channelCountData.platforms?.irc ?? 0,
 				metaSize: getSize(tableSizes, "Channel_Data")
 			},
 			users: {
