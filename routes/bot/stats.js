@@ -8,7 +8,7 @@ module.exports = (function () {
 		channels: {
 			total: "Total channels Supibot is active in",
 			twitch: "Twitch channels Supibot is active in",
-			discord: "Discord servers Supibot is active in",
+			discord: "Discord channels Supibot is active in",
 			irc: "IRC channels Supibot is active in",
 			cytube: "Cytube rooms Supibot is active in",
 			metaSize: "Size of channel-related meta-data"
