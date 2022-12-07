@@ -72,8 +72,8 @@ module.exports = (function () {
 			)
 		]);
 
-		const channelCount = channelDataResponse?.body ?? {};
-		const discordGuildData = discordDataResponse?.body ?? {};
+		const channelCount = channelDataResponse?.body?.data ?? {};
+		const discordGuildData = discordDataResponse?.body?.data ?? {};
 		const data = {
 			channels: {
 				total: channelCount.total ?? 0,
