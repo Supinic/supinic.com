@@ -32,8 +32,8 @@ module.exports = (function () {
 
 		const [
 			tableSizes,
-			channelCountData,
-			discordGuildData,
+			channelDataResponse,
+			discordDataResponse,
 			totalUsers,
 			activeUsers,
 			logsSizeResponse,
@@ -72,14 +72,16 @@ module.exports = (function () {
 			)
 		]);
 
+		const channelCount = channelDataResponse?.body ?? {};
+		const discordGuildData = discordDataResponse?.body ?? {};
 		const data = {
 			channels: {
-				total: channelCountData.total ?? 0,
-				twitch: channelCountData.platforms?.twitch ?? 0,
-				discord: channelCountData.platforms?.discord ?? 0,
+				total: channelCount.total ?? 0,
+				twitch: channelCount.platforms?.twitch ?? 0,
+				discord: channelCount.platforms?.discord ?? 0,
 				"discord-guilds": discordGuildData.count ?? 0,
-				cytube: channelCountData.platforms?.cytube ?? 0,
-				irc: channelCountData.platforms?.irc ?? 0,
+				cytube: channelCount.platforms?.cytube ?? 0,
+				irc: channelCount.platforms?.irc ?? 0,
 				metaSize: getSize(tableSizes, "Channel_Data")
 			},
 			users: {
