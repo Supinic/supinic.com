@@ -1,8 +1,6 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const Channel = require("../../modules/chat-data/channel.js");
-const Throughput = require("../../modules/messages.js");
 const WebUtils = require("../../utils/webutils.js");
 
 module.exports = (function () {
@@ -74,58 +72,12 @@ module.exports = (function () {
 			"Banphrase API URL": data.banphraseURL ?? "N/A",
 			Description: data.description ?? "N/A",
 			Ambassadors: ambassadorsHTML,
-			Activity: `<a href="/bot/channel/detail/${data.ID}/activity">Activity charts</a>`,
 			Filters: `<a href="/bot/channel/detail/${data.ID}/filter/list">List of filters</a>`
 		};
 
 		res.render("generic-detail-table", {
 			title: `Detail - Channel ${data.ID} - Supibot`,
 			data: renderData
-		});
-	});
-
-	Router.get("/detail/:id/activity", async (req, res) => {
-		const channelID = Number(req.params.id);
-		if (!sb.Utils.isValidInteger(channelID)) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Target channel has no activity data"
-			});
-		}
-
-		const channelRow = await Channel.getRow(channelID);
-		if (!channelRow) {
-			return res.status(404).render("error", {
-				error: "404 Not found",
-				message: "Target channel has no activity data"
-			});
-		}
-
-		const channelData = channelRow.valuesObject;
-		const [lastDayData, lastMonthData] = await Promise.all([
-			Throughput.lastDay(channelData.ID),
-			Throughput.lastMonth(channelData.ID)
-		]);
-
-		const hourData = [];
-		const dayLabels = [];
-		const dayData = [];
-
-		for (const row of lastDayData) {
-			hourData.push(Number(row.Amount));
-		}
-
-		for (const row of lastMonthData) {
-			dayLabels.push(new sb.Date(row.Timestamp).format("D j.n.Y"));
-			dayData.push(Number(row.Amount));
-		}
-
-		res.render("channel-activity", {
-			title: `Activity - Channel ${channelData.ID}`,
-			hourData: JSON.stringify(hourData),
-			dayData: JSON.stringify(dayData),
-			dayLabels: JSON.stringify(dayLabels),
-			channelName: channelData.Name
 		});
 	});
 

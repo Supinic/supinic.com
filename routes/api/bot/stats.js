@@ -7,7 +7,7 @@ module.exports = (function () {
 	"use strict";
 
 	const firstCommandExecution = new sb.Date("2019-02-28 23:26:36");
-	const oldCommandExecutions = 938178;
+	// const oldCommandExecutions = 938178;
 
 	const fetchSizeTables = [
 		"AFK",
@@ -86,7 +86,7 @@ module.exports = (function () {
 		const data = {
 			channels: {
 				...platformChannels,
-				metaSize: getSize(tableSizes, "Channel_Data") + getSize(tableSizes, "Message_Meta_Channel")
+				metaSize: getSize(tableSizes, "Channel_Data")
 			},
 			users: {
 				active: activeUsers.length,
