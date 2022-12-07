@@ -72,13 +72,6 @@ module.exports = (function () {
 			)
 		]);
 
-		const platformChannels = { total: 0 };
-		for (const platformName of channelsData) {
-			platformChannels[platformName] ??= 0;
-			platformChannels[platformName]++;
-			platformChannels.total++;
-		}
-
 		const data = {
 			channels: {
 				twitch: channelCountData.platforms?.twitch ?? 0,
