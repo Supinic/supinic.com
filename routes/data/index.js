@@ -7,7 +7,6 @@ module.exports = (function () {
 	const subroutes = [
 		["bad-apple", "bad-apple.js"],
 		["changelog", "changelog.js"],
-		["corona", "corona.js"],
 		["dall-e", "dall-e.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
