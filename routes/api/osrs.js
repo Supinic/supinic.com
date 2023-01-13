@@ -87,6 +87,7 @@ module.exports = (function () {
 		"Nightmare",
 		"Phosani's Nightmare",
 		"Obor",
+		"Phantom Muspah",
 		"Sarachnis",
 		"Scorpia",
 		"Skotizo",
