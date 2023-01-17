@@ -89,6 +89,13 @@ module.exports = (function () {
 		if (exists) {
 			if (exists.Mode === "Inactive") {
 				const { inactiveReason = "unknown" } = JSON.parse(exists.Data ?? "{}");
+				if (inactiveReason === "channel-inactive") {
+					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
+						The bot has been removed from target channel because of prolonged inactivity.
+						You can immediately receive the bot back by using this command →
+						$bot rejoin channel:"${targetChannel}"
+					`);
+				}
 
 				return WebUtils.apiFail(
 					res,
