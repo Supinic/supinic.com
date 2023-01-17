@@ -257,7 +257,7 @@ module.exports = (function () {
 				? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 				: "everywhere";
 
-			if (filter.type === "Opt-out" || filter.type === "Unmention" || filter.type === "Unping") {
+			if (filter.type === "Opt-out") {
 				const shortWhere = (filter.channelName)
 					? `in <u>${filter.channelDescription ?? filter.channelName}</u>`
 					: "";
