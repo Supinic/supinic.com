@@ -492,14 +492,16 @@
 					});
 				}
 
-				const githubData = await User.getDataProperty(userData.ID, "github");
-				if (githubData?.login === profile.login) {
+				const rawGithubData = await User.getDataProperty(userData.ID, "github");
+				const githubData = (rawGithubData) ? JSON.parse(rawGithubData) : {};
+
+				if (githubData.login === profile.login) {
 					return res.render("generic", {
 						data: sb.Utils.tag.trim `
-						<div class="pt-3 text-center">
-							<h4>Your user profile is already connected to this Github profile 🙂</h4>
-						</div>
-					`
+							<div class="pt-3 text-center">
+								<h4>Your user profile is already connected to this Github profile 🙂</h4>
+							</div>
+						`
 					});
 				}
 
