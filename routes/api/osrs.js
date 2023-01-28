@@ -1,3 +1,5 @@
+import got from "got";
+
 const Express = require("express");
 const Router = Express.Router();
 
@@ -133,7 +135,7 @@ module.exports = (function () {
 		}
 
 		// Fetch item price from OSRS API
-		const { body: data } = await sb.Got({
+		const { body: data } = await got({
 			url: "https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json",
 			responseType: "json",
 			searchParams: {
@@ -342,7 +344,7 @@ module.exports = (function () {
 			}
 		};
 
-		let initialResponse = await sb.Got({
+		let initialResponse = await got({
 			url,
 			searchParams: { player },
 			retry: {
@@ -356,7 +358,7 @@ module.exports = (function () {
 			// highscores. Some early accounts will show up in the less populated ranks, rather than the main one.
 			// One more thing to note here: early HCIM or UIM will also have the same ranks issue as mains vs. ironmen,
 			// but I believe that case is too niche to be considered. Although, that might be changed in the future.
-			initialResponse = await sb.Got({
+			initialResponse = await got({
 				url: apiURLs.ironman.regular,
 				searchParams: { player },
 				retry: {
@@ -392,7 +394,7 @@ module.exports = (function () {
 			const compare = {};
 
 			for (const type of types) {
-				const { statusCode, body } = await sb.Got({
+				const { statusCode, body } = await got({
 					url: apiURLs.ironman[type],
 					throwHttpErrors: false,
 					searchParams: { player }
