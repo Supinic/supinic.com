@@ -1519,7 +1519,7 @@ got@^11.8.0:
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
 
-got@^12.5.1:
+got@^12.5.1, got@^12.5.3:
   version "12.5.3"
   resolved "https://registry.yarnpkg.com/got/-/got-12.5.3.tgz#82bdca2dd61258a02e24d668ea6e7abb70ac3598"
   integrity sha512-8wKnb9MGU8IPGRIo+/ukTy9XLJBwDiCpIf5TVzQ9Cpol50eMTpBq2GAuDsuDIz7hTYmZgMgC1e9ydr6kSDWs3w==
@@ -2852,24 +2852,24 @@ strnum@^1.0.4:
   resolved "https://codeload.github.com/supinic/supi-core/tar.gz/d1379c3f92f307a2a71a5fb3d72f0a011bdc6248"
   dependencies:
     async-markov "github:supinic/async-markov"
-    cheerio "^1.0.0-rc.12"
-    chrono-node "^2.4.1"
-    cron "^2.1.0"
+    cheerio "^1.0.0-rc.5"
+    chrono-node "^2.2.4"
+    cron latest
     dice-roll-eval "github:jprochazk/dice-roll-eval"
     duration-parser "github:supinic/duration-parser"
-    ffprobe "^1.1.2"
-    form-data "^4.0.0"
-    got "^12.5.1"
-    ioredis "^5.2.3"
+    ffprobe "^1.1.0"
+    form-data "^3.0.0"
+    got "^10.7.0"
+    ioredis "^4.17.3"
     language-iso-codes "github:supinic/language-iso-codes"
     long-timeout "github:supinic/long-timeout"
-    mariadb "^3.0.1"
-    random-js "^2.1.0"
-    rss-parser "^3.12.0"
-    supibot-package-manager "github:supinic/supibot-package-manager"
+    mariadb "^2.5.2"
+    node-vlc-http "github:supinic/node-vlc-http"
+    random-js latest
+    rss-parser "^3.10.0"
     track-link-parser "github:supinic/track-link-parser"
-    transliteration "^2.3.5"
-    vm2 "^3.9.11"
+    transliteration "^2.2.0"
+    vm2 "^3.9.2"
 
 "supi-db-init@github:supinic/supi-db-init":
   version "1.0.0"

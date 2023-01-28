@@ -1,5 +1,4 @@
-import got from "got";
-
+const got = require("got");
 const Express = require("express");
 const Router = Express.Router();
 
