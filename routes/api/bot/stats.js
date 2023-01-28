@@ -56,7 +56,12 @@ module.exports = (function () {
 				.flat("Total")
 			),
 			sb.Cache.getKeysByPrefix("sb-user-*", {}),
-			sb.Got("RaspberryPi4", { url: "ssd/size" }),
+			sb.Got({
+				url: "http://192.168.1.102:11111/proxy/ssd/size",
+				timeout: {
+					request: 10000
+				}
+			}),
 			sb.Got("Supibot", { url: "command/list" }),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")

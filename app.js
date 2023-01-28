@@ -24,6 +24,9 @@
 		]
 	});
 
+	const { definitions } = await import("./got");
+	sb.Got.importData(...definitions);
+
 	const WebUtils = require("./utils/webutils.js");
 	const subroutes = [
 		"api",
