@@ -2850,7 +2850,7 @@ strnum@^1.0.4:
 
 "supi-core@github:supinic/supi-core":
   version "2.2.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/2d2c8055058996940d0d4f3f55eba3c55615af2a"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/65501a6cdc2ee6dda2f429e671df91b0ae28f83a"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.12"
