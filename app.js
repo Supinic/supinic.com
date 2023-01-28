@@ -350,15 +350,27 @@
 	});
 
 	app.get("/", async (req, res) => {
-		const adminUserID = sb.Config.get("ADMIN_USER_ID");
-		const streamResponse = await sb.Got("Helix", {
-			url: "streams",
-			searchParams: {
-				user_id: adminUserID
-			}
-		});
+		let streamData = [];
+		const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID", "ADMIN_USER_ID"];
 
-		const [stream] = streamResponse.body.data ?? [];
+		if (requiredConfigs.every(config => sb.Config.has(config, true))) {
+			const token = sb.Config.get("TWITCH_OAUTH");
+			const adminUserID = sb.Config.get("ADMIN_USER_ID");
+			const streamResponse = await sb.Got({
+				url: "https://api.twitch.tv/helix/streams",
+				headers: {
+					"Client-ID": sb.Config.get("TWITCH_CLIENT_ID"),
+					Authorization: `Bearer ${token.replace("oauth:", "")}`
+				},
+				searchParams: {
+					user_id: adminUserID
+				}
+			});
+
+			streamData = streamResponse.body.data ?? [];
+		}
+
+		const [stream] = streamData;
 		res.render("index", {
 			game: stream?.game_name || null, // when no game is set, the game field is an empty string - || operator accounts for this
 			viewers: stream?.viewer_count ?? null

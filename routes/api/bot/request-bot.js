@@ -116,7 +116,7 @@ module.exports = (function () {
 		const userData = await User.getByID(userID);
 		if (platformData.Name === "twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got("Leppunen", `twitch/modsvips/${escapedChannel}`).json();
+			const { mods } = await sb.Got(`https://api.ivr.fi/twitch/modsvips/${escapedChannel}`).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {
@@ -137,7 +137,25 @@ module.exports = (function () {
 
 		let extraNotes = "";
 		if (platformData.Name === "Twitch") {
-			const [bttv, ffz, sevenTv, follows, recent, stream] = await Promise.all([
+			let followsPromise = {};
+			const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID"];
+			if (requiredConfigs.every(config => sb.Config.has(config, true))) {
+				const token = sb.Config.get("TWITCH_OAUTH");
+
+				followsPromise = sb.Got("Helix", {
+					url: "https://api.twitch.tv/helix/users/follows",
+					headers: {
+						"Client-ID": sb.Config.get("TWITCH_CLIENT_ID"),
+						Authorization: `Bearer ${token.replace("oauth:", "")}`
+					},
+					searchParams: {
+						to_id: twitchChannelID
+					}
+				});
+			}
+
+			const [follows, bttv, ffz, sevenTv, recent, stream] = await Promise.all([
+				followsPromise,
 				sb.Got({
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
 					responseType: "json",
@@ -153,12 +171,6 @@ module.exports = (function () {
 					responseType: "json",
 					throwHttpErrors: false
 				}),
-				sb.Got("Helix", {
-					url: "users/follows",
-					searchParams: {
-						to_id: twitchChannelID
-					}
-				}),
 				sb.Got({
 					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
 					responseType: "json",
@@ -168,8 +180,8 @@ module.exports = (function () {
 						limit: "1"
 					}
 				}),
-				sb.Got("Leppunen", {
-					url: `v2/twitch/user/${twitchChannelID}`,
+				sb.Got({
+					url: `https://api.ivr.fi/v2/twitch/user/${twitchChannelID}`,
 					searchParams: {
 						id: "true"
 					}
