@@ -185,8 +185,8 @@
 	// 	noCache: true
 	// }));
 
-	app.use(Passport.initialize());
-	app.use(Passport.session());
+	app.use(Passport.initialize({}));
+	app.use(Passport.session({}));
 
 	app.locals.navitems = [
 		{
