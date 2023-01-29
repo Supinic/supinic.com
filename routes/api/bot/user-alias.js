@@ -133,7 +133,7 @@ module.exports = (function () {
 	 * @apiDescription For a specified user and their alias, this endpoint lists its details
 	 * @apiGroup Bot
 	 * @apiPermission any
-	 * @apiParam {number|string|boolean} [includeChildAliasData] if any value is provided, additional data will be provided about links/copies
+	 * @apiParam {string} [includeChildAliasData] if any value is provided, additional data will be provided about links/copies
 	 * @apiSuccess {string} name
 	 * @apiSuccess {string} invocation Main command of the custom alias
 	 * @apiSuccess {string} created ISO date string
