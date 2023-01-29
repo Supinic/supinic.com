@@ -98,7 +98,7 @@ module.exports = (function () {
 	 * @apiSuccess {Array} command List of commands
 	 * @apiSuccess {string} command.name
 	 * @apiSuccess {string[]} command.aliases
-	 * @apiSuccess {string|null} command.description
+	 * @apiSuccess {string} [command.description]
 	 * @apiSuccess {number} command.cooldown
 	 * @apiSuccess {string[]} command.flags
 	 */
