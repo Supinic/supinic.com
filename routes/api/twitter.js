@@ -436,7 +436,7 @@ Router.get("/timeline/:username", async (req, res) => {
 			}
 			else {
 				await resetPreviousStepsCaches("userid");
-				return WebUtils.apiFail(res, 404, "User ID load error", userIdResult.error);
+				return WebUtils.apiFail(res, 503, "User ID load error", userIdResult.error);
 			}
 		}
 
