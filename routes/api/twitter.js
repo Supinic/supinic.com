@@ -235,6 +235,7 @@ const fetchUserId = async (data) => {
 
 	const response = await sb.Got("FakeAgent", {
 		url: `https://api.twitter.com/graphql/${slug}/UserByScreenName?variables=${variablesString}&features=${featuresString}`,
+		responseType: "json",
 		throwHttpErrors: false,
 		headers: {
 			Authorization: `Bearer ${bearerToken}`,
@@ -289,6 +290,8 @@ const fetchTimeline = async (data) => {
 
 	const response = await sb.Got("FakeAgent", {
 		url: `https://api.twitter.com/graphql/${slug}/UserTweets?variables=${variablesString}&features=${featuresString}`,
+		responseType: "json",
+		throwHttpErrors: false,
 		headers: {
 			Authorization: `Bearer ${bearerToken}`,
 			"X-Guest-Token": guestToken
