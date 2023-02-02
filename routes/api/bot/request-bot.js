@@ -160,12 +160,8 @@ module.exports = (function () {
 			if (requiredConfigs.every(config => sb.Config.has(config, true))) {
 				const token = sb.Config.get("TWITCH_OAUTH");
 
-				followsPromise = sb.Got({
-					url: "https://api.twitch.tv/helix/users/follows",
-					headers: {
-						"Client-ID": sb.Config.get("TWITCH_CLIENT_ID"),
-						Authorization: `Bearer ${token.replace("oauth:", "")}`
-					},
+				followsPromise = sb.Got("Helix", {
+					url: "users/follows",
 					searchParams: {
 						to_id: twitchChannelID
 					}
