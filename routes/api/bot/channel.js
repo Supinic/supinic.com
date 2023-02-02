@@ -79,7 +79,14 @@ module.exports = (function () {
 
 		let userID = twitchUserID;
 		if (username) {
-			userID = await sb.Utils.getTwitchID(username);
+			const helixChannelResponse = await sb.Got("Helix", {
+				url: "users",
+				searchParams: {
+					login: username
+				},
+			});
+
+			userID = helixChannelResponse.body.data?.[0].id;
 			if (!userID) {
 				return WebUtils.apiFail(res, 404, "Provided username does not exist on Twitch");
 			}
