@@ -95,7 +95,13 @@ module.exports = (function () {
 
 		if (exists) {
 			if (exists.Mode === "Inactive") {
-				const { inactiveReason = "unknown" } = JSON.parse(exists.Data ?? "{}");
+				const inactiveReason = await sb.Query.getRecordset(rs => rs
+					.select("Value")
+					.from("chat_data", "Channel_Data")
+					.where("Channel = %n", exists.ID)
+					.where("Property = %s", "inactive-reason")
+				);
+
 				if (inactiveReason === "channel-inactive") {
 					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
 						The bot has been removed from target channel because of prolonged inactivity.
@@ -107,7 +113,7 @@ module.exports = (function () {
 				return WebUtils.apiFail(
 					res,
 					409,
-					`The bot has been removed from target channel, reason: ${inactiveReason}`
+					`The bot has been removed from target channel, reason: ${inactiveReason ?? "unknown"}`
 				);
 			}
 			else {
