@@ -6,8 +6,6 @@ const importModule = async (module, path) => {
 (async function () {
 	"use strict";
 
-	process.env.PROJECT_TYPE = "site";
-
 	require("./db-access.js");
 
 	const initializeSbObject = require("supi-core");
