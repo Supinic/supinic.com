@@ -1,3 +1,8 @@
+const importModule = async (module, path) => {
+	const { definitions } = await import(`supibot-package-manager/${path}/index.mjs`);
+	await module.importData(definitions);
+};
+
 (async function () {
 	"use strict";
 
@@ -24,8 +29,10 @@
 		]
 	});
 
-	const { definitions } = await import("./got/index.mjs");
-	await sb.Got.importData(definitions);
+	await Promise.all([
+		importModule("got", "gots"),
+		importModule("cron", "crons"),
+	]);
 
 	const WebUtils = require("./utils/webutils.js");
 	const subroutes = [
