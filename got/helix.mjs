@@ -9,10 +9,10 @@ export const definition = {
 			throwHttpErrors: false,
 			headers: {
 				Authorization: `Bearer ${token.replace("oauth:", "")}`,
-				"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
+				"Client-ID": sb.Config.get("TWITCH_CLIENT_ID")
 			}
 		};
 	}),
 	parent: "Global",
-	description: "Global definition - template for all others"
+	description: "Twitch Helix API definition"
 };
