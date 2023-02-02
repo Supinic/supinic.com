@@ -2850,7 +2850,7 @@ strnum@^1.0.4:
 
 "supi-core@github:supinic/supi-core":
   version "2.2.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/a888ae84f14ee17ede0ec8a24d93a583e739b8be"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/fe5202fcead38b48aace96cfa1958cf34a173f2c"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.12"
@@ -2867,7 +2867,6 @@ strnum@^1.0.4:
     random-js "^2.1.0"
     roll-dice "npm:@jprochazk/roll-dice@^0.2.2"
     rss-parser "^3.12.0"
-    supibot-package-manager "github:supinic/supibot-package-manager"
     track-link-parser "github:supinic/track-link-parser"
     transliteration "^2.3.5"
     vm2 "^3.9.13"
@@ -2877,10 +2876,6 @@ strnum@^1.0.4:
   resolved "https://codeload.github.com/supinic/supi-db-init/tar.gz/19cdea0cd8cf71f4891292a385b39add80ac0bc8"
   dependencies:
     mariadb "^3.0.0"
-
-"supibot-package-manager@github:supinic/supibot-package-manager":
-  version "1.0.0"
-  resolved "https://codeload.github.com/supinic/supibot-package-manager/tar.gz/eec92c9a182d41e5b0445f39deb285650bf9e660"
 
 supports-color@^5.3.0:
   version "5.5.0"
