@@ -25,7 +25,7 @@
 	});
 
 	const { definitions } = await import("./got/index.mjs");
-	sb.Got.importData(definitions);
+	await sb.Got.importData(definitions);
 
 	const WebUtils = require("./utils/webutils.js");
 	const subroutes = [
