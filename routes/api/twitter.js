@@ -429,9 +429,15 @@ Router.get("/timeline/:username", async (req, res) => {
 			username,
 			slug: slugs.user
 		});
+
 		if (!userIdResult.success) {
-			await resetPreviousStepsCaches("userid");
-			return WebUtils.apiFail(res, 503, "User ID load error", userIdResult.error);
+			if (userIdResult.error.code === "no-user-id") {
+				return WebUtils.apiFail(res, 404, "User does not exist");
+			}
+			else {
+				await resetPreviousStepsCaches("userid");
+				return WebUtils.apiFail(res, 404, "User ID load error", userIdResult.error);
+			}
 		}
 
 		userId = userIdResult.id;
