@@ -48,53 +48,56 @@ const defaults = {
 };
 
 const fetchEntryPageBody = async () => {
-	const entryPageResponse = await sb.Got("FakeAgent", {
+	const response = await sb.Got("FakeAgent", {
 		url: `https://twitter.com/pajlada`,
 		responseType: "text"
 	});
 
-	if (!entryPageResponse.ok) {
+	if (!response.ok) {
 		return {
 			success: false,
 			error: {
 				code: "entry-page-fetch",
-				entryPageResponse
+				statusCode: response.statusCode
 			},
 		};
 	}
 
 	return {
 		success: true,
-		body: entryPageResponse.body
+		body: response.body
 	};
 };
 
 const fetchMainFileBody = async (entryPageBody) => {
-	const mainFileName = entryPageBody.match(/responsive-web\/client-web\/(main\.\w+\.js)/)?.[1];
-	if (!mainFileName) {
+	const filename = entryPageBody.match(/responsive-web\/client-web\/(main\.\w+\.js)/)?.[1];
+	if (!filename) {
 		return {
 			success: false,
-			error: "main-file-name",
-			entryPageBody
+			error: {
+				code: "main-file-name"
+			}
 		};
 	}
 
-	const mainFileResponse = await sb.Got("FakeAgent", {
-		url: `https://abs.twimg.com/responsive-web/client-web/${mainFileName}`,
+	const response = await sb.Got("FakeAgent", {
+		url: `https://abs.twimg.com/responsive-web/client-web/${filename}`,
 		responseType: "text"
 	});
 
-	if (!mainFileResponse.ok) {
+	if (!response.ok) {
 		return {
 			success: false,
-			error: "main-file-fetch",
-			mainFileResponse
+			error: {
+				code: "main-file-fetch",
+				statusCode: response.statusCode
+			},
 		};
 	}
 
 	return {
 		success: true,
-		body: mainFileResponse.body
+		body: response.body
 	};
 }
 
@@ -103,8 +106,9 @@ const fetchBearerToken = (mainFileBody) => {
 	if (!token) {
 		return {
 			success: false,
-			error: "bearer-token-match",
-			mainFileBody
+			error: {
+				code: "bearer-token-match"
+			}
 		};
 	}
 
@@ -115,7 +119,7 @@ const fetchBearerToken = (mainFileBody) => {
 }
 
 const fetchGuestToken = async (bearerToken) => {
-	const guestTokenResponse = await sb.Got("FakeAgent", {
+	const response = await sb.Got("FakeAgent", {
 		method: "POST",
 		responseType: "json",
 		url: `https://api.twitter.com/1.1/guest/activate.json`,
@@ -124,20 +128,26 @@ const fetchGuestToken = async (bearerToken) => {
 		}
 	});
 
-	if (!guestTokenResponse.ok) {
+	if (!response.ok) {
 		return {
 			success: false,
-			error: "guest-token-fetch",
-			guestTokenResponse
+			error: {
+				code: "guest-token-fetch",
+				body: response.body,
+				statusCode: response.statusCode
+			}
 		};
 	}
 
-	const token = guestTokenResponse.body.guest_token;
+	const token = response.body.guest_token;
 	if (!token) {
 		return {
 			success: false,
-			error: "no-guest-token",
-			guestTokenResponse
+			error: {
+				code: "no-guest-token",
+				body: response.body,
+				statusCode: response.statusCode
+			}
 		};
 	}
 
@@ -180,8 +190,12 @@ const fetchEndpointSlugs = async (entryPageBody) => {
 			success: false,
 			error: {
 				code: "endpoint-file-fetch",
-				userResponse,
-				timelineResponse
+				user: {
+					statusCode: userResponse.statusCode
+				},
+				timeline: {
+					statusCode: timelineResponse.statusCode
+				}
 			},
 		};
 	}
@@ -193,10 +207,8 @@ const fetchEndpointSlugs = async (entryPageBody) => {
 		return {
 			success: false,
 			error: {
-				code: "no--url-match",
-				userResponse,
-				timelineResponse
-			},
+				code: "no-url-match"
+			}
 		};
 	}
 
@@ -223,6 +235,7 @@ const fetchUserId = async (data) => {
 
 	const response = await sb.Got("FakeAgent", {
 		url: `https://api.twitter.com/graphql/${slug}/UserByScreenName?variables=${variablesString}&features=${featuresString}`,
+		throwHttpErrors: false,
 		headers: {
 			Authorization: `Bearer ${bearerToken}`,
 			"X-Guest-Token": guestToken,
@@ -235,7 +248,8 @@ const fetchUserId = async (data) => {
 			success: false,
 			error: {
 				code: "user-id-fetch",
-				response
+				body: response.body,
+				statusCode: response.statusCode
 			}
 		};
 	}
@@ -246,7 +260,8 @@ const fetchUserId = async (data) => {
 			success: false,
 			error: {
 				code: "no-user-id",
-				response
+				body: response.body,
+				statusCode: response.statusCode
 			}
 		};
 	}
@@ -285,7 +300,8 @@ const fetchTimeline = async (data) => {
 			success: false,
 			error: {
 				code: "timeline-fetch",
-				response
+				body: response.body,
+				statusCode: response.statusCode
 			}
 		};
 	}
@@ -296,7 +312,8 @@ const fetchTimeline = async (data) => {
 			success: false,
 			error: {
 				code: "timeline-parse-entries",
-				response
+				body: response.body,
+				statusCode: response.statusCode
 			}
 		};
 	}
