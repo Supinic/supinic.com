@@ -41,7 +41,14 @@ module.exports = (function () {
 				return WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
 			}
 
-			const currentChannelID = await sb.Utils.getTwitchID(userData.Name);
+			const helixChannelResponse = await sb.Got("Helix", {
+				url: "users",
+				searchParams: {
+					login: userData.Name
+				},
+			});
+
+			const currentChannelID = helixChannelResponse.body.data?.[0].id;
 			const previousChannelID = previousChannel.Specific_ID;
 			if (currentChannelID !== previousChannelID) {
 				return WebUtils.apiFail(res, 400, "Renaming verification did not pass");
@@ -108,9 +115,20 @@ module.exports = (function () {
 			}
 		}
 
-		const twitchChannelID = await sb.Utils.getTwitchID(targetChannel);
-		if (platformData.Name === "Twitch" && twitchChannelID === null) {
-			return WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
+		let twitchChannelID;
+		if (platformData.Name === "twitch") {
+			const helixUserResponse = await sb.Got("Helix", {
+				url: "users",
+				searchParams: {
+					login: targetChannel
+				},
+			});
+
+			twitchChannelID = helixUserResponse.body.data?.[0].id;
+
+			if (!twitchChannelID) {
+				return WebUtils.apiFail(res, 400, "Target channel does not exist on Twitch");
+			}
 		}
 
 		const userData = await User.getByID(userID);
