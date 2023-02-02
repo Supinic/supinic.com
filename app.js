@@ -30,8 +30,8 @@ const importModule = async (module, path) => {
 	});
 
 	await Promise.all([
-		importModule("got", "gots"),
-		importModule("cron", "crons"),
+		importModule(sb.Got,"gots"),
+		importModule(sb.Cron, "crons")
 	]);
 
 	const WebUtils = require("./utils/webutils.js");
