@@ -116,7 +116,7 @@ module.exports = (function () {
 		}
 
 		let twitchChannelID;
-		if (platformData.Name === "twitch") {
+		if (platformData.Name === "Twitch") {
 			const helixUserResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
@@ -132,7 +132,7 @@ module.exports = (function () {
 		}
 
 		const userData = await User.getByID(userID);
-		if (platformData.Name === "twitch" && userData.Name !== targetChannel) {
+		if (platformData.Name === "Twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
 			const { mods } = await sb.Got(`https://api.ivr.fi/twitch/modsvips/${escapedChannel}`).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
