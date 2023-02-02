@@ -1,6 +1,6 @@
 export const definition = {
 	name: "FakeAgent",
-	optionsType: "function",
+	optionsType: "object",
 	options: {
 		responseType: "text",
 		throwHttpErrors: false,
