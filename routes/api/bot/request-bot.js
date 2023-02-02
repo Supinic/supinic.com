@@ -196,6 +196,7 @@ module.exports = (function () {
 				}),
 				sb.Got({
 					url: `https://api.ivr.fi/v2/twitch/user/${twitchChannelID}`,
+					throwHttpErrors: false,
 					searchParams: {
 						id: "true"
 					}
