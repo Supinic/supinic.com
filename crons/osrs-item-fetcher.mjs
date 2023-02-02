@@ -1,9 +1,8 @@
-module.exports = {
+export const definition = {
 	Name: "osrs-new-items-fetcher",
 	Expression: "0 0 0 * * *",
 	Description: "Check new tradeable Old School Runescape items, and adds them to the database accordingly.",
 	Defer: null,
-	Type: "Website",
 	Code: (async function osrsNewItemsFetcher () {
 		this.data.isTableAvailable ??= await sb.Query.isTablePresent("osrs", "Item");
 		if (this.data.isTableAvailable === false) {
@@ -17,7 +16,8 @@ module.exports = {
 			.flat("Game_ID")
 		);
 
-		const response = await sb.Got("GenericAPI", {
+		const response = await sb.Got("Global", {
+			responseType: "json",
 			url: "https://prices.runescape.wiki/api/v1/osrs/mapping"
 		});
 

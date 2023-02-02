@@ -1,9 +1,8 @@
-module.exports = {
+export const definition = {
 	Name: "update-tracks-availability",
 	Expression: "0 0 12 7,21 * *",
 	Description: "Updates the \"Available\" status of all music tracks in the database",
 	Defer: null,
-	Type: "Website",
 	Code: (async function updateTracksAvailability () {
 		const videoIDs = await sb.Query.getRecordset(rs => rs
 			.select("Track.ID AS ID", "Link", "Available", "Video_Type.Type AS Type")
