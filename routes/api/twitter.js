@@ -462,9 +462,8 @@ Router.get("/timeline/:username", async (req, res) => {
 		await sb.Cache.setByPrefix(timelineCacheKey, timeline, { expiry: 600_000 }); // 10 minutes
 	}
 
-	return WebUtils.apiSuccess(res, {
-		userId,
-		timeline
+	return WebUtils.apiSuccess(res, { userId, timeline }, {
+		skipCaseConversion: true
 	});
 });
 
