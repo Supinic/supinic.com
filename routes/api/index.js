@@ -16,7 +16,8 @@ const subroutes = [
 	["stream", "stream"],
 	["test", "test.js"],
 	["track", "track"],
-	["trackData", "trackData.js"]
+	["trackData", "trackData.js"],
+	["twitter", "twitter.js"]
 ];
 
 // noinspection JSUnusedLocalSymbols
