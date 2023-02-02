@@ -442,4 +442,4 @@ Router.get("/timeline/:username", async (req, res) => {
 	});
 });
 
-return Router;
+module.exports = Router;
