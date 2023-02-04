@@ -321,11 +321,15 @@ const fetchTimeline = async (data) => {
 		};
 	}
 
-	const tweetEntries = entries.map(i => i.content.itemContent).filter(Boolean);
+	const tweetEntries = entries
+		.map(i => i.content.itemContent)
+		.filter(Boolean)
+		.map(i => i?.tweet_results?.result?.legacy)
+		.filter(Boolean);
 
 	return {
 		success: true,
-		entries: tweetEntries.map(i => i.tweet_results.result.legacy)
+		entries: tweetEntries
 	};
 };
 
