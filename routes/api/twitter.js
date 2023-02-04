@@ -4,6 +4,12 @@ const WebUtils = require("../../utils/webutils.js");
 
 const defaults = {
 	csrfToken: "2a5b3ceebc9bac4b4abafe716185b2ef",
+	slugs: {
+		// Different slug when logged in than when logged out (!)
+		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
+		timeline: "oPHs3ydu7ZOOy2f02soaPA",
+		user: "hVhfo_TquFTmgL7gYwf91Q"
+	},
 	user: {
 		variables: {
 			withSafetyModeUserFields: true,
@@ -37,6 +43,7 @@ const defaults = {
 			vibe_api_enabled: true,
 			responsive_web_edit_tweet_api_enabled: true,
 			graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+			freedom_of_speech_not_reach_appeal_label_enabled: false,
 			view_counts_everywhere_api_enabled: true,
 			standardized_nudges_misinfo: true,
 			tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
@@ -409,7 +416,8 @@ Router.get("/timeline/:username", async (req, res) => {
 		await sb.Cache.setByPrefix(cacheKeys.guestToken, guestToken, { expiry: 300_000 }); // 5 minutes
 	}
 
-	let slugs = await sb.Cache.getByPrefix(cacheKeys.slugs);
+	// let slugs = await sb.Cache.getByPrefix(cacheKeys.slugs);
+	let slugs = defaults.slugs;
 	if (!slugs) {
 		const slugsResult = await fetchEndpointSlugs(entryPageBody);
 		if (!slugsResult.success) {
