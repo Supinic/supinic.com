@@ -373,7 +373,9 @@ module.exports = class WebUtils {
 		const target = (options.target) ? `target="${options.target}"` : "";
 		const rel = (options.rel) ? `rel="${options.rel}"` : "";
 
-		return string.replaceAll(/(https?:\/\/[^\s>]+)/g, `<a href="$1" ${target} ${rel}>$1</a>`);
+		return string
+			.replaceAll(/(&lt;|<)(http?s:\/\/\S+)(&gt;|>)/g, "$2")
+			.replaceAll(/(https?:\/\/\S+)/g, `<a href="$1" ${target} ${rel}>$1</a>`);
 	}
 
 	static async logRequest (req, route) {
