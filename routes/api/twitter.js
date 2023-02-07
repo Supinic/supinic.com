@@ -109,7 +109,7 @@ const fetchMainFileBody = async (entryPageBody) => {
 }
 
 const fetchBearerToken = (mainFileBody) => {
-	const token = mainFileBody.match(/\(\)=>"([\w%]{104})/)?.[1];
+	const token = mainFileBody.match(/"([a-zA-Z0-9%]{104})"/)?.[1];
 	if (!token) {
 		return {
 			success: false,
