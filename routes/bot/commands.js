@@ -267,13 +267,10 @@ module.exports = (function () {
 
 				string = `${filter.username} ${shortWhere} ${target}`;
 			}
-			else if (filter.type === "Whitelist") {
-				if (!filter.username && commandInfo.flags.whitelist) {
-					string = `everyone ${where}`;
-				}
-				else if (filter.username) {
-					string = `${filter.username} ${where}`;
-				}
+			else if (filter.type === "Whitelist" && commandInfo.flags.whitelist) {
+				string = (filter.username)
+					? `${filter.username} ${where}`
+					: `everyone ${where}`;
 			}
 			else if (filter.type === "Blacklist") {
 				string = (filter.username)
