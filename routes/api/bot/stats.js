@@ -47,8 +47,8 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_data")
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
-			sb.Got("Supibot", { url: "channel/stats" }),
-			sb.Got("Supibot", { url: "platform/discordGuildCount" }),
+			sb.Got("Supibot", "channel/stats"),
+			sb.Got("Supibot","platform/discordGuildCount"),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "User_Alias")
@@ -56,13 +56,8 @@ module.exports = (function () {
 				.flat("Total")
 			),
 			sb.Cache.getKeysByPrefix("sb-user-*", {}),
-			sb.Got({
-				url: "http://192.168.1.102:11111/proxy/ssd/size",
-				timeout: {
-					request: 10000
-				}
-			}),
-			sb.Got("Supibot", { url: "command/list" }),
+			sb.Got("RPi4", "ssd/size"),
+			sb.Got("Supibot", "command/list"),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "AFK")
