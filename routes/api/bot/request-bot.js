@@ -140,7 +140,7 @@ module.exports = (function () {
 		const userData = await User.getByID(userID);
 		if (platformData.Name === "Twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got(`https://api.ivr.fi/twitch/modsvips/${escapedChannel}`).json();
+			const { mods } = await sb.Got(`https://api.ivr.fi/v2/twitch/modvip/${escapedChannel}`).json();
 			const isModerator = mods.find(i => i.login === userData.Name);
 
 			if (!isModerator) {
