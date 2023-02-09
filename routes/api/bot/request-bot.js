@@ -201,11 +201,11 @@ module.exports = (function () {
 					}
 				}),
 				sb.Got({
-					url: `https://api.ivr.fi/v2/twitch/user/${twitchChannelID}`,
+					url: `https://api.ivr.fi/v2/twitch/user`,
 					responseType: "json",
 					throwHttpErrors: false,
 					searchParams: {
-						id: "true"
+						id: twitchChannelID
 					}
 				})
 			]);
@@ -236,8 +236,8 @@ module.exports = (function () {
 					stats.push(`last recent-message sent: ${delta}.`);
 				}
 			}
-			if (stream.statusCode === 200 && stream.body.lastBroadcast.startedAt) {
-				const delta = sb.Utils.timeDelta(new sb.Date(stream.body.lastBroadcast.startedAt));
+			if (stream.statusCode === 200 && stream.body[0]?.lastBroadcast.startedAt) {
+				const delta = sb.Utils.timeDelta(new sb.Date(stream.body[0].lastBroadcast.startedAt));
 				stats.push(`last stream started ${delta}`);
 			}
 
