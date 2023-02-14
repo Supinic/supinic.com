@@ -12,7 +12,7 @@ export const definition = {
 		mutableDefaults: true,
 		throwHttpErrors: false,
 		headers: {
-			"User-Agent": sb.Config.get("DEFAULT_USER_AGENT")
+			"User-Agent": `https://supinic.com server request`
 		}
 	})),
 	parent: null,
