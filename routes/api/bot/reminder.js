@@ -165,7 +165,7 @@ module.exports = (function () {
 					invocation: "remind",
 					platform: "twitch",
 					channel: null,
-					user: username,
+					user: auth.userData.Name,
 					arguments: `${username} ${reminderText} ${privateParameter}` ,
 					skipGlobalBan: "false"
 				}
