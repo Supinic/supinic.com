@@ -449,6 +449,15 @@ module.exports = class WebUtils {
 /**
  * @typedef {Object} UserLevelResult
  * @property {string} [error] If set, an error was encountered during authentication and the endpoint should abort
- * @property {number|null} [userID] If set, hold the authenticated user's ID
+ * @property {number|null} [userID] If set, holds the authenticated user's ID
+ * @property {UserData|null} [userData] If set, holds the authenticated user's database row data
  * @property {string} [level] If set, the request was authenticated properly
+ */
+
+/**
+ * @typedef {Object} UserData
+ * @property {number} ID
+ * @property {string} Name
+ * @property {string|null} Twitch_ID
+ * @property {string|null} Discord_ID
  */
