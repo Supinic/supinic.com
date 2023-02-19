@@ -5,7 +5,7 @@ const CommandExecution = require("../../modules/chat-data/command-execution.js")
 const User = require("../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../utils/webutils.js");
 
-const baseGithubCommandPath = "https://github.com/Supinic/supibot-package-manager/tree/master/commands";
+const baseGithubCommandPath = "https://github.com/Supinic/supibot/tree/master/commands";
 const filterTypeMap = {
 	Blacklist: "These users/channels are banned from this command",
 	Whitelist: "Only these users/channels can use this command",
