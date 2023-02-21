@@ -17,6 +17,13 @@ const filterTypeMap = {
 	Unping: "These users will not be \"pinged\" by this command"
 };
 
+const commandExecutionExamples = [
+	{
+		input: "$remindme Check pizza! in 15 minutes",
+		output: "I will remind you in 15m, 0s (ID 123456789)"
+	}
+];
+
 module.exports = (function () {
 	"use strict";
 
@@ -29,6 +36,7 @@ module.exports = (function () {
 			});
 		}
 
+		const example = sb.Utils.randArray(commandExecutionExamples);
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Run a Supibot command</h5>
@@ -51,12 +59,13 @@ module.exports = (function () {
 					id: "input",
 					name: "Input",
 					type: "memo",
-					placeholder: "Your Supibot command text goes here - just like in chat, prefix included"
+					placeholder: `Example: ${example.input}`
 				},
 				{
 					id: "output",
 					name: "Output",
 					type: "memo",
+					placeholder: `Example: ${example.output}`,
 					disabled: true
 				}
 			],
