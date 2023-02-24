@@ -2,6 +2,11 @@ const Express = require("express");
 const Router = Express.Router();
 const WebUtils = require("../../utils/webutils.js");
 
+const timelineUrls = {
+	regular: "UserTweets",
+	replies: "UserTweetsAndReplies"
+}
+
 const defaults = {
 	csrfToken: "2a5b3ceebc9bac4b4abafe716185b2ef",
 	slugs: {
@@ -22,34 +27,70 @@ const defaults = {
 		}
 	},
 	timeline: {
-		variables: {
-			count: 100,
-			includePromotedContent: true,
-			withQuickPromoteEligibilityTweetFields: true,
-			withSuperFollowsUserFields: true,
-			withDownvotePerspective: false,
-			withReactionsMetadata: false,
-			withReactionsPerspective: false,
-			withSuperFollowsTweetFields: true,
-			withVoice: true,
-			withV2Timeline: true
+		regular: {
+			variables: {
+				count: 100,
+				includePromotedContent: true,
+				withQuickPromoteEligibilityTweetFields: true,
+				withSuperFollowsUserFields: true,
+				withDownvotePerspective: false,
+				withReactionsMetadata: false,
+				withReactionsPerspective: false,
+				withSuperFollowsTweetFields: true,
+				withVoice: true,
+				withV2Timeline: true
+			},
+			features: {
+				responsive_web_twitter_blue_verified_badge_is_enabled: true,
+				verified_phone_label_enabled: false,
+				responsive_web_graphql_timeline_navigation_enabled: true,
+				longform_notetweets_consumption_enabled: true,
+				tweetypie_unmention_optimization_enabled: true,
+				vibe_api_enabled: true,
+				responsive_web_edit_tweet_api_enabled: true,
+				graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+				freedom_of_speech_not_reach_appeal_label_enabled: false,
+				view_counts_everywhere_api_enabled: true,
+				standardized_nudges_misinfo: true,
+				tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
+				interactive_text_enabled: true,
+				responsive_web_text_conversations_enabled: false,
+				responsive_web_enhance_cards_enabled: false
+			}
 		},
-		features: {
-			responsive_web_twitter_blue_verified_badge_is_enabled: true,
-			verified_phone_label_enabled: false,
-			responsive_web_graphql_timeline_navigation_enabled: true,
-			longform_notetweets_consumption_enabled: true,
-			tweetypie_unmention_optimization_enabled: true,
-			vibe_api_enabled: true,
-			responsive_web_edit_tweet_api_enabled: true,
-			graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
-			freedom_of_speech_not_reach_appeal_label_enabled: false,
-			view_counts_everywhere_api_enabled: true,
-			standardized_nudges_misinfo: true,
-			tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
-			interactive_text_enabled: true,
-			responsive_web_text_conversations_enabled: false,
-			responsive_web_enhance_cards_enabled: false
+		replies: {
+			variables: {
+				count: 100,
+				includePromotedContent: true,
+				withCommunity: true,
+				withSuperFollowsUserFields: true,
+				withDownvotePerspective: false,
+				withReactionsMetadata: false,
+				withReactionsPerspective: false,
+				withSuperFollowsTweetFields: true,
+				withVoice: true,
+				withV2Timeline: true
+			},
+			features: {
+				responsive_web_twitter_blue_verified_badge_is_enabled: true,
+				responsive_web_graphql_exclude_directive_enabled: false,
+				verified_phone_label_enabled: false,
+				responsive_web_graphql_timeline_navigation_enabled: true,
+				responsive_web_graphql_skip_user_profile_image_extensions_enabled: false,
+				tweetypie_unmention_optimization_enabled: true,
+				vibe_api_enabled: true,
+				responsive_web_edit_tweet_api_enabled: true,
+				graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+				view_counts_everywhere_api_enabled: true,
+				longform_notetweets_consumption_enabled: true,
+				tweet_awards_web_tipping_enabled: false,
+				freedom_of_speech_not_reach_fetch_enabled: false,
+				standardized_nudges_misinfo: true,
+				tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
+				interactive_text_enabled: true,
+				responsive_web_text_conversations_enabled: false,
+				responsive_web_enhance_cards_enabled: false
+			}
 		}
 	}
 };
@@ -281,22 +322,25 @@ const fetchUserId = async (data) => {
 }
 
 const fetchTimeline = async (data) => {
-	const { bearerToken, guestToken, slug, userId } = data;
+	const { bearerToken, guestToken, includeReplies, slug, userId } = data;
+	const endpointType = (includeReplies) ? "replies" : "regular";
+
 	const variables = {
-		...defaults.timeline.variables,
+		...defaults.timeline[endpointType].variables,
 		userId,
 		count: 100
 	};
 
 	const features = {
-		...defaults.timeline.features
+		...defaults.timeline[endpointType].features,
 	};
 
 	const variablesString = encodeURIComponent(JSON.stringify(variables));
 	const featuresString = encodeURIComponent(JSON.stringify(features));
 
+	const endpoint = timelineUrls[endpointType];
 	const response = await sb.Got("FakeAgent", {
-		url: `https://api.twitter.com/graphql/${slug}/UserTweets?variables=${variablesString}&features=${featuresString}`,
+		url: `https://api.twitter.com/graphql/${slug}/${endpoint}?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
 		headers: {
@@ -367,6 +411,7 @@ const resetPreviousStepsCaches = async (type) => {
 
 Router.get("/timeline/:username", async (req, res) => {
 	const { username } = req.params;
+	const { includeReplies } = req.query;
 
 	let entryPageBody = await sb.Cache.getByPrefix(cacheKeys.entryPage);
 	if (!entryPageBody) {
@@ -456,14 +501,18 @@ Router.get("/timeline/:username", async (req, res) => {
 		await sb.Cache.setByPrefix(userCacheKey, userId, { expiry: 7 * 864e5 }); // 7 days
 	}
 
-	const timelineCacheKey = `gql-twitter-timeline-${username}`;
+	const timelineCacheKey = (includeReplies)
+		? `gql-twitter-timeline-${username}-replies`
+		: `gql-twitter-timeline-${username}`;
+
 	let timeline = await sb.Cache.getByPrefix(timelineCacheKey);
 	if (!timeline) {
 		const timelineResult = await fetchTimeline({
 			bearerToken,
 			guestToken,
 			userId,
-			slug: slugs.timeline
+			slug: slugs.timeline,
+			includeReplies
 		});
 		if (!timelineResult.success) {
 			await resetPreviousStepsCaches("timeline");
