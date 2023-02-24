@@ -13,6 +13,7 @@ const defaults = {
 		// Different slug when logged in than when logged out (!)
 		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
 		timeline: "oPHs3ydu7ZOOy2f02soaPA",
+		timelineReplies: "nrdle2catTyGnTyj1Qa7wA",
 		user: "hVhfo_TquFTmgL7gYwf91Q"
 	},
 	user: {
@@ -85,6 +86,7 @@ const defaults = {
 				longform_notetweets_consumption_enabled: true,
 				tweet_awards_web_tipping_enabled: false,
 				freedom_of_speech_not_reach_fetch_enabled: false,
+				freedom_of_speech_not_reach_appeal_label_enabled: false,
 				standardized_nudges_misinfo: true,
 				tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
 				interactive_text_enabled: true,
@@ -322,8 +324,11 @@ const fetchUserId = async (data) => {
 }
 
 const fetchTimeline = async (data) => {
-	const { bearerToken, guestToken, includeReplies, slug, userId } = data;
+	const { bearerToken, guestToken, includeReplies, userId } = data;
 	const endpointType = (includeReplies) ? "replies" : "regular";
+	const slug = (includeReplies)
+		? defaults.slugs.timelineReplies
+		: defaults.slugs.timeline;
 
 	const variables = {
 		...defaults.timeline[endpointType].variables,
@@ -510,9 +515,8 @@ Router.get("/timeline/:username", async (req, res) => {
 		const timelineResult = await fetchTimeline({
 			bearerToken,
 			guestToken,
-			userId,
-			slug: slugs.timeline,
-			includeReplies
+			includeReplies,
+			userId
 		});
 		if (!timelineResult.success) {
 			await resetPreviousStepsCaches("timeline");
