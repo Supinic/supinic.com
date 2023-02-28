@@ -125,6 +125,9 @@ module.exports = (function () {
 			    td > a.linkified {
 					display: inline-block;
 			    }
+			    th[aria-label^="ID"] {
+					min-width: 30px;
+				}
 			`,
 			extraScript: sb.Utils.tag.trim `
 				function beforeTableInitalize () {
