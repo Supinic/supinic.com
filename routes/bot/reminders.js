@@ -7,9 +7,9 @@ module.exports = (function () {
 	"use strict";
 
 	const columns = {
-		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Private", "Unset"],
-		history: ["ID", "Created", "Sender", "Recipient", "Scheduled", "Cancelled", "Private"],
-		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Cancelled", "Private", "Unset"]
+		list: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"],
+		history: ["ID", "Created", "Sender", "Recipient", "Text", "Scheduled"],
+		lookup: ["ID", "Active", "Created", "Sender", "Recipient", "Text", "Scheduled", "Unset"]
 	};
 
 	const formatReminderList = async (req, res, target) => {
