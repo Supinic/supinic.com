@@ -122,6 +122,9 @@ module.exports = (function () {
 			    div.spinner-border.inactive {
 			        display: none;
 			    }
+			    td > a.linkified {
+					display: inline-block;
+			    }
 			`,
 			extraScript: sb.Utils.tag.trim `
 				function beforeTableInitalize () {

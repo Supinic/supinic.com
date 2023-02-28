@@ -375,7 +375,7 @@ module.exports = class WebUtils {
 
 		return string
 			.replaceAll(/(&lt;|<)(http?s:\/\/\S+)(&gt;|>)/g, "$2")
-			.replaceAll(/(https?:\/\/\S+)/g, `<a href="$1" ${target} ${rel}>$1</a>`);
+			.replaceAll(/(https?:\/\/\S+)/g, `<a class="linkified" href="$1" ${target} ${rel}>$1</a>`);
 	}
 
 	static async logRequest (req, route) {
