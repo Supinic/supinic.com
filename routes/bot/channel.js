@@ -40,7 +40,7 @@ module.exports = (function () {
 			sortColumn: 0,
 			sortDirection: "asc",
 			specificFiltering: true,
-			extraCss: `				
+			extraCSS: `				
 				th[aria-label^="Logs size"] {
 					white-space: nowrap;
 				}
