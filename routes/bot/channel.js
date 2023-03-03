@@ -17,13 +17,13 @@ module.exports = (function () {
 				: i.name,
 			Mode: i.mode,
 			Platform: i.platformName,
-			LineCount: {
+			Lines: {
 				dataOrder: i.lineCount ?? 0,
 				value: (i.lineCount)
 					? sb.Utils.groupDigits(i.lineCount)
 					: "N/A"
 			},
-			ByteLength: {
+			"Logs size": {
 				dataOrder: i.byteLength ?? 0,
 				value: (i.byteLength)
 					? sb.Utils.formatByteSize(i.byteLength)
