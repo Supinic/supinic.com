@@ -41,9 +41,12 @@ module.exports = (function () {
 			sortDirection: "asc",
 			specificFiltering: true,
 			extraCss: `				
-				th[aria-label^="Logs size"], th[aria-label^="Lines"] {
+				th[aria-label^="Logs size"] {
 					white-space: nowrap;
 				}
+				th[aria-label^="Lines"] {
+					white-space: nowrap;				
+				} 
 			`
 		});
 	});
