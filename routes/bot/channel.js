@@ -39,7 +39,12 @@ module.exports = (function () {
 			pageLength: 50,
 			sortColumn: 0,
 			sortDirection: "asc",
-			specificFiltering: true
+			specificFiltering: true,
+			extraCss: `				
+				th[aria-label^="Logs size"], th[aria-label^="Lines"] {
+					white-space: nowrap;
+				}
+			`
 		});
 	});
 
