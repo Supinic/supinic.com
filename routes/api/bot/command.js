@@ -9,9 +9,9 @@ module.exports = (function () {
 	const commandRunQueryThreshold = 50_000;
 
 	/**
-	 * @api {post} /bot/command/list/ Command - list
-	 * @apiName GetCommandList
-	 * @apiDescription Posts a list of bot commands and their parameters
+	 * @api {post} /bot/command/run Command - run
+	 * @apiName RunBotCommand
+	 * @apiDescription Runs a provided Supibot command as a proxy to internal Supibot API - works as if on Twitch
 	 * @apiGroup Bot
 	 * @apiParam {string} query Command string to execute
 	 * @apiSuccess {string} reply
