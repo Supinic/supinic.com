@@ -14,6 +14,9 @@ module.exports = (function () {
 	 * @apiDescription Posts a list of bot commands and their parameters
 	 * @apiGroup Bot
 	 * @apiParam {string} query Command string to execute
+	 * @apiSuccess {string} reply
+	 * @apiSuccess {string} [reason]
+	 * @apiSuccess {boolean} [success]
 	 * @apiPermission login
 	 */
 	Router.post("/run", async (req, res) => {
@@ -68,24 +71,28 @@ module.exports = (function () {
 		}
 		else {
 			const { result } = response.body.data;
+			const data = {
+				reply: result.reply ?? "(no message)",
+				success: result.success,
+				reason: result.reason ?? null
+			};
+
 			if (!result.reply) {
 				if (result.reason === "cooldown") {
-					result.reply = "You currently have a cooldown pending!";
+					data.reply = "You currently have a cooldown pending!";
 				}
 				else if (result.reason === "no-command") {
-					result.reply = "That command does not exist!";
+					data.reply = "That command does not exist!";
 				}
 				else if (result.reason === "whitelist") {
-					result.reply = "You can't use this command as it whitelisted!";
+					data.reply = "You can't use this command as it whitelisted!";
 				}
 				else {
-					result.reply = `Command execution failed: ${result.reason}`;
+					data.reply = `Command execution failed: ${result.reason ?? "N/A"}`;
 				}
 			}
 
-			return WebUtils.apiSuccess(res, {
-				reply: result.reply ?? "(no message)"
-			});
+			return WebUtils.apiSuccess(res, data);
 		}
 	});
 
