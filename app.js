@@ -66,22 +66,18 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class TwitchStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const { statusCode, body } = await sb.Got({
-				method: "GET",
-				throwHttpErrors: false,
-				url: "https://api.twitch.tv/helix/users",
+			const response = await sb.Got("Helix", {
+				url: "users",
 				headers: {
-					Authorization: `Bearer ${accessToken}`,
-					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
+					Authorization: `Bearer ${accessToken}`
 				},
-				responseType: "json"
 			});
 
-			if (statusCode === 200) {
-				done(null, body);
+			if (response.ok) {
+				done(null, response.body);
 			}
 			else {
-				done(body);
+				done(response.body);
 			}
 		}
 	}
@@ -90,7 +86,7 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class GithubStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const { statusCode, body } = await sb.Got({
+			const { statusCode, body } = await sb.Got("GenericAPI", {
 				method: "GET",
 				throwHttpErrors: false,
 				url: "https://api.github.com/user",

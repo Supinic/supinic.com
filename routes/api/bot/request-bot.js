@@ -140,9 +140,11 @@ module.exports = (function () {
 		const userData = await User.getByID(userID);
 		if (platformData.Name === "Twitch" && userData.Name !== targetChannel) {
 			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got(`https://api.ivr.fi/v2/twitch/modvip/${escapedChannel}`).json();
-			const isModerator = mods.find(i => i.login === userData.Name);
+			const { mods } = await sb.Got("Global", {
+				url: `https://api.ivr.fi/v2/twitch/modvip/${escapedChannel}`
+			}).json();
 
+			const isModerator = mods.find(i => i.login === userData.Name);
 			if (!isModerator) {
 				return WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
 			}
@@ -164,8 +166,6 @@ module.exports = (function () {
 			let followsPromise = {};
 			const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID"];
 			if (requiredConfigs.every(config => sb.Config.has(config, true))) {
-				const token = sb.Config.get("TWITCH_OAUTH");
-
 				followsPromise = sb.Got("Helix", {
 					url: "users/follows",
 					searchParams: {
@@ -176,34 +176,24 @@ module.exports = (function () {
 
 			const [follows, bttv, ffz, sevenTv, recent, stream] = await Promise.all([
 				followsPromise,
-				sb.Got({
+				sb.Got("Global", {
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
-					responseType: "json",
-					throwHttpErrors: false
 				}),
-				sb.Got({
+				sb.Got("Global", {
 					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
-					responseType: "json",
-					throwHttpErrors: false
 				}),
-				sb.Got({
+				sb.Got("Global", {
 					url: `https://api.7tv.app/v2/users/${targetChannel}/emotes`,
-					responseType: "json",
-					throwHttpErrors: false
 				}),
-				sb.Got({
+				sb.Got("Global", {
 					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
-					responseType: "json",
-					throwHttpErrors: false,
 					searchParams: {
 						hide_moderation_messages: "true",
 						limit: "1"
 					}
 				}),
-				sb.Got({
+				sb.Got("Global", {
 					url: `https://api.ivr.fi/v2/twitch/user`,
-					responseType: "json",
-					throwHttpErrors: false,
 					searchParams: {
 						id: twitchChannelID
 					}
