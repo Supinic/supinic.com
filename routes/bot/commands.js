@@ -331,7 +331,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${identifier}/index.js">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${commandInfo.name}/index.js">Open in new tab</a>`;
 
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
