@@ -69,7 +69,9 @@ const importModule = async (module, path) => {
 			const response = await sb.Got("Helix", {
 				url: "users",
 				headers: {
-					Authorization: `Bearer ${accessToken}`
+					// Override the default Helix headers - this is login info strategy
+					Authorization: `Bearer ${accessToken}`,
+					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
 				},
 			});
 
