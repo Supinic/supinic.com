@@ -87,7 +87,7 @@ module.exports = (function () {
 				return `https://cdn.frankerfacez.com/emote/${ID}/4`;
 			}
 			else if (type === "7TV" || type === "7TV - Global" || type === "7TV - Channel") {
-				return `https://cdn.7tv.app/emote/${ID}/4x`;
+				return `https://cdn.7tv.app/emote/${ID}/4x.webp`;
 			}
 			else if (type === "Discord") {
 				return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
