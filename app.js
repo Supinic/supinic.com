@@ -88,7 +88,7 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class GithubStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const { statusCode, body } = await sb.Got("GenericAPI", {
+			const { statusCode, body } = await sb.Got("Global", {
 				method: "GET",
 				throwHttpErrors: false,
 				url: "https://api.github.com/user",
