@@ -219,9 +219,10 @@ window.addEventListener("load", () => {
 	if (url.hash !== "") {
 		importInvocations(url.hash);
 	}
-	//urlUpdatesLocked = true;
+
+	// This may set the hash but as long as it was parsed by importInvocations above it's fine
 	recalculateSummary();
-	//urlUpdatesLocked = false;
+
 	
 	document.getElementById("button-clear").addEventListener("click", () => clearInvocations());
 	document.getElementById("button-import")
