@@ -36,10 +36,10 @@ const recalculateSummary = () => {
 	setHash();
 };
 
+// This is used in importInvocations to prevent recursive updates
 let urlUpdatesLocked = false;
 
 const setHash = () => {
-	// do not trigger url fragment updates when importing
 	if (urlUpdatesLocked) {
 		return;
 	}
