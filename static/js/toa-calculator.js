@@ -240,10 +240,7 @@ window.addEventListener("load", () => {
 	
 });
 
-window.addEventListener(
-	"hashchange",
-	() => {
-		console.log(`Location fragment was updated to ${location.hash}, importing invocations from it...`);
-		importInvocations(location.hash);
-	},
-);
+window.addEventListener("hashchange", () => {
+	console.log(`Location fragment was updated to ${location.hash}, importing invocations from it...`);
+	importInvocations(location.hash);
+});
