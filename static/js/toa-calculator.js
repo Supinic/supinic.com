@@ -29,13 +29,29 @@ const recalculateSummary = () => {
 	levelEl.textContent = `Level: ${level}`;
 	
 	for (const attribute of attributes) {
-		const attributeEl = summaryEl.querySelector(`li[summary=${attribute.name}]`);		
+		const attributeEl = summaryEl.querySelector(`li[summary=${attribute.name}]`);
 		const percentage = (attribute.capped) ? capped : uncapped;
 		attributeEl.textContent = `${attribute.name}: +${percentage}%`;
-	}	
+	}
+	setHash();
 };
 
-const exportInvocations = () => {
+let urlUpdatesLocked = false;
+
+const setHash = () => {
+	// do not trigger url fragment updates when importing
+	if (urlUpdatesLocked) {
+		return;
+	}
+	// Update URL...
+	const invos = generateInvocations();
+	const url = new URL(location.toString());
+	url.hash = invos;
+	console.log(`Updating URL hash from ${location.hash} to ${url.hash}`);
+	window.history.replaceState(invos, /* unused: */null, url);
+};
+
+const generateInvocations = () => {
 	const selectedInvocations = fullInvocationList.filter(i => i.selected);
 	
 	let result = 0n;
@@ -43,8 +59,7 @@ const exportInvocations = () => {
 		result += (1n << (BigInt(invocation.id) - 1n));
 	}
 	
-	const string = result.toString(16).padStart(12, "0");
-	alert(string);
+	return result.toString(16).padStart(12, "0");
 };
 
 const importInvocations = (hash = null) => {
@@ -58,17 +73,22 @@ const importInvocations = (hash = null) => {
 	else {
 		rawValue = hash;
 	}
-		
+
+	rawValue = rawValue.replaceAll(/#/g, "");
+
 	const numValue = parseInt(rawValue, 16)
 	if (Number.isNaN(numValue)) {
-		return alert("Invalid value provided");
+		alert(`Invalid value provided: ${rawValue}`);
+		return;
 	}
 	
 	const value = BigInt(numValue);
 	if (value < 0n || value > (1n << BigInt(fullInvocationList.length))) {
-		return alert("Value is outside of working range");
+		alert("Value is outside of working range");
+		return;
 	}
 	
+	urlUpdatesLocked = true;
 	clearInvocations();
 	
 	for (const invocation of fullInvocationList) {
@@ -80,6 +100,8 @@ const importInvocations = (hash = null) => {
 		const el = findInvocationEl(invocation.name);
 		el.click();
 	}
+	urlUpdatesLocked = false;
+	setHash();
 };
 
 const clearInvocations = () => {
@@ -87,11 +109,11 @@ const clearInvocations = () => {
 	for (const el of els) {
 		el.classList.remove("selected");
 	}
-	
+
 	for (const invocation of fullInvocationList) {
 		invocation.selected = false;
 	}
-	
+
 	recalculateSummary();
 };
 
@@ -192,9 +214,35 @@ window.addEventListener("load", () => {
 		topListEl.appendChild(categoryListEl);
 	}
 
+	// Try loading invocations from url...
+	const url = new URL(window.location.toString());
+	if (url.hash !== "") {
+		importInvocations(url.hash);
+	}
+	//urlUpdatesLocked = true;
 	recalculateSummary();
+	//urlUpdatesLocked = false;
 	
 	document.getElementById("button-clear").addEventListener("click", () => clearInvocations());
-	document.getElementById("button-import").addEventListener("click", () => importInvocations());
-	document.getElementById("button-export").addEventListener("click", () => exportInvocations());
+	document.getElementById("button-import")
+		.addEventListener("click",
+			() => {
+				importInvocations();
+			}
+	);
+	document.getElementById("button-export")
+		.addEventListener("click",
+			() => {
+				alert(generateInvocations());
+			}
+		);
+	
 });
+
+window.addEventListener(
+	"hashchange",
+	() => {
+		console.log(`Location fragment was updated to ${location.hash}, importing invocations from it...`);
+		importInvocations(location.hash);
+	},
+);
