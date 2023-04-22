@@ -718,7 +718,7 @@ cheerio@^1.0.0-rc.12:
     parse5 "^7.0.0"
     parse5-htmlparser2-tree-adapter "^7.0.0"
 
-chrono-node@^2.5.0:
+chrono-node@^2.6.3:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/chrono-node/-/chrono-node-2.6.3.tgz#fa257cffb2dfc33fa5a01b26bd86f93741ca6dc5"
   integrity sha512-VkWaaZnNulqzNH9i4XCdyI05OX6MFEnCMNKdZOR4w//wS5/E2qkwAss/O5sj6SfTZK84fX4SSOG4pzqjqIseiA==
@@ -874,7 +874,7 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
-cron@^2.2.0:
+cron@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/cron/-/cron-2.3.0.tgz#20df6da18d4f7d2f8937def2eb5fc0d1a320c526"
   integrity sha512-ZN5HP8zDY41sJolMsbc+GksRATcbvkPKF5wR/qc8FrV4NBVi9ORQa1HmYa5GydaysUB80X9XpRlRkooa5uEtTA==
@@ -1515,7 +1515,7 @@ got@^11.8.0, got@^11.8.5:
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
 
-got@^12.5.3:
+got@^12.6.0:
   version "12.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-12.6.0.tgz#8d382ee5de4432c086e83c133efdd474484f6ac7"
   integrity sha512-WTcaQ963xV97MN3x0/CbAriXFZcXCfgxVp91I+Ze6pawQOa7SgzwSx2zIJJsX+kTajMnVs0xcFD1TxZKFqhdnQ==
@@ -1668,7 +1668,7 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3, inherits@^2.0.4, inherits@~2.0.3:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-ioredis@^5.2.5:
+ioredis@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.3.2.tgz#9139f596f62fc9c72d873353ac5395bcf05709f7"
   integrity sha512-1DKMMzlIHM02eBBVOFQ1+AolGjs6+xEcM4PDL7NqOS6szq7H9jSaEkIUH6/a5Hl241LzW6JLSiAbNvTQjUupUA==
@@ -1950,7 +1950,7 @@ mariadb@^3.0.0:
     moment-timezone "^0.5.34"
     please-upgrade-node "^3.2.0"
 
-mariadb@^3.0.2:
+mariadb@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.1.1.tgz#aa8b9f9dafd74a8636168f1211b285cb1e738a9e"
   integrity sha512-Y5tu9pQr8uZs63FATr7ldODXn8N2aIFlAg/rp6kRTohgQiJfdl9DNGu9PXRTYdY4JgF5mT2ASD81Jdo5kfGYzg==
@@ -2640,7 +2640,7 @@ rimraf@^3.0.2:
   resolved "https://registry.yarnpkg.com/@jprochazk/roll-dice/-/roll-dice-0.2.2.tgz#f75b55e632f9ea7e6b13d152490625201ded740b"
   integrity sha512-OHspp//9k5o8q5UAWegS5Zxlqv1iIy6y49XYdHle6ZXMdDz34/GIrCGqIv9zya6xH6Tfv0kWDxMPVGZkppxClA==
 
-rss-parser@^3.12.0:
+rss-parser@^3.13.0:
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/rss-parser/-/rss-parser-3.13.0.tgz#f1f83b0a85166b8310ec531da6fbaa53ff0f50f0"
   integrity sha512-7jWUBV5yGN3rqMMj7CZufl/291QAhvrrGpDNE4k/02ZchL0npisiYYqULF71jCEKoIiHvK/Q2e6IkDwPziT7+w==
@@ -2849,26 +2849,26 @@ strnum@^1.0.4:
 
 "supi-core@github:supinic/supi-core":
   version "2.2.0"
-  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/77b2ae7ace2866fa0c0c176b653ad8f439e222a5"
+  resolved "https://codeload.github.com/supinic/supi-core/tar.gz/bdbd60b30e06e972af0bf06e29efa503a9dd1f82"
   dependencies:
     async-markov "github:supinic/async-markov"
     cheerio "^1.0.0-rc.12"
-    chrono-node "^2.5.0"
-    cron "^2.2.0"
+    chrono-node "^2.6.3"
+    cron "^2.3.0"
     duration-parser "github:supinic/duration-parser"
     ffprobe "^1.1.2"
     form-data "^4.0.0"
-    got "^12.5.3"
-    ioredis "^5.2.5"
+    got "^12.6.0"
+    ioredis "^5.3.2"
     language-iso-codes "github:supinic/language-iso-codes"
     long-timeout "github:supinic/long-timeout"
-    mariadb "^3.0.2"
+    mariadb "^3.1.1"
     random-js "^2.1.0"
     roll-dice "npm:@jprochazk/roll-dice@^0.2.2"
-    rss-parser "^3.12.0"
+    rss-parser "^3.13.0"
     track-link-parser "github:supinic/track-link-parser"
     transliteration "^2.3.5"
-    vm2 "^3.9.13"
+    vm2 "^3.9.17"
 
 "supi-db-init@github:supinic/supi-db-init":
   version "1.0.0"
@@ -3024,7 +3024,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vm2@^3.9.13:
+vm2@^3.9.17:
   version "3.9.17"
   resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.17.tgz#251b165ff8a0e034942b5181057305e39570aeab"
   integrity sha512-AqwtCnZ/ERcX+AVj9vUsphY56YANXxRuqMb7GsDtAr0m0PcQX3u0Aj3KWiXM0YAHy7i6JEeHrwOnwXbGYgRpAw==
