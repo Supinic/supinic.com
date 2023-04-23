@@ -344,6 +344,7 @@ Router.get("/lookup/:user", async (req, res) => {
 
 	let initialResponse = await sb.Got("Global", {
 		url,
+		responseType: "text",
 		searchParams: { player },
 		retry: {
 			limit: 0
@@ -358,6 +359,7 @@ Router.get("/lookup/:user", async (req, res) => {
 		// but I believe that case is too niche to be considered. Although, that might be changed in the future.
 		initialResponse = await sb.Got("Global", {
 			url: apiURLs.ironman.regular,
+			responseType: "text",
 			searchParams: { player },
 			retry: {
 				limit: 0
@@ -386,21 +388,22 @@ Router.get("/lookup/:user", async (req, res) => {
 	const mainTotalXP = Number(rawData.split("\n")[0].split(",")[2]);
 
 	if (!result.seasonal) {
-		// Note: OSRS API returns results for both ultimate and regular URLs if the account is an UIM,
-		// and both hardcore and regular if the account is a HCIM. That's why this
+		// Note: OSRS API returns results for both ultimate and regular URLs if the account is a UIM,
+		// and both hardcore and regular if the account is a HCIM. That's why this block needs to be executed
 		const types = ["ultimate", "hardcore", "regular"];
 		const compare = {};
 
 		for (const type of types) {
 			const { statusCode, body } = await sb.Got("Global", {
 				url: apiURLs.ironman[type],
+				responseType: "text",
 				throwHttpErrors: false,
 				searchParams: { player }
 			});
 
 			if (statusCode !== 404) {
-				// Only exit loop when UIM data was found. In cases of HCIM, we must check normal IM data to
-				// detect whether the account is alive or not, and adjust the response accordingly.
+				// Only exit the loop early when some UIM data was found. In cases of HCIM, we must check normal
+				// IM data to detect whether the account is alive or not, and adjust the response accordingly.
 				if (type === "ultimate") {
 					result.ironman.ultimate = true;
 					rawData = body;
@@ -440,7 +443,7 @@ Router.get("/lookup/:user", async (req, res) => {
 		}
 
 		// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
-		// higher - hence, the account must have been de-ironed. Use the main data.
+		// higher - hence, the account must have been de-ironed. Use the main data instead of the IM data.
 		const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
 		if (totalXP < mainTotalXP) {
 			rawData = initialResponse.body;
