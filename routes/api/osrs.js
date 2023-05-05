@@ -453,6 +453,7 @@ Router.get("/lookup/:user", async (req, res) => {
 
 	const data = rawData.split("\n").map(i => i.split(",").map(Number));
 	let index = 0;
+	let virtualTotalLevel = 0;
 
 	for (const skill of skills) {
 		const [rank, level, experience] = data[index];
@@ -465,17 +466,22 @@ Router.get("/lookup/:user", async (req, res) => {
 
 		if (skill !== "Overall") {
 			if (experience >= VIRTUAL_LEVEL_EXPERIENCE) {
-				const levelData = reversedSkillExperienceData.find(i => experience > i.experience);
+				const levelData = reversedSkillExperienceData.find(level => experience > level.experience);
 				skillObject.virtualLevel = levelData.level;
 			}
 			else {
 				skillObject.virtualLevel = level;
 			}
+
+			virtualTotalLevel += skillObject.virtualLevel;
 		}
 
 		result.skills.push(skillObject);
 		index++;
 	}
+
+	const totalLevel = result.skills.find(i => i.name === "Overall");
+	totalLevel.virtualLevel = virtualTotalLevel;
 
 	for (const activity of activities) {
 		const [rank, value] = data[index];
