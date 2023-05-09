@@ -9,6 +9,7 @@ const timelineUrls = {
 
 const defaults = {
 	csrfToken: "2a5b3ceebc9bac4b4abafe716185b2ef",
+	bearerToken: "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA",
 	slugs: {
 		// Different slug when logged in than when logged out (!)
 		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
@@ -152,7 +153,7 @@ const fetchMainFileBody = async (entryPageBody) => {
 }
 
 const fetchBearerToken = (mainFileBody) => {
-	const token = mainFileBody.match(/"([a-zA-Z0-9%]{104})"/)?.[1];
+	const token = mainFileBody.match(/"([a-zA-Z0-9%]{103,104})"/)?.[1];
 	if (!token) {
 		return {
 			success: false,
@@ -418,6 +419,7 @@ Router.get("/timeline/:username", async (req, res) => {
 	const { username } = req.params;
 	const { includeReplies } = req.query;
 
+	/*
 	let entryPageBody = await sb.Cache.getByPrefix(cacheKeys.entryPage);
 	if (!entryPageBody) {
 		const entryPage = await fetchEntryPageBody();
@@ -453,7 +455,9 @@ Router.get("/timeline/:username", async (req, res) => {
 		bearerToken = bearerTokenResult.token;
 		await sb.Cache.setByPrefix(cacheKeys.bearerToken, bearerToken, { expiry: 7 * 864e5 }); // 7 days
 	}
+	*/
 
+	const { bearerToken } = defaults;
 	let guestToken = await sb.Cache.getByPrefix(cacheKeys.guestToken);
 	if (!guestToken) {
 		const guestTokenResult = await fetchGuestToken(bearerToken);
@@ -469,7 +473,8 @@ Router.get("/timeline/:username", async (req, res) => {
 	// let slugs = await sb.Cache.getByPrefix(cacheKeys.slugs);
 	let slugs = defaults.slugs;
 	if (!slugs) {
-		const slugsResult = await fetchEndpointSlugs(entryPageBody);
+		const slugsResult = await fetchEndpointSlugs("");
+		// const slugsResult = await fetchEndpointSlugs(entryPageBody);
 		if (!slugsResult.success) {
 			await resetPreviousStepsCaches("slugs");
 			return WebUtils.apiFail(res, 503, "GraphQL URL slugs load error", slugsResult.error);
