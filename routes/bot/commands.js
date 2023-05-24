@@ -200,13 +200,13 @@ module.exports = (function () {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
+		const commandInfo = response.body.data;
 		let authorIdentifier = commandInfo.author ?? "N/A";
 		if (Array.isArray(authorIdentifier)) {
 			const list = authorIdentifier.map(i => `<li>${i}</li>`).join("");
 			authorIdentifier = `<ul>${list}</ul>`;
 		}
 
-		const commandInfo = response.body.data;
 		const data = {
 			Name: commandInfo.name,
 			Aliases: (commandInfo.aliases.length === 0)
