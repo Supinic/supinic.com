@@ -200,6 +200,12 @@ module.exports = (function () {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
+		let authorIdentifier = commandInfo.author ?? "N/A";
+		if (Array.isArray(authorIdentifier)) {
+			const list = authorIdentifier.map(i => `<li>${i}</li>`).join("");
+			authorIdentifier = `<ul>${list}</ul>`;
+		}
+
 		const commandInfo = response.body.data;
 		const data = {
 			Name: commandInfo.name,
@@ -208,7 +214,7 @@ module.exports = (function () {
 				: commandInfo.aliases.join(", "),
 			Description: commandInfo.description ?? "N/A",
 			Cooldown: `${commandInfo.cooldown / 1000} seconds`,
-			Author: commandInfo.author ?? "N/A",
+			Author: authorIdentifier,
 			"Dynamic description": (commandInfo.dynamicDescription)
 				? commandInfo.dynamicDescription.join("<br>")
 				: "N/A"
