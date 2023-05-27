@@ -3,112 +3,12 @@ const Router = Express.Router();
 
 const WebUtils = require("../../utils/webutils.js");
 
-const skillExperienceData = require("./osrs-xp.json");
-const reversedSkillExperienceData = skillExperienceData.reverse();
-const VIRTUAL_LEVEL_EXPERIENCE = skillExperienceData.find(i => i.level === 100).experience;
-
 // The ordering of these following skills and activities is **very** important!
 // Old School Runescape API does not provide any info about its values and instead relies on the ordering of
 // each numerical value being in a pre-determined order.
-// eslint-disable array-element-newline
-const skills = [
-	"Overall",
-	"Attack",
-	"Defence",
-	"Strength",
-	"Hitpoints",
-	"Ranged",
-	"Prayer",
-	"Magic",
-	"Cooking",
-	"Woodcutting",
-	"Fletching",
-	"Fishing",
-	"Firemaking",
-	"Crafting",
-	"Smithing",
-	"Mining",
-	"Herblore",
-	"Agility",
-	"Thieving",
-	"Slayer",
-	"Farming",
-	"Runecraft",
-	"Hunter",
-	"Construction"
-];
-const activities = [
-	"League Points",
-	"Bounty Hunter - Hunter",
-	"Bounty Hunter - Rogue",
-	"Clue Scrolls (all)",
-	"Clue Scrolls (beginner)",
-	"Clue Scrolls (easy)",
-	"Clue Scrolls (medium)",
-	"Clue Scrolls (hard)",
-	"Clue Scrolls (elite)",
-	"Clue Scrolls (master)",
-	"LMS - Rank",
-	"PVP Arena",
-	"Soul Wars Zeal",
-	"Guardians of the Rift",
-
-	"Abyssal Sire",
-	"Alchemical Hydra",
-	"Artio",
-	"Barrows Chests",
-	"Bryophyta",
-	"Callisto",
-	"Calvar'ion",
-	"Cerberus",
-	"Chambers of Xeric",
-	"Chambers of Xeric: Challenge Mode",
-	"Chaos Elemental",
-	"Chaos Fanatic",
-	"Commander Zilyana",
-	"Corporeal Beast",
-	"Crazy Archaeologist",
-	"Dagannoth Prime",
-	"Dagannoth Rex",
-	"Dagannoth Supreme",
-	"Deranged Archaeologist",
-	"General Graardor",
-	"Giant Mole",
-	"Grotesque Guardians",
-	"Hespori",
-	"Kalphite Queen",
-	"King Black Dragon",
-	"Kraken",
-	"Kree'Arra",
-	"K'ril Tsutsaroth",
-	"Mimic",
-	"Nex",
-	"Nightmare",
-	"Phosani's Nightmare",
-	"Obor",
-	"Phantom Muspah",
-	"Sarachnis",
-	"Scorpia",
-	"Skotizo",
-	"Spindel",
-	"Tempoross",
-	"The Gauntlet",
-	"The Corrupted Gauntlet",
-	"Theatre of Blood",
-	"Theatre of Blood: Hard Mode",
-	"Thermonuclear Smoke Devil",
-	"Tombs of Amascut",
-	"Tombs of Amascut: Expert Mode",
-	"TzKal-Zuk",
-	"TzTok-Jad",
-	"Venenatis",
-	"Vet'ion",
-	"Vorkath",
-	"Wintertodt",
-	"Zalcano",
-	"Zulrah"
-];
-// eslint-enable array-element-newline
+const { activities, skills, experienceLevels }  = require("./osrs-data.json");
+const reversedexperienceLevels = experienceLevels.reverse();
+const VIRTUAL_LEVEL_XP_THRESHOLD = experienceLevels.find(i => i.level === 100).experience;
 
 const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 const itemCachePrefix = "osrs-item-price";
@@ -117,7 +17,7 @@ const apiURLs = {
 	main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
 	seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.ws",
 	ironman: {
-		regular: "https://secure.runescape.com/m=hiscore_oldschool_ironman/index_lite.ws?",
+		regular: "https://secure.runescape.com/m=hiscore_oldschool_ironman/index_lite.ws",
 		hardcore: "https://secure.runescape.com/m=hiscore_oldschool_hardcore_ironman/index_lite.ws",
 		ultimate: "https://secure.runescape.com/m=hiscore_oldschool_ultimate/index_lite.ws"
 	}
@@ -465,8 +365,8 @@ Router.get("/lookup/:user", async (req, res) => {
 		};
 
 		if (skill !== "Overall") {
-			if (experience >= VIRTUAL_LEVEL_EXPERIENCE) {
-				const levelData = reversedSkillExperienceData.find(level => experience > level.experience);
+			if (experience >= VIRTUAL_LEVEL_XP_THRESHOLD) {
+				const levelData = reversedexperienceLevels.find(level => experience > level.experience);
 				skillObject.virtualLevel = levelData.level;
 			}
 			else {

@@ -1,0 +1,732 @@
+{
+  "skills": [
+    "Overall",
+    "Attack",
+    "Defence",
+    "Strength",
+    "Hitpoints",
+    "Ranged",
+    "Prayer",
+    "Magic",
+    "Cooking",
+    "Woodcutting",
+    "Fletching",
+    "Fishing",
+    "Firemaking",
+    "Crafting",
+    "Smithing",
+    "Mining",
+    "Herblore",
+    "Agility",
+    "Thieving",
+    "Slayer",
+    "Farming",
+    "Runecraft",
+    "Hunter",
+    "Construction"
+  ],
+  "activities": [
+    "League Points",
+    "Bounty Hunter - Hunter",
+    "Bounty Hunter - Rogue",
+    "Bounty Hunter Legacy - Hunter",
+    "Bounty Hunter Legacy - Rogue",
+    "Clue Scrolls (all)",
+    "Clue Scrolls (beginner)",
+    "Clue Scrolls (easy)",
+    "Clue Scrolls (medium)",
+    "Clue Scrolls (hard)",
+    "Clue Scrolls (elite)",
+    "Clue Scrolls (master)",
+    "LMS - Rank",
+    "PVP Arena - Rank",
+    "Soul Wars Zeal",
+    "Guardians of the Rift",
+    "Abyssal Sire",
+    "Alchemical Hydra",
+    "Artio",
+    "Barrows Chests",
+    "Bryophyta",
+    "Callisto",
+    "Calvar'ion",
+    "Cerberus",
+    "Chambers of Xeric",
+    "Chambers of Xeric: Challenge Mode",
+    "Chaos Elemental",
+    "Chaos Fanatic",
+    "Commander Zilyana",
+    "Corporeal Beast",
+    "Crazy Archaeologist",
+    "Dagannoth Prime",
+    "Dagannoth Rex",
+    "Dagannoth Supreme",
+    "Deranged Archaeologist",
+    "General Graardor",
+    "Giant Mole",
+    "Grotesque Guardians",
+    "Hespori",
+    "Kalphite Queen",
+    "King Black Dragon",
+    "Kraken",
+    "Kree'Arra",
+    "K'ril Tsutsaroth",
+    "Mimic",
+    "Nex",
+    "Nightmare",
+    "Phosani's Nightmare",
+    "Obor",
+    "Phantom Muspah",
+    "Sarachnis",
+    "Scorpia",
+    "Skotizo",
+    "Spindel",
+    "Tempoross",
+    "The Gauntlet",
+    "The Corrupted Gauntlet",
+    "Theatre of Blood",
+    "Theatre of Blood: Hard Mode",
+    "Thermonuclear Smoke Devil",
+    "Tombs of Amascut",
+    "Tombs of Amascut: Expert Mode",
+    "TzKal-Zuk",
+    "TzTok-Jad",
+    "Venenatis",
+    "Vet'ion",
+    "Vorkath",
+    "Wintertodt",
+    "Zalcano",
+    "Zulrah"
+  ],
+  "experienceLevels": [
+    {
+      "level": 1,
+      "experience": 0,
+      "virtual": false
+    },
+    {
+      "level": 2,
+      "experience": 83,
+      "virtual": false
+    },
+    {
+      "level": 3,
+      "experience": 174,
+      "virtual": false
+    },
+    {
+      "level": 4,
+      "experience": 276,
+      "virtual": false
+    },
+    {
+      "level": 5,
+      "experience": 388,
+      "virtual": false
+    },
+    {
+      "level": 6,
+      "experience": 512,
+      "virtual": false
+    },
+    {
+      "level": 7,
+      "experience": 650,
+      "virtual": false
+    },
+    {
+      "level": 8,
+      "experience": 801,
+      "virtual": false
+    },
+    {
+      "level": 9,
+      "experience": 969,
+      "virtual": false
+    },
+    {
+      "level": 10,
+      "experience": 1154,
+      "virtual": false
+    },
+    {
+      "level": 11,
+      "experience": 1358,
+      "virtual": false
+    },
+    {
+      "level": 12,
+      "experience": 1584,
+      "virtual": false
+    },
+    {
+      "level": 13,
+      "experience": 1833,
+      "virtual": false
+    },
+    {
+      "level": 14,
+      "experience": 2107,
+      "virtual": false
+    },
+    {
+      "level": 15,
+      "experience": 2411,
+      "virtual": false
+    },
+    {
+      "level": 16,
+      "experience": 2746,
+      "virtual": false
+    },
+    {
+      "level": 17,
+      "experience": 3115,
+      "virtual": false
+    },
+    {
+      "level": 18,
+      "experience": 3523,
+      "virtual": false
+    },
+    {
+      "level": 19,
+      "experience": 3973,
+      "virtual": false
+    },
+    {
+      "level": 20,
+      "experience": 4470,
+      "virtual": false
+    },
+    {
+      "level": 21,
+      "experience": 5018,
+      "virtual": false
+    },
+    {
+      "level": 22,
+      "experience": 5624,
+      "virtual": false
+    },
+    {
+      "level": 23,
+      "experience": 6291,
+      "virtual": false
+    },
+    {
+      "level": 24,
+      "experience": 7028,
+      "virtual": false
+    },
+    {
+      "level": 25,
+      "experience": 7842,
+      "virtual": false
+    },
+    {
+      "level": 26,
+      "experience": 8740,
+      "virtual": false
+    },
+    {
+      "level": 27,
+      "experience": 9730,
+      "virtual": false
+    },
+    {
+      "level": 28,
+      "experience": 10824,
+      "virtual": false
+    },
+    {
+      "level": 29,
+      "experience": 12031,
+      "virtual": false
+    },
+    {
+      "level": 30,
+      "experience": 13363,
+      "virtual": false
+    },
+    {
+      "level": 31,
+      "experience": 14833,
+      "virtual": false
+    },
+    {
+      "level": 32,
+      "experience": 16456,
+      "virtual": false
+    },
+    {
+      "level": 33,
+      "experience": 18247,
+      "virtual": false
+    },
+    {
+      "level": 34,
+      "experience": 20224,
+      "virtual": false
+    },
+    {
+      "level": 35,
+      "experience": 22406,
+      "virtual": false
+    },
+    {
+      "level": 36,
+      "experience": 24815,
+      "virtual": false
+    },
+    {
+      "level": 37,
+      "experience": 27473,
+      "virtual": false
+    },
+    {
+      "level": 38,
+      "experience": 30408,
+      "virtual": false
+    },
+    {
+      "level": 39,
+      "experience": 33648,
+      "virtual": false
+    },
+    {
+      "level": 40,
+      "experience": 37224,
+      "virtual": false
+    },
+    {
+      "level": 41,
+      "experience": 41171,
+      "virtual": false
+    },
+    {
+      "level": 42,
+      "experience": 45529,
+      "virtual": false
+    },
+    {
+      "level": 43,
+      "experience": 50339,
+      "virtual": false
+    },
+    {
+      "level": 44,
+      "experience": 55649,
+      "virtual": false
+    },
+    {
+      "level": 45,
+      "experience": 61512,
+      "virtual": false
+    },
+    {
+      "level": 46,
+      "experience": 67983,
+      "virtual": false
+    },
+    {
+      "level": 47,
+      "experience": 75127,
+      "virtual": false
+    },
+    {
+      "level": 48,
+      "experience": 83014,
+      "virtual": false
+    },
+    {
+      "level": 49,
+      "experience": 91721,
+      "virtual": false
+    },
+    {
+      "level": 50,
+      "experience": 101333,
+      "virtual": false
+    },
+    {
+      "level": 51,
+      "experience": 111945,
+      "virtual": false
+    },
+    {
+      "level": 52,
+      "experience": 123660,
+      "virtual": false
+    },
+    {
+      "level": 53,
+      "experience": 136594,
+      "virtual": false
+    },
+    {
+      "level": 54,
+      "experience": 150872,
+      "virtual": false
+    },
+    {
+      "level": 55,
+      "experience": 166636,
+      "virtual": false
+    },
+    {
+      "level": 56,
+      "experience": 184040,
+      "virtual": false
+    },
+    {
+      "level": 57,
+      "experience": 203254,
+      "virtual": false
+    },
+    {
+      "level": 58,
+      "experience": 224466,
+      "virtual": false
+    },
+    {
+      "level": 59,
+      "experience": 247886,
+      "virtual": false
+    },
+    {
+      "level": 60,
+      "experience": 273742,
+      "virtual": false
+    },
+    {
+      "level": 61,
+      "experience": 302288,
+      "virtual": false
+    },
+    {
+      "level": 62,
+      "experience": 333804,
+      "virtual": false
+    },
+    {
+      "level": 63,
+      "experience": 368599,
+      "virtual": false
+    },
+    {
+      "level": 64,
+      "experience": 407015,
+      "virtual": false
+    },
+    {
+      "level": 65,
+      "experience": 449428,
+      "virtual": false
+    },
+    {
+      "level": 66,
+      "experience": 496254,
+      "virtual": false
+    },
+    {
+      "level": 67,
+      "experience": 547953,
+      "virtual": false
+    },
+    {
+      "level": 68,
+      "experience": 605032,
+      "virtual": false
+    },
+    {
+      "level": 69,
+      "experience": 668051,
+      "virtual": false
+    },
+    {
+      "level": 70,
+      "experience": 737627,
+      "virtual": false
+    },
+    {
+      "level": 71,
+      "experience": 814445,
+      "virtual": false
+    },
+    {
+      "level": 72,
+      "experience": 899257,
+      "virtual": false
+    },
+    {
+      "level": 73,
+      "experience": 992895,
+      "virtual": false
+    },
+    {
+      "level": 74,
+      "experience": 1096278,
+      "virtual": false
+    },
+    {
+      "level": 75,
+      "experience": 1210421,
+      "virtual": false
+    },
+    {
+      "level": 76,
+      "experience": 1336443,
+      "virtual": false
+    },
+    {
+      "level": 77,
+      "experience": 1475581,
+      "virtual": false
+    },
+    {
+      "level": 78,
+      "experience": 1629200,
+      "virtual": false
+    },
+    {
+      "level": 79,
+      "experience": 1798808,
+      "virtual": false
+    },
+    {
+      "level": 80,
+      "experience": 1986068,
+      "virtual": false
+    },
+    {
+      "level": 81,
+      "experience": 2192818,
+      "virtual": false
+    },
+    {
+      "level": 82,
+      "experience": 2421087,
+      "virtual": false
+    },
+    {
+      "level": 83,
+      "experience": 2673114,
+      "virtual": false
+    },
+    {
+      "level": 84,
+      "experience": 2951373,
+      "virtual": false
+    },
+    {
+      "level": 85,
+      "experience": 3258594,
+      "virtual": false
+    },
+    {
+      "level": 86,
+      "experience": 3597792,
+      "virtual": false
+    },
+    {
+      "level": 87,
+      "experience": 3972294,
+      "virtual": false
+    },
+    {
+      "level": 88,
+      "experience": 4385776,
+      "virtual": false
+    },
+    {
+      "level": 89,
+      "experience": 4842295,
+      "virtual": false
+    },
+    {
+      "level": 90,
+      "experience": 5346332,
+      "virtual": false
+    },
+    {
+      "level": 91,
+      "experience": 5902831,
+      "virtual": false
+    },
+    {
+      "level": 92,
+      "experience": 6517253,
+      "virtual": false
+    },
+    {
+      "level": 93,
+      "experience": 7195629,
+      "virtual": false
+    },
+    {
+      "level": 94,
+      "experience": 7944614,
+      "virtual": false
+    },
+    {
+      "level": 95,
+      "experience": 8771558,
+      "virtual": false
+    },
+    {
+      "level": 96,
+      "experience": 9684577,
+      "virtual": false
+    },
+    {
+      "level": 97,
+      "experience": 10692629,
+      "virtual": false
+    },
+    {
+      "level": 98,
+      "experience": 11805606,
+      "virtual": false
+    },
+    {
+      "level": 99,
+      "experience": 13034431,
+      "virtual": false
+    },
+    {
+      "level": 100,
+      "experience": 14391160,
+      "virtual": true
+    },
+    {
+      "level": 101,
+      "experience": 15889109,
+      "virtual": true
+    },
+    {
+      "level": 102,
+      "experience": 17542976,
+      "virtual": true
+    },
+    {
+      "level": 103,
+      "experience": 19368992,
+      "virtual": true
+    },
+    {
+      "level": 104,
+      "experience": 21385073,
+      "virtual": true
+    },
+    {
+      "level": 105,
+      "experience": 23611006,
+      "virtual": true
+    },
+    {
+      "level": 106,
+      "experience": 26068632,
+      "virtual": true
+    },
+    {
+      "level": 107,
+      "experience": 28782069,
+      "virtual": true
+    },
+    {
+      "level": 108,
+      "experience": 31777943,
+      "virtual": true
+    },
+    {
+      "level": 109,
+      "experience": 35085654,
+      "virtual": true
+    },
+    {
+      "level": 110,
+      "experience": 38737661,
+      "virtual": true
+    },
+    {
+      "level": 111,
+      "experience": 42769801,
+      "virtual": true
+    },
+    {
+      "level": 112,
+      "experience": 47221641,
+      "virtual": true
+    },
+    {
+      "level": 113,
+      "experience": 52136869,
+      "virtual": true
+    },
+    {
+      "level": 114,
+      "experience": 57563718,
+      "virtual": true
+    },
+    {
+      "level": 115,
+      "experience": 63555443,
+      "virtual": true
+    },
+    {
+      "level": 116,
+      "experience": 70170840,
+      "virtual": true
+    },
+    {
+      "level": 117,
+      "experience": 77474828,
+      "virtual": true
+    },
+    {
+      "level": 118,
+      "experience": 85539082,
+      "virtual": true
+    },
+    {
+      "level": 119,
+      "experience": 94442737,
+      "virtual": true
+    },
+    {
+      "level": 120,
+      "experience": 104273167,
+      "virtual": true
+    },
+    {
+      "level": 121,
+      "experience": 115126838,
+      "virtual": true
+    },
+    {
+      "level": 122,
+      "experience": 127110260,
+      "virtual": true
+    },
+    {
+      "level": 123,
+      "experience": 140341028,
+      "virtual": true
+    },
+    {
+      "level": 124,
+      "experience": 154948977,
+      "virtual": true
+    },
+    {
+      "level": 125,
+      "experience": 171077457,
+      "virtual": true
+    },
+    {
+      "level": 126,
+      "experience": 188884740,
+      "virtual": true
+    }
+  ]
+}
