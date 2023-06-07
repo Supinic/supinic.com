@@ -24,7 +24,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const response = await sb.Got("Supinic", `data/faq/detail/${id}`).json();
+		const response = await sb.Got("Supinic", `data/faq/detail/${req.params.id}`).json();
 		if (!response.ok) {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
