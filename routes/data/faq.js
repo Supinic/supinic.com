@@ -31,10 +31,11 @@ module.exports = (function () {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 
+		const { data } = response.body;
 		const printData = {
-			"Entry ID": response.data.ID,
-			Question: response.data.question,
-			Answer: response.data.answer,
+			"Entry ID": data.ID,
+			Question: data.question,
+			Answer: data.answer
 		};
 
 		res.render("generic-detail-table", { data: printData });
