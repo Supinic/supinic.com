@@ -9,7 +9,7 @@ module.exports = (function () {
 		const renderData = data.map(i => ({
 			Question: i.question,
 			Answer: i.answer,
-			Detail: `<a href="/data/faq/detail${i.ID}">#</a>`,
+			Detail: `<a href="/data/faq/detail/${i.ID}">#</a>`,
 			searchables: (i.tags.length > 0) ? i.tags.join(";") : ""
 		}));
 
