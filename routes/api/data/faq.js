@@ -15,15 +15,15 @@ module.exports = (function () {
 	Router.get("/detail/:id", async (req, res) => {
 		const id = Number(req.params.id);
 		if (!sb.Utils.isValidInteger(id)) {
-			return sb.WebUtils.apiFail(res, 400, "Malformed ID");
+			return WebUtils.apiFail(res, 400, "Malformed ID");
 		}
 
 		const row = await FAQ.getRow(id);
 		if (!row) {
-			return sb.WebUtils.apiFail(res, 404, "FAQ entry with this ID does not exist");
+			return WebUtils.apiFail(res, 404, "FAQ entry with this ID does not exist");
 		}
-		
-		return sb.WebUtils.apiSuccess(res, row.valuesObject);
+
+		return WebUtils.apiSuccess(res, row.valuesObject);
 	});
 
 	return Router;

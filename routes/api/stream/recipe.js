@@ -28,7 +28,7 @@ module.exports = (function () {
 
 	Router.get("/detail/:recipe", async (req, res) => {
 		if (!req.params.recipe) {
-			return sb.WebUtils.apiFail(res, 400, "No recipe identifier provided");
+			return WebUtils.apiFail(res, 400, "No recipe identifier provided");
 		}
 
 		const data = await Recipe.selectSingleCustom(rs => rs
@@ -50,7 +50,7 @@ module.exports = (function () {
 		);
 
 		if (!data) {
-			return sb.WebUtils.apiFail(res, 404, "No recipe found");
+			return WebUtils.apiFail(res, 404, "No recipe found");
 		}
 
 		return WebUtils.apiSuccess(res, data);
