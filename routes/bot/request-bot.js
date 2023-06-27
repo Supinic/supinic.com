@@ -173,10 +173,15 @@ module.exports = (function () {
 					
 					button.disabled = false;
 					
-					if (response.status === 200) {							
-						const ID = json.data.suggestionID;
-						const link = "/data/suggestion/" + ID;
-						alerter.innerHTML = "Success 🙂<hr>Your suggestion can be found here: <a href=" + link + ">" + ID + "</a>";
+					if (response.status === 200) {						
+						if (json.data.suggestionID) {
+							const ID = json.data.suggestionID;
+							const link = "/data/suggestion/" + ID;
+							alerter.innerHTML = "Success 🙂<hr>Your suggestion can be found here: <a href=" + link + ">" + ID + "</a>";
+						}
+						else if (json.data.rename === "success") {
+							alerter.innerHTML = "Success 🙂<hr>Rename detected - Supibot automatically joined the new channel.";
+						}							
 							
 						alerter.classList.add("alert-success");
 						const formWrapper = document.getElementById("form-wrapper");

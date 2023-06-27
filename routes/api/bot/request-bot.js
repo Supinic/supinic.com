@@ -29,63 +29,62 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Provided platform has not been found");
 		}
 
-		if (renamedChannel) {
-			const userData = await User.getByID(userID);
-			const previousChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", renamedChannel));
-			const currentChannel = await Channel.selectSingleCustom(q => q.where("Name = %s", userData.Name));
-
-			if (!previousChannel) {
-				return WebUtils.apiFail(res, 400, "Provided channel has not been found");
-			}
-			else if (previousChannel.Name === userData.Name) {
-				return WebUtils.apiFail(res, 400, "When renaming, you should put in the name you used to have instead of the current one");
-			}
-
+		if (platformData.Name ===  "twitch") {
 			const helixChannelResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
-					login: userData.Name
+					login: targetChannel
 				},
 			});
 
 			const currentChannelID = helixChannelResponse.body.data?.[0].id;
-			const previousChannelID = previousChannel.Specific_ID;
-			if (currentChannelID !== previousChannelID) {
-				return WebUtils.apiFail(res, 400, "Renaming verification did not pass");
-			}
+			if (currentChannelID) {
+				const previousChannelName = await sb.Query.getRecordset(rs => rs
+					.select("Name")
+					.from("chat_data", "Channel")
+					.where("Name <> %s", targetChannel)
+					.where("Platform = %n", 1)
+					.where("Specific_ID = %s", currentChannelID)
+					.orderBy("ID DESC")
+					.flat("Name")
+					.single()
+				);
 
-			const renamedRow = await sb.Query.getRow("chat_data", "Channel");
-			await renamedRow.load(previousChannel.ID);
-			renamedRow.values.Mode = "Inactive";
-			await renamedRow.save({ skipLoad: true });
+				if (previousChannelName) {
+					const response = await sb.Got("Supibot", {
+						url: "command/execute",
+						searchParams: {
+							invocation: "bot",
+							platform: "twitch",
+							channel: null,
+							user: targetChannel,
+							arguments: `rename channel:"${previousChannelName}"`
+						}
+					});
 
-			const announcement = `Hello again 🙂👋 I'm back from when ${userData.Name} was called ${previousChannel.Name}.`;
-			if (currentChannel) {
-				await sb.Got("Supibot", {
-					url: "channel/join",
-					searchParams: {
-						name: currentChannel.Name,
-						platform: "twitch",
-						announcement
+					if (response.ok) {
+						return WebUtils.apiSuccess(res, {
+							success: true,
+							suggestionID: null,
+							rename: "success"
+						});
 					}
-				});
-			}
-			else {
-				await sb.Got("Supibot", {
-					url: "channel/add",
-					searchParams: {
-						name: userData.Name,
-						platform: "twitch",
-						mode: "Write",
-						announcement
-					}
-				});
-			}
+					else {
+						console.warn("Rename proxy API failure", {
+							body: response.body,
+							currentChannelID,
+							targetChannel,
+							previousChannelName
+						});
 
-			return WebUtils.apiSuccess(res, {
-				success: true,
-				suggestionID: null
-			});
+						return WebUtils.apiFail(res, 500, {
+							success: true,
+							suggestionID: null,
+							rename: "success"
+						});
+					}
+				}
+			}
 		}
 
 		const exists = await Channel.selectSingleCustom(rs => rs
