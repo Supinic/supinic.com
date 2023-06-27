@@ -183,7 +183,7 @@ module.exports = (function () {
 					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
 				}),
 				sb.Got("Global", {
-					url: `https://api.7tv.app/v2/users/${targetChannel}/emotes`,
+					url: `https://7tv.io/v3/users/twitch/${twitchChannelID}`
 				}),
 				sb.Got("Global", {
 					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
@@ -203,13 +203,15 @@ module.exports = (function () {
 			const stats = [];
 			if (bttv.statusCode === 200) {
 				const { channelEmotes, sharedEmotes } = bttv.body;
-				stats.push(`${sharedEmotes.length} shared, ${channelEmotes.length} custom BTTV emotes`);
+				stats.push(`${channelEmotes.length + sharedEmotes.length}x BTTV emotes`);
 			}
 			if (ffz.statusCode === 200) {
-				stats.push(`${ffz.body.sets[ffz.body.room.set].emoticons.length} FFZ emotes`);
+				const emotes = ffz.body.sets[ffz.body.room.set].emoticons;
+				stats.push(`${emotes.length}x FFZ emotes`);
 			}
 			if (sevenTv.statusCode === 200) {
-				stats.push(`${sevenTv.body.length} 7TV emotes`);
+				const emotes = sevenTv.body?.emote_set?.emotes ?? [];
+				stats.push(`${emotes}x 7TV emotes`);
 			}
 			if (follows.statusCode === 200) {
 				stats.push(`${follows.body.total} followers`);
