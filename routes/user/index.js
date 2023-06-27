@@ -186,7 +186,18 @@ module.exports = (function () {
 			{
 				name: "activeFilters",
 				type: "array",
-				value: filterResponse.body.data
+				value: filterResponse.body.data.map(i => {
+					const filteredObj = {};
+					for (const [key, value] of Object.entries(i)) {
+						if (value === null) {
+							continue;
+						}
+
+						filteredObj[key] = value;
+					}
+
+					return filteredObj;
+				})
 			},
 			...response.body.data
 		];
