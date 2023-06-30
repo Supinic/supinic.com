@@ -210,7 +210,7 @@ module.exports = (function () {
 			}
 			if (sevenTv.statusCode === 200) {
 				const emotes = sevenTv.body?.emote_set?.emotes ?? [];
-				stats.push(`${emotes}x 7TV emotes`);
+				stats.push(`${emotes.length}x 7TV emotes`);
 			}
 			if (follows.statusCode === 200) {
 				stats.push(`${follows.body.total} followers`);
