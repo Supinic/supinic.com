@@ -41,17 +41,19 @@ module.exports = (function () {
 
 		const rawData = await Channel.list();
 		const data = rawData.filter(i => {
-			if (i.Mode === "Read" || i.Mode === "Last seen") {
+			if (i.mode === "Read" || i.mode === "Last seen") {
 				return false;
 			}
 			if (!platform) {
 				return true;
 			}
 
-			return (i.Platform_Name.toLowerCase() === platform);
+			return (i.platformName.toLowerCase() === platform);
 		});
 
-		return WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data, {
+			skipCaseConversion: true
+		});
 	});
 
 	/**

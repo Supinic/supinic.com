@@ -20,11 +20,11 @@ module.exports = (function () {
 
 			const [channels, informationSchema] = await Promise.all([
 				sb.Query.getRecordset(rs => rs
-					.select("Channel.ID", "Channel.Name", "Channel.Platform", "Channel.Specific_ID", "Channel.Mode")
-					.select("Channel.Mention", "Channel.Links_Allowed", "Channel.NSFW", "Channel.Banphrase_API_Type")
-					.select("Channel.Banphrase_API_URL", "Channel.Banphrase_API_Downtime", "Channel.Message_Limit")
-					.select("Channel.Mirror", "Channel.Description")
-					.select("Platform.Name AS Platform_Name")
+					.select("Channel.ID AS ID", "Channel.Name AS name", "Channel.Platform AS platform", "Channel.Specific_ID AS specificID", "Channel.Mode AS mode")
+					.select("Channel.Mention AS mention", "Channel.Links_Allowed AS linksAllowed", "Channel.NSFW AS nsfw", "Channel.Banphrase_API_Type AS banphraseApiType")
+					.select("Channel.Banphrase_API_URL AS banphraseApiUrl", "Channel.Banphrase_API_Downtime AS banphraseApiDowntime", "Channel.Message_Limit AS messageLimit")
+					.select("Channel.Mirror AS mirror", "Channel.Description AS description")
+					.select("Platform.Name AS platformName")
 					.from("chat_data", "Channel")
 					.join("chat_data", "Platform")
 					.where("Mode <> %s", "Inactive")
@@ -34,13 +34,13 @@ module.exports = (function () {
 			]);
 
 			data = channels.map(channel => {
-				const databaseName = (channel.Platform_Name === "Twitch")
-					? channel.Name
-					: `${channel.Platform_Name.toLowerCase()}_${channel.Name}`;
+				const databaseName = (channel.platformName === "Twitch")
+					? channel.name
+					: `${channel.platformName.toLowerCase()}_${channel.name}`;
 
-				const infoRow = informationSchema.find(i => i.Channel === databaseName);
-				channel.Line_Count = infoRow?.Max_ID ?? null;
-				channel.Byte_Length = infoRow?.Byte_Length ?? null;
+				const infoRow = informationSchema.find(i => i.channel === databaseName);
+				channel.lineCount = infoRow?.Max_ID ?? null;
+				channel.byteLength = infoRow?.Byte_Length ?? null;
 
 				return channel;
 			});
