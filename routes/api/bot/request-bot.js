@@ -50,6 +50,12 @@ module.exports = (function () {
 					.single()
 				);
 
+				console.log("Bot request rename check", {
+					targetChannel,
+					currentChannelID,
+					previousChannelName
+				});
+
 				if (previousChannelName) {
 					const response = await sb.Got("Supibot", {
 						url: "command/execute",
@@ -62,6 +68,8 @@ module.exports = (function () {
 						}
 					});
 
+					console.log("Bot proxy API result", { body: response.body });
+
 					if (response.ok) {
 						return WebUtils.apiSuccess(res, {
 							success: true,
@@ -70,13 +78,6 @@ module.exports = (function () {
 						});
 					}
 					else {
-						console.warn("Rename proxy API failure", {
-							body: response.body,
-							currentChannelID,
-							targetChannel,
-							previousChannelName
-						});
-
 						return WebUtils.apiFail(res, 500, {
 							success: true,
 							suggestionID: null,
