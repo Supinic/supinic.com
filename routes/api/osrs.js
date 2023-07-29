@@ -244,7 +244,7 @@ Router.get("/lookup/:user", async (req, res) => {
 
 	let initialResponse = await sb.Got("Global", {
 		url,
-		responseType: "text",
+		responseType: "json",
 		searchParams: { player },
 		retry: {
 			limit: 0
@@ -259,7 +259,7 @@ Router.get("/lookup/:user", async (req, res) => {
 		// but I believe that case is too niche to be considered. Although, that might be changed in the future.
 		initialResponse = await sb.Got("Global", {
 			url: apiURLs.ironman.regular,
-			responseType: "text",
+			responseType: "json",
 			searchParams: { player },
 			retry: {
 				limit: 0
@@ -296,7 +296,7 @@ Router.get("/lookup/:user", async (req, res) => {
 		for (const type of types) {
 			const { statusCode, body } = await sb.Got("Global", {
 				url: apiURLs.ironman[type],
-				responseType: "text",
+				responseType: "json",
 				throwHttpErrors: false,
 				searchParams: { player }
 			});
