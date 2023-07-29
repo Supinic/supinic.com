@@ -357,9 +357,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/detail/:identifier/code", async (req, res) => {
-		return WebUtils.apiFail(res, 410, "Endpoint retired");
-	});
+	Router.get("/detail/:identifier/code", async (req, res) => WebUtils.apiFail(res, 410, "Endpoint retired"));
 
 	Router.get("/channel/:channel/", async (req, res) => {
 		res.set("Content-Type", "text/html");

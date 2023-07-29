@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 // import RaidsData from "/public/json/raids3-data.json" assert { type: "json" };
 import RaidsData from "/public/js/raids3-data.js";
 
@@ -8,7 +10,7 @@ const normalize = (str) => str.replaceAll(" ", "-").toLowerCase();
 const findInvocationEl = (name) => document.querySelector(`li.invocation[name="${normalize(name)}"]`);
 
 const recalculateSummary = () => {
-	const { attributes, base, constants, invocationCategories, modes } = RaidsData;
+	const { attributes, base, constants, modes } = RaidsData;
 	const invocations = fullInvocationList.filter(i => i.selected);
 
 	let level = base.level;
@@ -76,7 +78,7 @@ const importInvocations = (hash = null) => {
 
 	rawValue = rawValue.replaceAll(/#/g, "");
 
-	const numValue = parseInt(rawValue, 16)
+	const numValue = parseInt(rawValue, 16);
 	if (Number.isNaN(numValue)) {
 		alert(`Invalid value provided: ${rawValue}`);
 		return;
@@ -122,19 +124,17 @@ window.addEventListener("load", () => {
 	const topListEl = document.getElementById("invocation-list");
 	const fullInvocationList = RaidsData.invocationCategories.flatMap(i => i.list);
 	for (const category of RaidsData.invocationCategories) {
-		const { title, unique, boss, icon, list } = category;
+		const { title, unique, list } = category;
 		const titleEl = document.createElement("li");
 		titleEl.textContent = title;
 		topListEl.appendChild(titleEl);
 
 		const categoryListEl = document.createElement("ul");
-		const listItems = [];
-
 		for (const invocation of list) {
-			const { name, description, level, summary, requires, data } = invocation;
+			const { name, level, summary, requires } = invocation;
 
 			const listItemEl = document.createElement("li");
-			listItemEl.classList.add("invocation")
+			listItemEl.classList.add("invocation");
 			listItemEl.setAttribute("name", normalize(name));
 			listItemEl.setAttribute("fullName", name);
 			listItemEl.textContent = `${name}: ${summary} +${level}`;
@@ -231,14 +231,13 @@ window.addEventListener("load", () => {
 			() => {
 				importInvocations();
 			}
-	);
+		);
 	document.getElementById("button-export")
 		.addEventListener("click",
 			() => {
 				alert(generateInvocations());
 			}
 		);
-
 });
 
 window.addEventListener("hashchange", () => {

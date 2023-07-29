@@ -23,7 +23,7 @@ module.exports = (function () {
 				.map(i => `<li>${i.username}</li>`)
 				.join("");
 
-			const copyItemsString = `${copies.length} copies<br>${copyItems || "<i>(none)</i>"}` ;
+			const copyItemsString = `${copies.length} copies<br>${copyItems || "<i>(none)</i>"}`;
 			const copyList = `<ul id="copies" class="collapse">${copyItemsString}</ul>`;
 			const copySection = sb.Utils.tag.trim `
 				<a
@@ -44,7 +44,7 @@ module.exports = (function () {
 				.map(i => `<li>${i.username}</li>`)
 				.join("");
 
-			const linkItemsString = `${links.length} links<br>${linkItems || "<i>(none)</i>"}` ;
+			const linkItemsString = `${links.length} links<br>${linkItems || "<i>(none)</i>"}`;
 			const linkList = `<ul id="links" class="collapse">${linkItemsString}</ul>`;
 			const linkSection = sb.Utils.tag.trim `
 				<a
@@ -60,7 +60,7 @@ module.exports = (function () {
                 </a>
             `;
 
-			copyLinkString = `${copySection}${copyList}<br>${linkSection}${linkList}`
+			copyLinkString = `${copySection}${copyList}<br>${linkSection}${linkList}`;
 		}
 
 		res.render("generic-detail-table", {
@@ -159,7 +159,7 @@ module.exports = (function () {
 		});
 
 		if (statusCode !== 200) {
-			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
+			return WebUtils.handleError(res, res.statusCode, res.body.error?.message);
 		}
 
 		const auth = await WebUtils.getUserLevel(req, res);

@@ -312,7 +312,7 @@ module.exports = class WebUtils {
 			};
 		}
 		else {
-			const level = await User.getDataProperty( res.locals.authUser.userData.ID, "trackLevel");
+			const level = await User.getDataProperty(res.locals.authUser.userData.ID, "trackLevel");
 			return {
 				level: level ?? "login",
 				userID: res.locals.authUser.userData.ID,

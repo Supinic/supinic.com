@@ -104,9 +104,7 @@ module.exports = (function () {
 		});
 	});
 
-	Router.get("/checkMultiple", async (req, res) => {
-		return WebUtils.apiFail(res, 410, "Endpoint removed, use api/bot/afk/check");
-	});
+	Router.get("/checkMultiple", async (req, res) => WebUtils.apiFail(res, 410, "Endpoint removed, use api/bot/afk/check"));
 
 	/**
 	 * @api {post} /bot/afk/ AFK - Post status
@@ -139,7 +137,7 @@ module.exports = (function () {
 					platform: "twitch",
 					channel: null,
 					user: auth.userData.Name,
-					arguments: req.params.text.join(" "),
+					arguments: req.params.text.join(" ")
 				}
 			});
 		}

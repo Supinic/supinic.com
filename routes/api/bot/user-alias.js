@@ -224,7 +224,7 @@ module.exports = (function () {
 				name: i.Property,
 				value,
 				type: i.Type
-			}
+			};
 		});
 
 		return WebUtils.apiSuccess(res, propertyData, {

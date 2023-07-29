@@ -24,8 +24,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
-    "lint": "eslint . --ignore-path .gitignore",
-    "lint:fix": "eslint . --fix --ignore-path .gitignore",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "init": "node ./init/script.js"
   },
   "author": "Supinic",

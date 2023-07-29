@@ -85,7 +85,7 @@ module.exports = (function () {
 				url: "users",
 				searchParams: {
 					login: username
-				},
+				}
 			});
 
 			userID = helixChannelResponse.body.data?.[0].id;

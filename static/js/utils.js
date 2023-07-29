@@ -13,7 +13,7 @@ export function round (number, places = 0, options = {}) {
 	}
 
 	return (Math[direction](number * (10 ** places))) / (10 ** places);
-};
+}
 
 export function timeDelta (target, skipAffixes = false, respectLeapYears = false, deltaTo = undefined) {
 	if (deltaTo === undefined) {

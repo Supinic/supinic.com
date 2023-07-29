@@ -45,7 +45,7 @@ module.exports = (function () {
 	class CustomCommandAlias extends require("../template.js") {
 		static async fetchDetailForChannel (channelID, aliasIdentifier, options = {}) {
 			const data = fetchWrapper(channelID, options, rs => rs
-				.where("Custom_Command_Alias.Channel = %n", userID)
+				.where("Custom_Command_Alias.Channel = %n", channelID)
 				.where("Custom_Command_Alias.Name COLLATE utf8mb4_bin = %s", aliasIdentifier)
 				.limit(1)
 			);

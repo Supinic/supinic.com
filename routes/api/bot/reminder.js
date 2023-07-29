@@ -153,7 +153,7 @@ module.exports = (function () {
 		}
 
 		const reminderText = req.query.text ?? "";
-		const privateParameter = (Boolean(req.query.private))
+		const privateParameter = (req.query.private)
 			? "private:true"
 			: "";
 

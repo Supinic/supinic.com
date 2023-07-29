@@ -5,7 +5,7 @@ const WebUtils = require("../../utils/webutils.js");
 const timelineUrls = {
 	regular: "UserTweets",
 	replies: "UserTweetsAndReplies"
-}
+};
 
 const defaults = {
 	csrfToken: "2a5b3ceebc9bac4b4abafe716185b2ef",
@@ -98,6 +98,7 @@ const defaults = {
 	}
 };
 
+// eslint-disable-next-line no-unused-vars
 const fetchEntryPageBody = async () => {
 	const response = await sb.Got("FakeAgent", {
 		url: `https://twitter.com/pajlada`,
@@ -110,7 +111,7 @@ const fetchEntryPageBody = async () => {
 			error: {
 				code: "entry-page-fetch",
 				statusCode: response.statusCode
-			},
+			}
 		};
 	}
 
@@ -120,6 +121,7 @@ const fetchEntryPageBody = async () => {
 	};
 };
 
+// eslint-disable-next-line no-unused-vars
 const fetchMainFileBody = async (entryPageBody) => {
 	const filename = entryPageBody.match(/responsive-web\/client-web\/(main\.\w+\.js)/)?.[1];
 	if (!filename) {
@@ -142,7 +144,7 @@ const fetchMainFileBody = async (entryPageBody) => {
 			error: {
 				code: "main-file-fetch",
 				statusCode: response.statusCode
-			},
+			}
 		};
 	}
 
@@ -150,8 +152,9 @@ const fetchMainFileBody = async (entryPageBody) => {
 		success: true,
 		body: response.body
 	};
-}
+};
 
+// eslint-disable-next-line no-unused-vars
 const fetchBearerToken = (mainFileBody) => {
 	const token = mainFileBody.match(/"([a-zA-Z0-9%]{103,104})"/)?.[1];
 	if (!token) {
@@ -167,7 +170,7 @@ const fetchBearerToken = (mainFileBody) => {
 		success: true,
 		token
 	};
-}
+};
 
 const fetchGuestToken = async (bearerToken) => {
 	const response = await sb.Got("FakeAgent", {
@@ -175,7 +178,7 @@ const fetchGuestToken = async (bearerToken) => {
 		responseType: "json",
 		url: `https://api.twitter.com/1.1/guest/activate.json`,
 		headers: {
-			Authorization: `Bearer ${bearerToken}`,
+			Authorization: `Bearer ${bearerToken}`
 		}
 	});
 
@@ -206,7 +209,7 @@ const fetchGuestToken = async (bearerToken) => {
 		success: true,
 		token
 	};
-}
+};
 
 const fetchEndpointSlugs = async (entryPageBody) => {
 	const userFileName = entryPageBody.match(/.UsersGraphQL":"(\w+)"/)?.[1];
@@ -217,8 +220,8 @@ const fetchEndpointSlugs = async (entryPageBody) => {
 			error: {
 				code: "no-endpoint-url-match",
 				timelineFileName,
-				userFileName,
-			},
+				userFileName
+			}
 		};
 	}
 
@@ -247,7 +250,7 @@ const fetchEndpointSlugs = async (entryPageBody) => {
 				timeline: {
 					statusCode: timelineResponse.statusCode
 				}
-			},
+			}
 		};
 	}
 
@@ -322,7 +325,7 @@ const fetchUserId = async (data) => {
 		success: true,
 		id: String(userId)
 	};
-}
+};
 
 const fetchTimeline = async (data) => {
 	const { bearerToken, guestToken, includeReplies, userId } = data;
@@ -338,7 +341,7 @@ const fetchTimeline = async (data) => {
 	};
 
 	const features = {
-		...defaults.timeline[endpointType].features,
+		...defaults.timeline[endpointType].features
 	};
 
 	const variablesString = encodeURIComponent(JSON.stringify(variables));
@@ -406,14 +409,14 @@ const previousCacheKeys = {
 	slugs: ["entryPage", "mainFile"],
 	userid: ["guestToken", "bearerToken", "entryPage", "mainFile"],
 	timeline: ["guestToken", "bearerToken", "entryPage", "mainFile"]
-}
+};
 
 const resetPreviousStepsCaches = async (type) => {
 	const keys = previousCacheKeys[type];
 	const promises = keys.map(key => sb.Cache.setByPrefix(cacheKeys[key], null));
 
 	return await Promise.all(promises);
-}
+};
 
 Router.get("/timeline/:username", async (req, res) => {
 	const { username } = req.params;
@@ -487,7 +490,7 @@ Router.get("/timeline/:username", async (req, res) => {
 		await sb.Cache.setByPrefix(cacheKeys.slugs, slugs, { expiry: 7 * 864e5 }); // 7 days
 	}
 
-	const userCacheKey = `gql-twitter-userid-${username}`
+	const userCacheKey = `gql-twitter-userid-${username}`;
 	let userId = await sb.Cache.getByPrefix(userCacheKey);
 	if (!userId) {
 		const userIdResult = await fetchUserId({

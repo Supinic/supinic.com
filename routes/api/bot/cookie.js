@@ -78,7 +78,7 @@ module.exports = (function () {
 			return WebUtils.apiSuccess(res, {});
 		}
 		else {
-			return WebUtils.apiSuccess(res, JSON.parse(cookieDate));
+			return WebUtils.apiSuccess(res, JSON.parse(cookieData));
 		}
 	});
 
@@ -106,14 +106,14 @@ module.exports = (function () {
 			user: i.Username,
 			eaten: {
 				daily: i.Eaten_Daily,
-				received: i.Eaten_Received,
+				received: i.Eaten_Received
 			},
 			donated: i.Donated,
 			received: i.Received,
 			legacy: {
 				daily: i.Legacy_Daily,
 				donated: i.Legacy_Donated,
-				received: i.Legacy_Received,
+				received: i.Legacy_Received
 			}
 		}));
 
@@ -129,7 +129,7 @@ module.exports = (function () {
 			Total: i.Eaten_Daily + i.Eaten_Received + i.Legacy_Daily + i.Legacy_Received,
 			Daily: i.Eaten_Daily + i.Legacy_Daily,
 			Donated: i.Donated + i.Legacy_Donated,
-			Received: i.Received + i.Legacy_Received,
+			Received: i.Received + i.Legacy_Received
 		}));
 
 		WebUtils.apiSuccess(res, data, {

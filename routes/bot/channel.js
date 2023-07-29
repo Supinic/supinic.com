@@ -132,7 +132,7 @@ module.exports = (function () {
 		const headerColumns = ["Name", "Invocation", "Created"];
 		const printData = response.body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
-			const link = `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`
+			const link = `<a href="/bot/user/${encodeURIComponent(alias.linkAuthor)}/alias/detail/${encodeURIComponent(alias.linkName)}">🔗 ${alias.name}</a>`;
 			const invocation = (alias.linkName && alias.linkAuthor)
 				? `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`
 				: `<code>(deleted alias)</code>`;

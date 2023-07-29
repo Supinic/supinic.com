@@ -44,7 +44,7 @@ module.exports = (function () {
 			filename: i.Filename,
 			cooldown: i.Cooldown,
 			notes: i.Notes
-		}))
+		}));
 
 		return WebUtils.apiSuccess(res, data);
 	});

@@ -23,7 +23,7 @@ const importModule = async (module, path) => {
 			"singletons/cache",
 
 			"classes/got",
-			"classes/cron",
+			"classes/cron"
 		]
 	});
 
@@ -72,7 +72,7 @@ const importModule = async (module, path) => {
 					// Override the default Helix headers - this is login info strategy
 					Authorization: `Bearer ${accessToken}`,
 					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
-				},
+				}
 			});
 
 			if (response.ok) {

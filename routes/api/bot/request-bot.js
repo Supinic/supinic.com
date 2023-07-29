@@ -29,12 +29,12 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Provided platform has not been found");
 		}
 
-		if (platformData.Name ===  "twitch") {
+		if (platformData.Name === "twitch") {
 			const helixChannelResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
 					login: targetChannel
-				},
+				}
 			});
 
 			const currentChannelID = helixChannelResponse.body.data?.[0].id;
@@ -127,7 +127,7 @@ module.exports = (function () {
 				url: "users",
 				searchParams: {
 					login: targetChannel
-				},
+				}
 			});
 
 			twitchChannelID = helixUserResponse.body.data?.[0].id;
@@ -177,10 +177,10 @@ module.exports = (function () {
 			const [follows, bttv, ffz, sevenTv, recent, stream] = await Promise.all([
 				followsPromise,
 				sb.Got("Global", {
-					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`,
+					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
 				}),
 				sb.Got("Global", {
-					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`,
+					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`
 				}),
 				sb.Got("Global", {
 					url: `https://7tv.io/v3/users/twitch/${twitchChannelID}`
