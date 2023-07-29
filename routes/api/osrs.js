@@ -6,7 +6,7 @@ const WebUtils = require("../../utils/webutils.js");
 // The ordering of these following skills and activities is **very** important!
 // Old School Runescape API does not provide any info about its values and instead relies on the ordering of
 // each numerical value being in a pre-determined order.
-const { experienceLevels }  = require("./osrs-data.json");
+const { experienceLevels } = require("./osrs-data.json");
 const reversedexperienceLevels = experienceLevels.reverse();
 const VIRTUAL_LEVEL_XP_THRESHOLD = experienceLevels.find(i => i.level === 100).experience;
 
@@ -439,13 +439,13 @@ Router.get("/activity/detail/:ID", async (req, res) => {
 });
 
 Router.get("/comparisons", async (req, res) => {
-		const [prayer, restore] = await Promise.all([
-			fetchItemPrice(2434),
-			fetchItemPrice(3024)
-		]);
+	const [prayer, restore] = await Promise.all([
+		fetchItemPrice(2434),
+		fetchItemPrice(3024)
+	]);
 
-		res.render("generic", {
-			data: `
+	res.render("generic", {
+		data: `
 				<script> 
 					function round (number, places) {
 						return (Math.round(number * (10 ** places))) / (10 ** places);
@@ -498,7 +498,7 @@ Router.get("/comparisons", async (req, res) => {
 					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
 				</div>			
 			`
-		});
 	});
+});
 
 module.exports = Router;
