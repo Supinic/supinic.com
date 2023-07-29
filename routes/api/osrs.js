@@ -6,7 +6,7 @@ const WebUtils = require("../../utils/webutils.js");
 // The ordering of these following skills and activities is **very** important!
 // Old School Runescape API does not provide any info about its values and instead relies on the ordering of
 // each numerical value being in a pre-determined order.
-const { activities, skills, experienceLevels }  = require("./osrs-data.json");
+const { experienceLevels }  = require("./osrs-data.json");
 const reversedexperienceLevels = experienceLevels.reverse();
 const VIRTUAL_LEVEL_XP_THRESHOLD = experienceLevels.find(i => i.level === 100).experience;
 
@@ -14,12 +14,12 @@ const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
 const itemCachePrefix = "osrs-item-price";
 const activityCachePrefix = "osrs-activity";
 const apiURLs = {
-	main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws",
-	seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.ws",
+	main: "https://secure.runescape.com/m=hiscore_oldschool/index_lite.json",
+	seasonal: "https://secure.runescape.com/m=hiscore_oldschool_seasonal/index_lite.json",
 	ironman: {
-		regular: "https://secure.runescape.com/m=hiscore_oldschool_ironman/index_lite.ws",
-		hardcore: "https://secure.runescape.com/m=hiscore_oldschool_hardcore_ironman/index_lite.ws",
-		ultimate: "https://secure.runescape.com/m=hiscore_oldschool_ultimate/index_lite.ws"
+		regular: "https://secure.runescape.com/m=hiscore_oldschool_ironman/index_lite.json",
+		hardcore: "https://secure.runescape.com/m=hiscore_oldschool_hardcore_ironman/index_lite.json",
+		ultimate: "https://secure.runescape.com/m=hiscore_oldschool_ultimate/index_lite.json"
 	}
 };
 
@@ -284,8 +284,8 @@ Router.get("/lookup/:user", async (req, res) => {
 		}
 	}
 
-	let rawData = initialResponse.body;
-	const mainTotalXP = Number(rawData.split("\n")[0].split(",")[2]);
+	let data = initialResponse.body;
+	const mainTotalXP = data.skills.find(i => i.name === "Overall").xp;
 
 	if (!result.seasonal) {
 		// Note: OSRS API returns results for both ultimate and regular URLs if the account is a UIM,
@@ -306,7 +306,7 @@ Router.get("/lookup/:user", async (req, res) => {
 				// IM data to detect whether the account is alive or not, and adjust the response accordingly.
 				if (type === "ultimate") {
 					result.ironman.ultimate = true;
-					rawData = body;
+					data = body;
 					break;
 				}
 				else {
@@ -318,11 +318,11 @@ Router.get("/lookup/:user", async (req, res) => {
 		// Figuring out if a HCIM has died. If their total XP in the ironman leaderboard is higher than the total XP
 		// in HCIM leaderboard, this means that they have lost the HCIM status.
 		if (compare.hardcore && compare.regular) {
-			const regularXP = Number(compare.regular.split("\n")[0].split(",")[2]);
-			const hardcoreXP = Number(compare.hardcore.split("\n")[0].split(",")[2]);
+			const regularXP = compare.regular.skills.find(i => i.name === "Overall").xp;
+			const hardcoreXP = compare.hardcore.skills.find(i => i.name === "Overall").xp;
 
 			if (regularXP > hardcoreXP) {
-				rawData = (forceHardcore)
+				data = (forceHardcore)
 					? compare.hardcore
 					: compare.regular;
 
@@ -330,7 +330,7 @@ Router.get("/lookup/:user", async (req, res) => {
 				result.ironman.deadHardcore = true;
 			}
 			else {
-				rawData = compare.hardcore;
+				data = compare.hardcore;
 				result.ironman.hardcore = true;
 				result.ironman.deadHardcore = false;
 			}
@@ -344,27 +344,24 @@ Router.get("/lookup/:user", async (req, res) => {
 
 		// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
 		// higher - hence, the account must have been de-ironed. Use the main data instead of the IM data.
-		const totalXP = Number(rawData.split("\n")[0].split(",")[2]);
+		const totalXP = data.skills.find(i => i.name === "Overall").xp;
 		if (totalXP < mainTotalXP) {
-			rawData = initialResponse.body;
+			data = initialResponse.body;
 			result.ironman.abandoned = true;
 		}
 	}
 
-	const data = rawData.split("\n").map(i => i.split(",").map(Number));
-	let index = 0;
 	let virtualTotalLevel = 0;
-
-	for (const skill of skills) {
-		const [rank, level, experience] = data[index];
+	for (const skillObject of data.skills) {
+		const { name, rank, level, xp } = skillObject;
 		const skillObject = {
-			name: skill,
+			name,
 			rank: (rank === -1) ? null : rank,
 			level,
-			experience
+			experience: xp
 		};
 
-		if (skill !== "Overall") {
+		if (name !== "Overall") {
 			if (experience >= VIRTUAL_LEVEL_XP_THRESHOLD) {
 				const levelData = reversedexperienceLevels.find(level => experience > level.experience);
 				skillObject.virtualLevel = levelData.level;
@@ -377,30 +374,27 @@ Router.get("/lookup/:user", async (req, res) => {
 		}
 
 		result.skills.push(skillObject);
-		index++;
 	}
 
 	const totalLevel = result.skills.find(i => i.name === "Overall");
 	totalLevel.virtualLevel = virtualTotalLevel;
 
-	for (const activity of activities) {
-		const [rank, value] = data[index];
+	for (const activityObject of data.activities) {
+		const { name, rank, score } = activityObject;
 		if (rank === -1) {
 			result.activities.push({
-				name: activity,
+				name,
 				rank: null,
 				value: null
 			});
 		}
 		else {
 			result.activities.push({
-				name: activity,
+				name,
 				rank,
-				value
+				value: score
 			});
 		}
-
-		index++;
 	}
 
 	const combatLevelData = calculateCombatLevelData(result.skills);
