@@ -354,7 +354,7 @@ Router.get("/lookup/:user", async (req, res) => {
 	let virtualTotalLevel = 0;
 	for (const skillObject of data.skills) {
 		const { name, rank, level, xp } = skillObject;
-		const skillObject = {
+		const resultSkillObject = {
 			name,
 			rank: (rank === -1) ? null : rank,
 			level,
@@ -364,16 +364,16 @@ Router.get("/lookup/:user", async (req, res) => {
 		if (name !== "Overall") {
 			if (experience >= VIRTUAL_LEVEL_XP_THRESHOLD) {
 				const levelData = reversedexperienceLevels.find(level => experience > level.experience);
-				skillObject.virtualLevel = levelData.level;
+				resultSkillObject.virtualLevel = levelData.level;
 			}
 			else {
-				skillObject.virtualLevel = level;
+				resultSkillObject.virtualLevel = level;
 			}
 
-			virtualTotalLevel += skillObject.virtualLevel;
+			virtualTotalLevel += resultSkillObject.virtualLevel;
 		}
 
-		result.skills.push(skillObject);
+		result.skills.push(resultSkillObject);
 	}
 
 	const totalLevel = result.skills.find(i => i.name === "Overall");
