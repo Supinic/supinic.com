@@ -362,7 +362,7 @@ Router.get("/lookup/:user", async (req, res) => {
 		};
 
 		if (name !== "Overall") {
-			if (experience >= VIRTUAL_LEVEL_XP_THRESHOLD) {
+			if (xp >= VIRTUAL_LEVEL_XP_THRESHOLD) {
 				const levelData = reversedexperienceLevels.find(level => xp > level.experience);
 				resultSkillObject.virtualLevel = levelData.level;
 			}
