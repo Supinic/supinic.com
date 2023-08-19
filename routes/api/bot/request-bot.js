@@ -139,12 +139,33 @@ module.exports = (function () {
 
 		const userData = await User.getByID(userID);
 		if (platformData.Name === "Twitch" && userData.Name !== targetChannel) {
-			const escapedChannel = targetChannel.replace(/\W/g, "").toLowerCase();
-			const { mods } = await sb.Got("Global", {
-				url: `https://api.ivr.fi/v2/twitch/modvip/${escapedChannel}`
-			}).json();
+			const response = await sb.Got.gql({
+				url: "https://gql.twitch.tv/gql",
+				responseType: "json",
+				headers: {
+					Accept: "*/*",
+					"Accept-Language": "en-US",
+					Authorization: `OAuth ${sb.Config.get("TWITCH_GQL_OAUTH")}`,
+					"Client-ID": sb.Config.get("TWITCH_GQL_CLIENT_ID"),
+					"Client-Version": sb.Config.get("TWITCH_GQL_CLIENT_VERSION"),
+					"Content-Type": "text/plain;charset=UTF-8",
+					Referer: `https://dashboard.twitch.tv/`,
+					"X-Device-ID": sb.Config.get("TWITCH_GQL_DEVICE_ID")
+				},
+				query: ` 
+					query {
+						user(login:"${userData.Name}", lookupType:ALL) {
+							isModerator(channelID:"${twitchChannelID}")
+						}
+					}
+				`
+			});
 
-			const isModerator = mods.find(i => i.login === userData.Name);
+			if (!response.ok) {
+				return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
+			}
+
+			const { isModerator } = response.body.data.user;
 			if (!isModerator) {
 				return WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
 			}
