@@ -540,7 +540,7 @@ Router.get("/timeline/:username", async (req, res) => {
 	});
 });
 
-Router.get("/timeline/syndication/:username", async (req, res) => {
+Router.get("/syndication/:username", async (req, res) => {
 	const { username } = req.params;
 	const { includeReplies } = req.query;
 
