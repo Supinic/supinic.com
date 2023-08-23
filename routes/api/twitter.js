@@ -540,4 +540,30 @@ Router.get("/timeline/:username", async (req, res) => {
 	});
 });
 
+Router.get("/timeline/syndication/:username", async (req, res) => {
+	const { username } = req.params;
+	const { includeReplies } = req.query;
+
+	const response = await sb.Got("FakeAgent", {
+		url: `https://syndication.twitter.com/srv/timeline-profile/screen-name/${username}`,
+		searchParams: {
+			includeReplies: String(Boolean(includeReplies))
+		},
+		headers: {
+			Cookie: sb.Config.get("TWITTER_BROWSER_COOKIE")
+		},
+		responseType: "text"
+	});
+
+	if (!response.ok) {
+		return WebUtils.apiFail(res, 503, "Twitter API failed");
+	}
+
+	const $ = sb.Utils.cheerio(response.body);
+	const node = $("#__NEXT_DATA__");
+	const data = JSON.parse(node.text());
+
+	return WebUtils.apiSuccess(res, data.props.pageProps.timeline);
+});
+
 module.exports = Router;
