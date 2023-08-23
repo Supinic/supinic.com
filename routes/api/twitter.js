@@ -563,7 +563,11 @@ Router.get("/syndication/:username", async (req, res) => {
 	const node = $("#__NEXT_DATA__");
 	const data = JSON.parse(node.text());
 
-	return WebUtils.apiSuccess(res, data.props.pageProps.timeline);
+	const timeline = data.props.pageProps.timeline.entries
+		.map(i => i.content.tweet)
+		.filter(Boolean);
+
+	return WebUtils.apiSuccess(res, { timeline });
 });
 
 module.exports = Router;
