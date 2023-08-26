@@ -44,6 +44,9 @@ html
 					order: [#{sortColumn}, "#{sortDirection}"]
 				});
 
+				const tableEl = document.getElementById("table");
+				tableEl.style.width = "100%";
+
 				if (#{specificFiltering}) {
 					$("td.searchFooter").each(function (i) {
 						const position = Number($(this).attr("position"));
