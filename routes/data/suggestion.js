@@ -33,7 +33,8 @@ module.exports = (function () {
 	};
 
 	const parseLinks = (string) => WebUtils.linkify(string)
-		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`);
+		.replaceAll(/S#(\d+)/g, `<a title="Suggestion #$1" href="/data/suggestion/$1">S#$1</a>`)
+		.replaceAll("\n", "<br>");
 
 	Router.get("/list", async (req, res) => {
 		res.render("generic-ajax-list-table", {
