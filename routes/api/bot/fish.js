@@ -13,6 +13,7 @@ module.exports = (function () {
 		.join("chat_data", "User_Alias")
 		.where("Property = %s", "fishData")
 		.where("Value IS NOT NULL")
+		.where("JSON_EXTRACT(Value, '$.removedFromLeaderboards') IS NULL")
 	);
 
 	const fetchSpecificUserFshData = async (username) => await sb.Query.getRecordset(rs => rs
