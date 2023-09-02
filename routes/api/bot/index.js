@@ -12,6 +12,7 @@ module.exports = (function () {
 		["command", "command.js"],
 		["cookie", "cookie.js"],
 		["filter", "filter.js"],
+		["fish", "fish.js"],
 		["playsound", "playsound.js"],
 		["poll", "poll.js"],
 		["proxy", "proxy.js"],

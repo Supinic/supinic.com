@@ -9,6 +9,7 @@ module.exports = (function () {
 		["channel", "channel.js"],
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
+		["fish", "fish.js"],
 		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
