@@ -32,9 +32,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "User or fishing data not found");
 		}
 
+		const fishData = JSON.parse(rawFishData.Value);
 		const data = {
 			username: rawFishData.Username,
-			fish: JSON.parse(rawFishData.Value)
+			fish: {
+				catch: fishData.catch,
+				coins: fishData.coins,
+				lifetime: fishData.lifetime
+			}
 		};
 
 		WebUtils.apiSuccess(res, data, {
