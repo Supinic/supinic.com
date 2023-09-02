@@ -48,9 +48,9 @@ module.exports = (function () {
 			const rowData = JSON.parse(i.Value);
 			return {
 				User: i.Username,
-				Fish: rowData.catch.fish,
-				Junk: rowData.catch.junk,
-				Coins: rowData.coins
+				Fish: rowData.catch.fish ?? 0,
+				Junk: rowData.catch.junk ?? 0,
+				Coins: rowData.coins ?? 0
 			};
 		});
 
@@ -65,10 +65,10 @@ module.exports = (function () {
 			const rowData = JSON.parse(i.Value);
 			return {
 				User: i.Username,
-				Attempts: rowData.lifetime.attempts,
-				Fish: rowData.lifetime.fish,
-				Junk: rowData.lifetime.junk,
-				Coins: rowData.lifetime.coins
+				Attempts: rowData.lifetime.attempts ?? 0,
+				Fish: rowData.lifetime.fish ?? 0,
+				Junk: rowData.lifetime.junk ?? 0,
+				Coins: rowData.lifetime.coins ?? 0
 			};
 		});
 
