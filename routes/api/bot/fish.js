@@ -25,7 +25,7 @@ module.exports = (function () {
 	);
 
 	Router.get("/detail/:username", async (req, res) => {
-		const fishData = await fetchSpecificUserFshData();
+		const fishData = await fetchSpecificUserFshData(req.params.username);
 		if (!fishData) {
 			return WebUtils.apiFail(res, 404, "User or fishing data not found");
 		}
