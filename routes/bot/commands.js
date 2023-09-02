@@ -1,7 +1,6 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const CommandExecution = require("../../modules/chat-data/command-execution.js");
 const User = require("../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../utils/webutils.js");
 
@@ -163,25 +162,6 @@ module.exports = (function () {
 				{
 					property: "description",
 					content: "This is a list of all Supibot commands available."
-				}
-			]
-		});
-	});
-
-	Router.get("/stats", async (req, res) => {
-		const statistics = await CommandExecution.hourlyStats();
-		res.render("command-stats", {
-			title: "Hourly stats of Supibot commands",
-			amount: statistics.reduce((acc, cur) => (acc += cur), 0),
-			hourlyStats: JSON.stringify(statistics),
-			openGraphDefinition: [
-				{
-					property: "title",
-					content: `Hourly Supibot command stats`
-				},
-				{
-					property: "description",
-					content: "Shows how many times Supibot commands are used in each hour of a day, for the previous 24 hours."
 				}
 			]
 		});
