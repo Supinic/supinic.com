@@ -134,7 +134,7 @@ module.exports = (function () {
 				"👤": (i.aliases.length > 0)
 					? `<div class="hoverable" title="Aliases: ${i.aliases.join(", ")}">Yes</div>`
 					: "No",
-				"🚫": (i.flags.includes("opt-out")) ? "Yes" : "No",
+				"🚫": (i.flags.includes("optOut")) ? "Yes" : "No",
 				"⛔": (i.flags.includes("block")) ? "Yes" : "No",
 				searchables: (i.aliases.length > 0) ? i.aliases.join(" ") : ""
 			}));
