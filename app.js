@@ -33,7 +33,8 @@ const importModule = async (module, path) => {
 	});
 
 	await Promise.all([
-		importModule(sb.Got,"./gots")
+		importModule(sb.Got,"./crons"),
+		importModule(sb.Got, "./gots")
 	]);
 
 	const WebUtils = require("./utils/webutils.js");
@@ -168,6 +169,7 @@ const importModule = async (module, path) => {
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
+	app.enable("trust proxy");
 
 	app.use("/public", Express.static(`${__dirname}/static/`, {
 		etag: true,
