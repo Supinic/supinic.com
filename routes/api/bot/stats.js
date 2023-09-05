@@ -86,7 +86,7 @@ module.exports = (function () {
 			},
 			users: {
 				active: activeUsers.length,
-				total: totalUsers,
+				total: Number(totalUsers),
 				size: getSize(tableSizes, "User_Alias_Data"),
 				metaSize: getSize(tableSizes, "Message_Meta_User_Alias")
 			},
@@ -99,11 +99,11 @@ module.exports = (function () {
 				firstExecution: firstCommandExecution
 			},
 			afk: {
-				total: totalAFKs,
+				total: Number(totalAFKs),
 				size: getSize(tableSizes, "AFK")
 			},
 			reminders: {
-				total: totalReminders,
+				total: Number(totalReminders),
 				size: getSize(tableSizes, "Reminder")
 			}
 		};

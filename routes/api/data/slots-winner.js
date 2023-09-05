@@ -102,14 +102,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Provided ID does not exist");
 		}
 
-		data.Rank = await SlotsWinner.selectCustom(rs => rs
+		data.Rank = Number(await SlotsWinner.selectCustom(rs => rs
 			.select("COUNT(*) AS Rank")
 			.join("chat_data", "User_Alias")
 			.where("Odds > %n", data.Odds)
 			.groupBy("Odds")
 			.single()
 			.flat("Rank")
-		);
+		));
 
 		return WebUtils.apiSuccess(res, data);
 	});
