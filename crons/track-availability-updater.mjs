@@ -1,9 +1,8 @@
 export const definition = {
-	Name: "update-tracks-availability",
-	Expression: "0 0 12 7,21 * *",
-	Description: "Updates the \"Available\" status of all music tracks in the database",
-	Defer: null,
-	Code: (async function updateTracksAvailability () {
+	name: "update-tracks-availability",
+	expression: "0 0 12 7,21 * *",
+	description: "Updates the \"Available\" status of all music tracks in the database",
+	code: async function updateTracksAvailability () {
 		const videoIDs = await sb.Query.getRecordset(rs => rs
 			.select("Track.ID AS ID", "Link", "Available", "Video_Type.Type AS Type")
 			.from("music", "Track")
@@ -28,5 +27,5 @@ export const definition = {
 			row.values.Available = Boolean(trackData);
 			await row.save({ skipLoad: true });
 		}
-	})
+	}
 };

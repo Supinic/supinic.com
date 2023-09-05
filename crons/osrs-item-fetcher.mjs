@@ -1,12 +1,13 @@
+let isTableAvailable;
+
 export const definition = {
-	Name: "osrs-new-items-fetcher",
-	Expression: "0 0 0 * * *",
-	Description: "Check new tradeable Old School Runescape items, and adds them to the database accordingly.",
-	Defer: null,
-	Code: (async function osrsNewItemsFetcher () {
-		this.data.isTableAvailable ??= await sb.Query.isTablePresent("osrs", "Item");
-		if (this.data.isTableAvailable === false) {
-			this.stop();
+	name: "osrs-new-items-fetcher",
+	expression: "0 0 0 * * *",
+	description: "Check new tradeable Old School Runescape items, and adds them to the database accordingly.",
+	code: (async function osrsNewItemsFetcher (cron) {
+		isTableAvailable ??= await sb.Query.isTablePresent("osrs", "Item");
+		if (isTableAvailable === false) {
+			cron.job.stop();
 			return;
 		}
 

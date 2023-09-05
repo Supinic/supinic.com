@@ -1,6 +1,12 @@
 const importModule = async (module, path) => {
-	const { definitions } = await import(`${path}/index.mjs`);
-	await module.importData(definitions);
+	const { crons, definitions } = await import(`${path}/index.mjs`);
+
+	if (definitions) {
+		await module.importData(definitions);
+	}
+	else if (crons) {
+		sb.crons = crons;
+	}
 };
 
 (async function () {
@@ -22,14 +28,12 @@ const importModule = async (module, path) => {
 			"singletons/system-log",
 			"singletons/cache",
 
-			"classes/got",
-			"classes/cron"
+			"classes/got"
 		]
 	});
 
 	await Promise.all([
-		importModule(sb.Got,"./gots"),
-		importModule(sb.Cron, "./crons")
+		importModule(sb.Got,"./gots")
 	]);
 
 	const WebUtils = require("./utils/webutils.js");
