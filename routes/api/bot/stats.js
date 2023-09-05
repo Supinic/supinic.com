@@ -20,7 +20,7 @@ module.exports = (function () {
 	];
 	const cacheKey = "website-bot-stats";
 
-	const getSize = (data, tableName) => data.find(i => i.Name === tableName).Total;
+	const getSize = (data, tableName) => Number(data.find(i => i.Name === tableName).Total);
 
 	Router.get("/", async (req, res) => {
 		const cacheData = await sb.Cache.getByPrefix(cacheKey);
