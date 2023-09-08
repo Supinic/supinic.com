@@ -57,7 +57,7 @@ module.exports = (function () {
 			return {
 				User: i.Username,
 				Attempts: rowData.lifetime.attempts ?? 0,
-				Traps: rowData.lifetime.trap.times ?? 0,
+				Traps: rowData.lifetime.trap?.times ?? 0,
 				Fish: rowData.catch.fish ?? 0,
 				Junk: rowData.catch.junk ?? 0,
 				Coins: rowData.coins ?? 0,
