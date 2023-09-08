@@ -14,6 +14,8 @@ module.exports = (function () {
 		.where("Property = %s", "fishData")
 		.where("Value IS NOT NULL")
 		.where("JSON_EXTRACT(Value, '$.removedFromLeaderboards') IS NULL")
+		.orderBy("CONVERT(JSON_EXTRACT(Value, '$.lifetime.fish'), INT) DESC")
+		.limit(5000)
 	);
 
 	const fetchSpecificUserFshData = async (username) => await sb.Query.getRecordset(rs => rs
@@ -55,6 +57,7 @@ module.exports = (function () {
 			return {
 				User: i.Username,
 				Attempts: rowData.lifetime.attempts ?? 0,
+				Traps: rowData.lifetime.trap.times ?? 0,
 				Fish: rowData.catch.fish ?? 0,
 				Junk: rowData.catch.junk ?? 0,
 				Coins: rowData.coins ?? 0,
