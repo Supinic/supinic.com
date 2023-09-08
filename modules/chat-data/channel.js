@@ -64,6 +64,12 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_line")
 			);
 
+			// @todo this is a bandaid fix, please figure out a proper solution (possibly in sb.Cache)
+			for (const item of data) {
+				item.Byte_Length = Number(item.Byte_Length);
+				item.Max_ID = Number(item.Max_ID);
+			}
+
 			await sb.Cache.setByPrefix(linesCacheKey, data, {
 				expiry: 24 * 3_600_000
 			});
