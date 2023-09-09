@@ -1,5 +1,29 @@
 const User = require("../modules/chat-data/user-alias.js");
 
+const sanitizeObjectBigint = (data) => {
+	const outputData = {};
+	for (const [key, value] of Object.entries(data)) {
+		if (typeof value === "bigint") {
+			if (String(Number(value)) !== String(value)) {
+				throw new sb.Error({
+					message: "Cannot serve bigint as number",
+					args: {
+						bigintValue: String(value),
+						convertedValue: String(Number(value))
+					}
+				});
+			}
+
+			outputData[key] = Number(value);
+		}
+		else {
+			outputData[key] = value;
+		}
+	}
+
+	return outputData;
+};
+
 module.exports = class WebUtils {
 	static #localRequests = new Map();
 	static #requestMessages = {
@@ -36,7 +60,7 @@ module.exports = class WebUtils {
 			data: null,
 			error: {
 				message,
-				data
+				data: sanitizeObjectBigint(data)
 			}
 		};
 
@@ -61,7 +85,7 @@ module.exports = class WebUtils {
 			throw new TypeError("Argument res must provided and be Express result");
 		}
 
-		let outputData = data;
+		let outputData = sanitizeObjectBigint(data);
 		if (outputData && !options.skipCaseConversion) {
 			outputData = sb.Utils.convertCaseObject(data, "snake", "camel");
 		}
