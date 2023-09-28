@@ -17,6 +17,9 @@ const sanitizeObjectBigint = (data) => {
 
 			outputData[key] = Number(value);
 		}
+		else if (value && typeof value === "object") {
+			outputData[key] = sanitizeObjectBigint(value);
+		}
 		else {
 			outputData[key] = value;
 		}
