@@ -1,8 +1,11 @@
 const User = require("../modules/chat-data/user-alias.js");
 
 const sanitizeObjectBigint = (data) => {
-	const outputData = (Array.isArray(data)) ? [] : {};
+	if (!data) {
+		return data;
+	}
 
+	const outputData = (Array.isArray(data)) ? [] : {};
 	for (const [key, value] of Object.entries(data)) {
 		if (typeof value === "bigint") {
 			if (String(Number(value)) !== String(value)) {
