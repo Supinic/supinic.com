@@ -90,7 +90,7 @@ module.exports = (function () {
 			prepend: sb.Utils.tag.trim `
 				<h5 class="pt-3 text-center">Request Supibot</h5>
        			<div id="alert-anchor"></div>
-       			${rules}
+       			${getRules()}
        			${specialOccassionString}
 			`,
 			onSubmit: "submit()",
