@@ -7,32 +7,42 @@ const WebUtils = require("../../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
-	const rules = sb.Utils.tag.trim `
-	    <h6>Before requesting:</h6>
-		<ul>
-			<li>You can only request Supibot in your own channel, or if you're a moderator of the channel</li>
-			<li>The channel must either be streaming related; or an "offline chat", with at least a couple of users (not bots), or both.</li>
-			<li>If your channel doesn't have a lot of activity, use the Description field below to explain why you should receive Supibot</li>
-			<li>
-				<u>If you only want to test the bot out, don't request it, but rather try one of these:</u>
-				<ul>
-					<li>Join <a href="//twitch.tv/supibot">Supibot's channel on Twitch</a> and type commands in chat</li>
-					<li>DM it on any platform it's active in</li>
-					<li class="text-warning">Go to <a href="/bot/command/run">this page</a> and run commands as if in Twitch chat</li>
-				</ul>
-			</li>
-		</ul>
-		
-		<h6>Keep in mind:</h6>
-		<ul>
-			<li>I process bot requests manually, every Tuesday in the evenings (Europe time)</li> 
-			<li id="rename-list-item">If you renamed, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rename channel:OldChannelName</a> (example: <code>$bot rename channel:old_supinic</code>) command to Supibot.</li>
-			<li id="banned-list-item">If you got banned, same as above, but use the <a href="/bot/command/detail/bot">$bot rejoin channel:ChannelName</a> (example: <code>$bot rejoin channel:supinic</code>).</li>
-			<li>If you are unsure about something or need help, check the <a href="/data/faq/list">FAQ list</a> first, then you can contact me in my <a href="//twitch.tv/supinic">Twitch chat</a> (even offline), with <a href="/bot/command/detail/suggest">$suggest</a> or <a href="/contact">these methods</a>.
-			<li>If you're unsure about what the bot can do, consult the <a href="/bot/command/detail/help">$help</a> and <a href="/bot/command/detail/faq">$faq</a> commands.</li>
-			<li class="text-warning">Don't call Supibot "Supi" - this refers to me, Supinic. Just call it "Supibot", or "bot". Make sure your chatters know about this!</li>
-		</ul>
-	`;
+	const getRules = () => {
+		let deltaString;
+		const date = new sb.Date();
+		if (date.getDay() !== 2) {
+			const nextWeekOffset = 7 - date.getDay();
+			date.addDays(nextWeekOffset);
+			date.addDays(2); // Tuesday
+		}
+		else if (date.hours >= 20) {
+			date.addDays(7);
+		}
+		else if (date.hours >= 19) {
+			deltaString = "I am currently adding Supibot to new channels!";
+		}
+
+		if (!deltaString) {
+			date.setHours(19);
+			deltaString ??= `I will be adding Supibot to new channels in approximately ${sb.Utils.timeDelta(date, true)}.`;
+		}
+
+		return sb.Utils.tag.trim `
+		    <h6>Rules</h6>
+			<ul>
+				<li>Only owners and moderators can request Supibot.</li>
+				<li>I will not add Supibot to channels that neither stream, nor have an offline chat.</li>
+			</ul>
+			
+			<h6>Good to know</h6>
+			<ul>
+				<li>I process bot requests manually, every Tuesday in the evenings, Europe time. ${deltaString}</li> 
+				<li id="rename-list-item">If you renamed, you can get Supibot back by whispering the <a href="/bot/command/detail/bot">$bot rename channel:OldChannelName</a> (example: <code>$bot rename channel:old_supinic</code>) command to Supibot.</li>
+				<li id="banned-list-item">If you got banned, same as above, but use the <a href="/bot/command/detail/bot">$bot rejoin channel:ChannelName</a> (example: <code>$bot rejoin channel:supinic</code>).</li>
+				<li>If you are lost, check the the <a href="/bot/command/detail/help">$help</a> command and the <a href="/data/faq/list">FAQ list</a> first. Then, you can <a href="/contact"> contact me</a> as well.
+			</ul>
+		`;
+	};
 
 	Router.get("/form", async (req, res) => {
 		const { userData } = await WebUtils.getUserLevel(req, res);
@@ -41,7 +51,7 @@ module.exports = (function () {
 				data: `
 					<h5 class="text-center">You must log in before requesting the bot!</h5>
 					<hr style="border-top: 1px solid white;">
-					${rules}
+					${getRules()}
 				`
 			});
 		}
@@ -105,7 +115,7 @@ module.exports = (function () {
 					id: "description",
 					name: "Description",
 					type: "memo",
-					placeholder: "Short description on why you'd like the bot added 😊 English only!"
+					placeholder: "If your channel doesn't have a lot of activity, explain here why you should receive Supibot 😊 English only!"
 				}
 			],
 			script: sb.Utils.tag.trim `
