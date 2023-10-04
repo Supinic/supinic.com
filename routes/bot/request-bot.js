@@ -115,7 +115,7 @@ module.exports = (function () {
 					id: "description",
 					name: "Description",
 					type: "memo",
-					placeholder: "If your channel doesn't have a lot of activity, explain here why you should receive Supibot 😊 English only!"
+					placeholder: "Explain here why you should receive Supibot 😊 English only!"
 				}
 			],
 			script: sb.Utils.tag.trim `
