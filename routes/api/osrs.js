@@ -342,12 +342,15 @@ Router.get("/lookup/:user", async (req, res) => {
 			result.ironman.regular = true;
 		}
 
-		// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
-		// higher - hence, the account must have been de-ironed. Use the main data instead of the IM data.
-		const totalXP = data.skills.find(i => i.name === "Overall").xp;
-		if (totalXP < mainTotalXP) {
-			data = initialResponse.body;
-			result.ironman.abandoned = true;
+		if (compare.regular) {
+			const regularIronmanTotalXP = compare.regular.skills.find(i => i.name === "Overall").xp;
+
+			// This means that the account is visible on ironmen hiscores, but its main (de-ironed) total XP is
+			// higher - hence, the account must have been de-ironed. Use the main data instead of the IM data.
+			if (regularIronmanTotalXP < mainTotalXP) {
+				data = initialResponse.body;
+				result.ironman.abandoned = true;
+			}
 		}
 	}
 
