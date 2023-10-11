@@ -48,6 +48,8 @@ module.exports = (function () {
 			await sb.Cache.setByPrefix(channelListCacheKey, data, {
 				expiry: 24 * 3_600_000
 			});
+
+			return data;
 		}
 
 		static async getLinesCache () {
