@@ -11,9 +11,11 @@ module.exports = (function () {
 		let deltaString;
 		const date = new sb.Date();
 		if (date.getDay() !== 2) {
-			const nextWeekOffset = 7 - date.getDay();
+			const dayOfWeek = (date.getDay() === 0) ? 7 : date.getDay();
+			const nextWeekOffset = 7 - dayOfWeek;
+
 			date.addDays(nextWeekOffset);
-			date.addDays(2); // Tuesday
+			date.addDays(2); // move to Tuesday
 		}
 		else if (date.hours >= 20) {
 			date.addDays(7);
