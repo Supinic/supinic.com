@@ -7,9 +7,12 @@ const Track = require("../../../modules/track/track.js");
 const TrackAuthor = require("../../../modules/track/track-author.js");
 const WebUtils = require("../../../utils/webutils.js");
 
+const { getLinkParser } = require("../../utils/link-parser.js");
+
 module.exports = (function () {
 	"use strict";
 
+	const LinkParser = getLinkParser();
 	const allowedConnectTables = ["Author", "Table"];
 	const allowedAuthorTypes = [
 		"Archiver",
@@ -339,7 +342,7 @@ module.exports = (function () {
 
 		let parsedLink = null;
 		try {
-			parsedLink = sb.Utils.linkParser.parseLink(link);
+			parsedLink = LinkParser.parseLink(link);
 		}
 		catch (e) {
 			return WebUtils.apiFail(res, 400, "Cannot parse given link");
@@ -515,7 +518,7 @@ module.exports = (function () {
 		if (!url) {
 			return WebUtils.apiFail(res, 400, "No url provided");
 		}
-		else if (!sb.Utils.linkParser.autoRecognize(url)) {
+		else if (!LinkParser.autoRecognize(url)) {
 			return WebUtils.apiFail(res, 400, "Provided url could not be parsed");
 		}
 

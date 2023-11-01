@@ -1,8 +1,11 @@
+const { getLinkParser } = require("../utils/link-parser.js");
+
 export const definition = {
 	name: "update-tracks-availability",
 	expression: "0 0 12 7,21 * *",
 	description: "Updates the \"Available\" status of all music tracks in the database",
 	code: async function updateTracksAvailability () {
+		const LinkParser = getLinkParser();
 		const videoIDs = await sb.Query.getRecordset(rs => rs
 			.select("Track.ID AS ID", "Link", "Available", "Video_Type.Type AS Type")
 			.from("music", "Track")
@@ -16,7 +19,7 @@ export const definition = {
 
 		const youtubeIDs = videoIDs.filter(i => i.Type === "yt");
 		for (const track of youtubeIDs) {
-			const trackData = await sb.Utils.modules.linkParser.fetchData(track.Link, "youtube");
+			const trackData = await LinkParser.fetchData(track.Link, "youtube");
 			if ((trackData && track.Available) || (!trackData && !track.Available)) {
 				continue;
 			}

@@ -1,10 +1,12 @@
 const Express = require("express");
 const Router = Express.Router();
 
+const { getLinkParser } = require("../../utils/link-parser.js");
 const WebUtils = require("../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
+	const LinkParser = getLinkParser();
 
 	/**
 	 * @api {get} /trackData/fetch/ Fetch track data
@@ -37,7 +39,7 @@ module.exports = (function () {
 		}
 
 		try {
-			const data = await sb.Utils.linkParser.fetchData(url);
+			const data = await LinkParser.fetchData(url);
 			if (data && data.created) {
 				data.createdTimestamp = data.created.valueOf();
 			}
@@ -67,7 +69,7 @@ module.exports = (function () {
 		}
 
 		try {
-			const isAvailable = await sb.Utils.linkParser.checkAvailable(url);
+			const isAvailable = await LinkParser.checkAvailable(url);
 			return WebUtils.apiSuccess(res, {
 				available: isAvailable,
 				link: url

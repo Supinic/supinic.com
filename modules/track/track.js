@@ -10,9 +10,12 @@ const TrackRelationship = require("./track-relationship.js");
 const User = require("../chat-data/user-alias.js");
 const WebUtils = require("../../utils/webutils.js");
 
+const { getLinkParser } = require("../../utils/link-parser.js");
+
 module.exports = (function () {
 	"use strict";
 
+	const LinkParser = getLinkParser();
 	const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
 
 	class Track extends TemplateModule {
@@ -448,7 +451,7 @@ module.exports = (function () {
 
 			let linkData = null;
 			try {
-				linkData = await sb.Utils.linkParser.fetchData(link);
+				linkData = await LinkParser.fetchData(link);
 			}
 			catch (e) {
 				console.error(e, linkData);
@@ -532,7 +535,7 @@ module.exports = (function () {
 
 			let parsedLink = null;
 			try {
-				parsedLink = sb.Utils.linkParser.parseLink(reuploadLink);
+				parsedLink = LinkParser.parseLink(reuploadLink);
 			}
 			catch (e) {
 				console.error(e);

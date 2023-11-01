@@ -1,10 +1,13 @@
 const Express = require("express");
 const Router = Express.Router();
 
+const { getLinkParser } = require("../../utils/link-parser.js");
 const WebUtils = require("../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
+
+	const LinkParser = getLinkParser();
 
 	Router.get("/", async (req, res) => res.sendStatus(200));
 
@@ -33,7 +36,7 @@ module.exports = (function () {
 				break;
 			}
 			case 3: {
-				const data = await sb.Utils.linkParser.fetchData(trackData.parsedLink);
+				const data = await LinkParser.fetchData(trackData.parsedLink);
 				contentType = "audio";
 				if (!data) {
 					embed = `<div>Track not available</div>`;

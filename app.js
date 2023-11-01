@@ -14,23 +14,33 @@ const importModule = async (module, path) => {
 
 	require("./db-access.js");
 
-	const initializeSbObject = require("supi-core");
-	globalThis.sb = await initializeSbObject({
-		whitelist: [
-			"objects/date",
-			"objects/error",
-			"objects/errors",
-			"objects/promise",
-
-			"singletons/query",
-			"classes/config",
-			"singletons/utils",
-			"singletons/system-log",
-			"singletons/cache",
-
-			"classes/got"
-		]
+	const core = await import("supi-core");
+	const Query = new core.Query({
+		user: process.env.MARIA_USER,
+		password: process.env.MARIA_PASSWORD,
+		host: process.env.MARIA_HOST,
+		connectionLimit: process.env.MARIA_CONNECTION_LIMIT
 	});
+
+	const configData = await core.Query.getRecordset(rs => rs
+		.select("*")
+		.from("data", "Config"));
+
+	core.Config.load(configData);
+
+	globalThis.sb = {
+		Date: core.Date,
+		Error: core.Error,
+		Promise: core.Promise,
+
+		Config: core.Config,
+		Got: core.Got,
+
+		Query,
+		Cache: new core.Cache(core.Config.get("REDIS_CONFIGURATION")),
+		// Metrics: new core.Metrics(),
+		Utils: new core.Utils()
+	};
 
 	await Promise.all([
 		importModule(sb.Got,"./crons"),

@@ -2972,6 +2972,13 @@ token-stream@1.0.0:
     fast-xml-parser "^3.19.0"
     got "^11.8.0"
 
+track-link-parser@supinic/track-link-parser#master:
+  version "1.2.0"
+  resolved "https://codeload.github.com/supinic/track-link-parser/tar.gz/91fd676f1292e315c9cb6e7e10fcd062d064dec4"
+  dependencies:
+    fast-xml-parser "^3.19.0"
+    got "^11.8.0"
+
 transliteration@^2.3.5:
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/transliteration/-/transliteration-2.3.5.tgz#8f92309575f69e4a8a525dab4ff705ebcf961c45"
