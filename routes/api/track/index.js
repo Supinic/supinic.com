@@ -7,7 +7,7 @@ const Track = require("../../../modules/track/track.js");
 const TrackAuthor = require("../../../modules/track/track-author.js");
 const WebUtils = require("../../../utils/webutils.js");
 
-const { getLinkParser } = require("../../utils/link-parser.js");
+const { getLinkParser } = require("../../../utils/link-parser.js");
 
 module.exports = (function () {
 	"use strict";
