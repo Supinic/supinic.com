@@ -1,35 +1,26 @@
 const User = require("../modules/chat-data/user-alias.js");
 
-const sanitizeObjectBigint = (data) => {
-	if (!data) {
-		return data;
+const bigintSanitizeStringify = (data) => JSON.stringify(data, (key, value) => {
+	if (typeof value === "bigint") {
+		const bigintString = String(value);
+		const convertedString = String(Number(value));
+
+		if (bigintString !== convertedString) {
+			throw new sb.Error({
+				message: "Cannot serve bigint as number, consider stringifying bigint value",
+				args: {
+					bigintString,
+					convertedString
+				}
+			});
+		}
+
+		return Number(value);
 	}
-
-	const outputData = (Array.isArray(data)) ? [] : {};
-	for (const [key, value] of Object.entries(data)) {
-		if (typeof value === "bigint") {
-			if (String(Number(value)) !== String(value)) {
-				throw new sb.Error({
-					message: "Cannot serve bigint as number",
-					args: {
-						bigintValue: String(value),
-						convertedValue: String(Number(value))
-					}
-				});
-			}
-
-			outputData[key] = Number(value);
-		}
-		else if (value && typeof value === "object") {
-			outputData[key] = sanitizeObjectBigint(value);
-		}
-		else {
-			outputData[key] = value;
-		}
+	else {
+		return value;
 	}
-
-	return outputData;
-};
+});
 
 module.exports = class WebUtils {
 	static #localRequests = new Map();
@@ -67,7 +58,7 @@ module.exports = class WebUtils {
 			data: null,
 			error: {
 				message,
-				data: sanitizeObjectBigint(data)
+				data
 			}
 		};
 
@@ -77,7 +68,7 @@ module.exports = class WebUtils {
 
 		return res.type("application/json")
 			.status(code)
-			.send(JSON.stringify(responseData));
+			.send(bigintSanitizeStringify(responseData));
 	}
 
 	/**
@@ -92,7 +83,7 @@ module.exports = class WebUtils {
 			throw new TypeError("Argument res must provided and be Express result");
 		}
 
-		let outputData = sanitizeObjectBigint(data);
+		let outputData = data;
 		if (outputData && !options.skipCaseConversion) {
 			outputData = sb.Utils.convertCaseObject(data, "snake", "camel");
 		}
@@ -110,7 +101,7 @@ module.exports = class WebUtils {
 
 		return res.type("application/json")
 			.status(200)
-			.send(JSON.stringify(responseData));
+			.send(bigintSanitizeStringify(responseData));
 	}
 
 	/**
@@ -126,7 +117,7 @@ module.exports = class WebUtils {
 			res.statusMessage = "ppPoof";
 			return res.type("application/json")
 				.status(410)
-				.send(JSON.stringify({
+				.send(bigintSanitizeStringify({
 					status: "Endpoint retired",
 					retirement: timestamp,
 					replacement
