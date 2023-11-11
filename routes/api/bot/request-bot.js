@@ -138,7 +138,7 @@ module.exports = (function () {
 		}
 
 		const userData = await User.getByID(userID);
-		if (platformData.Name === "Twitch" && userData.Name !== targetChannel) {
+		if (platformData.Name === "Twitch" && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
 			const response = await sb.Got.gql({
 				url: "https://gql.twitch.tv/gql",
 				responseType: "json",
@@ -161,7 +161,7 @@ module.exports = (function () {
 				`
 			});
 
-			if (!response.ok) {
+			if (!response.ok || !response.body.data?.user) {
 				return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
 			}
 
