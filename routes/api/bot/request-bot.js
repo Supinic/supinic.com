@@ -184,19 +184,7 @@ module.exports = (function () {
 
 		let extraNotes = "";
 		if (platformData.Name === "Twitch") {
-			let followsPromise = {};
-			const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID"];
-			if (requiredConfigs.every(config => sb.Config.has(config, true))) {
-				followsPromise = sb.Got("Helix", {
-					url: "users/follows",
-					searchParams: {
-						to_id: twitchChannelID
-					}
-				});
-			}
-
-			const [follows, bttv, ffz, sevenTv, recent, stream] = await Promise.all([
-				followsPromise,
+			const [bttv, ffz, sevenTv, recent, user] = await Promise.all([
 				sb.Got("Global", {
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
 				}),
@@ -234,9 +222,6 @@ module.exports = (function () {
 				const emotes = sevenTv.body?.emote_set?.emotes ?? [];
 				stats.push(`${emotes.length}x 7TV emotes`);
 			}
-			if (follows.statusCode === 200) {
-				stats.push(`${follows.body.total} followers`);
-			}
 			if (recent.statusCode === 200 && recent.body.messages.length !== 0) {
 				const lastMessage = recent.body.messages.pop();
 				const messageTimestamp = Number(lastMessage.match(/rm-received-ts=(\d+)/)?.[1]);
@@ -249,9 +234,22 @@ module.exports = (function () {
 					stats.push(`last recent-message sent: ${delta}.`);
 				}
 			}
-			if (stream.statusCode === 200 && stream.body[0]?.lastBroadcast.startedAt) {
-				const delta = sb.Utils.timeDelta(new sb.Date(stream.body[0].lastBroadcast.startedAt));
-				stats.push(`last stream started ${delta}`);
+			if (user.statusCode === 200 && user.body[0]) {
+				const data = user.body[0];
+				if (data.lastBroadcast.startedAt) {
+					const delta = sb.Utils.timeDelta(new sb.Date(data.lastBroadcast.startedAt));
+					stats.push(`last stream started ${delta}`);
+				}
+
+				const followersString = (data.followers)
+					? `${data.followers} followers`
+					: `no followers`;
+				stats.push(followersString);
+
+				const chattersString = (data.chatterCount)
+					? `${data.chatterCount} chatters`
+					: `no chatters`;
+				stats.push(chattersString);
 			}
 
 			const list = stats.map(i => `\t${i}`).join("\n");
