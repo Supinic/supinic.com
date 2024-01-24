@@ -184,7 +184,7 @@ module.exports = (function () {
 
 		let extraNotes = "";
 		if (platformData.Name === "Twitch") {
-			const [bttv, ffz, sevenTv, recent, user] = await Promise.all([
+			const [bttv, ffz, sevenTv, recent, user, suggests] = await Promise.all([
 				sb.Got("Global", {
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
 				}),
@@ -206,7 +206,15 @@ module.exports = (function () {
 					searchParams: {
 						id: twitchChannelID
 					}
-				})
+				}),
+				sb.Query.getRecordset(rs => rs
+					.select("Status")
+					.from("data", "Suggestion")
+					.where("Status IS NOT NULL")
+					.where("Category = %s", "Bot addition")
+					.where("Text %like*", `Channel: ${targetChannel}`)
+					.flat("Status")
+				)
 			]);
 
 			const stats = [];
@@ -250,6 +258,9 @@ module.exports = (function () {
 					? `${data.chatterCount} chatters`
 					: `no chatters`;
 				stats.push(chattersString);
+			}
+			if (suggests.length > 0) {
+				stats.push(`${suggests.length} previous requests, statuses: ${suggests.map(", ")}`);
 			}
 
 			const list = stats.map(i => `\t${i}`).join("\n");
