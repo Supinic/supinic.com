@@ -260,7 +260,7 @@ module.exports = (function () {
 				stats.push(chattersString);
 			}
 			if (suggests.length > 0) {
-				stats.push(`${suggests.length} previous requests, statuses: ${suggests.map(", ")}`);
+				stats.push(`${suggests.length} previous requests, statuses: ${suggests.join(", ")}`);
 			}
 
 			const list = stats.map(i => `\t${i}`).join("\n");
