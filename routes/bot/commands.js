@@ -168,7 +168,8 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:identifier", async (req, res) => {
-		const identifier = encodeURIComponent(req.params.identifier);
+		const name = req.params.identifier;
+		const identifier = encodeURIComponent(name);
 		const response = await sb.Got("Supinic", {
 			url: `bot/command/detail/${identifier}`,
 			searchParams: {
@@ -206,7 +207,7 @@ module.exports = (function () {
 				url: "filter/userCommand",
 				searchParams: {
 					userID: auth.userID,
-					command: identifier
+					command: name
 				}
 			});
 
@@ -317,7 +318,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${commandInfo.name}/index.js">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${encodeURIComponent(commandInfo.name)}/index.js">Open in new tab</a>`;
 
 		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
