@@ -181,12 +181,37 @@ module.exports = (function () {
 			});
 		}
 
+		const subscriptionResponse = await sb.Got("Supinic", {
+			url: `bot/user/${userData.ID}/subscription/list`,
+			searchParams: filterSearchParams.toString()
+		});
+
+		if (subscriptionResponse.statusCode !== 200) {
+			return WebUtils.handleError(res, subscriptionResponse.statusCode, subscriptionResponse.body.error?.message);
+		}
+
 		const printData = {};
 		const data = [
 			{
 				name: "activeFilters",
 				type: "array",
 				value: filterResponse.body.data.map(i => {
+					const filteredObj = {};
+					for (const [key, value] of Object.entries(i)) {
+						if (value === null) {
+							continue;
+						}
+
+						filteredObj[key] = value;
+					}
+
+					return filteredObj;
+				})
+			},
+			{
+				name: "subscriptions",
+				type: "array",
+				value: subscriptionResponse.body.data.map(i => {
 					const filteredObj = {};
 					for (const [key, value] of Object.entries(i)) {
 						if (value === null) {
