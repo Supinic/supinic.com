@@ -8,6 +8,7 @@ module.exports = (function () {
 		["bad-apple", "bad-apple.js"],
 		["changelog", "changelog.js"],
 		["dall-e", "dall-e.js"],
+		["event-subscription", "event-subscription.js"],
 		["faq", "faq.js"],
 		["origin", "origin.js"],
 		["slots-winner", "slots-winner.js"],

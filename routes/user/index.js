@@ -182,7 +182,7 @@ module.exports = (function () {
 		}
 
 		const subscriptionResponse = await sb.Got("Supinic", {
-			url: `bot/user/${userData.ID}/subscription/list`,
+			url: `data/event-subscription/${userData.ID}/list`,
 			searchParams: filterSearchParams.toString()
 		});
 
