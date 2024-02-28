@@ -17,7 +17,7 @@ module.exports = (function () {
 	 * @apiError (404) NotFound User was not found
 	 **/
 	Router.get("/:userid/list", async (req, res) => {
-		const id = Number(req.params.id);
+		const id = Number(req.params.userid);
 		if (!sb.Utils.isValidInteger(id)) {
 			return WebUtils.apiFail(res, 400, "Malformed numeric ID provided");
 		}
