@@ -278,7 +278,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
-		const subData = await EventSubscription.selectMultipleCustom(q => q
+		const subData = await EventSubscription.selectCustom(q => q
 			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Last_Edit")
 			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription")
 			.select("Platform.Name AS PlatformName")
