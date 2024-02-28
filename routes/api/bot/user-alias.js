@@ -279,7 +279,7 @@ module.exports = (function () {
 		}
 
 		const subData = await EventSubscription.selectMultipleCustom(q => q
-			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Edited")
+			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Last_Edit")
 			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription")
 			.select("Platform.Name AS PlatformName")
 			.join({
@@ -303,7 +303,7 @@ module.exports = (function () {
 			data: i.Data ?? null,
 			flags: i.Flags ?? null,
 			created: i.Created,
-			edited: i.Edited ?? null
+			edited: i.Last_Edit ?? null
 		}));
 
 		return WebUtils.apiSuccess(res, data);
