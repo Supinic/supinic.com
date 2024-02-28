@@ -300,8 +300,8 @@ module.exports = (function () {
 			type: i.Type,
 			channel: i.ChannelDescription ?? i.ChannelName ?? null,
 			platform: i.PlatformName ?? null,
-			data: i.Data ?? null,
-			flags: i.Flags ?? null,
+			data: JSON.parse(i.Data ?? "{}"),
+			flags: JSON.parse(i.Flags ?? "{}"),
 			created: i.Created,
 			edited: i.Last_Edit ?? null
 		}));
