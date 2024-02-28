@@ -279,7 +279,7 @@ module.exports = (function () {
 		}
 
 		const subData = await EventSubscription.selectMultipleCustom(q => q
-			.select("Type", "Data", "Flags", "Created", "Edited")
+			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Edited")
 			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription")
 			.select("Platform.Name AS PlatformName")
 			.join({
