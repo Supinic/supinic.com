@@ -7,7 +7,7 @@ const exec = promisify(require("child_process").exec);
 const config = require("../../../restart-user-list.json");
 const WebUtils = require("../../../utils/webutils.js");
 
-// @supinic @leppunen @heryin @mm2pl
+// @supinic @leppunen @heryin @boring_nick @mm2pl
 const ALLOWED_USERS = config.users;
 
 module.exports = (function () {
