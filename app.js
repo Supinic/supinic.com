@@ -298,6 +298,7 @@ const importModule = async (module, path) => {
 		{ name: "Data within Supibot", link: "user/data/list" },
 		{ name: "Favourite tracks", link: "track/favourite/list" },
 		{ name: "Github link", link: "auth/github" },
+		{ name: "Backup Supibot restart", link: "bot/restart" },
 		{ separator: true },
 		{ name: "Log out", link: "user/logout" }
 	];

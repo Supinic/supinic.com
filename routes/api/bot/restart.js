@@ -4,10 +4,11 @@ const Router = Express.Router();
 const promisify = require("util").promisify;
 const exec = promisify(require("child_process").exec);
 
+const config = require("../../../restart-user-list.json");
 const WebUtils = require("../../../utils/webutils.js");
 
 // @supinic @leppunen @heryin @mm2pl
-const ALLOWED_USERS = [1, 10781, 342781, 2875789];
+const ALLOWED_USERS = config.users;
 
 module.exports = (function () {
 	"use strict";
