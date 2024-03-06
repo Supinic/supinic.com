@@ -6,11 +6,12 @@ const WebUtils = require("../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
-	Router.get("/:digest", async (req, res) => {
+	Router.get("/", async (req, res) => {
 		const { userID } = await WebUtils.getUserLevel(req, res);
 		const searchParams = WebUtils.authenticateLocalRequest(userID);
 
 		const response = await sb.Got("Supinic", {
+			method: "POST",
 			url: `bot/restart`,
 			searchParams,
 			throwHttpErrors: false
