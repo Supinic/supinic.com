@@ -24,7 +24,7 @@ module.exports = (function () {
 		}
 		else {
 			res.render("generic", {
-				data: `NOT OK`
+				data: `You are not authorized to do this`
 			});
 		}
 	});
