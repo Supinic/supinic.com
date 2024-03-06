@@ -13,6 +13,7 @@ module.exports = (function () {
 		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
+		["restart", "restart.js"],
 		["stats", "stats.js"],
 		["user", "user.js"]
 	];
