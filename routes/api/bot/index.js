@@ -18,6 +18,7 @@ module.exports = (function () {
 		["proxy", "proxy.js"],
 		["reminder", "reminder.js"],
 		["request-bot", "request-bot.js"],
+		["restart", "restart"],
 		["stats", "stats.js"],
 		["song-request", "song-request.js"],
 		["text-to-speech", "tts.js"],

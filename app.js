@@ -58,6 +58,7 @@ const importModule = async (module, path) => {
 		"gachi",
 		"osrs",
 		"relay",
+		"restart",
 		"rss",
 		"stream",
 		"teapot",
