@@ -58,6 +58,5 @@ module.exports = (function () {
 		return WebUtils.apiSuccess(res, data);
 	});
 
-
 	return Router;
 })();
