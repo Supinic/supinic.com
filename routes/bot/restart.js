@@ -29,7 +29,7 @@ module.exports = (function () {
 					return;
 				}
 
-				const response = await fetch("/bot/restart", { method: "POST" });
+				const response = await fetch("/api/bot/restart", { method: "POST" });
 				const alerter = document.getElementById("alert-anchor");	
 				if (response.status === 200) {
 					alerter.setAttribute("role", "alert");			
@@ -50,15 +50,15 @@ module.exports = (function () {
 			data: `
 				<script>${script}</script>
 				<h4 class="pt-3 text-center">
-					<img alt="WEEWOO" src="/static/img/WEEWOO.gif">
-					Emergency Supibot restart</h4>
-					<img alt="WEEWOO" src="/static/img/WEEWOO.gif">
+					<img alt="WEEWOO" src="/static/img/WEEWOO.gif"/>
+					Emergency Supibot restart
+					<img alt="WEEWOO" src="/static/img/WEEWOO.gif"/>
 				</h4>
        			<div id="alert-anchor"></div>
        			<br>
-       			<div class="px-2 py-2" id="form-wrapper">					
+       			<div class="px-2 py-2 text-center" id="form-wrapper">					
 					<button id="execute" class="btn btn-danger" onclick="execute()">DO IT</button>			
-       			</div>			
+       			</div>
 			`
 		});
 	});
