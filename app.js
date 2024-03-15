@@ -22,6 +22,7 @@ const importModule = async (module, path) => {
 		connectionLimit: process.env.MARIA_CONNECTION_LIMIT
 	});
 
+	/** @type {Array} */
 	const configData = await Query.getRecordset(rs => rs
 		.select("*")
 		.from("data", "Config"));
