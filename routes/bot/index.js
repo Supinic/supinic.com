@@ -10,7 +10,6 @@ module.exports = (function () {
 		["command", "commands.js"],
 		["cookie", "cookie.js"],
 		["fish", "fish.js"],
-		["poll", "poll.js"],
 		["reminder", "reminders.js"],
 		["request-bot", "request-bot.js"],
 		["restart", "restart.js"],

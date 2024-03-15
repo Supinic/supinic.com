@@ -216,7 +216,6 @@ const importModule = async (module, path) => {
 				{ name: "Channel list", link: "bot/channel/list" },
 				{ name: "Commands", link: "bot/command/list" },
 				{ name: "Emote origins", link: "data/origin/list" },
-				{ name: "Polls", link: "bot/poll/list" },
 				{ name: "Slots winners list", link: "data/slots-winner/leaderboard" },
 				{ name: "Suggestions - active", link: "data/suggestion/list/active" },
 				{ name: "Suggestions - inactive", link: "data/suggestion/list/resolved" },

@@ -14,7 +14,6 @@ module.exports = (function () {
 		["filter", "filter.js"],
 		["fish", "fish.js"],
 		["playsound", "playsound.js"],
-		["poll", "poll.js"],
 		["proxy", "proxy.js"],
 		["reminder", "reminder.js"],
 		["request-bot", "request-bot.js"],
