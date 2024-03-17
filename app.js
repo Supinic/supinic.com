@@ -19,7 +19,7 @@ const importModule = async (module, path) => {
 		user: process.env.MARIA_USER,
 		password: process.env.MARIA_PASSWORD,
 		host: process.env.MARIA_HOST,
-		connectionLimit: process.env.MARIA_CONNECTION_LIMIT
+		connectionLimit: Number(process.env.MARIA_CONNECTION_LIMIT)
 	});
 
 	/** @type {Array} */
