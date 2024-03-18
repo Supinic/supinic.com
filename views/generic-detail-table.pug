@@ -44,9 +44,15 @@ html
 
         div(id="table_wrapper")
          table(id="table", class="table table-striped table-bordered")
-            for value, key in data
+            thead
                 tr
-                    td.key(class="key-column")
-                        b #{key}
-                    td.value.
-                        !{value}
+                    th Field
+                    th Value
+
+            tbody
+                for value, key in data
+                    tr
+                        td.key(class="key-column")
+                            b #{key}
+                        td.value.
+                            !{value}
