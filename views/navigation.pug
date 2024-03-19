@@ -25,7 +25,7 @@ append navigation
 		a(class="navbar-brand" href="/") Supinic
 		button(class="navbar-toggler" type='button', data-toggle='collapse', data-target='#topNav', aria-controls='topNav', aria-expanded='false', aria-label='Toggle navigation')
 			span(class="navbar-toggler-icon")
-		div(class="navbar-nav mr-auto" id="topNav")
+		div(class="navbar-nav mr-auto navbar-collapse" id="topNav")
 			ul(class="navbar-nav")
 				each routeData in navitems
 					- if (routeData.items) {
