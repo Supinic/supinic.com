@@ -1,18 +1,31 @@
 export const definition = {
 	name: "Helix",
-	optionsType: "function",
-	options: (() => {
-		const token = sb.Config.get("TWITCH_OAUTH");
-		return {
-			prefixUrl: "https://api.twitch.tv/helix/",
-			responseType: "json",
-			throwHttpErrors: false,
-			headers: {
-				Authorization: `Bearer ${token.replace("oauth:", "")}`,
-				"Client-ID": sb.Config.get("TWITCH_CLIENT_ID")
-			}
-		};
-	}),
+	optionsType: "object",
+	options: {
+		prefixUrl: "https://api.twitch.tv/helix/",
+		responseType: "json",
+		throwHttpErrors: false,
+		headers: {
+		},
+		hooks: {
+			beforeRequest: [
+				(options) => {
+					const clientId = sb.Config.get("TWITCH_CLIENT_ID", false);
+					if (!clientId) {
+						throw new Error("Missing config value for Twitch Client-ID, Helix cannot be accessed");
+					}
+
+					const token = sb.Config.get("TWITCH_OAUTH", false);
+					if (!token) {
+						throw new Error("Missing config value for Twitch auth token, Helix cannot be accessed");
+					}
+
+					options.headers["Client-ID"] = clientId;
+					options.headers.authorization = `Bearer ${token}`;
+				}
+			]
+		}
+	},
 	parent: "Global",
 	description: "Twitch Helix API definition"
 };
