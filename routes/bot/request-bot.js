@@ -12,10 +12,10 @@ module.exports = (function () {
 		const date = new sb.Date();
 		if (date.getDay() !== 2) {
 			const dayOfWeek = (date.getDay() === 0) ? 7 : date.getDay();
-			const nextWeekOffset = 7 - dayOfWeek;
+			const nextSundayOffset = 7 - dayOfWeek;
+			const offset = (nextSundayOffset + 2) % 7; // move from Sunday to Tuesday, in the same week
 
-			date.addDays(nextWeekOffset);
-			date.addDays(2); // move to Tuesday
+			date.addDays(offset);
 		}
 		else if (date.hours >= 20) {
 			date.addDays(7);
