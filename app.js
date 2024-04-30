@@ -82,10 +82,12 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class TwitchStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const response = await sb.Got("Helix", {
-				url: "users",
+			const response = await sb.Got("Global", {
+				method: "GET",
+				throwHttpErrors: false,
+				responseType: "json",
+				url: "https://api.twitch.tv/helix/users",
 				headers: {
-					// Override the default Helix headers - this is login info strategy
 					Authorization: `Bearer ${accessToken}`,
 					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
 				}
@@ -109,8 +111,7 @@ const importModule = async (module, path) => {
 				throwHttpErrors: false,
 				url: "https://api.github.com/user",
 				headers: {
-					Authorization: `token ${accessToken}`,
-					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
+					Authorization: `token ${accessToken}`
 				},
 				responseType: "json"
 			});
