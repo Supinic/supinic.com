@@ -9,13 +9,13 @@ export const definition = {
 		},
 		hooks: {
 			beforeRequest: [
-				(options) => {
+				async (options) => {
 					const clientId = sb.Config.get("TWITCH_CLIENT_ID", false);
 					if (!clientId) {
 						throw new Error("Missing config value for Twitch Client-ID, Helix cannot be accessed");
 					}
 
-					const token = sb.Config.get("TWITCH_OAUTH", false);
+					const token = await sb.Cache.getByPrefix("TWITCH_OAUTH") ?? sb.Config.get("TWITCH_OAUTH", false);
 					if (!token) {
 						throw new Error("Missing config value for Twitch auth token, Helix cannot be accessed");
 					}
