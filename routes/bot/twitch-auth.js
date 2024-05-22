@@ -50,7 +50,7 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/", (req, res, next) => {
-		const authenticator = Passport.authenticate("twitch", {
+		const authenticator = Passport.authenticate("twitch-bot", {
 			scope: "channel:bot",
 			state: ""
 		});
@@ -60,7 +60,7 @@ module.exports = (function () {
 
 	Router.get(
 		"/callback",
-		Passport.authenticate("twitch", { failureRedirect: "/wcs" }),
+		Passport.authenticate("twitch-bot", { failureRedirect: "/wcs" }),
 		async (req, res) => {
 			res.redirect("/bot/twitch-auth/landing");
 		}
