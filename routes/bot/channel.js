@@ -46,7 +46,7 @@ module.exports = (function () {
 				}
 				th[aria-label^="Lines"] {
 					white-space: nowrap;				
-				} 
+				}
 			`
 		});
 	});

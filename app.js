@@ -209,6 +209,7 @@ const importModule = async (module, path) => {
 			items: [
 				{ name: "FAQ", link: "data/faq/list" },
 				{ name: "Request Supibot", link: "bot/request-bot/form" },
+				{ name: "Allow Supibot in your channel", link: "bot/twitch-auth" },
 				{ name: "Run a Supibot command", link: "bot/command/run" },
 				{ separator: true },
 				{ name: "Cookie stats", link: "bot/cookie/list" },
