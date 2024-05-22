@@ -29,7 +29,7 @@ class TwitchBotStrategy extends OAuth2Strategy {
 
 Passport.serializeUser((user, done) => done(null, user));
 Passport.deserializeUser((user, done) => done(null, user));
-Passport.use("twitch", new TwitchBotStrategy(
+Passport.use("twitch-bot", new TwitchBotStrategy(
 	{
 		authorizationURL: "https://id.twitch.tv/oauth2/authorize",
 		tokenURL: "https://id.twitch.tv/oauth2/token",
@@ -40,7 +40,7 @@ Passport.use("twitch", new TwitchBotStrategy(
 	(access, refresh, profile, done) => {
 		profile.accessToken = access;
 		profile.refreshToken = refresh;
-		profile.source = "twitch";
+		profile.source = "twitch-bot";
 
 		done(null, profile);
 	}
