@@ -14,6 +14,7 @@ module.exports = (function () {
 		["request-bot", "request-bot.js"],
 		["restart", "restart.js"],
 		["stats", "stats.js"],
+		["twitch-auth", "twitch-auth.js"],
 		["user", "user.js"]
 	];
 
