@@ -68,7 +68,10 @@ module.exports = (function () {
 
 	Router.get("/landing",async (req, res) => {
 		res.render("generic", {
-			data: `Success!`
+			data: `
+				<h1 class="text-center">Success!</h1>
+				<h5 class="text-center">You can now close this page 😊</h5>
+			`
 		});
 	});
 
