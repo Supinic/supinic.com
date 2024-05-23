@@ -7,6 +7,45 @@ const Suggestion = require("../../../modules/data/suggestion.js");
 const User = require("../../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../../utils/webutils.js");
 
+const BASE_CACHE_KEY = "website-twitch-auth-bot";
+
+const isModerator = async (userName, channelID) => {
+	const response = await sb.Got.gql({
+		url: "https://gql.twitch.tv/gql",
+		responseType: "json",
+		headers: {
+			Accept: "*/*",
+			"Accept-Language": "en-US",
+			Authorization: `OAuth ${sb.Config.get("TWITCH_GQL_OAUTH")}`,
+			"Client-ID": sb.Config.get("TWITCH_GQL_CLIENT_ID"),
+			"Client-Version": sb.Config.get("TWITCH_GQL_CLIENT_VERSION"),
+			"Content-Type": "text/plain;charset=UTF-8",
+			Referer: `https://dashboard.twitch.tv/`,
+			"X-Device-ID": sb.Config.get("TWITCH_GQL_DEVICE_ID")
+		},
+		query: ` 
+			query {
+				user(login:"${userName}", lookupType:ALL) {
+					isModerator(channelID:"${channelID}")
+				}
+			}
+		`
+	});
+
+	if (!response.ok || !response.body.data?.user?.isModerator) {
+		return {
+			success: false,
+			statusCode: response.statusCode
+		};
+	}
+	else {
+		return {
+			success: true,
+			isModerator: Boolean(response.body.data.user.isModerator)
+		};
+	}
+};
+
 module.exports = (function () {
 	"use strict";
 
@@ -139,34 +178,12 @@ module.exports = (function () {
 
 		const userData = await User.getByID(userID);
 		if (platformData.Name === "Twitch" && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
-			const response = await sb.Got.gql({
-				url: "https://gql.twitch.tv/gql",
-				responseType: "json",
-				headers: {
-					Accept: "*/*",
-					"Accept-Language": "en-US",
-					Authorization: `OAuth ${sb.Config.get("TWITCH_GQL_OAUTH")}`,
-					"Client-ID": sb.Config.get("TWITCH_GQL_CLIENT_ID"),
-					"Client-Version": sb.Config.get("TWITCH_GQL_CLIENT_VERSION"),
-					"Content-Type": "text/plain;charset=UTF-8",
-					Referer: `https://dashboard.twitch.tv/`,
-					"X-Device-ID": sb.Config.get("TWITCH_GQL_DEVICE_ID")
-				},
-				query: ` 
-					query {
-						user(login:"${userData.Name}", lookupType:ALL) {
-							isModerator(channelID:"${twitchChannelID}")
-						}
-					}
-				`
-			});
-
-			if (!response.ok || !response.body.data?.user) {
+			const modCheck = await isModerator(userData.Name, twitchChannelID);
+			if (!modCheck.success) {
 				return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
 			}
 
-			const { isModerator } = response.body.data.user;
-			if (!isModerator) {
+			if (!modCheck.isModerator) {
 				return WebUtils.apiFail(res, 403, "You are not a moderator in the target channel");
 			}
 		}
@@ -180,6 +197,13 @@ module.exports = (function () {
 
 		if (requestPending) {
 			return WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
+		}
+
+		const cacheKey = `${BASE_CACHE_KEY}-${twitchChannelID}`;
+		const hasAuthorization = Boolean(await sb.Cache.getByPrefix(cacheKey));
+		const isBotModerator = await isModerator("Supibot", twitchChannelID);
+		if (!hasAuthorization && !isBotModerator) {
+			return WebUtils.apiFail(res, 400, "Bot is neither permitted to chat nor a moderator, refer to \"Breaking news\"");
 		}
 
 		let extraNotes = "";

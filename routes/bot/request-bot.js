@@ -43,6 +43,18 @@ module.exports = (function () {
 				<li id="banned-list-item">If you got banned, same as above, but use the <a href="/bot/command/detail/bot">$bot rejoin channel:ChannelName</a> (example: <code>$bot rejoin channel:supinic</code>).</li>
 				<li>If you are lost, check the the <a href="/bot/command/detail/help">$help</a> command and the <a href="/data/faq/list">FAQ list</a> first. Then, you can <a href="/contact"> contact me</a> as well.
 			</ul>
+			
+			<h5>Breaking news</h5>
+			<ul>
+				<li>Starting <u>June 26th 2024</u>, in order to join a channel, Supibot will require either:
+				 	<ul>
+				 		<li>The broadcaster's <a href="/bot/twitch-auth">permission via Twitch</a></li>
+				 		<li>Being a moderator in the channel</li>
+			        </ul>
+				<li>As a precaution, you will be <b>unable</b> to request Supibot if at least one of these conditions is not met</li>
+				<li>Personally, I recommend granting permission via Twitch, but being granted moderator also works in a pinch</li>
+				<li>Tech-savvy users can read more in the <a href="//discuss.dev.twitch.com/t/54997">Twitch blog here</a></li>
+			</ul>
 		`;
 	};
 
