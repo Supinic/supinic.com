@@ -4,6 +4,8 @@ const Router = Express.Router();
 const Passport = require("passport");
 const { OAuth2Strategy } = require("passport-oauth");
 
+const BASE_CACHE_KEY = "website-twitch-auth-bot";
+
 class TwitchBotStrategy extends OAuth2Strategy {
 	// noinspection JSUnusedGlobalSymbols
 	async userProfile (accessToken, done) {
@@ -67,6 +69,29 @@ module.exports = (function () {
 	);
 
 	Router.get("/landing",async (req, res) => {
+		if (req.session.passport?.user?.source === "twitch-bot") {
+			const { id, login, broadcaster_type: type } = req.session.passport.user.data[0];
+			const cacheKey = `${BASE_CACHE_KEY}-${id}`;
+			if (!await sb.Cache.getByPrefix(cacheKey)) {
+				const data = {
+					id,
+					login,
+					date: new sb.Date().format("Y-m-d H:i:s"),
+					timestamp: sb.Date.now()
+				};
+
+				await sb.Cache.setByPrefix(cacheKey, data);
+				await sb.Got("Supibot", {
+					url: "channel/send",
+					searchParams: {
+						name: "1243201851311263804",
+						platform: "discord",
+						message: `Channel scope added for ${type ?? "user"} ${login} (user id ${id})`
+					}
+				});
+			}
+		}
+
 		res.render("generic", {
 			data: `
 				<h1 class="text-center">Success!</h1>
