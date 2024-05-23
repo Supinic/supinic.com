@@ -80,13 +80,15 @@ module.exports = (function () {
 					timestamp: sb.Date.now()
 				};
 
+				const typeString = (type.trim().length === 0) ? "user" : type;
+
 				await sb.Cache.setByPrefix(cacheKey, data);
 				await sb.Got("Supibot", {
 					url: "channel/send",
 					searchParams: {
 						name: "1243201851311263804",
 						platform: "discord",
-						message: `Channel scope added for ${type ?? "user"} ${login} (user id ${id})`
+						message: `Channel scope added for ${typeString} ${login} (user id ${id})`
 					}
 				});
 			}
