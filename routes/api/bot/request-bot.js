@@ -32,7 +32,7 @@ const isModerator = async (userName, channelID) => {
 		`
 	});
 
-	if (!response.ok || !response.body.data?.user?.isModerator) {
+	if (!response.ok || typeof response.body.data?.user?.isModerator !== "boolean") {
 		return {
 			success: false,
 			statusCode: response.statusCode
@@ -199,10 +199,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Bot request for this channel is already pending");
 		}
 
+		const modCheck = await isModerator("Supibot", twitchChannelID);
+		if (!modCheck.success) {
+			return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
+		}
+
 		const cacheKey = `${BASE_CACHE_KEY}-${twitchChannelID}`;
 		const hasAuthorization = Boolean(await sb.Cache.getByPrefix(cacheKey));
-		const isBotModerator = await isModerator("Supibot", twitchChannelID);
-		if (!hasAuthorization && !isBotModerator) {
+		if (!hasAuthorization && !modCheck.isModerator) {
 			return WebUtils.apiFail(res, 400, "Bot is neither permitted to chat nor a moderator, refer to \"Breaking news\"");
 		}
 
