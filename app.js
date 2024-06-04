@@ -313,6 +313,11 @@ const importModule = async (module, path) => {
 		res.send("User-agent: *\nDisallow: /\n");
 	});
 
+	app.get("/riot.txt", (req, res) => {
+		res.type("text/plain");
+		res.send("6838d447-8257-45ab-a40a-18ecd1637c8d");
+	});
+
 	app.all("*", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await WebUtils.logRequest(req, routeType);
