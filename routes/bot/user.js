@@ -150,7 +150,7 @@ module.exports = (function () {
 
 	Router.get("/:username/alias/list", async (req, res) => {
 		const { username } = req.params;
-		const { statusCode, body } = await sb.Got("Supinic", {
+		const aliasResponse = await sb.Got("Supinic", {
 			url: `bot/user/${encodeURIComponent(username)}/alias/list`,
 			searchParams: {
 				includeArguments: "true"
@@ -158,8 +158,8 @@ module.exports = (function () {
 			throwHttpErrors: false
 		});
 
-		if (statusCode !== 200) {
-			return WebUtils.handleError(res, res.statusCode, res.body.error?.message);
+		if (!aliasResponse.ok) {
+			return WebUtils.handleError(res, aliasResponse.statusCode, aliasResponse.body.error?.message);
 		}
 
 		const auth = await WebUtils.getUserLevel(req, res);
@@ -176,7 +176,7 @@ module.exports = (function () {
 			headerColumns = ["Name", "Invocation", "Created"];
 		}
 
-		const printData = body.data.map(alias => {
+		const printData = aliasResponse.body.data.map(alias => {
 			const created = (alias.created) ? new sb.Date(alias.created) : null;
 			const name = (alias.description)
 				? `<div class="hoverable" title="${sb.Utils.escapeHTML(alias.description)}">${alias.name}</div>`
