@@ -21,7 +21,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
 		}
 
-		const row = await Reminder.getRow(reminderID);
+		const row = await Reminder.getRowObject(reminderID);
 		if (!row) {
 			return WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
@@ -50,6 +50,10 @@ module.exports = (function () {
 				toField: "ID"
 			})
 		);
+
+		if (typeof data.Text === "string") {
+			data.Text = sb.Utils.escapeHTML(data.Text);
+		}
 
 		return {
 			success: true,
