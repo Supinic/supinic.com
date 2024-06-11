@@ -21,7 +21,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
 		}
 
-		const row = await Reminder.getRowObject(reminderID);
+		const row = await Reminder.getRow(reminderID);
 		if (!row) {
 			return WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
