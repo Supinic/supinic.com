@@ -52,6 +52,8 @@ module.exports = (function () {
 			for (const row of data) {
 				row.Text = sb.Utils.escapeHTML(row.Text);
 			}
+
+			return data;
 		}
 
 		static get name () { return "reminder"; }
