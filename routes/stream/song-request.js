@@ -14,7 +14,7 @@ module.exports = (function () {
 
 		const obj = {
 			User: track.username,
-			Name: `<a target="_blank" href="${track.parsedLink}">${track.name}</a>`,
+			Name: `<a target="_blank" href="${track.parsedLink}">${sb.Utils.escapeHTML(track.name)}</a>`,
 			Segment: {
 				dataOrder: (track.startTime || track.endTime)
 					? ((track.endTime ?? track.duration) - (track.startTime ?? 0))

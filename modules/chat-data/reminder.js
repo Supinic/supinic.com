@@ -16,7 +16,7 @@ module.exports = (function () {
 				}
 			}
 
-			return await super.selectMultipleCustom(rs => {
+			const data = await super.selectMultipleCustom(rs => {
 				rs.select("Channel.Name AS Channel_Name")
 					.select("RAuthor.Name AS Author")
 					.select("RTarget.Name AS Target")
@@ -48,6 +48,10 @@ module.exports = (function () {
 
 				return rs;
 			});
+
+			for (const row of data) {
+				row.Text = sb.Utils.escapeHTML(row.Text);
+			}
 		}
 
 		static get name () { return "reminder"; }
