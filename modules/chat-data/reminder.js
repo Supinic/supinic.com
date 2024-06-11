@@ -50,7 +50,9 @@ module.exports = (function () {
 			});
 
 			for (const row of data) {
-				row.Text = sb.Utils.escapeHTML(row.Text);
+				if (typeof row.Text === "string") {
+					row.Text = sb.Utils.escapeHTML(row.Text);
+				}
 			}
 
 			return data;
