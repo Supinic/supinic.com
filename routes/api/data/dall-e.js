@@ -19,7 +19,7 @@ module.exports = (function () {
 		const data = await DallE.getAll();
 		const resultData = data.map(i => ({
 			ID: `<a href="/data/dall-e/detail/${i.ID}">${i.ID}</a>`,
-			Prompt: sb.Utils.wrapString(i.Prompt, 150),
+			Prompt: sb.Utils.wrapString(sb.Utils.escapeHTML(i.Prompt), 150),
 			Created: i.Created.format("Y-m-d H:i")
 		}));
 
