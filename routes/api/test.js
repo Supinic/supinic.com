@@ -24,5 +24,9 @@ module.exports = (function () {
 		});
 	});
 
+	Router.get("/timeout", async () => {
+		// Don't actually respond at all
+	});
+
 	return Router;
 })();
