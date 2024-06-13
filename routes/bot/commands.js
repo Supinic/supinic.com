@@ -286,6 +286,10 @@ module.exports = (function () {
 			}
 
 			if (string) {
+				if (filter.invocation !== commandInfo.name) {
+					string += ` (${filter.invocation})`;
+				}
+
 				restrictions[filter.type].push(string);
 			}
 		}
