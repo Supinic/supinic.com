@@ -286,7 +286,7 @@ module.exports = (function () {
 			}
 
 			if (string) {
-				if (filter.invocation !== commandInfo.name) {
+				if (filter.invocation !== null && filter.invocation !== commandInfo.name) {
 					string += ` (${filter.invocation})`;
 				}
 
