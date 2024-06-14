@@ -351,6 +351,9 @@ Router.get("/lookup/:user", async (req, res) => {
 				data = initialResponse.body;
 				result.ironman.abandoned = true;
 			}
+			else {
+				data = compare.regular;
+			}
 		}
 	}
 
