@@ -7,7 +7,9 @@ const { OAuth2Strategy } = require("passport-oauth");
 const BASE_CACHE_KEY = "website-twitch-auth-bot";
 const AUTHORIZE_SEARCH_PARAMS = new URLSearchParams({
 	response_type: "code",
-	redirect_uri: `https://supinic.com/bot/twitch-auth/callback&scope=channel:bot&client_id=${sb.Config.get("TWITCH_CLIENT_ID")}`
+	redirect_uri: "https://supinic.com/bot/twitch-auth/callback",
+	scope: "channel:bot",
+	client_id: sb.Config.get("TWITCH_CLIENT_ID")
 });
 
 class TwitchBotStrategy extends OAuth2Strategy {
