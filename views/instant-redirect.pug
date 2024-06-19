@@ -1,0 +1,15 @@
+doctype html
+html
+    head
+        block topheader
+        include ./header.pug
+        include ./navigation.pug
+
+        meta(http-equiv="refresh" content="0; URL=" + url)
+        title.
+            Instant redirect
+
+    body
+        block navigation
+        h5.
+            You are being redirected...
