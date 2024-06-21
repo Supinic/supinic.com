@@ -154,10 +154,10 @@ const importModule = async (module, path) => {
 		app.use(Session({
 			secret: sb.Config.get("WEBSITE_SESSION_SECRET", false),
 			resave: false,
-			saveUninitialized: true,
+			saveUninitialized: false,
 			cookie: {
 				secure: false,
-				maxAge: 30 * 864e5
+				maxAge: 14 * 864e5
 			},
 			store: new MySQLStore({
 				user: process.env.MARIA_USER,
