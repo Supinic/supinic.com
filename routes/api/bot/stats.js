@@ -48,7 +48,7 @@ module.exports = (function () {
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
 			sb.Got("Supibot", "channel/stats"),
-			sb.Got("Supibot","platform/discordGuildCount"),
+			sb.Got("Supibot", "platform/discordGuildCount"),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "User_Alias")
