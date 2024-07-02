@@ -48,9 +48,11 @@ module.exports = (function () {
 				standardRecordsetCallback(rs, userID);
 
 				if (type === "active") {
+					rs.select("Reminder.*");
 					rs.from("chat_data", "Reminder");
 				}
 				else if (type === "inactive") {
+					rs.select("Reminder_History.*");
 					rs.from("chat_data", "Reminder_History");
 				}
 
@@ -78,6 +80,7 @@ module.exports = (function () {
 				sb.Query.getRecordset(rs => {
 					standardRecordsetCallback(rs, userID);
 					rs.select("1 AS Active");
+					rs.select("Reminder.*");
 					rs.from("chat_data", "Reminder");
 					rs.where("ID IN %n+", specificIds);
 
@@ -86,6 +89,7 @@ module.exports = (function () {
 				sb.Query.getRecordset(rs => {
 					standardRecordsetCallback(rs, userID);
 					rs.select("0 AS Active");
+					rs.select("Reminder_History.*");
 					rs.from("chat_data", "Reminder_History");
 					rs.where("ID IN %n+", specificIds);
 
@@ -103,6 +107,52 @@ module.exports = (function () {
 			}
 
 			return data;
+		}
+
+		static async getDetail (ID) {
+			let table = "Reminder";
+			let row = await sb.Query.getRow("chat_data", table);
+			await row.load(ID, true);
+
+			if (!row.loaded) {
+				table = "Reminder_History";
+				row = await sb.Query.getRow("chat_data", table);
+				await row.load(ID, true);
+			}
+
+			if (!row.loaded) {
+				return null;
+			}
+
+			const data = await sb.Query.getRecordset(rs => rs
+				.select(`${table}.*`)
+				.select("Channel.Name AS Channel_Name")
+				.select("Platform.Name AS Platform_Name")
+				.select("Sender.ID AS Sender_ID", "Sender.Name AS Sender_Name")
+				.select("Recipient_ID AS Recipient_ID", "Recipient.Name AS Recipient_Name")
+				.from("chat_data", (table) ? "Reminder" : "Reminder_History")
+				.where(`${table}.ID = %n`, ID)
+				.leftJoin("chat_data", "Channel")
+				.leftJoin("chat_data", "Platform")
+				.join({
+					alias: "Sender",
+					fromField: "User_From",
+					toTable: "User_Alias",
+					toField: "ID"
+				})
+				.join({
+					alias: "Recipient",
+					fromField: "User_To",
+					toTable: "User_Alias",
+					toField: "ID"
+				})
+				.single()
+			);
+
+			return {
+				data,
+				row
+			};
 		}
 
 		static get name () { return "reminder"; }

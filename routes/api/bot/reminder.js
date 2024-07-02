@@ -21,35 +21,13 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
 		}
 
-		const row = await Reminder.getRow(reminderID);
+		const { data, row } = await Reminder.getRow(reminderID);
 		if (!row) {
 			return WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
 		else if (row.values.User_From !== auth.userID && row.values.User_To !== auth.userID) {
 			return WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
-
-		const data = await Reminder.selectSingleCustom(q => q
-			.select("Channel.Name AS Channel_Name")
-			.select("Platform.Name AS Platform_Name")
-			.select("Sender.Name AS Sender_Name")
-			.select("Recipient.Name AS Recipient_Name")
-			.where("Reminder.ID = %n", reminderID)
-			.leftJoin("chat_data", "Channel")
-			.leftJoin("chat_data", "Platform")
-			.join({
-				alias: "Sender",
-				fromField: "User_From",
-				toTable: "User_Alias",
-				toField: "ID"
-			})
-			.join({
-				alias: "Recipient",
-				fromField: "User_To",
-				toTable: "User_Alias",
-				toField: "ID"
-			})
-		);
 
 		if (typeof data.Text === "string") {
 			data.Text = sb.Utils.escapeHTML(data.Text);
