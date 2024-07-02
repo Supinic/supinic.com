@@ -17,22 +17,24 @@ module.exports = (function () {
 		}
 	};
 
-	const standardRecordsetCallback = (rs, userID) => rs
+	const standardRecordsetCallback = (rs, table, userID) => rs
+		.select(`${table}.*`)
 		.select("Channel.Name AS Channel_Name")
 		.select("Reminder_Author.Name AS Author")
 		.select("Reminder_Target.Name AS Target")
+		.from("chat_data", table)
 		.leftJoin("chat_data", "Channel")
 		.join({
 			alias: "Reminder_Author",
 			toDatabase: "chat_data",
 			toTable: "User_Alias",
-			on: "User_From = Reminder_Author.ID"
+			on: `${table}.User_From = Reminder_Author.ID`
 		})
 		.join({
 			alias: "Reminder_Target",
 			toDatabase: "chat_data",
 			toTable: "User_Alias",
-			on: "User_To = Reminder_Target.ID"
+			on: `${table}.User_To = Reminder_Target.ID`
 		})
 		.where("Type = %s OR Type = %s", "Reminder", "Deferred")
 		.where("Reminder_Author.ID = %n OR Reminder_Target.ID = %n", userID, userID);
@@ -44,18 +46,9 @@ module.exports = (function () {
 				return [];
 			}
 
+			const table = (type === "active") ? "Reminder" : "Reminder_History";
 			const data = await sb.Query.getRecordset(rs => {
-				standardRecordsetCallback(rs, userID);
-
-				if (type === "active") {
-					rs.select("Reminder.*");
-					rs.from("chat_data", "Reminder");
-				}
-				else if (type === "inactive") {
-					rs.select("Reminder_History.*");
-					rs.from("chat_data", "Reminder_History");
-				}
-
+				standardRecordsetCallback(rs, table, userID);
 				return rs;
 			});
 
@@ -78,19 +71,15 @@ module.exports = (function () {
 
 			const [liveData, historyData] = await Promise.all([
 				sb.Query.getRecordset(rs => {
-					standardRecordsetCallback(rs, userID);
+					standardRecordsetCallback(rs, "Reminder", userID);
 					rs.select("1 AS Active");
-					rs.select("Reminder.*");
-					rs.from("chat_data", "Reminder");
 					rs.where("ID IN %n+", specificIds);
 
 					return rs;
 				}),
 				sb.Query.getRecordset(rs => {
-					standardRecordsetCallback(rs, userID);
+					standardRecordsetCallback(rs, "Reminder_History", userID);
 					rs.select("0 AS Active");
-					rs.select("Reminder_History.*");
-					rs.from("chat_data", "Reminder_History");
 					rs.where("ID IN %n+", specificIds);
 
 					return rs;
