@@ -64,7 +64,7 @@ module.exports = (function () {
 		};
 	};
 
-	const fetchReminderList = async (req, res, type = "all", specific = []) => {
+	const fetchReminderList = async (req, res, type, specificIds = []) => {
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return WebUtils.apiFail(res, auth.errorCode, auth.error);
@@ -73,7 +73,20 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const data = await Reminder.listByUser(auth.userID, type, specific);
+		let data;
+		if (type === "active" || type === "inactive") {
+			data = await Reminder.listByUser(auth.userID, type);
+		}
+		else if (type === "specific") {
+			data = await Reminder.getSpecificForUser(auth.userID, specificIds);
+		}
+		else {
+			throw new sb.Error({
+				message: "Incorrect reminder list type provided",
+				args: { type }
+			});
+		}
+
 		return WebUtils.apiSuccess(res, data);
 	};
 
