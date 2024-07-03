@@ -3,59 +3,146 @@ module.exports = (function () {
 
 	const User = require("../chat-data/user-alias.js");
 
+	const parseUserIdentifier = async (identifier) => {
+		if (typeof identifier !== "string") {
+			return identifier;
+		}
+
+		const userData = await User.getByName(identifier);
+		if (!userData) {
+			return null;
+		}
+		else {
+			return userData.ID;
+		}
+	};
+
+	const standardRecordsetCallback = (rs, table, userID) => rs
+		.select(`${table}.*`)
+		.select("Channel.Name AS Channel_Name")
+		.select("Reminder_Author.Name AS Author")
+		.select("Reminder_Target.Name AS Target")
+		.from("chat_data", table)
+		.leftJoin("chat_data", "Channel")
+		.join({
+			alias: "Reminder_Author",
+			toDatabase: "chat_data",
+			toTable: "User_Alias",
+			on: `${table}.User_From = Reminder_Author.ID`
+		})
+		.join({
+			alias: "Reminder_Target",
+			toDatabase: "chat_data",
+			toTable: "User_Alias",
+			on: `${table}.User_To = Reminder_Target.ID`
+		})
+		.where("Type = %s OR Type = %s", "Reminder", "Deferred")
+		.where("Reminder_Author.ID = %n OR Reminder_Target.ID = %n", userID, userID);
+
 	class Reminder extends TemplateModule {
-		static async listByUser (userIdentifier, type = "all", specific = []) {
-			let userID = userIdentifier;
-			if (typeof userIdentifier === "string") {
-				const userData = await User.getByName(userIdentifier);
-				if (!userData) {
-					return [];
-				}
-				else {
-					userID = userData.ID;
-				}
+		static async listByUser (userIdentifier, type) {
+			const userID = await parseUserIdentifier(userIdentifier);
+			if (!userID) {
+				return [];
 			}
 
-			const data = await super.selectMultipleCustom(rs => {
-				rs.select("Channel.Name AS Channel_Name")
-					.select("RAuthor.Name AS Author")
-					.select("RTarget.Name AS Target")
-					.leftJoin("chat_data", "Channel")
-					.join({
-						alias: "RAuthor",
-						toDatabase: "chat_data",
-						toTable: "User_Alias",
-						on: "Reminder.User_From = RAuthor.ID"
-					})
-					.join({
-						alias: "RTarget",
-						toDatabase: "chat_data",
-						toTable: "User_Alias",
-						on: "Reminder.User_To = RTarget.ID"
-					})
-					.where("Type = %s OR Type = %s", "Reminder", "Deferred")
-					.where("RAuthor.ID = %n OR RTarget.ID = %n", userID, userID);
-
-				if (type === "active") {
-					rs.where("Active = %b", true);
-				}
-				else if (type === "inactive") {
-					rs.where("Active = %b", false);
-				}
-				else if (type === "specific") {
-					rs.where("Reminder.ID IN %n+", specific);
-				}
-
+			const table = (type === "active") ? "Reminder" : "Reminder_History";
+			const data = await sb.Query.getRecordset(rs => {
+				standardRecordsetCallback(rs, table, userID);
 				return rs;
 			});
 
 			for (const row of data) {
+				row.Active = (type === "active");
+
 				if (typeof row.Text === "string") {
 					row.Text = sb.Utils.escapeHTML(row.Text);
 				}
 			}
 
 			return data;
+		}
+
+		static async getSpecificForUser (userIdentifier, specificIds) {
+			const userID = await parseUserIdentifier(userIdentifier);
+			if (!userID) {
+				return [];
+			}
+
+			const [liveData, historyData] = await Promise.all([
+				sb.Query.getRecordset(rs => {
+					standardRecordsetCallback(rs, "Reminder", userID);
+					rs.select("1 AS Active");
+					rs.where("ID IN %n+", specificIds);
+
+					return rs;
+				}),
+				sb.Query.getRecordset(rs => {
+					standardRecordsetCallback(rs, "Reminder_History", userID);
+					rs.select("0 AS Active");
+					rs.where("ID IN %n+", specificIds);
+
+					return rs;
+				})
+			]);
+
+			const data = [...liveData, ...historyData];
+			for (const row of data) {
+				row.Active = (row.Active === 1);
+
+				if (typeof row.Text === "string") {
+					row.Text = sb.Utils.escapeHTML(row.Text);
+				}
+			}
+
+			return data;
+		}
+
+		static async getDetail (ID) {
+			let table = "Reminder";
+			let row = await sb.Query.getRow("chat_data", table);
+			await row.load(ID, true);
+
+			if (!row.loaded) {
+				table = "Reminder_History";
+				row = await sb.Query.getRow("chat_data", table);
+				await row.load(ID, true);
+			}
+
+			if (!row.loaded) {
+				return null;
+			}
+
+			const data = await sb.Query.getRecordset(rs => rs
+				.select(`${table}.*`)
+				.select("Channel.Name AS Channel_Name")
+				.select("Platform.Name AS Platform_Name")
+				.select("Sender.ID AS Sender_ID", "Sender.Name AS Sender_Name")
+				.select("Recipient.ID AS Recipient_ID", "Recipient.Name AS Recipient_Name")
+				.from("chat_data", (table) ? "Reminder" : "Reminder_History")
+				.where(`${table}.ID = %n`, ID)
+				.leftJoin("chat_data", "Channel")
+				.leftJoin("chat_data", "Platform")
+				.join({
+					alias: "Sender",
+					fromField: "User_From",
+					toTable: "User_Alias",
+					toField: "ID"
+				})
+				.join({
+					alias: "Recipient",
+					fromField: "User_To",
+					toTable: "User_Alias",
+					toField: "ID"
+				})
+				.single()
+			);
+
+			return {
+				table,
+				data,
+				row
+			};
 		}
 
 		static get name () { return "reminder"; }

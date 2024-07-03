@@ -21,7 +21,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
 		}
 
-		const row = await Reminder.getRow(reminderID);
+		const { data, table, row } = await Reminder.getDetail(reminderID);
 		if (!row) {
 			return WebUtils.apiFail(res, 400, "Reminder ID does not exist");
 		}
@@ -29,34 +29,13 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "You are neither the author nor the target of the reminder");
 		}
 
-		const data = await Reminder.selectSingleCustom(q => q
-			.select("Channel.Name AS Channel_Name")
-			.select("Platform.Name AS Platform_Name")
-			.select("Sender.Name AS Sender_Name")
-			.select("Recipient.Name AS Recipient_Name")
-			.where("Reminder.ID = %n", reminderID)
-			.leftJoin("chat_data", "Channel")
-			.leftJoin("chat_data", "Platform")
-			.join({
-				alias: "Sender",
-				fromField: "User_From",
-				toTable: "User_Alias",
-				toField: "ID"
-			})
-			.join({
-				alias: "Recipient",
-				fromField: "User_To",
-				toTable: "User_Alias",
-				toField: "ID"
-			})
-		);
-
 		if (typeof data.Text === "string") {
 			data.Text = sb.Utils.escapeHTML(data.Text);
 		}
 
 		return {
 			success: true,
+			table,
 			data,
 			auth,
 			row,
@@ -64,7 +43,7 @@ module.exports = (function () {
 		};
 	};
 
-	const fetchReminderList = async (req, res, type = "all", specific = []) => {
+	const fetchReminderList = async (req, res, type, specificIds = []) => {
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.error) {
 			return WebUtils.apiFail(res, auth.errorCode, auth.error);
@@ -73,7 +52,20 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const data = await Reminder.listByUser(auth.userID, type, specific);
+		let data;
+		if (type === "active" || type === "inactive") {
+			data = await Reminder.listByUser(auth.userID, type);
+		}
+		else if (type === "specific") {
+			data = await Reminder.getSpecificForUser(auth.userID, specificIds);
+		}
+		else {
+			throw new sb.Error({
+				message: "Incorrect reminder list type provided",
+				args: { type }
+			});
+		}
+
 		return WebUtils.apiSuccess(res, data);
 	};
 
@@ -248,7 +240,7 @@ module.exports = (function () {
 			return check;
 		}
 
-		const { data } = check;
+		const { data, table } = check;
 		return WebUtils.apiSuccess(res, ({
 			ID: data.ID,
 			Sender: data.Sender_Name,
@@ -260,7 +252,7 @@ module.exports = (function () {
 			Type: data.Type,
 			Created: data.Created,
 			Schedule: data.Schedule,
-			Active: data.Active,
+			Active: (table === "Reminder"),
 			Private_Message: data.Private_Message
 		}));
 	});
@@ -281,39 +273,46 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.delete("/:id", async (req, res) => {
-		const check = await fetchReminderDetail(req, res);
-		if (!check.success) {
-			return check;
-		}
+		// @todo move all logic to internal Supibot API and only call that API here
+		return WebUtils.apiFail(
+			res,
+			501,
+			"This API is currently unsupported, please check this issue: https://github.com/Supinic/supibot/issues/87"
+		);
 
-		const { reminderID: ID, row } = check;
-		if (row.values.Active === false) {
-			return WebUtils.apiFail(res, 400, "Reminder has been unset already");
-		}
-
-		row.values.Active = false;
-		row.values.Cancelled = true;
-		await row.save();
-
-		const { body, statusCode } = await sb.Got("Supibot", {
-			url: "reminder/reloadSpecific",
-			searchParams: { ID }
-		});
-
-		if (statusCode !== 200) {
-			return WebUtils.apiSuccess(res, {
-				reminderID: ID,
-				botResult: body,
-				message: "Reminder unset successfully - but the bot failed to reload"
-			});
-		}
-		else {
-			return WebUtils.apiSuccess(res, {
-				reminderID: ID,
-				botResult: body,
-				message: "Reminder unset successfully"
-			});
-		}
+		// const check = await fetchReminderDetail(req, res);
+		// if (!check.success) {
+		// 	return check;
+		// }
+		//
+		// const { reminderID: ID, row } = check;
+		// if (row.values.Active === false) {
+		// 	return WebUtils.apiFail(res, 400, "Reminder has been unset already");
+		// }
+		//
+		// row.values.Active = false;
+		// row.values.Cancelled = true;
+		// await row.save();
+		//
+		// const { body, statusCode } = await sb.Got("Supibot", {
+		// 	url: "reminder/reloadSpecific",
+		// 	searchParams: { ID }
+		// });
+		//
+		// if (statusCode !== 200) {
+		// 	return WebUtils.apiSuccess(res, {
+		// 		reminderID: ID,
+		// 		botResult: body,
+		// 		message: "Reminder unset successfully - but the bot failed to reload"
+		// 	});
+		// }
+		// else {
+		// 	return WebUtils.apiSuccess(res, {
+		// 		reminderID: ID,
+		// 		botResult: body,
+		// 		message: "Reminder unset successfully"
+		// 	});
+		// }
 	});
 
 	return Router;
