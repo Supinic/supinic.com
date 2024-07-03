@@ -240,7 +240,7 @@ module.exports = (function () {
 			return check;
 		}
 
-		const { data } = check;
+		const { data, table } = check;
 		return WebUtils.apiSuccess(res, ({
 			ID: data.ID,
 			Sender: data.Sender_Name,
