@@ -139,6 +139,7 @@ module.exports = (function () {
 			);
 
 			return {
+				table,
 				data,
 				row
 			};
