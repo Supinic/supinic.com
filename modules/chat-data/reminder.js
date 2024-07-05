@@ -73,14 +73,14 @@ module.exports = (function () {
 				sb.Query.getRecordset(rs => {
 					standardRecordsetCallback(rs, "Reminder", userID);
 					rs.select("1 AS Active");
-					rs.where("ID IN %n+", specificIds);
+					rs.where("Reminder.ID IN %n+", specificIds);
 
 					return rs;
 				}),
 				sb.Query.getRecordset(rs => {
 					standardRecordsetCallback(rs, "Reminder_History", userID);
 					rs.select("0 AS Active");
-					rs.where("ID IN %n+", specificIds);
+					rs.where("Reminder_History.ID IN %n+", specificIds);
 
 					return rs;
 				})
