@@ -34,10 +34,7 @@ module.exports = (function () {
 		});
 
 		if (statusCode !== 200) {
-			return res.status(statusCode).render("error", {
-				error: WebUtils.formatErrorMessage(statusCode),
-				message: body.error.message
-			});
+			return WebUtils.handleError(res, statusCode, body.error?.message);
 		}
 
 		const user = res.locals.authUser.login.toLowerCase();
