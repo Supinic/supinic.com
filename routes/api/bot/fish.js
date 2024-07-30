@@ -18,7 +18,7 @@ module.exports = (function () {
 		.limit(5000)
 	);
 
-	const fetchSpecificUserFshData = async (username) => await sb.Query.getRecordset(rs => rs
+	const fetchSpecificUserFishData = async (username) => await sb.Query.getRecordset(rs => rs
 		.select("User_Alias.Name AS Username")
 		.select("Value")
 		.from("chat_data", "User_Alias_Data")
@@ -30,7 +30,7 @@ module.exports = (function () {
 	);
 
 	Router.get("/detail/:username", async (req, res) => {
-		const rawFishData = await fetchSpecificUserFshData(req.params.username);
+		const rawFishData = await fetchSpecificUserFishData(req.params.username);
 		if (!rawFishData) {
 			return WebUtils.apiFail(res, 404, "User or fishing data not found");
 		}
