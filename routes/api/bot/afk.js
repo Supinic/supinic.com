@@ -128,44 +128,13 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		let response;
-		try {
-			response = await sb.Got("Supibot", {
-				url: "command/execute",
-				searchParams: {
-					invocation: "afk",
-					platform: "twitch",
-					channel: null,
-					user: auth.userData.Name,
-					arguments: req.params.text.join(" ")
-				}
-			});
-		}
-		catch (e) {
-			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
-				code: e.code,
-				errorMessage: e.message
-			});
-		}
-
-		const { data, error } = response.body;
-		if (!data || response.statusCode !== 200) {
-			return WebUtils.apiFail(res, response.statusCode, {
-				reply: error?.message
-			});
-		}
-
-		const { result } = data;
-		if (result.success === false) {
-			return WebUtils.apiFail(res, 400, {
-				reply: result.reply
-			});
-		}
-		else {
-			return WebUtils.apiSuccess(res, {
-				reply: result.reply
-			});
-		}
+		return await WebUtils.executeSupibotRequest(res, "command/execute", {
+			invocation: "afk",
+			platform: "twitch",
+			channel: null,
+			user: auth.userData.Name,
+			arguments: req.params.text.join(" ")
+		});
 	});
 
 	/**
