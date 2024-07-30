@@ -145,7 +145,7 @@ module.exports = (function () {
 						return;
 					}					
 					
-					const result = confirm("By confirming, you agree that you read and undrestood all notes regarding adding Supibot.");
+					const result = confirm("By confirming, you agree that you read and understood all notes regarding adding Supibot.");
 					if (!result) {
 						return;
 					}
