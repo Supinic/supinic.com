@@ -569,7 +569,7 @@ Router.get("/syndication/:username", async (req, res) => {
 
 	if (timeline.length > 1) {
 		const [first, second] = timeline;
-		if (new sb.Date(first.createdAt) < new sb.Date(second.createdAt)) {
+		if (new sb.Date(first.created_at) < new sb.Date(second.created_at)) {
 			first.probablyPinned = true;
 		}
 	}
