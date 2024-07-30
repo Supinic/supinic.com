@@ -263,7 +263,6 @@ module.exports = (function () {
 	 * @apiDescription Unsets a reminder
 	 * @apiGroup Bot
 	 * @apiPermission login
-	 * @apiSuccess {number} reminderID ID of the reminder that was created
 	 * @apiSuccess {string} message Human readable result of the operation
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
 	 * If both id and name were used at the same time<br>
@@ -273,46 +272,23 @@ module.exports = (function () {
 	 * @apiError (403) AccessDenied Insufficient user level
 	 */
 	Router.delete("/:id", async (req, res) => {
-		// @todo move all logic to internal Supibot API and only call that API here
-		return WebUtils.apiFail(
-			res,
-			501,
-			"This API is currently unsupported, please check this issue: https://github.com/Supinic/supibot/issues/87"
-		);
+		const reminderID = Number(req.params.id);
+		if (!sb.Utils.isValidInteger(reminderID)) {
+			return WebUtils.apiFail(res, 400, "Unprocessable reminder ID");
+		}
 
-		// const check = await fetchReminderDetail(req, res);
-		// if (!check.success) {
-		// 	return check;
-		// }
-		//
-		// const { reminderID: ID, row } = check;
-		// if (row.values.Active === false) {
-		// 	return WebUtils.apiFail(res, 400, "Reminder has been unset already");
-		// }
-		//
-		// row.values.Active = false;
-		// row.values.Cancelled = true;
-		// await row.save();
-		//
-		// const { body, statusCode } = await sb.Got("Supibot", {
-		// 	url: "reminder/reloadSpecific",
-		// 	searchParams: { ID }
-		// });
-		//
-		// if (statusCode !== 200) {
-		// 	return WebUtils.apiSuccess(res, {
-		// 		reminderID: ID,
-		// 		botResult: body,
-		// 		message: "Reminder unset successfully - but the bot failed to reload"
-		// 	});
-		// }
-		// else {
-		// 	return WebUtils.apiSuccess(res, {
-		// 		reminderID: ID,
-		// 		botResult: body,
-		// 		message: "Reminder unset successfully"
-		// 	});
-		// }
+		const auth = await WebUtils.getUserLevel(req, res);
+		if (auth.error) {
+			return WebUtils.apiFail(res, auth.errorCode, auth.error);
+		}
+		else if (!WebUtils.compareLevels(auth.level, "login")) {
+			return WebUtils.apiFail(res, 403, "Endpoint requires login");
+		}
+
+		return await WebUtils.executeSupibotRequest(res, "reminder/unset", {
+			name: auth.userData.Name,
+			id: reminderID
+		});
 	});
 
 	return Router;
