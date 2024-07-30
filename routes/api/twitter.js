@@ -567,6 +567,13 @@ Router.get("/syndication/:username", async (req, res) => {
 		.map(i => i.content.tweet)
 		.filter(Boolean);
 
+	if (timeline.length > 1) {
+		const [first, second] = timeline;
+		if (new sb.Date(first.createdAt) < new sb.Date(second.createdAt)) {
+			first.probablyPinned = true;
+		}
+	}
+
 	return WebUtils.apiSuccess(res, { timeline });
 });
 
