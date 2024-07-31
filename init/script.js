@@ -14,26 +14,10 @@ const config = {
 		"supinic.com/tables/Log",
 		"supinic.com/tables/Error",
 		"supinic.com/tables/Link_Relay",
-		"supinic.com/tables/Session"
-	],
-	sharedDefinitionNames: [
-		"chat_data/database",
-		"chat_data/tables/Command",
-		"chat_data/tables/User_Alias",
-		"chat_data/tables/Custom_Data_Property",
-		"chat_data/tables/User_Alias_Data",
-		"chat_data/tables/Platform",
-		"chat_data/tables/Channel",
-		"chat_data/tables/Filter",
+		"supinic.com/tables/Session",
 
 		"data/database",
 		"data/tables/Config"
-	],
-	initialDataFilePaths: [
-		"data/Config"
-	],
-	sharedInitialDataNames: [
-		"chat_data/Custom_Data_Property"
 	],
 	meta: {
 		dataPath: path.join(__dirname, "initial-data"),

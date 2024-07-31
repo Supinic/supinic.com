@@ -5,6 +5,8 @@ const CustomCommandAlias = require("../../../modules/data/custom-command-alias.j
 const User = require("../../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../../utils/webutils.js");
 
+let propertyTableExists = null;
+
 module.exports = (function () {
 	"use strict";
 
@@ -196,6 +198,11 @@ module.exports = (function () {
 
 		if (auth.userData.Name !== userData.Name) {
 			return WebUtils.apiFail(res, 403, "Cannot list another user's data");
+		}
+
+		propertyTableExists ??= sb.Query.isTablePresent("chat_data", "Custom_Data_Property");
+		if (propertyTableExists === false) {
+			return WebUtils.apiFail(res, 501, "User property table is not present");
 		}
 
 		const propertyList = await sb.Query.getRecordset(rs => rs
