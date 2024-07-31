@@ -3450,7 +3450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supi-core@github:supinic/supi-core":
+"supi-core@https://github.com/supinic/supi-core":
   version: 3.1.0
   resolution: "supi-core@https://github.com/supinic/supi-core.git#commit=a0230af857e3125341b1f792fd25c1aa5153bc91"
   dependencies:
@@ -3465,7 +3465,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supi-db-init@github:supinic/supi-db-init":
+"supi-db-init@https://github.com/supinic/supi-db-init":
   version: 1.0.0
   resolution: "supi-db-init@https://github.com/supinic/supi-db-init.git#commit=fdbcd58b221c495f64cf832cee4857e7c8869c15"
   dependencies:
@@ -3496,9 +3496,9 @@ __metadata:
     passport: "npm:^0.6.0"
     passport-oauth: "npm:latest"
     pug: "npm:^3.0.2"
-    supi-core: "github:supinic/supi-core"
-    supi-db-init: "github:supinic/supi-db-init"
-    track-link-parser: supinic/track-link-parser
+    supi-core: "https://github.com/supinic/supi-core"
+    supi-db-init: "https://github.com/supinic/supi-db-init"
+    track-link-parser: "https://github.com/supinic/track-link-parser"
   languageName: unknown
   linkType: soft
 
@@ -3564,7 +3564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-track-link-parser@supinic/track-link-parser:
+"track-link-parser@https://github.com/supinic/track-link-parser":
   version: 1.2.0
   resolution: "track-link-parser@https://github.com/supinic/track-link-parser.git#commit=91fd676f1292e315c9cb6e7e10fcd062d064dec4"
   dependencies:
