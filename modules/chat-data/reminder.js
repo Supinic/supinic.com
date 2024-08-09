@@ -132,12 +132,14 @@ module.exports = (function () {
 				.join({
 					alias: "Sender",
 					fromField: "User_From",
+					toDatabase: "chat_data",
 					toTable: "User_Alias",
 					toField: "ID"
 				})
 				.join({
 					alias: "Recipient",
 					fromField: "User_To",
+					toDatabase: "chat_data",
 					toTable: "User_Alias",
 					toField: "ID"
 				})
