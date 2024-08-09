@@ -255,7 +255,7 @@ module.exports = (function () {
 		}
 
 		return await WebUtils.executeSupibotRequest(res, "reminder/unset", {
-			name: auth.userData.Name,
+			user: auth.userData.Name,
 			id: reminderID
 		});
 	});
