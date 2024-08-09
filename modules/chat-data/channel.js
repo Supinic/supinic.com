@@ -48,7 +48,7 @@ module.exports = (function () {
 				const infoRow = informationSchema.find(i => i.channel === databaseName);
 				channel.lineCount = infoRow?.Max_ID ?? null;
 				channel.byteLength = infoRow?.Byte_Length ?? null;
-				channel.platform = platformName;
+				channel.platformName = platformName;
 
 				return channel;
 			});
