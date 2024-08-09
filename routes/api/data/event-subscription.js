@@ -29,17 +29,11 @@ module.exports = (function () {
 
 		const subData = await EventSubscription.selectCustom(q => q
 			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Last_Edit")
-			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription")
-			.select("Platform.Name AS PlatformName")
+			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription", "Channel.Platform AS PlatformName")
 			.join({
 				toDatabase: "chat_data",
 				toTable: "Channel",
 				on: "Event_Subscription.Channel = Channel.ID"
-			})
-			.join({
-				toDatabase: "chat_data",
-				toTable: "Platform",
-				on: "Event_Subscription.Platform = Platform.ID"
 			})
 			.where("User_Alias = %n", userData.ID)
 			.where("Active = %b", true)

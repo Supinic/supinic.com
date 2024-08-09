@@ -118,9 +118,7 @@ module.exports = (function () {
 		}
 
 		const channelData = await Channel.selectSingleCustom(q => q
-			.select("Platform.Name AS Platform_Name")
-			.select("Platform.Message_Limit AS Platform_Message_Limit")
-			.join("chat_data", "Platform")
+			.select("Channel.Platform AS Platform_ID")
 			.where("Channel.ID = %n", channelID)
 		);
 
@@ -132,8 +130,7 @@ module.exports = (function () {
 		const data = {
 			ID: channelData.ID,
 			name: channelData.Name,
-			platform: channelData.Platform_Name,
-			platformID: channelData.Specific_ID,
+			platform: channelData.Platform_ID,
 			botMode: channelData.Mode,
 			banphraseURL: channelData.Banphrase_API_URL ?? null,
 			description: channelData.Description ?? null,

@@ -296,14 +296,9 @@ module.exports = (function () {
 
 		const data = await Filter.selectCustom(q => q
 			.select("Filter.ID", "Type", "Command", "Invocation", "Filter.Data")
-			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description")
+			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description", "Channel.Platform AS Platform_Name")
 			.select("Blocked_User.Name as Blocked_User_Name")
-			.select("Platform.Name AS Platform_Name")
 			.leftJoin("chat_data", "Channel")
-			.leftJoin({
-				toTable: "Platform",
-				on: "Channel.Platform = Platform.ID"
-			})
 			.leftJoin({
 				alias: "Blocked_User",
 				toTable: "User_Alias",

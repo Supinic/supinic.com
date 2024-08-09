@@ -115,14 +115,12 @@ module.exports = (function () {
 
 			const data = await sb.Query.getRecordset(rs => rs
 				.select(`${table}.*`)
-				.select("Channel.Name AS Channel_Name")
-				.select("Platform.Name AS Platform_Name")
+				.select("Channel.Name AS Channel_Name", "Channel.Platform AS Platform_Name")
 				.select("Sender.ID AS Sender_ID", "Sender.Name AS Sender_Name")
 				.select("Recipient.ID AS Recipient_ID", "Recipient.Name AS Recipient_Name")
 				.from("chat_data", (table) ? "Reminder" : "Reminder_History")
 				.where(`${table}.ID = %n`, ID)
 				.leftJoin("chat_data", "Channel")
-				.leftJoin("chat_data", "Platform")
 				.join({
 					alias: "Sender",
 					fromField: "User_From",

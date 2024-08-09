@@ -2,12 +2,16 @@ const Express = require("express");
 const Router = Express.Router();
 
 const Channel = require("../../../modules/chat-data/channel.js");
-const Platform = require("../../../modules/chat-data/platform.js");
 const Suggestion = require("../../../modules/data/suggestion.js");
 const User = require("../../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../../utils/webutils.js");
 
 const BASE_CACHE_KEY = "website-twitch-auth-bot";
+const SUPPORTED_PLATFORMS = ["twitch", "cytube"];
+const PLATFORM_ID = {
+	twitch: 1,
+	cytube: 3
+};
 
 const isModerator = async (userName, channelID) => {
 	const response = await sb.Got.gql({
@@ -60,15 +64,11 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "No target or rename channel provided");
 		}
 
-		const platformData = await Platform.selectSingleCustom(q => q
-			.where("Name = %s", platform)
-		);
-
-		if (!platformData) {
-			return WebUtils.apiFail(res, 404, "Provided platform has not been found");
+		if (!SUPPORTED_PLATFORMS.includes(platform)) {
+			return WebUtils.apiFail(res, 400, "Invalid platform provided");
 		}
 
-		if (platformData.Name === "twitch") {
+		if (platform === "twitch") {
 			const helixChannelResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
@@ -129,7 +129,7 @@ module.exports = (function () {
 
 		const exists = await Channel.selectSingleCustom(rs => rs
 			.where("Name = %s", targetChannel)
-			.where("Platform = %n", platformData.ID)
+			.where("Platform = %n", PLATFORM_ID[platform])
 		);
 
 		if (exists) {
@@ -161,7 +161,7 @@ module.exports = (function () {
 		}
 
 		let twitchChannelID;
-		if (platformData.Name === "Twitch") {
+		if (platform === "twitch") {
 			const helixUserResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
@@ -177,7 +177,7 @@ module.exports = (function () {
 		}
 
 		const userData = await User.getByID(userID);
-		if (platformData.Name === "Twitch" && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
+		if (platform === "twitch" && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
 			const modCheck = await isModerator(userData.Name, twitchChannelID);
 			if (!modCheck.success) {
 				return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
@@ -192,7 +192,7 @@ module.exports = (function () {
 			.where("Category = %s", "Bot addition")
 			.where("Status IS NULL OR Status = %s", "Approved")
 			.where("Text %*like*", `Channel: ${targetChannel}`)
-			.where("Text %*like*", `Platform: ${platformData.Name}`)
+			.where("Text %*like*", `Platform: ${platform}`)
 		);
 
 		if (requestPending) {
@@ -211,7 +211,7 @@ module.exports = (function () {
 		}
 
 		let extraNotes = "";
-		if (platformData.Name === "Twitch") {
+		if (platform === "Twitch") {
 			const [bttv, ffz, sevenTv, recent, user, suggests] = await Promise.all([
 				sb.Got("Global", {
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
@@ -297,7 +297,7 @@ module.exports = (function () {
 
 		const { insertId } = await Suggestion.insert({
 			User_Alias: userData.ID,
-			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platformData.Name} \nDescription: ${description ?? "N/A"}${extraNotes}`,
+			Text: `Channel: ${targetChannel} \nRequested by: ${userData.Name} \nPlatform: ${platform} \nDescription: ${description ?? "N/A"}${extraNotes}`,
 			Category: "Bot addition",
 			Status: null,
 			Priority: 100,
