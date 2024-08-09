@@ -438,6 +438,12 @@ module.exports = class WebUtils {
 			});
 		}
 		catch (e) {
+			console.error("Response error from Supibot API", {
+				url,
+				searchParams,
+				e
+			});
+
 			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API", {
 				code: e.code,
 				errorMessage: e.message
