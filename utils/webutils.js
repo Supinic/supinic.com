@@ -457,12 +457,11 @@ module.exports = class WebUtils {
 			});
 		}
 
-		if (typeof data !== "object") {
+		const { result } = data;
+		if (!result || typeof result !== "object") {
 			return WebUtils.apiSuccess(res, { data });
 		}
-
-		const { result } = data;
-		if (result.success === false) {
+		else if (result.success === false) {
 			return WebUtils.apiFail(res, 400, {
 				reply: result.reply
 			});
