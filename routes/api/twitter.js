@@ -574,7 +574,7 @@ Router.get("/syndication/:username", async (req, res) => {
 		}
 	}
 
-	return WebUtils.apiSuccess(res, { timeline });
+	return WebUtils.apiSuccess(res, { timeline }, { skipCaseConversion: true });
 });
 
 module.exports = Router;
