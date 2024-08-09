@@ -25,7 +25,6 @@ module.exports = (function () {
 					.select("Channel.Mention AS mention", "Channel.Links_Allowed AS linksAllowed", "Channel.NSFW AS nsfw", "Channel.Banphrase_API_Type AS banphraseApiType")
 					.select("Channel.Banphrase_API_URL AS banphraseApiUrl", "Channel.Banphrase_API_Downtime AS banphraseApiDowntime", "Channel.Message_Limit AS messageLimit")
 					.select("Channel.Mirror AS mirror", "Channel.Description AS description")
-					.select("Channel.Platform AS platform")
 					.from("chat_data", "Channel")
 					.where("Mode <> %s", "Inactive")
 					.orderBy("Name ASC")
