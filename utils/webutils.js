@@ -451,10 +451,14 @@ module.exports = class WebUtils {
 		}
 
 		const { data, error } = response.body;
-		if (!data || response.statusCode !== 200) {
+		if (!data || error || response.statusCode !== 200) {
 			return WebUtils.apiFail(res, response.statusCode, {
 				reply: error?.message
 			});
+		}
+
+		if (typeof data !== "object") {
+			return WebUtils.apiSuccess(res, { data });
 		}
 
 		const { result } = data;
