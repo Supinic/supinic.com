@@ -146,14 +146,12 @@ module.exports = (function () {
 				.single()
 			);
 
-			for (const item of data) {
-				if (item.PlatformID) {
-					const platformData = platformsData[item.PlatformID];
-					item.Platform_Name = platformData?.name ?? null;
-				}
-				else {
-					item.Platform_Name = null;
-				}
+			if (data.PlatformID) {
+				const platformData = platformsData[data.PlatformID];
+				data.Platform_Name = platformData?.name ?? null;
+			}
+			else {
+				data.Platform_Name = null;
 			}
 
 			return {
