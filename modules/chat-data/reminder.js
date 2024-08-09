@@ -1,3 +1,4 @@
+const WebUtils = require("../../utils/webutils");
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
@@ -113,9 +114,16 @@ module.exports = (function () {
 				return null;
 			}
 
+			const platformsData = await WebUtils.getSupibotPlatformData();
+			if (!platformsData) {
+				throw new sb.Error({
+					message: "Could not fetch Supibot platform data"
+				});
+			}
+
 			const data = await sb.Query.getRecordset(rs => rs
 				.select(`${table}.*`)
-				.select("Channel.Name AS Channel_Name", "Channel.Platform AS Platform_Name")
+				.select("Channel.Name AS Channel_Name", "Channel.Platform AS PlatformID")
 				.select("Sender.ID AS Sender_ID", "Sender.Name AS Sender_Name")
 				.select("Recipient.ID AS Recipient_ID", "Recipient.Name AS Recipient_Name")
 				.from("chat_data", (table) ? "Reminder" : "Reminder_History")
@@ -135,6 +143,16 @@ module.exports = (function () {
 				})
 				.single()
 			);
+
+			for (const item of data) {
+				if (item.PlatformID) {
+					const platformData = platformsData[item.PlatformID];
+					item.Platform_Name = platformData?.name ?? null;
+				}
+				else {
+					item.Platform_Name = null;
+				}
+			}
 
 			return {
 				table,

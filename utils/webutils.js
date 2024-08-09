@@ -32,6 +32,8 @@ module.exports = class WebUtils {
 		500: "Internal Server Error"
 	};
 
+	static #botPlatformData;
+
 	static get levels () {
 		return {
 			none: 1,
@@ -470,6 +472,38 @@ module.exports = class WebUtils {
 			return WebUtils.apiSuccess(res, {
 				reply: result.reply
 			});
+		}
+	}
+
+	/**
+	 * Fetches and caches Supibot's platform data, as configured in the bot.
+	 * Returns `null` if nothing is cached and the HTTP request fails in any way.
+	 * @returns {Record<number, {
+	 * 	ID: number,
+	 * 	name: string,
+	 * 	host: string|null,
+	 * 	active: boolean,
+	 * 	selfId: string|null,
+	 *  selfName: string|null
+	 * } | null>}
+	 */
+	static async getSupibotPlatformData () {
+		if (WebUtils.#botPlatformData) {
+			return WebUtils.#botPlatformData;
+		}
+
+		const response = await sb.Got("Supibot", { url: "platform/list" });
+		if (response.ok) {
+			const result = {};
+			for (const platform of response.body.data) {
+				result[platform.ID] = platform;
+			}
+
+			WebUtils.#botPlatformData = result;
+			return result;
+		}
+		else {
+			return null;
 		}
 	}
 

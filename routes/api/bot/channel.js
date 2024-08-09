@@ -117,8 +117,13 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Malformed channel ID");
 		}
 
+		const platformsData = await WebUtils.getSupibotPlatformData();
+		if (!platformsData) {
+			return WebUtils.apiFail(res, 504, "Could not fetch Supibot platform data");
+		}
+
 		const channelData = await Channel.selectSingleCustom(q => q
-			.select("Channel.Platform AS Platform_ID")
+			.select("Channel.Platform AS PlatformID")
 			.where("Channel.ID = %n", channelID)
 		);
 
@@ -130,7 +135,7 @@ module.exports = (function () {
 		const data = {
 			ID: channelData.ID,
 			name: channelData.Name,
-			platform: channelData.Platform_ID,
+			platform: platformsData[channelData.PlatformID]?.name ?? null,
 			botMode: channelData.Mode,
 			banphraseURL: channelData.Banphrase_API_URL ?? null,
 			description: channelData.Description ?? null,

@@ -294,9 +294,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
+		const platformsData = await WebUtils.getSupibotPlatformData();
+		if (!platformsData) {
+			return WebUtils.apiFail(res, 504, "Could not fetch Supibot platform data");
+		}
+
 		const data = await Filter.selectCustom(q => q
 			.select("Filter.ID", "Type", "Command", "Invocation", "Filter.Data")
-			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description", "Channel.Platform AS Platform_Name")
+			.select("Channel.Name AS Channel_Name", "Channel.Description AS Channel_Description", "Channel.Platform AS PlatformID")
 			.select("Blocked_User.Name as Blocked_User_Name")
 			.leftJoin("chat_data", "Channel")
 			.leftJoin({
@@ -310,6 +315,14 @@ module.exports = (function () {
 		);
 
 		for (const item of data) {
+			if (item.PlatformID) {
+				const platformData = platformsData[item.PlatformID];
+				item.Platform_Name = platformData?.name ?? null;
+			}
+			else {
+				item.Platform_Name = null;
+			}
+
 			if (item.Data) {
 				item.Data = JSON.parse(item.Data);
 			}

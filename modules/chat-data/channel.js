@@ -1,3 +1,4 @@
+const WebUtils = require("../../utils/webutils");
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
@@ -24,7 +25,7 @@ module.exports = (function () {
 					.select("Channel.Mention AS mention", "Channel.Links_Allowed AS linksAllowed", "Channel.NSFW AS nsfw", "Channel.Banphrase_API_Type AS banphraseApiType")
 					.select("Channel.Banphrase_API_URL AS banphraseApiUrl", "Channel.Banphrase_API_Downtime AS banphraseApiDowntime", "Channel.Message_Limit AS messageLimit")
 					.select("Channel.Mirror AS mirror", "Channel.Description AS description")
-					.select("Channel.Platform AS platformName")
+					.select("Channel.Platform AS platform")
 					.from("chat_data", "Channel")
 					.where("Mode <> %s", "Inactive")
 					.orderBy("Name ASC")
@@ -32,14 +33,23 @@ module.exports = (function () {
 				Channel.getLinesCache()
 			]);
 
+			const platformsData = await WebUtils.getSupibotPlatformData();
+			if (!platformsData) {
+				throw new sb.Error({
+					message: "Could not fetch Supibot platform data"
+				});
+			}
+
 			data = channels.map(channel => {
-				const databaseName = (channel.platformName === "Twitch")
+				const platformName = platformsData[channel.platform].name;
+				const databaseName = (platformName === "twitch")
 					? channel.name
-					: `${channel.platformName.toLowerCase()}_${channel.name}`;
+					: `${platformName.toLowerCase()}_${channel.name}`;
 
 				const infoRow = informationSchema.find(i => i.channel === databaseName);
 				channel.lineCount = infoRow?.Max_ID ?? null;
 				channel.byteLength = infoRow?.Byte_Length ?? null;
+				channel.platform = platformName;
 
 				return channel;
 			});

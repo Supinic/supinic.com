@@ -27,9 +27,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "User not found");
 		}
 
+		const platformsData = await WebUtils.getSupibotPlatformData();
+		if (!platformsData) {
+			return WebUtils.apiFail(res, 504, "Could not fetch Supibot platform data");
+		}
+
 		const subData = await EventSubscription.selectCustom(q => q
 			.select("Type", "Event_Subscription.Data AS Data", "Flags", "Created", "Last_Edit")
-			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription", "Channel.Platform AS PlatformName")
+			.select("Channel.Name AS ChannelName", "Channel.Description AS ChannelDescription", "Channel.Platform AS PlatformID")
 			.join({
 				toDatabase: "chat_data",
 				toTable: "Channel",
@@ -42,7 +47,7 @@ module.exports = (function () {
 		const data = subData.map(i => ({
 			type: i.Type,
 			channel: i.ChannelDescription ?? i.ChannelName ?? null,
-			platform: i.PlatformName ?? null,
+			platform: platformsData[i.PlatformID]?.name ?? null,
 			data: JSON.parse(i.Data ?? "{}"),
 			flags: JSON.parse(i.Flags ?? "{}"),
 			created: i.Created,
