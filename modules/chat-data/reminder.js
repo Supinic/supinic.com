@@ -126,7 +126,7 @@ module.exports = (function () {
 				.select("Channel.Name AS Channel_Name", "Channel.Platform AS PlatformID")
 				.select("Sender.ID AS Sender_ID", "Sender.Name AS Sender_Name")
 				.select("Recipient.ID AS Recipient_ID", "Recipient.Name AS Recipient_Name")
-				.from("chat_data", (table) ? "Reminder" : "Reminder_History")
+				.from("chat_data", table)
 				.where(`${table}.ID = %n`, ID)
 				.leftJoin("chat_data", "Channel")
 				.join({
