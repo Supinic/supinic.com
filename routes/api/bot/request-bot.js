@@ -140,12 +140,25 @@ module.exports = (function () {
 					.where("Channel = %n", exists.ID)
 					.where("Property = %s", "inactive-reason")
 				);
-
 				if (inactiveReason === "channel-inactive") {
 					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
 						The bot has been removed from target channel because of prolonged inactivity.
 						You can immediately receive the bot back by using this command →
 						$bot rejoin channel:"${targetChannel}"
+					`);
+				}
+
+				const scopeDisabled = await sb.Query.getRecordset(rs => rs
+					.select("Value")
+					.from("chat_data", "Channel_Data")
+					.where("Channel = %n", exists.ID)
+					.where("Property = %s", "twitchNoScopeDisabled")
+				);
+				if (scopeDisabled) {
+					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
+						The bot has been removed from target channel because of inactivity during the Twitch permission change.
+						You can immediately receive the bot back by either modding it or giving it permission to chat (on this site: Supibot > Allow Supibot...)
+						and then running this command: $bot rejoin channel:"${targetChannel}"
 					`);
 				}
 
