@@ -139,6 +139,9 @@ module.exports = (function () {
 					.from("chat_data", "Channel_Data")
 					.where("Channel = %n", exists.ID)
 					.where("Property = %s", "inactive-reason")
+					.limit(1)
+					.single()
+					.flat("Value")
 				);
 				if (inactiveReason === "channel-inactive") {
 					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
@@ -153,6 +156,9 @@ module.exports = (function () {
 					.from("chat_data", "Channel_Data")
 					.where("Channel = %n", exists.ID)
 					.where("Property = %s", "twitchNoScopeDisabled")
+					.limit(1)
+					.single()
+					.flat("Value")
 				);
 				if (scopeDisabled) {
 					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
