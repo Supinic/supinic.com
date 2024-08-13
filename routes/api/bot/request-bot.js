@@ -7,7 +7,10 @@ const User = require("../../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../../utils/webutils.js");
 
 const BASE_CACHE_KEY = "website-twitch-auth-bot";
-const SUPPORTED_PLATFORMS = ["twitch", "cytube"];
+
+const PLATFORM_TWITCH = "twitch";
+const PLATFORM_CYTUBE = "cytube";
+const SUPPORTED_PLATFORMS = [PLATFORM_TWITCH, PLATFORM_CYTUBE];
 const PLATFORM_ID = {
 	twitch: 1,
 	cytube: 3
@@ -68,7 +71,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "Invalid platform provided");
 		}
 
-		if (platform === "twitch") {
+		if (platform === PLATFORM_TWITCH) {
 			const helixChannelResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
@@ -100,7 +103,7 @@ module.exports = (function () {
 						url: "command/execute",
 						searchParams: {
 							invocation: "bot",
-							platform: "twitch",
+							platform: PLATFORM_TWITCH,
 							channel: null,
 							user: targetChannel,
 							arguments: `rename channel:"${previousChannelName}"`
@@ -180,7 +183,7 @@ module.exports = (function () {
 		}
 
 		let twitchChannelID;
-		if (platform === "twitch") {
+		if (platform === PLATFORM_TWITCH) {
 			const helixUserResponse = await sb.Got("Helix", {
 				url: "users",
 				searchParams: {
@@ -196,7 +199,7 @@ module.exports = (function () {
 		}
 
 		const userData = await User.getByID(userID);
-		if (platform === "twitch" && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
+		if (platform === PLATFORM_TWITCH && userData.Name.toLowerCase() !== targetChannel.toLowerCase()) {
 			const modCheck = await isModerator(userData.Name, twitchChannelID);
 			if (!modCheck.success) {
 				return WebUtils.apiFail(res, 503, "Could not check for moderator status, try again later");
@@ -230,7 +233,7 @@ module.exports = (function () {
 		}
 
 		let extraNotes = "";
-		if (platform === "Twitch") {
+		if (platform === PLATFORM_TWITCH) {
 			const [bttv, ffz, sevenTv, recent, user, suggests] = await Promise.all([
 				sb.Got("Global", {
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
