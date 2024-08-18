@@ -111,6 +111,28 @@ module.exports = (function () {
 		});
 	});
 
+	/**
+	 * @api {get} /data/origin/search Origin - Search by name
+	 * @apiName SearchEmoteOriginDetail
+	 * @apiDescription Searches for a list of origins via its name
+	 * @apiGroup Data
+	 * @apiPermission none
+	 * @apiSuccess {Array<OriginDetail>} An array of listings, each identical to the detail endpoint `GetEmoteOriginDetail`
+	 **/
+	Router.get("/search", async (req, res) => {
+		const { name, exact } = req.query;
+		if (!name) {
+			return WebUtils.apiFail(res, 400, "No emote name provided");
+		}
+
+		const ids = await Origin.search(name, {
+			exact: Boolean(exact)
+		});
+
+		const data = await Origin.fetch(...ids);
+		return WebUtils.apiSuccess(res, data);
+	});
+
 	Router.get("/image/:id", async (req, res) => {
 		const { id } = req.params;
 		const originID = Number(id);

@@ -61,6 +61,14 @@ module.exports = (function () {
 			return data.filter(i => i.ID !== ID);
 		}
 
+		static async search (name, options = {}) {
+			return await super.selectCustom(rs => rs
+				.select("ID")
+				.where({ condition: (options.exact === true) }, "Name = %s", name)
+				.where({ condition: (options.exact === false) }, "Name %*like*", name)
+			);
+		}
+
 		static parseURL (item) {
 			if (item.Available === "Backup" && item.Backup_Link) {
 				return item.Backup_Link;
