@@ -66,6 +66,7 @@ module.exports = (function () {
 				.select("ID")
 				.where({ condition: (options.exact === true) }, "Name = %s", name)
 				.where({ condition: (options.exact === false) }, "Name %*like*", name)
+				.flat("ID")
 			);
 		}
 
