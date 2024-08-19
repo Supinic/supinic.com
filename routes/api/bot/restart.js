@@ -26,7 +26,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 401, "You have no access to this endpoint");
 		}
 
-		await exec("pm2 restart supibot");
+		await exec("systemctl restart --user supibot.service");
 
 		return WebUtils.apiSuccess(res, { result: "OK" });
 	});
