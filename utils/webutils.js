@@ -33,6 +33,7 @@ module.exports = class WebUtils {
 	};
 
 	static #botPlatformData;
+	static #botCommandPrefix;
 
 	static get levels () {
 		return {
@@ -501,6 +502,26 @@ module.exports = class WebUtils {
 
 			WebUtils.#botPlatformData = result;
 			return result;
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Fetches and caches Supibot's command prefix, as configured in the bot.
+	 * Returns `null` if nothing is cached and the HTTP request fails in any way.
+	 * @returns {string | null}
+	 */
+	static async getSupibotCommandPrefix () {
+		if (WebUtils.#botCommandPrefix) {
+			return WebUtils.#botCommandPrefix;
+		}
+
+		const response = await sb.Got("Supibot", { url: "command/prefix" });
+		if (response.ok) {
+			WebUtils.#botCommandPrefix = response.body.data.prefix;
+			return WebUtils.#botCommandPrefix;
 		}
 		else {
 			return null;

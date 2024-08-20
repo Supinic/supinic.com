@@ -28,10 +28,9 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { userData } = auth;
-		const prefix = sb.Config.get("COMMAND_PREFIX");
+		const prefix = await WebUtils.getSupibotCommandPrefix();
 		if (!prefix) {
-			return WebUtils.apiFail(res, 503, "Website configuration error - variable \"COMMAND_PREFIX\"");
+			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API");
 		}
 
 		const { query } = req.body;
@@ -55,6 +54,7 @@ module.exports = (function () {
 			invocation = invocation.replace(prefix, "");
 		}
 
+		const { userData } = auth;
 		const response = await sb.Got("Supibot", {
 			url: "command/execute",
 			searchParams: {
