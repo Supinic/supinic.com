@@ -102,7 +102,7 @@ module.exports = (function () {
 		const printData = data.map(i => ({
 			ID: i.ID,
 			User: i.userName ?? "(all)",
-			Command: i.commandName ?? "(all)",
+			Command: i.command ?? "(all)",
 			Created: new sb.Date(i.created).format("Y-m-d H:i"),
 			Issuer: i.issuerName
 		}));

@@ -194,13 +194,8 @@ module.exports = (function () {
 		}
 
 		const data = await Filter.selectMultipleCustom(q => q
-			.select("Command.Name AS Command_Name")
 			.select("User_Alias.Name AS User_Name")
 			.select("Issuer.Name AS Issuer_Name")
-			.leftJoin({
-				toTable: "Command",
-				on: "Command.Name = Filter.Command"
-			})
 			.leftJoin("chat_data", "User_Alias")
 			.join({
 				alias: "Issuer",
