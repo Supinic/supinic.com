@@ -324,10 +324,9 @@ module.exports = (function () {
 
 		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${encodeURIComponent(commandInfo.name)}/index.js">Open in new tab</a>`;
 
-		const commandPrefix = sb.Config.get("COMMAND_PREFIX");
 		res.render("generic-detail-table", {
 			data,
-			header: `${commandPrefix}${commandInfo.name}`,
+			header: `${commandInfo.prefix}${commandInfo.name}`,
 			title: `Command detail - ${commandInfo.name}`,
 			openGraphDefinition: [
 				{
