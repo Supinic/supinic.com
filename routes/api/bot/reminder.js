@@ -121,11 +121,11 @@ module.exports = (function () {
 	 * @apiDescription Posts a new reminder to a target user. If the reminder is timed and non-private, it will always fire in the Twitch channel of Supibot.
 	 * @apiGroup Bot
 	 * @apiPermission login
-	 * @apiParam {string} [username] Target user's name. Mutually exclusive with userID.
+	 * @apiParam {string} username Target user's name.
 	 * @apiParam {string} [text] The text of the reminder itself. Can be omitted, in which case a default message will be used.
-	 * @apiParam {date} [schedule] ISO string of datetime for given reminder to fire at.
+	 * @apiParam {string} [schedule] Schedule string as used in Supibot, e.g. "4 days" to schedule a reminder in 4 days. Also supports date-based queries.
 	 * @apiParam {number} [private] If provided (any value), the parameter will be sent privately. Defaults to false.
-	 * @apiSuccess {number} reminderID ID of the reminder that was just created.
+	 * @apiSuccess {string} reply The resulting command string, as if executing within the bot.
 	 * @apiError (400) InvalidRequest If no user identifier was provided<br>
 	 * If the proxied command fails in any other way as described in Supibot
 	 * @apiError (401) Unauthorized If not logged in or invalid credentials provided
@@ -149,18 +149,19 @@ module.exports = (function () {
 		}
 
 		const reminderText = req.query.text ?? "";
-		const privateParameter = (req.query.private)
-			? "private:true"
-			: "";
+		const privateParameter = (req.query.private) ? "private:true" : "";
+		const scheduleText = (req.query.schedule) ? `on:"${req.query.schedule}"` : "";
 
-		return await WebUtils.executeSupibotRequest(res, "command/execute", {
+		const data = await WebUtils.executeSupibotRequest(res, "command/execute", {
 			invocation: "remind",
 			platform: "twitch",
 			channel: null,
 			user: auth.userData.Name,
-			arguments: `${username} ${reminderText} ${privateParameter}` ,
+			arguments: `${username} ${reminderText} ${privateParameter} ${scheduleText}`.trim(),
 			skipGlobalBan: "false"
 		});
+
+		return WebUtils.apiSuccess(res, data);
 	});
 
 	Router.get("/lookup", async (req, res) => {
