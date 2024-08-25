@@ -22,6 +22,8 @@ const bigintSanitizeStringify = (data) => JSON.stringify(data, (key, value) => {
 	}
 });
 
+const VIDEO_TYPE_PREFIX = "$";
+
 module.exports = class WebUtils {
 	static #localRequests = new Map();
 	static #requestMessages = {
@@ -43,6 +45,8 @@ module.exports = class WebUtils {
 			admin: 1000
 		};
 	}
+
+	static get videoTypeReplacePrefix () { return VIDEO_TYPE_PREFIX; }
 
 	/**
 	 * Returns response in the standardized format for all API errors.
@@ -549,7 +553,6 @@ module.exports = class WebUtils {
 	}
 
 	static parseVideoLink (type, link) {
-		const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
 		const fullVideoType = WebUtils.videoTypes[type];
 
 		if (!fullVideoType) {
@@ -563,7 +566,7 @@ module.exports = class WebUtils {
 			});
 		}
 
-		return fullVideoType.Link_Prefix.replace(videoTypePrefix, link);
+		return fullVideoType.Link_Prefix.replace(VIDEO_TYPE_PREFIX, link);
 	}
 };
 

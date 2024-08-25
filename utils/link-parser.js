@@ -4,21 +4,32 @@ let linkParser;
 const getLinkParser = () => {
 	if (!linkParser) {
 		const options = {};
-		if (sb.Config.has("API_GOOGLE_YOUTUBE", false)) {
+		if (process.env.API_GOOGLE_YOUTUBE) {
 			options.youtube = {
-				key: sb.Config.get("API_GOOGLE_YOUTUBE")
+				key: process.env.API_GOOGLE_YOUTUBE
 			};
 		}
-		if (sb.Config.has("SOUNDCLOUD_CLIENT_ID", false)) {
+		else {
+			console.warn("LinkParser: No YouTube API key configured - skipping");
+		}
+
+		if (process.env.SOUNDCLOUD_CLIENT_ID) {
 			options.soundcloud = {
-				key: sb.Config.get("SOUNDCLOUD_CLIENT_ID")
+				key: process.env.SOUNDCLOUD_CLIENT_ID
 			};
 		}
-		if (sb.Config.has("BILIBILI_APP_KEY", false) && sb.Config.has("BILIBILI_PRIVATE_TOKEN", false)) {
+		else {
+			console.warn("LinkParser: No Soundcloud API key configured - skipping");
+		}
+
+		if (process.env.BILIBILI_APP_KEY && process.env.BILIBILI_PRIVATE_TOKEN) {
 			options.bilibili = {
-				appKey: sb.Config.get("BILIBILI_APP_KEY"),
-				token: sb.Config.get("BILIBILI_PRIVATE_TOKEN")
+				appKey: process.env.BILIBILI_APP_KEY,
+				token: process.env.BILIBILI_PRIVATE_TOKEN
 			};
+		}
+		else {
+			console.warn("LinkParser: No Bilibili API keys configured - skipping");
 		}
 
 		linkParser = new LinkParser(options);

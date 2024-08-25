@@ -9,7 +9,7 @@ const AUTHORIZE_SEARCH_PARAMS = new URLSearchParams({
 	response_type: "code",
 	redirect_uri: "https://supinic.com/bot/twitch-auth/callback",
 	scope: "channel:bot",
-	client_id: sb.Config.get("TWITCH_CLIENT_ID")
+	client_id: process.env.TWITCH_CLIENT_ID
 });
 
 class TwitchBotStrategy extends OAuth2Strategy {
@@ -22,7 +22,7 @@ class TwitchBotStrategy extends OAuth2Strategy {
 			url: "https://api.twitch.tv/helix/users",
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
-				"Client-ID": sb.Config.get("TWITCH_CLIENT_ID")
+				"Client-ID": process.env.TWITCH_CLIENT_ID
 			}
 		});
 
@@ -41,8 +41,8 @@ Passport.use("twitch-bot", new TwitchBotStrategy(
 	{
 		authorizationURL: "https://id.twitch.tv/oauth2/authorize",
 		tokenURL: "https://id.twitch.tv/oauth2/token",
-		clientID: sb.Config.get("TWITCH_CLIENT_ID"),
-		clientSecret: sb.Config.get("TWITCH_CLIENT_SECRET"),
+		clientID: process.env.TWITCH_CLIENT_ID,
+		clientSecret: process.env.TWITCH_CLIENT_SECRET,
 		callbackURL: "https://supinic.com/bot/twitch-auth/callback"
 	},
 	(access, refresh, profile, done) => {

@@ -12,8 +12,6 @@ const importModule = async (module, path) => {
 (async function () {
 	"use strict";
 
-	require("./db-access.js");
-
 	const core = await import("supi-core");
 	const Query = new core.Query({
 		user: process.env.MARIA_USER,
@@ -22,23 +20,14 @@ const importModule = async (module, path) => {
 		connectionLimit: Number(process.env.MARIA_CONNECTION_LIMIT)
 	});
 
-	/** @type {Array} */
-	const configData = await Query.getRecordset(rs => rs
-		.select("*")
-		.from("data", "Config"));
-
-	core.Config.load(configData);
-
 	globalThis.sb = {
 		Date: core.Date,
 		Error: core.Error,
 		Promise: core.Promise,
-
-		Config: core.Config,
 		Got: core.Got,
 
 		Query,
-		Cache: new core.Cache(core.Config.get("REDIS_CONFIGURATION")),
+		Cache: new core.Cache(process.env.REDIS_CONFIGURATION),
 		// Metrics: new core.Metrics(),
 		Utils: new core.Utils()
 	};
@@ -89,7 +78,7 @@ const importModule = async (module, path) => {
 				url: "https://api.twitch.tv/helix/users",
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
-					"Client-ID": sb.Config.get("WEBSITE_TWITCH_CLIENT_ID")
+					"Client-ID": process.env.WEBSITE_TWITCH_CLIENT_ID
 				}
 			});
 
@@ -150,9 +139,9 @@ const importModule = async (module, path) => {
 
 	app.use(require("cookie-parser")());
 
-	if (sb.Config.has("WEBSITE_SESSION_SECRET")) {
+	if (process.env.WEBSITE_SESSION_SECRET) {
 		app.use(Session({
-			secret: sb.Config.get("WEBSITE_SESSION_SECRET", false),
+			secret: process.env.WEBSITE_SESSION_SECRET,
 			resave: false,
 			saveUninitialized: false,
 			cookie: {
@@ -176,7 +165,7 @@ const importModule = async (module, path) => {
 		}));
 	}
 	else {
-		console.warn("Config WEBSITE_SESSION_SECRET is not set up, login sessions are not available");
+		console.warn("Env WEBSITE_SESSION_SECRET is not set up, login sessions are not available");
 	}
 
 	app.use(bodyParser.json());
@@ -377,7 +366,7 @@ const importModule = async (module, path) => {
 		const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID", "ADMIN_USER_ID"];
 
 		if (requiredConfigs.every(config => sb.Config.has(config, true))) {
-			const adminUserID = sb.Config.get("ADMIN_USER_ID");
+			const adminUserID = process.env.ADMIN_USER_ID;
 			const streamResponse = await sb.Got("Helix", {
 				url: "streams",
 				searchParams: {
@@ -400,9 +389,9 @@ const importModule = async (module, path) => {
 	}
 
 	const availableTwitchConfigs = [
-		sb.Config.has("WEBSITE_TWITCH_CLIENT_ID"),
-		sb.Config.has("WEBSITE_TWITCH_CLIENT_SECRET"),
-		sb.Config.has("WEBSITE_TWITCH_CALLBACK_URL")
+		process.env.WEBSITE_TWITCH_CLIENT_ID,
+		process.env.WEBSITE_TWITCH_CLIENT_SECRET,
+		process.env.WEBSITE_TWITCH_CALLBACK_URL
 	];
 
 	if (availableTwitchConfigs.every(i => i === true)) {
@@ -412,9 +401,9 @@ const importModule = async (module, path) => {
 			{
 				authorizationURL: "https://id.twitch.tv/oauth2/authorize",
 				tokenURL: "https://id.twitch.tv/oauth2/token",
-				clientID: sb.Config.get("WEBSITE_TWITCH_CLIENT_ID"),
-				clientSecret: sb.Config.get("WEBSITE_TWITCH_CLIENT_SECRET"),
-				callbackURL: sb.Config.get("WEBSITE_TWITCH_CALLBACK_URL")
+				clientID: process.env.WEBSITE_TWITCH_CLIENT_ID,
+				clientSecret: process.env.WEBSITE_TWITCH_CLIENT_SECRET,
+				callbackURL: process.env.WEBSITE_TWITCH_CALLBACK_URL
 				// state: true
 			},
 			(access, refresh, profile, done) => {
@@ -462,9 +451,9 @@ const importModule = async (module, path) => {
 	}
 
 	const availableGithubConfigs = [
-		sb.Config.has("WEBSITE_GITHUB_CLIENT_ID"),
-		sb.Config.has("WEBSITE_GITHUB_CLIENT_SECRET"),
-		sb.Config.has("WEBSITE_GITHUB_CALLBACK_URL")
+		process.env.WEBSITE_GITHUB_CLIENT_ID,
+		process.env.WEBSITE_GITHUB_CLIENT_SECRET,
+		process.env.WEBSITE_GITHUB_CALLBACK_URL
 	];
 
 	if (availableGithubConfigs.every(i => i === true)) {
@@ -472,9 +461,9 @@ const importModule = async (module, path) => {
 			{
 				authorizationURL: "https://github.com/login/oauth/authorize",
 				tokenURL: "https://github.com/login/oauth/access_token",
-				clientID: sb.Config.get("WEBSITE_GITHUB_CLIENT_ID"),
-				clientSecret: sb.Config.get("WEBSITE_GITHUB_CLIENT_SECRET"),
-				callbackURL: sb.Config.get("WEBSITE_GITHUB_CALLBACK_URL"),
+				clientID: process.env.WEBSITE_GITHUB_CLIENT_ID,
+				clientSecret: process.env.WEBSITE_GITHUB_CLIENT_SECRET,
+				callbackURL: process.env.WEBSITE_GITHUB_CALLBACK_URL,
 				passReqToCallback: true
 			},
 			(req, access, refresh, profile, done) => {

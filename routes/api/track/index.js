@@ -467,7 +467,7 @@ module.exports = (function () {
 				.where("ID = %n", reuploadID)
 			);
 
-			reuploadLink = track.Prefix.replace(sb.Confif.get("VIDEO_TYPE_REPLACE_PREFIX"), track.Link);
+			reuploadLink = track.Prefix.replace(WebUtils.videoTypeReplacePrefix, track.Link);
 			reuploadID = null;
 		}
 

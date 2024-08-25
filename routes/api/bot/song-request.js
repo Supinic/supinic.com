@@ -48,17 +48,14 @@ module.exports = (function () {
 	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/queue", async (req, res) => {
-		const [videoTypes, prefixSymbol, rawData] = await Promise.all([
+		const [videoTypes, rawData] = await Promise.all([
 			VideoType.getParsers(),
-			Config.selectSingleCustom(q => q
-				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
-			),
 			SongRequest.getNormalizedQueue(q => q.where("Status IN %s+", ["Current", "Queued"]))
 		]);
 
 		const data = rawData.map(track => {
 			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol.Value, track.Link);
+			track.Parsed_Link = prefix.replace(WebUtils.videoTypeReplacePrefix, track.Link);
 
 			return track;
 		});
@@ -87,11 +84,8 @@ module.exports = (function () {
 	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/history", async (req, res) => {
-		const [videoTypes, prefixSymbol, rawData] = await Promise.all([
+		const [videoTypes, rawData] = await Promise.all([
 			VideoType.getParsers(),
-			Config.selectSingleCustom(q => q
-				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
-			),
 			SongRequest.getNormalizedQueue(q => q
 				.where("Status = %s", "Inactive")
 				.where("Added >= (NOW() - INTERVAL 7 DAY)")
@@ -100,7 +94,7 @@ module.exports = (function () {
 
 		const data = rawData.map(track => {
 			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol.Value, track.Link);
+			track.Parsed_Link = prefix.replace(WebUtils.videoTypeReplacePrefix, track.Link);
 
 			return track;
 		});

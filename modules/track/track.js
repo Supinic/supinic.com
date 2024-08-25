@@ -16,7 +16,6 @@ module.exports = (function () {
 	"use strict";
 
 	const LinkParser = getLinkParser();
-	const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
 
 	class Track extends TemplateModule {
 		static async list (specificIDs) {
@@ -68,7 +67,7 @@ module.exports = (function () {
 
 			return rawData.map(row => {
 				if (row.Link) {
-					row.Parsed_Link = row.Prefix.replace(videoTypePrefix, row.Link);
+					row.Parsed_Link = row.Prefix.replace(WebUtils.videoTypeReplacePrefix, row.Link);
 				}
 
 				delete row.Prefix;
@@ -112,7 +111,7 @@ module.exports = (function () {
 
 			data.Parsed_Link = "N/A";
 			if (row.values.Link) {
-				data.Parsed_Link = prefix.replace(videoTypePrefix, row.values.Link);
+				data.Parsed_Link = prefix.replace(WebUtils.videoTypeReplacePrefix, row.values.Link);
 			}
 
 			data.Aliases = (await sb.Query.getRecordset(rs => rs
@@ -466,7 +465,7 @@ module.exports = (function () {
 			const author = linkData.authorID;
 			const target = (linkData.type === "youtube")
 				? "Youtube_Channel_ID"
-				: `${sb.Utils.capitalize(target)}_ID`;
+				: `${sb.Utils.capitalize(linkData.type)}_ID`;
 
 			if (await Track.existsCustom(q => q.where("Link = %s", linkData.ID))) {
 				return new Result(false, "Link already exists in the database");

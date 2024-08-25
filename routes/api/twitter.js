@@ -550,7 +550,7 @@ Router.get("/syndication/:username", async (req, res) => {
 			includeReplies: String(Boolean(includeReplies))
 		},
 		headers: {
-			Cookie: sb.Config.get("TWITTER_BROWSER_COOKIE")
+			Cookie: process.env.TWITTER_BROWSER_COOKIE
 		},
 		responseType: "text"
 	});
