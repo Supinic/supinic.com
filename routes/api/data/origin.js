@@ -117,7 +117,7 @@ module.exports = (function () {
 	 * @apiDescription Searches for a list of origins via its name
 	 * @apiGroup Data
 	 * @apiPermission none
-	 * @apiSuccess {Array<OriginDetail>} An array of listings, each identical to the detail endpoint `GetEmoteOriginDetail`
+	 * @apiSuccess {Object[]} An array of listings, each identical to the detail endpoint `GetEmoteOriginDetail`
 	 **/
 	Router.get("/search", async (req, res) => {
 		const { name, exact } = req.query;
