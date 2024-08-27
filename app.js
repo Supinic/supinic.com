@@ -363,9 +363,8 @@ const importModule = async (module, path) => {
 
 	app.get("/", async (req, res) => {
 		let streamData = [];
-		const requiredConfigs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID", "ADMIN_USER_ID"];
-
-		if (requiredConfigs.every(config => sb.Config.has(config, true))) {
+		const requiredEnvs = ["TWITCH_OAUTH", "TWITCH_CLIENT_ID", "ADMIN_USER_ID"];
+		if (requiredEnvs.every(i => process.env[i])) {
 			const adminUserID = process.env.ADMIN_USER_ID;
 			const streamResponse = await sb.Got("Helix", {
 				url: "streams",
