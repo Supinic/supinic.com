@@ -100,7 +100,10 @@ module.exports = (function () {
 		res.render("generic", {
 			data: `
 				<h1 class="text-center">Success!</h1>
-				<h5 class="text-center">You can now close this page 😊</h5>
+				<h5 class="text-center">
+					If you want to get Supibot in your channel, fill out <a href="/bot/request-bot/form">this form</a> now.
+				</h5>
+				<h6>Other than that, you can now close this page 😊</h6>
 			`
 		});
 	});
