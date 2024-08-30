@@ -252,6 +252,18 @@ Router.get("/lookup/:user", async (req, res) => {
 		throwHttpErrors: false
 	});
 
+	if (!initialResponse.ok) {
+		console.warn("OSRS API not ok", {
+			player,
+			url,
+			response: {
+				body: initialResponse.body,
+				headers: initialResponse.headers,
+				redirect: initialResponse.redirectUrls
+			}
+		});
+	}
+
 	if (initialResponse.statusCode === 404 && !req.query.seasonal) {
 		// If the user was not found on the "main" highscores, attempt to check their presence on the ironman-only
 		// highscores. Some early accounts will show up in the less populated ranks, rather than the main one.
@@ -269,8 +281,20 @@ Router.get("/lookup/:user", async (req, res) => {
 	}
 
 	if (initialResponse.redirectUrls.length !== 0) {
-		return WebUtils.apiFail(res, 502, "Old School Runescape API is currently unavailable", {
-			redirectUrl: initialResponse.url
+		const psaResponse = await sb.Got("GenericAPI", {
+			url: "https://files.publishing.production.jxp.jagex.com/osrs.json"
+		});
+
+		if (!psaResponse.ok || !psaResponse.body.psa) {
+			return WebUtils.apiFail(res, 502, "Old School Runescape API is unavailable", {
+				redirectUrl: initialResponse.url
+			});
+		}
+
+		const { isDisabled, psa } = psaResponse.body;
+		return WebUtils.apiFail(res, 502, "Old School Runescape API is under maintenance", {
+			isDisabled,
+			psa
 		});
 	}
 	else if (initialResponse.statusCode !== 200) {
