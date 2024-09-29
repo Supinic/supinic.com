@@ -15,8 +15,7 @@ const { getLinkParser } = require("../../utils/link-parser.js");
 module.exports = (function () {
 	"use strict";
 
-	const LinkParser = getLinkParser();
-	const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
+	const videoTypePrefix = process.env.VIDEO_TYPE_REPLACE_PREFIX;
 
 	class Track extends TemplateModule {
 		static async list (specificIDs) {
@@ -443,6 +442,7 @@ module.exports = (function () {
 		}
 
 		static async add (options) {
+			const LinkParser = await getLinkParser();
 			let { tags = []} = options;
 			const { link, addedBy = 1, skipAuthorCheck = false } = options;
 			if (!Array.isArray(tags)) {
@@ -533,6 +533,7 @@ module.exports = (function () {
 				return new Result(false, "Existing track ID does not exist");
 			}
 
+			const LinkParser = await getLinkParser();
 			let parsedLink = null;
 			try {
 				parsedLink = LinkParser.parseLink(reuploadLink);

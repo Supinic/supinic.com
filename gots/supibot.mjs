@@ -2,12 +2,15 @@ export const definition = {
 	name: "Supibot",
 	optionsType: "function",
 	options: (() => {
-		const secure = sb.Config.get("SUPIBOT_API_SECURE", false) ?? false;
-		const protocol = (secure) ? "https" : "http";
-		const port = sb.Config.get("SUPIBOT_API_PORT", false) ?? 80;
+		const url = process.env.SUPIBOT_API_BASE_URL;
+		if (!url) {
+			throw new sb.Error({
+				messsage: "No Supibot API URL configured"
+			});
+		}
 
 		return {
-			prefixUrl: `${protocol}://localhost:${port}`
+			prefixUrl: process.env.SUPIBOT_API_BASE_URL
 		};
 	}),
 	parent: "Global",

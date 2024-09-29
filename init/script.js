@@ -1,8 +1,6 @@
 const initializeDatabase = require("supi-db-init");
 const path = require("path");
 
-require("../db-access.js");
-
 const config = {
 	auth: {
 		user: process.env.MARIA_USER,
@@ -10,14 +8,10 @@ const config = {
 		password: process.env.MARIA_PASSWORD
 	},
 	definitionFilePaths: [
-		"supinic.com/database",
 		"supinic.com/tables/Log",
 		"supinic.com/tables/Error",
 		"supinic.com/tables/Link_Relay",
-		"supinic.com/tables/Session",
-
-		"data/database",
-		"data/tables/Config"
+		"supinic.com/tables/Session"
 	],
 	meta: {
 		dataPath: path.join(__dirname, "initial-data"),

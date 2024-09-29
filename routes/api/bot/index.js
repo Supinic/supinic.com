@@ -20,7 +20,6 @@ module.exports = (function () {
 		["restart", "restart"],
 		["stats", "stats.js"],
 		["song-request", "song-request.js"],
-		["text-to-speech", "tts.js"],
 		["top-chatters", "top-chatters.js"],
 		["user", "user-alias.js"]
 	];

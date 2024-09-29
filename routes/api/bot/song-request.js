@@ -1,10 +1,14 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const Config = require("../../../modules/data/config.js");
 const SongRequest = require("../../../modules/chat-data/song-request.js");
 const VideoType = require("../../../modules/data/video-type.js");
 const WebUtils = require("../../../utils/webutils.js");
+
+const cacheKeys = {
+	TTS_ENABLED: "text-to-speech-state",
+	SONG_REQUESTS_STATE: "song-requests-state"
+};
 
 module.exports = (function () {
 	"use strict";
@@ -18,13 +22,8 @@ module.exports = (function () {
 	 * @apiSuccess {string} state One of "off", "vlc", "cytube", "dubtrack"
 	 */
 	Router.get("/state", async (req, res) => {
-		const state = await Config.selectSingleCustom(q => q
-			.where("Name = %s", "SONG_REQUESTS_STATE")
-		);
-
-		return WebUtils.apiSuccess(res, {
-			state: state.Value
-		});
+		const state = await sb.Cache.getByPrefix(cacheKeys.SONG_REQUESTS_STATE);
+		return WebUtils.apiSuccess(res, { state });
 	});
 
 	/**
@@ -48,11 +47,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/queue", async (req, res) => {
-		const [videoTypes, prefixSymbol, rawData] = await Promise.all([
+		const prefixSymbol = process.env.VIDEO_TYPE_REPLACE_PREFIX;
+		const [videoTypes, rawData] = await Promise.all([
 			VideoType.getParsers(),
-			Config.selectSingleCustom(q => q
-				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
-			),
 			SongRequest.getNormalizedQueue(q => q.where("Status IN %s+", ["Current", "Queued"]))
 		]);
 
@@ -87,11 +84,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} data.parsedLink
 	 */
 	Router.get("/history", async (req, res) => {
-		const [videoTypes, prefixSymbol, rawData] = await Promise.all([
+		const prefixSymbol = process.env.VIDEO_TYPE_REPLACE_PREFIX;
+		const [videoTypes, rawData] = await Promise.all([
 			VideoType.getParsers(),
-			Config.selectSingleCustom(q => q
-				.where("Name = %s", "VIDEO_TYPE_REPLACE_PREFIX")
-			),
 			SongRequest.getNormalizedQueue(q => q
 				.where("Status = %s", "Inactive")
 				.where("Added >= (NOW() - INTERVAL 7 DAY)")

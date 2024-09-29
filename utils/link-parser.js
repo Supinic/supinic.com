@@ -1,24 +1,40 @@
 const LinkParser = require("track-link-parser");
 let linkParser;
 
-const getLinkParser = () => {
+const cacheKeys = {
+	SOUNDCLOUD_CLIENT_ID: "soundcloud-client-id"
+};
+
+const getLinkParser = async () => {
 	if (!linkParser) {
 		const options = {};
-		if (sb.Config.has("API_GOOGLE_YOUTUBE", false)) {
+		if (process.env.API_GOOGLE_YOUTUBE) {
 			options.youtube = {
-				key: sb.Config.get("API_GOOGLE_YOUTUBE")
+				key: process.env.API_GOOGLE_YOUTUBE
 			};
 		}
-		if (sb.Config.has("SOUNDCLOUD_CLIENT_ID", false)) {
+		else {
+			console.log("No Youtube API key configured, skipping Youtube parser");
+		}
+
+		const soundcloudClientID = await sb.Cache.getByPrefix(cacheKeys.SOUNDCLOUD_CLIENT_ID);
+		if (soundcloudClientID) {
 			options.soundcloud = {
-				key: sb.Config.get("SOUNDCLOUD_CLIENT_ID")
+				key: soundcloudClientID
 			};
 		}
-		if (sb.Config.has("BILIBILI_APP_KEY", false) && sb.Config.has("BILIBILI_PRIVATE_TOKEN", false)) {
+		else {
+			console.log("No Soundcloud client ID key configured, skipping Soundcloud parser");
+		}
+
+		if (process.env.BILIBILI_APP_KEY && process.env.BILIBILI_PRIVATE_TOKEN) {
 			options.bilibili = {
-				appKey: sb.Config.get("BILIBILI_APP_KEY"),
-				token: sb.Config.get("BILIBILI_PRIVATE_TOKEN")
+				appKey: process.env.BILIBILI_APP_KEY,
+				token: process.env.BILIBILI_PRIVATE_TOKEN
 			};
+		}
+		else {
+			console.log("No Bilibili configuration, skipping Bilibili parser");
 		}
 
 		linkParser = new LinkParser(options);

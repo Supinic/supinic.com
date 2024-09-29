@@ -5,7 +5,7 @@ export const definition = {
 	expression: "0 0 12 7,21 * *",
 	description: "Updates the \"Available\" status of all music tracks in the database",
 	code: async function updateTracksAvailability () {
-		const LinkParser = getLinkParser();
+		const LinkParser = await getLinkParser();
 		const videoIDs = await sb.Query.getRecordset(rs => rs
 			.select("Track.ID AS ID", "Link", "Available", "Video_Type.Type AS Type")
 			.from("music", "Track")

@@ -1,9 +1,12 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const Config = require("../../../modules/data/config.js");
 const Playsound = require("../../../modules/data/playsound.js");
 const WebUtils = require("../../../utils/webutils.js");
+
+const cacheKeys = {
+	PLAYSOUNDS_ENABLED: "playsounds-enabled"
+};
 
 module.exports = (function () {
 	"use strict";
@@ -11,18 +14,15 @@ module.exports = (function () {
 	/**
 	 * @api {get} /bot/playsound/enabled Playsound - Enabled
 	 * @apiName GetPlaysoundEnabled
-	 * @apiDescription Fetches whether or not the playsounds are currently enabled
+	 * @apiDescription Fetches whether the playsounds are currently enabled
 	 * @apiGroup Stream
 	 * @apiPermission any
 	 * @apiSuccess {boolean} enabled
 	 */
 	Router.get("/enabled", async (req, res) => {
-		const status = await Config.selectSingleCustom(q => q
-			.where("Name = %s", "PLAYSOUNDS_ENABLED")
-		);
-
+		const status = await sb.Cache.getByPrefix(cacheKeys.PLAYSOUNDS_ENABLED);
 		return WebUtils.apiSuccess(res, {
-			enabled: Boolean(Number(status.Value))
+			enabled: Boolean(Number(status))
 		});
 	});
 
