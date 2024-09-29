@@ -12,7 +12,6 @@ const { getLinkParser } = require("../../../utils/link-parser.js");
 module.exports = (function () {
 	"use strict";
 
-	const LinkParser = getLinkParser();
 	const allowedConnectTables = ["Author", "Table"];
 	const allowedAuthorTypes = [
 		"Archiver",
@@ -340,6 +339,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
+		const LinkParser = await getLinkParser();
 		let parsedLink = null;
 		try {
 			parsedLink = LinkParser.parseLink(link);
@@ -467,7 +467,7 @@ module.exports = (function () {
 				.where("ID = %n", reuploadID)
 			);
 
-			reuploadLink = track.Prefix.replace(sb.Confif.get("VIDEO_TYPE_REPLACE_PREFIX"), track.Link);
+			reuploadLink = track.Prefix.replace(process.env.VIDEO_TYPE_REPLACE_PREFIX, track.Link);
 			reuploadID = null;
 		}
 
@@ -515,6 +515,7 @@ module.exports = (function () {
 		}
 
 		const { url } = req.query;
+		const LinkParser = await getLinkParser();
 		if (!url) {
 			return WebUtils.apiFail(res, 400, "No url provided");
 		}

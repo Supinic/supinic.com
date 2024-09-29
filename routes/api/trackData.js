@@ -6,7 +6,6 @@ const WebUtils = require("../../utils/webutils.js");
 
 module.exports = (function () {
 	"use strict";
-	const LinkParser = getLinkParser();
 
 	/**
 	 * @api {get} /trackData/fetch/ Fetch track data
@@ -38,6 +37,7 @@ module.exports = (function () {
 			WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
+		const LinkParser = await getLinkParser();
 		try {
 			const data = await LinkParser.fetchData(url);
 			if (data && data.created) {
@@ -68,6 +68,7 @@ module.exports = (function () {
 			WebUtils.apiFail(res, 400, "No URL provided");
 		}
 
+		const LinkParser = await getLinkParser();
 		try {
 			const isAvailable = await LinkParser.checkAvailable(url);
 			return WebUtils.apiSuccess(res, {

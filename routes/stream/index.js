@@ -6,7 +6,6 @@ module.exports = (function () {
 
 	const subroutes = [
 		["game", "game.js"],
-		["tts", "tts.js"],
 		["playsound", "playsound.js"],
 		["recipe", "recipe.js"],
 		["song-request", "song-request.js"]

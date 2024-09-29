@@ -549,7 +549,7 @@ module.exports = class WebUtils {
 	}
 
 	static parseVideoLink (type, link) {
-		const videoTypePrefix = sb.Config.get("VIDEO_TYPE_REPLACE_PREFIX");
+		const videoTypePrefix = process.env.VIDEO_TYPE_REPLACE_PREFIX;
 		const fullVideoType = WebUtils.videoTypes[type];
 
 		if (!fullVideoType) {

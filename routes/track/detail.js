@@ -7,8 +7,6 @@ const WebUtils = require("../../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
-	const LinkParser = getLinkParser();
-
 	Router.get("/", async (req, res) => res.sendStatus(200));
 
 	Router.get("/new", async (req, res) => {
@@ -39,6 +37,7 @@ module.exports = (function () {
 				break;
 			}
 			case 3: {
+				const LinkParser = await getLinkParser();
 				const data = await LinkParser.fetchData(trackData.parsedLink);
 				contentType = "audio";
 				if (!data) {

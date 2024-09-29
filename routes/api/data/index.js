@@ -13,7 +13,6 @@ module.exports = (function () {
 		["origin", "origin.js"],
 		["slots-winner", "slots-winner.js"],
 		["suggestion", "suggestion.js"],
-		["tts", "tts.js"]
 	];
 
 	for (const [name, link] of subroutes) {

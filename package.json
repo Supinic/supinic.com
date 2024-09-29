@@ -25,10 +25,10 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js",
+    "start": "node --env-file=.env ./app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "init": "node ./init/script.js"
+    "init": "node --env-file=.env ./init/script.js"
   },
   "author": "Supinic",
   "license": "ISC",
