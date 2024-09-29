@@ -435,7 +435,7 @@ module.exports = class WebUtils {
 	static async executeSupibotRequest (res, url, searchParams = {}) {
 		let response;
 		try {
-			response = await sb.Got("Supibot", {
+			response = await sb.Got.get("Supibot")({
 				url,
 				searchParams
 			});
@@ -493,7 +493,7 @@ module.exports = class WebUtils {
 			return WebUtils.#botPlatformData;
 		}
 
-		const response = await sb.Got("Supibot", { url: "platform/list" });
+		const response = await sb.Got.get("Supibot")({ url: "platform/list" });
 		if (response.ok) {
 			const result = {};
 			for (const platform of response.body.data) {
@@ -518,7 +518,7 @@ module.exports = class WebUtils {
 			return WebUtils.#botCommandPrefix;
 		}
 
-		const response = await sb.Got("Supibot", { url: "command/prefix" });
+		const response = await sb.Got.get("Supibot")({ url: "command/prefix" });
 		if (response.ok) {
 			WebUtils.#botCommandPrefix = response.body.data.prefix;
 			return WebUtils.#botCommandPrefix;

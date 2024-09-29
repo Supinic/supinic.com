@@ -47,7 +47,7 @@ module.exports = (function () {
 
 		let response;
 		try {
-			response = await sb.Got("Supibot", {
+			response = await sb.Got.get("Supibot")({
 				url: `channel/${type}`,
 				searchParams: {
 					channel: channel.Name

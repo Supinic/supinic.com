@@ -30,6 +30,7 @@ module.exports = (function () {
 			});
 		}
 
+		const supibotGot = sb.Got.get("Supibot");
 		const [
 			tableSizes,
 			channelDataResponse,
@@ -47,8 +48,8 @@ module.exports = (function () {
 				.where("TABLE_SCHEMA = %s", "chat_data")
 				.where("TABLE_NAME IN %s+", fetchSizeTables)
 			),
-			sb.Got("Supibot", "channel/stats"),
-			sb.Got("Supibot", "platform/discordGuildCount"),
+			supibotGot({ url: "channel/stats" }),
+			supibotGot({ url: "platform/discordGuildCount" }),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "User_Alias")
@@ -56,8 +57,8 @@ module.exports = (function () {
 				.flat("Total")
 			),
 			sb.Cache.getKeysByPrefix("sb-user-*", {}),
-			sb.Got("RPi4", "ssd/size"),
-			sb.Got("Supibot", "command/list"),
+			sb.Got.get("RPi4")({ url: "ssd/size" }),
+			supibotGot({ url: "command/list" }),
 			sb.Query.getRecordset(rs => rs
 				.select("MAX(ID) AS Total")
 				.from("chat_data", "AFK")

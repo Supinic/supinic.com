@@ -7,7 +7,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/faq/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/faq/list"
+		});
+		const { data } = response.body;
 		const renderData = data.map(i => ({
 			Question: i.question,
 			Answer: i.answer,
@@ -26,7 +29,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const response = await sb.Got("Supinic", `data/faq/detail/${req.params.id}`);
+		const response = await sb.Got.get("Supinic")({
+			url: `data/faq/detail/${req.params.id}`
+		});
+
 		if (!response.ok) {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}

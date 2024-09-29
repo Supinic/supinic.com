@@ -167,7 +167,7 @@ module.exports = (function () {
 		}
 
 		await AFK.update(check.ID, { Active: false });
-		await sb.Got("Supibot", {
+		await sb.Got.get("Supibot")({
 			url: "afk/reloadSpecific",
 			searchParams: {
 				ID: check.ID

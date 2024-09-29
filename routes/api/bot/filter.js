@@ -55,7 +55,7 @@ module.exports = (function () {
 
 		let response;
 		try {
-			response = await sb.Got("Supibot", {
+			response = await sb.Got.get("Supibot")({
 				url: "command/execute",
 				searchParams: {
 					invocation: filterTypeMap[type][req.method.toLowerCase()],
@@ -241,7 +241,7 @@ module.exports = (function () {
 
 		let response;
 		try {
-			response = await sb.Got("Supibot", {
+			response = await sb.Got.get("Supibot")({
 				url: "filter/command",
 				searchParams: {
 					command: name

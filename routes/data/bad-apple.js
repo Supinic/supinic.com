@@ -7,7 +7,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/bad-apple/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/bad-apple/list"
+		});
+		const { data } = response.body;
 		const renderData = data.map(i => {
 			const notesString = (i.notes) ? " 📝" : "";
 			const detailLink = `<a href="/data/bad-apple/detail/${i.ID}">${i.ID}${notesString}</a>`;
@@ -55,15 +58,18 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", `data/bad-apple/detail/${req.params.id}`);
-		if (statusCode !== 200) {
-			return res.status(statusCode).render("error", {
-				error: WebUtils.formatErrorMessage(statusCode),
-				message: body.error.message
+		const response = await sb.Got.get("Supinic")({
+			url: `data/bad-apple/detail/${req.params.id}`
+		});
+
+		if (!response.ok) {
+			return res.status(response.statusCode).render("error", {
+				error: WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
 			});
 		}
 
-		const detail = body.data;
+		const detail = response.body.data;
 		const timestamp = (detail.timestamp) ? `?t=${detail.timestamp}` : "";
 		const data = {
 			ID: detail.ID,

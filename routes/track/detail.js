@@ -17,8 +17,11 @@ module.exports = (function () {
 
 	Router.get("/:id", async (req, res) => {
 		const trackID = Number(req.params.id);
-		const { statusCode, body } = await sb.Got("Supinic", `track/detail/${trackID}`);
+		const response = await sb.Got.get("Supinic")({
+			url: `track/detail/${trackID}`
+		});
 
+		const { statusCode, body } = response;
 		if (statusCode !== 200 || body.data === null) {
 			return res.status(404).render("error", {
 				error: "404 Not Found",
@@ -126,7 +129,7 @@ module.exports = (function () {
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			// data can be null (if no favourite exists) or a proper API response
-			const { data } = await sb.Got("Supinic", {
+			const { data } = await sb.Got.get("Supinic")({
 				url: `track/favourite/user/${auth.userID}/track/${trackID}`
 			}).json();
 

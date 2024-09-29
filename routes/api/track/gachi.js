@@ -54,8 +54,11 @@ module.exports = (function () {
 			.single()
 		);
 
-		const response = await sb.Got("Supinic", `track/detail/${track.ID}`);
-		if (response.statusCode !== 200) {
+		const response = await sb.Got.get("Supinic")({
+			url: `track/detail/${track.ID}`
+		});
+
+		if (!response.ok) {
 			return WebUtils.apiFail(res, response.statusCode, response.body.message, {
 				causeData: response.body
 			});

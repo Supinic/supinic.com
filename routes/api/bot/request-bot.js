@@ -72,7 +72,7 @@ module.exports = (function () {
 		}
 
 		if (platform === PLATFORM_TWITCH) {
-			const helixChannelResponse = await sb.Got("Helix", {
+			const helixChannelResponse = await sb.Got.get("Helix")({
 				url: "users",
 				searchParams: {
 					login: targetChannel
@@ -99,7 +99,7 @@ module.exports = (function () {
 				});
 
 				if (previousChannelName) {
-					const response = await sb.Got("Supibot", {
+					const response = await sb.Got.get("Supibot")({
 						url: "command/execute",
 						searchParams: {
 							invocation: "bot",
@@ -184,7 +184,7 @@ module.exports = (function () {
 
 		let twitchChannelID;
 		if (platform === PLATFORM_TWITCH) {
-			const helixUserResponse = await sb.Got("Helix", {
+			const helixUserResponse = await sb.Got.get("Helix")({
 				url: "users",
 				searchParams: {
 					login: targetChannel
@@ -235,23 +235,23 @@ module.exports = (function () {
 		let extraNotes = "";
 		if (platform === PLATFORM_TWITCH) {
 			const [bttv, ffz, sevenTv, recent, user, suggests] = await Promise.all([
-				sb.Got("Global", {
+				sb.Got.get("Global")({
 					url: `https://api.betterttv.net/3/cached/users/twitch/${twitchChannelID}`
 				}),
-				sb.Got("Global", {
+				sb.Got.get("Global")({
 					url: `https://api.frankerfacez.com/v1/room/${targetChannel}`
 				}),
-				sb.Got("Global", {
+				sb.Got.get("Global")({
 					url: `https://7tv.io/v3/users/twitch/${twitchChannelID}`
 				}),
-				sb.Got("Global", {
+				sb.Got.get("Global")({
 					url: `https://recent-messages.robotty.de/api/v2/recent-messages/${targetChannel}`,
 					searchParams: {
 						hide_moderation_messages: "true",
 						limit: "1"
 					}
 				}),
-				sb.Got("Global", {
+				sb.Got.get("Global")({
 					url: `https://api.ivr.fi/v2/twitch/user`,
 					searchParams: {
 						id: twitchChannelID

@@ -5,7 +5,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/video-request/history", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "cytube/video-request/history").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "cytube/video-request/history"
+		});
+		const { data } = response.body;
 		const printData = data.map(i => ({
 			ID: i.ID,
 			Link: `<a href="${i.fullLink}">${i.link}</a>`,

@@ -72,7 +72,10 @@ module.exports = (function () {
 	// --- miscellaneous endpoints ---
 
 	Router.get("/stats", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/suggestion/stats").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/suggestion/stats"
+		});
+		const { data } = response.body;
 		const printData = data
 			.filter(i => i.total >= 10)
 			.map(i => ({
@@ -114,17 +117,21 @@ module.exports = (function () {
 
 	Router.get("/stats/user/:user", async (req, res) => {
 		const escaped = encodeURIComponent(req.params.user);
-		const { statusCode, body } = await sb.Got("Supinic", `data/suggestion/stats/user/${escaped}`);
-		if (statusCode !== 200) {
-			return res.status(statusCode).render("error", {
-				error: WebUtils.formatErrorMessage(statusCode),
-				message: body.error.message
+		const response = await sb.Got.get("Supinic")({
+			url: `data/suggestion/stats/user/${escaped}`
+		});
+
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
 			});
 		}
 
-		const printData = body.data.statuses.map(i => {
-			const percentTotal = sb.Utils.round(i.userAmount / body.data.globalTotal * 100, 2);
-			const percentUser = sb.Utils.round(i.userAmount / body.data.userTotal * 100, 2);
+		const { data } = response.body;
+		const printData = data.statuses.map(i => {
+			const percentTotal = sb.Utils.round(i.userAmount / data.globalTotal * 100, 2);
+			const percentUser = sb.Utils.round(i.userAmount / data.userTotal * 100, 2);
 
 			return {
 				Status: i.status ?? "Pending review",
@@ -156,7 +163,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", `data/suggestion/${suggestionID}`).json();
+		const response = await sb.Got.get("Supinic")({
+			url: `data/suggestion/${suggestionID}`
+		});
+		const { data } = response.body;
 		if (!data) {
 			return res.status(404).render("error", {
 				error: "404 Not found",

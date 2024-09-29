@@ -5,7 +5,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "track/author/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "track/author/list"
+		});
+		const { data } = response.body;
 		const printData = data.map(row => ({
 			Name: row.name,
 			Aliases: (row.aliases.length > 0)
@@ -41,7 +44,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", `track/author/${authorID}`).json();
+		const response = await sb.Got.get("Supinic")({
+			url: `track/author/${authorID}`
+		});
+		const { data } = response.body;
 		const contactData = data.contacts.map(i => (
 			`<li>${i.website}: <a target="_blank" rel="noopener noreferrer" href="${i.link}">${i.name}</a></li>`
 		));

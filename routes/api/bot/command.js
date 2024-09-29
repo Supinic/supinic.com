@@ -55,7 +55,7 @@ module.exports = (function () {
 		}
 
 		const { userData } = auth;
-		const response = await sb.Got("Supibot", {
+		const response = await sb.Got.get("Supibot")({
 			url: "command/execute",
 			searchParams: {
 				invocation,
@@ -112,7 +112,7 @@ module.exports = (function () {
 	Router.get("/list", async (req, res) => {
 		let response;
 		try {
-			response = await sb.Got("Supibot", {
+			response = await sb.Got.get("Supibot")({
 				url: `command/list`
 			});
 		}
@@ -162,7 +162,7 @@ module.exports = (function () {
 			searchParams.includeDynamicDescription = "true";
 		}
 
-		const response = await sb.Got("Supibot", {
+		const response = await sb.Got.get("Supibot")({
 			url: "command/info",
 			searchParams
 		});

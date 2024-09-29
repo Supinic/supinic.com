@@ -5,7 +5,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/asset/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "crypto-game/asset/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "crypto-game/asset/list"
+		});
+		const { data } = response.body;
 
 		const baseline = data.find(i => i.baseline);
 		const priceColumn = `Price (${baseline.code})`;
@@ -33,7 +36,11 @@ module.exports = (function () {
 	});
 
 	Router.get("/portfolio/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "crypto-game/portfolio/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "crypto-game/portfolio/list"
+		});
+
+		const { data } = response.body;
 		const printData = data
 			.sort((a, b) => b.convertedTotal - a.convertedTotal)
 			.map((i, index) => {

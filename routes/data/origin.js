@@ -67,7 +67,7 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", {
+		const { data } = await sb.Got.get("Supinic")({
 			url: "data/origin/list",
 			searchParams: {
 				skipReplacedEmotes: "true"
@@ -84,7 +84,7 @@ module.exports = (function () {
 
 	Router.get("/lookup", async (req, res) => {
 		const ID = (req.query.ID ?? "");
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: "data/origin/lookup",
 			searchParams: {
 				ID,
@@ -110,7 +110,10 @@ module.exports = (function () {
 
 	Router.get("/detail/:id", async (req, res) => {
 		const id = Number(req.params.id);
-		const response = await sb.Got("Supinic", `data/origin/detail/${id}`);
+		const response = await sb.Got.get("Supinic")({
+			url: `data/origin/detail/${id}`
+		});
+
 		if (response.statusCode !== 200) {
 			return res.status(response.statusCode).render("error", {
 				error: WebUtils.formatErrorMessage(response.statusCode),

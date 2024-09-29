@@ -17,7 +17,7 @@ export const definition = {
 			.flat("Game_ID")
 		);
 
-		const response = await sb.Got("Global", {
+		const response = await sb.Got.get("Global")({
 			responseType: "json",
 			url: "https://prices.runescape.wiki/api/v1/osrs/mapping"
 		});

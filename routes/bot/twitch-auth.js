@@ -15,7 +15,7 @@ const AUTHORIZE_SEARCH_PARAMS = new URLSearchParams({
 class TwitchBotStrategy extends OAuth2Strategy {
 	// noinspection JSUnusedGlobalSymbols
 	async userProfile (accessToken, done) {
-		const response = await sb.Got("Global", {
+		const response = await sb.Got.get("Global")({
 			method: "GET",
 			throwHttpErrors: false,
 			responseType: "json",
@@ -86,7 +86,7 @@ module.exports = (function () {
 				const typeString = (type.trim().length === 0) ? "user" : type;
 
 				await sb.Cache.setByPrefix(cacheKey, data);
-				await sb.Got("Supibot", {
+				await sb.Got.get("Supibot")({
 					url: "channel/send",
 					searchParams: {
 						name: "1243201851311263804",

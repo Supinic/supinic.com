@@ -30,7 +30,11 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-		const { data: { bots, badges } } = await sb.Got("Supinic", "bot-program/bot/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot-program/bot/list"
+		});
+
+		const { data: { bots, badges } } = response.body;
 		const printData = bots.map(bot => {
 			const botBadges = bot.badges.map(row => createBadge(row, badges));
 			return {

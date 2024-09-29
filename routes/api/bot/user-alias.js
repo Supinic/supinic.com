@@ -58,7 +58,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Provided user does not own the provided alias");
 		}
 
-		const response = await sb.Got("Supibot", {
+		const response = await sb.Got.get("Supibot")({
 			url: "command/execute",
 			searchParams: {
 				invocation: "alias",

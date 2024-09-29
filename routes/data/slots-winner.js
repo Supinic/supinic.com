@@ -5,7 +5,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/leaderboard", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/slots-winner/leaderboard").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/slots-winner/leaderboard"
+		});
+		const { data } = response.body;
 
 		const printData = data.sort((a, b) => b.odds - a.odds).map(i => ({
 			Rank: `<a href="/data/slots-winner/detail/${i.ID}">${i.rank}</a>`,
@@ -25,7 +28,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { data } = await sb.Got("Supinic", `data/slots-winner/detail/${req.params.id}`).json();
+		const response = await sb.Got.get("Supinic")({
+			url: `data/slots-winner/detail/${req.params.id}`
+		});
+		const { data } = response.body;
 
 		const printData = {
 			Odds: sb.Utils.round(data.odds, 3),

@@ -130,7 +130,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/alias/detail/:id", async (req, res) => {
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: `bot/user/alias/detail/${req.params.id}`,
 			throwHttpErrors: false,
 			searchParams: {
@@ -150,7 +150,7 @@ module.exports = (function () {
 
 	Router.get("/:username/alias/list", async (req, res) => {
 		const { username } = req.params;
-		const aliasResponse = await sb.Got("Supinic", {
+		const aliasResponse = await sb.Got.get("Supinic")({
 			url: `bot/user/${encodeURIComponent(username)}/alias/list`,
 			searchParams: {
 				includeArguments: "true"
@@ -377,7 +377,7 @@ module.exports = (function () {
 
 	Router.get("/:username/alias/detail/:alias", async (req, res) => {
 		const { alias, username } = req.params;
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: `bot/user/${encodeURIComponent(username)}/alias/detail/${alias}`,
 			throwHttpErrors: false,
 			searchParams: {

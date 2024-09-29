@@ -44,7 +44,10 @@ module.exports = (function () {
 	};
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/changelog/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/changelog/list"
+		});
+		const { data } = response.body;
 		formatChangelogList(req, res, data);
 	});
 
@@ -54,7 +57,7 @@ module.exports = (function () {
 			return;
 		}
 
-		const { data } = await sb.Got("Supinic", {
+		const { data } = await sb.Got.get("Supinic")({
 			url: "data/changelog/lookup",
 			searchParams: {
 				ID: req.query.ID // should always be comma-separated string
@@ -65,15 +68,19 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:id", async (req, res) => {
-		const { statusCode, body } = await sb.Got("Supinic", `data/changelog/detail/${req.params.id}`);
-		if (statusCode !== 200) {
-			return res.status(statusCode).render("error", {
-				error: WebUtils.formatErrorMessage(statusCode),
-				message: body.error.message
+		const response = await sb.Got.get("Supinic")({
+			url: `data/changelog/detail/${req.params.id}`
+		});
+
+
+		if (response.statusCode !== 200) {
+			return res.status(response.statusCode).render("error", {
+				error: WebUtils.formatErrorMessage(response.statusCode),
+				message: response.body.error.message
 			});
 		}
 
-		const detail = body.data;
+		const detail = response.body.data;
 		const data = {
 			ID: detail.ID,
 			Type: detail.type,

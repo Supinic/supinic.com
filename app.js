@@ -82,7 +82,7 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class TwitchStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const response = await sb.Got("Global", {
+			const response = await sb.Got.get("Global")({
 				method: "GET",
 				throwHttpErrors: false,
 				responseType: "json",
@@ -106,7 +106,7 @@ const importModule = async (module, path) => {
 	// noinspection JSUnusedGlobalSymbols
 	class GithubStrategy extends OAuth2Strategy {
 		async userProfile (accessToken, done) {
-			const { statusCode, body } = await sb.Got("Global", {
+			const { statusCode, body } = await sb.Got.get("Global")({
 				method: "GET",
 				throwHttpErrors: false,
 				url: "https://api.github.com/user",
@@ -378,7 +378,7 @@ const importModule = async (module, path) => {
 
 		if (requiredConfigs.every(config => sb.Config.has(config, true))) {
 			const adminUserID = sb.Config.get("ADMIN_USER_ID");
-			const streamResponse = await sb.Got("Helix", {
+			const streamResponse = await sb.Got.get("Helix")({
 				url: "streams",
 				searchParams: {
 					user_id: adminUserID
@@ -545,7 +545,7 @@ const importModule = async (module, path) => {
 					type: profile.type
 				}));
 
-				await sb.Got("Supibot", {
+				await sb.Got.get("Supibot")({
 					url: "user/invalidateCache",
 					searchParams: {
 						name: userData.Name

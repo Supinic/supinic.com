@@ -81,7 +81,7 @@ module.exports = (function () {
 
 		let userID = twitchUserID;
 		if (username) {
-			const helixChannelResponse = await sb.Got("Helix", {
+			const helixChannelResponse = await sb.Got.get("Helix")({
 				url: "users",
 				searchParams: {
 					login: username

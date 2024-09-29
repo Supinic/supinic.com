@@ -5,8 +5,11 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const { data: playsounds } = await sb.Got("Supinic", "bot/playsound/list").json();
-		const data = playsounds.map(i => ({
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/playsound/list"
+		});
+
+		const data = response.body.data.map(i => ({
 			Name: i.name,
 			Cooldown: {
 				dataOrder: i.cooldown,

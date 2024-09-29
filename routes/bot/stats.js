@@ -46,7 +46,10 @@ module.exports = (function () {
 
 	Router.get("/", async (req, res) => {
 		const printData = {};
-		const { data } = await sb.Got("Supinic", "bot/stats").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/stats"
+		});
+		const { data } = response.body;
 
 		for (const [topKey, topValue] of Object.entries(data)) {
 			for (const [subKey, subValue] of Object.entries(topValue)) {

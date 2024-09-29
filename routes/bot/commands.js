@@ -111,7 +111,9 @@ module.exports = (function () {
 	});
 
 	Router.get("/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "bot/command/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/commands/list"
+		});
 
 		let isDeveloper = false;
 		if (res.locals.authUser?.userData) {
@@ -119,6 +121,7 @@ module.exports = (function () {
 			isDeveloper = Boolean(flag);
 		}
 
+		const { data } = response.body;
 		const printData = data
 			.filter(i => {
 				if (isDeveloper) {
@@ -170,7 +173,7 @@ module.exports = (function () {
 	Router.get("/detail/:identifier", async (req, res) => {
 		const name = req.params.identifier;
 		const identifier = encodeURIComponent(name);
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: `bot/command/detail/${identifier}`,
 			searchParams: {
 				includeDynamicDescription: "true"
@@ -203,7 +206,7 @@ module.exports = (function () {
 
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
-			const response = await sb.Got("Supibot", {
+			const response = await sb.Got.get("Supibot")({
 				url: "filter/userCommand",
 				searchParams: {
 					userID: auth.userID,
@@ -235,7 +238,7 @@ module.exports = (function () {
 			}
 		}
 
-		const filterResponse = await sb.Got("Supibot", {
+		const filterResponse = await sb.Got.get("Supibot")({
 			url: `filter/command`,
 			throwHttpErrors: false,
 			searchParams: {

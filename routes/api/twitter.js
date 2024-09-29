@@ -100,7 +100,7 @@ const defaults = {
 
 // eslint-disable-next-line no-unused-vars
 const fetchEntryPageBody = async () => {
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		url: `https://twitter.com/pajlada`,
 		responseType: "text"
 	});
@@ -133,7 +133,7 @@ const fetchMainFileBody = async (entryPageBody) => {
 		};
 	}
 
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		url: `https://abs.twimg.com/responsive-web/client-web/${filename}`,
 		responseType: "text"
 	});
@@ -173,7 +173,7 @@ const fetchBearerToken = (mainFileBody) => {
 };
 
 const fetchGuestToken = async (bearerToken) => {
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		method: "POST",
 		responseType: "json",
 		url: `https://api.twitter.com/1.1/guest/activate.json`,
@@ -225,11 +225,11 @@ const fetchEndpointSlugs = async (entryPageBody) => {
 		};
 	}
 
-	const usersPromise = sb.Got("FakeAgent", {
+	const usersPromise = sb.Got.get("FakeAgent")({
 		responseType: "text",
 		url: `https://abs.twimg.com/responsive-web/client-web/endpoints.UsersGraphQL.${userFileName}a.js`
 	});
-	const timelinePromise = sb.Got("FakeAgent", {
+	const timelinePromise = sb.Got.get("FakeAgent")({
 		responseType: "text",
 		url: `https://abs.twimg.com/responsive-web/client-web/endpoints.ProfileTimelines.${timelineFileName}a.js`
 	});
@@ -287,7 +287,7 @@ const fetchUserId = async (data) => {
 	const variablesString = encodeURIComponent(JSON.stringify(variables));
 	const featuresString = encodeURIComponent(JSON.stringify(features));
 
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		url: `https://api.twitter.com/graphql/${slug}/UserByScreenName?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
@@ -348,7 +348,7 @@ const fetchTimeline = async (data) => {
 	const featuresString = encodeURIComponent(JSON.stringify(features));
 
 	const endpoint = timelineUrls[endpointType];
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		url: `https://api.twitter.com/graphql/${slug}/${endpoint}?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
@@ -544,7 +544,7 @@ Router.get("/syndication/:username", async (req, res) => {
 	const { username } = req.params;
 	const { includeReplies } = req.query;
 
-	const response = await sb.Got("FakeAgent", {
+	const response = await sb.Got.get("FakeAgent")({
 		url: `https://syndication.twitter.com/srv/timeline-profile/screen-name/${username}`,
 		searchParams: {
 			includeReplies: String(Boolean(includeReplies))

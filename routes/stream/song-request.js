@@ -44,7 +44,10 @@ module.exports = (function () {
 
 	Router.get("/queue", async (req, res) => {
 		const header = ["ID", "User", "Name", "Duration", "Segment", "Status"];
-		const { data } = await sb.Got("Supinic", "bot/song-request/queue").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/song-request/queue"
+		});
+		const { data } = response.body;
 
 		res.render("generic-list-table", {
 			title: "Current song request queue at Supinic",
@@ -56,7 +59,10 @@ module.exports = (function () {
 
 	Router.get("/history", async (req, res) => {
 		const header = ["User", "Name", "Duration", "Segment", "Added"];
-		const { data } = await sb.Got("Supinic", "bot/song-request/history").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/song-request/history"
+		});
+		const { data } = response.body;
 
 		res.render("generic-list-table", {
 			title: "History of song requests at Supinic",

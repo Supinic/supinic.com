@@ -5,7 +5,10 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/tts/google/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/tts/google/list"
+		});
+		const { data } = response.body;
 		const renderData = data.map(i => ({
 			Language: i.language,
 			Locale: i.locale,
@@ -31,7 +34,10 @@ module.exports = (function () {
 	});
 
 	Router.get("/streamelements/list", async (req, res) => {
-		const { data } = await sb.Got("Supinic", "data/tts/streamelements/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "data/tts/streamelements/list"
+		});
+		const { data } = response.body;
 		const renderData = data.map(i => ({
 			Name: i.name,
 			Language: i.lang,

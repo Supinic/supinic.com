@@ -5,8 +5,11 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/activity/list", async (req, res) => {
-		const { data: rawData } = await sb.Got("Supinic", "osrs/activity/list").json();
-		const printData = rawData.map(row => {
+		const response = await sb.Got.get("Supinic")({
+			url: "osrs/activity/list"
+		});
+
+		const printData = response.body.data.map(row => {
 			const { afk, hourly } = row.data;
 			const hourlyExperience = sb.Utils.round(Object.values(hourly.out.experience)[0], 0);
 			const gpxp = sb.Utils.round(((hourly.out.price ?? 0) - (hourly.in.price ?? 0)) / hourlyExperience, 2);

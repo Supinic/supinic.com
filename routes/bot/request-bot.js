@@ -64,7 +64,7 @@ module.exports = (function () {
 			});
 		}
 
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: "bot/channel/previousList",
 			searchParams: {
 				username: userData.Name

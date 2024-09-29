@@ -31,7 +31,10 @@ module.exports = (function () {
 		const { id } = req.params;
 
 		if (!metaCache.has(id)) {
-			const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/meta`);
+			const response = await sb.Got.get("Supinic")({
+				url: `data/dall-e/detail/${id}/meta`
+			});
+
 			if (response.statusCode !== 200) {
 				return res.status(response.statusCode).render("error", {
 					error: WebUtils.formatErrorMessage(response.statusCode),
@@ -66,8 +69,10 @@ module.exports = (function () {
 
 	Router.get("/detail/:id/preview/:index", async (req, res) => {
 		const { id, index } = req.params;
+		const response = await sb.Got.get("Supinic")({
+			url: `data/dall-e/detail/${id}/preview/${index}`
+		});
 
-		const response = await sb.Got("Supinic", `data/dall-e/detail/${id}/preview/${index}`);
 		if (response.statusCode === 400) {
 			return res.status(400).render("error", {
 				error: WebUtils.formatErrorMessage(400),

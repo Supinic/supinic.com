@@ -79,8 +79,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", "track/favourite/list").json();
-		return prettify(res, data, userID);
+		const response = await sb.Got.get("Supinic")({
+			url: "track/favourite/list"
+		});
+		return prettify(res, response.bodydata, userID);
 	});
 
 	Router.get("/list/user/:id", async (req, res) => {
@@ -92,7 +94,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", "track/favourite/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "track/favourite/list"
+		});
+		const { data } = response.body;
 		return prettify(res, data, userID);
 	});
 

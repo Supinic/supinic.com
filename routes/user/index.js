@@ -44,7 +44,7 @@ module.exports = (function () {
 
 		await User.setDataProperty(userData.ID, "authKey", authKey);
 
-		await sb.Got("Supibot", {
+		await sb.Got.get("Supibot")({
 			url: "user/invalidateCache",
 			searchParams: {
 				name: userData.Name
@@ -59,7 +59,7 @@ module.exports = (function () {
 
 		await User.setDataProperty(userData.ID, "authKey", null);
 
-		await sb.Got("Supibot", {
+		await sb.Got.get("Supibot")({
 			url: "user/invalidateCache",
 			searchParams: {
 				name: userData.Name
@@ -156,7 +156,7 @@ module.exports = (function () {
 		const escapedUsername = encodeURIComponent(userData.Name);
 
 		const searchParams = WebUtils.authenticateLocalRequest(userData.ID, null);
-		const response = await sb.Got("Supinic", {
+		const response = await sb.Got.get("Supinic")({
 			url: `bot/user/${escapedUsername}/data/list`,
 			searchParams: searchParams.toString()
 		});
@@ -169,7 +169,7 @@ module.exports = (function () {
 		}
 
 		const filterSearchParams = WebUtils.authenticateLocalRequest(userData.ID, null);
-		const filterResponse = await sb.Got("Supinic", {
+		const filterResponse = await sb.Got.get("Supinic")({
 			url: `bot/filter/user/list`,
 			searchParams: filterSearchParams.toString()
 		});
@@ -181,7 +181,7 @@ module.exports = (function () {
 			});
 		}
 
-		const subscriptionResponse = await sb.Got("Supinic", {
+		const subscriptionResponse = await sb.Got.get("Supinic")({
 			url: `data/event-subscription/${userData.ID}/list`,
 			searchParams: filterSearchParams.toString()
 		});

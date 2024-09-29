@@ -7,11 +7,13 @@ module.exports = (function () {
 	"use strict";
 
 	Router.get("/list", async (req, res) => {
-		const { data: rawData } = await sb.Got("Supinic", "bot/channel/list").json();
+		const response = await sb.Got.get("Supinic")({
+			url: "bot/channel/list"
+		});
 
 		// Use all non-Discord channels, and only show Discord channels with a description
 		// Those who aren't are most likely inactive.
-		const data = rawData.filter(i => i.platformName !== "Discord" || i.description).map(i => ({
+		const data = response.body.data.filter(i => i.platformName !== "Discord" || i.description).map(i => ({
 			Name: (i.platformName === "Discord")
 				? (i.description ?? "(unnamed discord channel)")
 				: i.name,
@@ -64,7 +66,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", `bot/channel/detail/${channelID}`).json();
+		const response = await sb.Got.get("Supinic")({
+			url: `bot/channel/detail/${channelID}`
+		});
+		const { data } = response.body;
 
 		const ambassadorsBody = data.ambassadorList.map(i => `<li>${i.name}</li>`).join("");
 		const ambassadorsHTML = (data.ambassadorList.length === 0)
@@ -98,7 +103,10 @@ module.exports = (function () {
 			});
 		}
 
-		const { data } = await sb.Got("Supinic", `bot/filter/channel/${channelID}/list`).json();
+		const response = await sb.Got.get("Supinic")({
+			url: `bot/filter/channel/${channelID}/list`
+		});
+		const { data } = response.body;
 		const printData = data.map(i => ({
 			ID: i.ID,
 			User: i.userName ?? "(all)",
@@ -124,8 +132,11 @@ module.exports = (function () {
 			});
 		}
 
-		const response = await sb.Got("Supinic", `bot/channel/detail/${channelID}/alias/list`);
-		if (response.statusCode !== 200) {
+		const response = await sb.Got.get("Supinic")({
+			url: `bot/channel/detail/${channelID}/alias/list`
+		});
+
+		if (!response.ok) {
 			return WebUtils.handleError(res, response.statusCode, response.body.error?.message);
 		}
 

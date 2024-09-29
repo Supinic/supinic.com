@@ -21,7 +21,7 @@
     "track-link-parser": "https://github.com/supinic/track-link-parser"
   },
   "engines": {
-    "node": ">= 16.0"
+    "node": ">= 20.0"
   },
   "main": "app.js",
   "scripts": {

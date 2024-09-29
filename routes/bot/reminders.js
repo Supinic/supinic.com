@@ -27,7 +27,7 @@ module.exports = (function () {
 			searchParams.set("ID", ID);
 		}
 
-		const { statusCode, body } = await sb.Got("Supinic", {
+		const { statusCode, body } = await sb.Got.get("Supinic")({
 			url: `bot/reminder/${target}`,
 			searchParams: searchParams.toString(),
 			throwHttpErrors: false
@@ -210,7 +210,7 @@ module.exports = (function () {
 		}
 
 		const searchParams = WebUtils.authenticateLocalRequest(userID, null);
-		const { statusCode, body } = await sb.Got("Supinic", {
+		const { statusCode, body } = await sb.Got.get("Supinic")({
 			url: `bot/reminder/${ID}`,
 			searchParams: searchParams.toString()
 		});
