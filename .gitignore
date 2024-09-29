@@ -5,3 +5,4 @@
 db-access.js
 ecosystem.config.js
 /.yarn/
+.env
