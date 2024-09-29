@@ -6,7 +6,6 @@ const VideoType = require("../../../modules/data/video-type.js");
 const WebUtils = require("../../../utils/webutils.js");
 
 const cacheKeys = {
-	PLAYSOUNDS_ENABLED: "playsounds-enabled",
 	TTS_ENABLED: "text-to-speech-state",
 	SONG_REQUESTS_STATE: "song-requests-state"
 };
