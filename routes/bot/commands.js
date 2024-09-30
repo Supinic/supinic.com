@@ -112,7 +112,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const response = await sb.Got.get("Supinic")({
-			url: "bot/commands/list"
+			url: "bot/command/list"
 		});
 
 		let isDeveloper = false;
