@@ -504,8 +504,8 @@ Router.get("/comparisons", async (req, res) => {
 							sanfewLabel.innerText = String(sanfewPointsRestored);					
 							
 							prayerPrice.innerText = String(round(${prayer.price} / 4 / pointsRestored, 2));
-							restorePrice.innerText = String(round(${prayer.price} / 4 / (pointsRestored + 1), 2));
-							sanfewPrice.innerText = String(round(${prayer.price} / 4 / sanfewPointsRestored, 2));
+							restorePrice.innerText = String(round(${restore.price} / 4 / (pointsRestored + 1), 2));
+							sanfewPrice.innerText = String(round(${sanfew.price} / 4 / sanfewPointsRestored, 2));
 						});
 					};
 				</script>
