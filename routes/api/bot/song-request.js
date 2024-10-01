@@ -55,7 +55,7 @@ module.exports = (function () {
 
 		const data = rawData.map(track => {
 			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol.Value, track.Link);
+			track.Parsed_Link = prefix.replace(prefixSymbol, track.Link);
 
 			return track;
 		});
@@ -95,7 +95,7 @@ module.exports = (function () {
 
 		const data = rawData.map(track => {
 			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol.Value, track.Link);
+			track.Parsed_Link = prefix.replace(prefixSymbol, track.Link);
 
 			return track;
 		});
