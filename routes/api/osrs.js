@@ -518,7 +518,7 @@ Router.get("/comparisons", async (req, res) => {
 				
 				<br>
 				
-				<div>
+				<div title="Prayer potion">
 					<a href="//osrs.wiki/Prayer_potion">
 						<img alt="Prayer potion" src="https://oldschool.runescape.wiki/images/Prayer_potion%284%29.png?219da">				
 					</a>
@@ -527,7 +527,7 @@ Router.get("/comparisons", async (req, res) => {
 					<span>costs <span id="prayer-points-price">N/A</span> gp per point</span>
 				</div>
 				
-				<div>
+				<div title="Super restore">
 					<a href="//osrs.wiki/Super_restore">
 						<img alt="Super restore" src="https://oldschool.runescape.wiki/images/Super_restore%284%29.png?9074d">				
 					</a>
@@ -536,7 +536,7 @@ Router.get("/comparisons", async (req, res) => {
 					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
 				</div>		
 				
-				<div>
+				<div title="Sanfew serum">
 					<a href="//osrs.wiki/Sanfew_serum">
 						<img alt="Sanfew serum" src="https://oldschool.runescape.wiki/images/Sanfew_serum%284%29.png?7313d">				
 					</a>
