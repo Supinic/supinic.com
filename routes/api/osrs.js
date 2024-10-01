@@ -513,7 +513,7 @@ Router.get("/comparisons", async (req, res) => {
 				<div>
 					Your prayer level: <label id="prayer-level-label">1</label>
 					<br>
-					<input id="prayer-level" type="range" min="1" max="99">
+					<input id="prayer-level" type="range" min="1" max="99" style="width:100%">
 				</div>
 				
 				<br>
