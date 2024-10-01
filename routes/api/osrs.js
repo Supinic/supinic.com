@@ -478,8 +478,8 @@ Router.get("/comparisons", async (req, res) => {
 	res.render("generic", {
 		data: `
 				<script> 
-					function round (number, places) {
-						return (Math.round(number * (10 ** places))) / (10 ** places);
+					function roundFix (number, places) {
+						return ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);
 					}
 				
 					window.onload = () => {
@@ -503,9 +503,9 @@ Router.get("/comparisons", async (req, res) => {
 							restoreLabel.innerText = String(pointsRestored + 1);					
 							sanfewLabel.innerText = String(sanfewPointsRestored);					
 							
-							prayerPrice.innerText = String(round(${prayer.price} / 4 / pointsRestored, 2));
-							restorePrice.innerText = String(round(${restore.price} / 4 / (pointsRestored + 1), 2));
-							sanfewPrice.innerText = String(round(${sanfew.price} / 4 / sanfewPointsRestored, 2));
+							prayerPrice.innerText = roundFix(${prayer.price} / 4 / pointsRestored, 2);
+							restorePrice.innerText = roundFix(${restore.price} / 4 / (pointsRestored + 1), 2);
+							sanfewPrice.innerText = roundFix(${sanfew.price} / 4 / sanfewPointsRestored, 2);
 						});
 					};
 				</script>
