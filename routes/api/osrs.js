@@ -469,9 +469,10 @@ Router.get("/activity/detail/:ID", async (req, res) => {
 });
 
 Router.get("/comparisons", async (req, res) => {
-	const [prayer, restore] = await Promise.all([
+	const [prayer, restore, sanfew] = await Promise.all([
 		fetchItemPrice(2434),
-		fetchItemPrice(3024)
+		fetchItemPrice(3024),
+		fetchItemPrice(10925)
 	]);
 
 	res.render("generic", {
@@ -484,20 +485,27 @@ Router.get("/comparisons", async (req, res) => {
 					window.onload = () => {
 						const range = document.getElementById("prayer-level");
 						const label = document.getElementById("prayer-level-label");
+						
 						const prayerLabel = document.getElementById("prayer-points");
 						const restoreLabel = document.getElementById("restore-points");
+						const sanfewLabel = document.getElementById("sanfew-points");
+						
 						const prayerPrice = document.getElementById("prayer-points-price");
 						const restorePrice = document.getElementById("restore-points-price");
+						const sanfewPrice = document.getElementById("sanfew-points-price");
 						
 						range.addEventListener("input", () => {
 							label.innerText = range.value;
 							
 							const pointsRestored = Math.floor(Number(range.value) / 4) + 7;	
-							prayerLabel.innerText = pointsRestored;
-							restoreLabel.innerText = pointsRestored + 1;					
+							const sanfewPointsRestored = Math.floor(Number(range.value * 3) / 10) + 4;	
+							prayerLabel.innerText = String(pointsRestored);
+							restoreLabel.innerText = String(pointsRestored + 1);					
+							sanfewLabel.innerText = String(sanfewPointsRestored);					
 							
-							prayerPrice.innerText = round(${prayer.price} / 4 / pointsRestored, 2);
-							restorePrice.innerText = round(${prayer.price} / 4 / (pointsRestored + 1), 2);
+							prayerPrice.innerText = String(round(${prayer.price} / 4 / pointsRestored, 2));
+							restorePrice.innerText = String(round(${prayer.price} / 4 / (pointsRestored + 1), 2));
+							sanfewPrice.innerText = String(round(${prayer.price} / 4 / sanfewPointsRestored, 2));
 						});
 					};
 				</script>
@@ -512,7 +520,7 @@ Router.get("/comparisons", async (req, res) => {
 				
 				<div>
 					<a href="//osrs.wiki/Prayer_potion">
-						<img alt="Prayer potion" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=2434">				
+						<img alt="Prayer potion" src="https://oldschool.runescape.wiki/images/Prayer_potion%284%29.png?219da">				
 					</a>
 					<span id="prayer-price">costs ${prayer.price} gp</span>
 					<span>restores <span id="prayer-points">7</span> prayer points</span>
@@ -521,11 +529,20 @@ Router.get("/comparisons", async (req, res) => {
 				
 				<div>
 					<a href="//osrs.wiki/Super_restore">
-						<img alt="Super restore" src="https://secure.runescape.com/m=itemdb_oldschool/1603276214986_obj_sprite.gif?id=3024">				
+						<img alt="Super restore" src="https://oldschool.runescape.wiki/images/Super_restore%284%29.png?9074d">				
 					</a>
 					<span id="restore-price">costs ${restore.price} gp</span>
 					<span>restores <span id="restore-points">8</span> prayer points</span>
 					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
+				</div>		
+				
+				<div>
+					<a href="//osrs.wiki/Sanfew_serum">
+						<img alt="Sanfew serum" src="https://oldschool.runescape.wiki/images/Sanfew_serum%284%29.png?7313d">				
+					</a>
+					<span id="sanfew-price">costs ${sanfew.price} gp</span>
+					<span>restores <span id="sanfew-points">4</span> prayer points</span>
+					<span>costs <span id="sanfew-points-price">N/A</span> gp per point</span>
 				</div>			
 			`
 	});
