@@ -197,7 +197,7 @@ module.exports = (function () {
 							nameEl.appendChild(linkEl);
 							
 							const priceEl = document.createElement("td");
-							priceEl.innerText = "costs " + prices[item.id] + " gp";
+							priceEl.innerText = prices[item.id] + " gp";
 							rowEl.appendChild(priceEl);
 							
 							const restoreEl = document.createElement("td");
