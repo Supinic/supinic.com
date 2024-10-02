@@ -239,13 +239,15 @@ module.exports = (function () {
 								itemCostEl.innerText = pointCost + " gp";
 							}
 						});
+						
+						range.value = 99;
 					};
 				</script>
 				
 				<div>
 					Your prayer level: <label id="prayer-level-label">1</label>
 					<br>
-					<input id="prayer-level" type="range" min="1" max="99" value="1" style="width:100%"/>
+					<input id="prayer-level" type="range" min="1" max="99" style="width:100%"/>
 				</div>
 				
 				<br>
