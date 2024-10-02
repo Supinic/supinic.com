@@ -166,7 +166,7 @@ module.exports = (function () {
 						(typeof value === "string" && value.startsWith("(")) ? eval(value) : value
 					));
 				
-					const roundFix = (number, places) => ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);					
+					const roundFix = (number, places = 0) => ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);					
 				
 					window.onload = () => {						
 						const consumablesEl = document.querySelector("table#consumables tbody");
@@ -177,14 +177,19 @@ module.exports = (function () {
 							iconLinkEl.title = item.name;
 							rowEl.appendChild(iconLinkEl);
 							
-							const linkEl = document.createElement("a");
-							linkEl.href = "//osrs.wiki" + item.name.replace(/\\s+/g, "_");
-							iconLinkEl.appendChild(linkEl);
-							
 							const imgEl = document.createElement("img");
 							imgEl.alt = item.name;
 							imgEl.src = "//oldschool.runescape.wiki/images/" + item.img;
-							linkEl.appendChild(imgEl);
+							iconLinkEl.appendChild(imgEl);
+							
+							const nameEl = document.createElement("td");
+							iconLinkEl.title = item.name;
+							iconLinkEl.innerText = item.name;
+							rowEl.appendChild(nameEl);
+							
+							const linkEl = document.createElement("a");
+							linkEl.href = "//osrs.wiki" + item.name.replace(/\\s+/g, "_");
+							nameEl.appendChild(linkEl);
 							
 							const priceEl = document.createElement("td");
 							priceEl.innerText = "costs " + prices[item.id] + " gp";
@@ -213,7 +218,7 @@ module.exports = (function () {
 								const itemCostEl = document.getElementById(item.id + "-cost");
 								
 								const pointsRestored = item.formula(level);
-								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses);
+								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses, 2);
 								
 								itemLabelEl.innerText = pointsRestored;
 								itemCostEl.innerText = pointCost;
@@ -233,6 +238,7 @@ module.exports = (function () {
 				<table id="consumables">
 					<thead>
 						<th>Potion</th>									
+						<th>Name</th>									
 						<th>Price</th>									
 						<th>Restores</th>									
 						<th>Cost/point</th>									
