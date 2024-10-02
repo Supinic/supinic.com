@@ -259,7 +259,8 @@ const importModule = async (module, path) => {
 			items: [
 				{ name: "Bad Apple!!", link: "data/bad-apple/list" },
 				{ name: "DALL-E images", link: "data/dall-e/list" },
-				{ name: "OSRS Raids 3 calculator", link: "osrs/toa/calculator" }
+				{ name: "OSRS Raids 3 calculator", link: "osrs/toa/calculator" },
+				{ name: "OSRS Prayer costs", link: "osrs/prayer/comparisons" }
 			]
 		},
 		{
