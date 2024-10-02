@@ -68,43 +68,153 @@ module.exports = (function () {
 	});
 
 	Router.get("/prayer/comparisons", async (req, res) => {
-		const [prayer, restore, sanfew] = await Promise.all([
-			fetchItemPrice(2434),
-			fetchItemPrice(3024),
-			fetchItemPrice(10925)
-		]);
+		const consumables = [
+			{
+				name: "Prayer potion",
+				img: "Prayer_potion(4).png",
+				id: 2434,
+				doses: 4,
+				formula: (level) => Math.floor(level / 4) + 7
+			},
+			{
+				name: "Super restore",
+				img: "Super_restore(4).png",
+				id: 3024,
+				doses: 4,
+				formula: (level) => Math.floor(level / 4) + 8
+			},
+			{
+				name: "Sanfew serum",
+				img: "Sanfew_serum(4).png",
+				id: 10925,
+				doses: 4,
+				formula: (level) => Math.floor(level * 3 / 10) + 4
+			},
+			{
+				name: "Prayer regeneration potion",
+				img: "Prayer_regeneration_potion(4).png",
+				id: 30125,
+				doses: 4,
+				formula: () => 66
+			},
+			{
+				name: "Ancient brew",
+				img: "Ancient_brew(4).png",
+				id: 26340,
+				doses: 4,
+				formula: (level) => Math.floor(level / 10) + 2
+			},
+			{
+				name: "Forgotten brew",
+				img: "Forgotten_brew(4).png",
+				id: 27629,
+				doses: 4,
+				formula: (level) => Math.floor(level / 10) + 2
+			},
+			{
+				name: "Zamorak brew",
+				img: "Zamorak_brew(4).png",
+				id: 2450,
+				doses: 4,
+				formula: (level) => Math.floor(level / 10)
+			},
+			{
+				name: "Moonlight moth",
+				img: "Moonlight_moth_(item).png",
+				id: 28893,
+				doses: 1,
+				formula: () => 22
+			},
+			{
+				name: "Moonlight moth mix",
+				img: "Moonlight_moth_mix_(2).png",
+				id: 29195,
+				doses: 2,
+				formula: () => 22
+			},
+			{
+				name: "Prayer mix",
+				img: "Prayer_mix(2).png",
+				id: 11465,
+				doses: 2,
+				formula: (level) => Math.floor(level / 4) + 7
+			},
+			{
+				name: "Jangerberries",
+				img: "Jangerberries.png",
+				id: 247,
+				doses: 1,
+				formula: () => 1
+			}
+		];
+
+		const prices = {};
+		for (const item of consumables) {
+			const { price } = await fetchItemPrice(item.id);
+			prices[item.id] = price;
+		}
+
+		const functionAwareStringJson = JSON.stringify(consumables, (key, value) => (
+			(typeof value === "function") ? value.toString() : value
+		));
 
 		res.render("generic", {
 			data: `
 				<script> 
-					function roundFix (number, places) {
-						return ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);
-					}
+					const prices = JSON.parse("${JSON.stringify(prices)}");
+					const consumables = JSON.parse("${functionAwareStringJson}", (key, value) => (
+						(typeof value === "string" && value.startsWith("(")) ? eval(value) : value
+					));
 				
-					window.onload = () => {
+					const roundFix = (number, places) => ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);					
+				
+					window.onload = () => {						
+						const consumablesEl = document.getElementById("consumables");
+						for (const item of consumables) {
+							const el = document.createElement("div");
+							el.title = item.name;
+							
+							const linkEl = document.createElement("a");
+							linkEl.href = "//osrs.wiki" + item.name.replace(/\\s+/g, "_");
+							el.appendChild(linkEl);
+							
+							const imgEl = document.createElement("img");
+							imgEl.alt = item.name;
+							imgEl.src = "//oldschool.runescape.wiki/images/" + item.img;
+							linkEl.appendChild(imgEl);
+							
+							const priceEl = document.createElement("span");
+							priceEl.innerText = "costs " + prices[item.id] + " gp";
+							el.appendChild(priceEl);
+							
+							const restEl = document.createElement("div");
+							restEl.innerHTML = [
+								"<span>restores <span id='" + item.id + "-restore'>N/A</span></span>",
+							 	"<span>costs <span id='" + item.id + "-cost'>N/A</span></span>"
+							].join("");
+							
+							el.appendChild(restEl);			
+							
+							consumablesEl.appendChild(el);
+						}
+						
 						const range = document.getElementById("prayer-level");
 						const label = document.getElementById("prayer-level-label");
 						
-						const prayerLabel = document.getElementById("prayer-points");
-						const restoreLabel = document.getElementById("restore-points");
-						const sanfewLabel = document.getElementById("sanfew-points");
-						
-						const prayerPrice = document.getElementById("prayer-points-price");
-						const restorePrice = document.getElementById("restore-points-price");
-						const sanfewPrice = document.getElementById("sanfew-points-price");
-						
 						range.addEventListener("input", () => {
+							const level = Number(range.value);
 							label.innerText = range.value;
 							
-							const pointsRestored = Math.floor(Number(range.value) / 4) + 7;	
-							const sanfewPointsRestored = Math.floor(Number(range.value * 3) / 10) + 4;	
-							prayerLabel.innerText = String(pointsRestored);
-							restoreLabel.innerText = String(pointsRestored + 1);					
-							sanfewLabel.innerText = String(sanfewPointsRestored);					
-							
-							prayerPrice.innerText = roundFix(${prayer.price} / 4 / pointsRestored, 2);
-							restorePrice.innerText = roundFix(${restore.price} / 4 / (pointsRestored + 1), 2);
-							sanfewPrice.innerText = roundFix(${sanfew.price} / 4 / sanfewPointsRestored, 2);
+							for (const item of consumables) {
+								const itemLabelEl = document.getElementById(item.id + "-restore");
+								const itemCostEl = document.getElementById(item.id + "-cost");
+								
+								const pointsRestored = item.formula(level);
+								const pointCost = roundFix(prices[item.id] / pointRestored / item.doses);
+								
+								itemLabelEl.innerText = pointsRestored;
+								itemCostEl.innerText = pointCost;
+							}
 						});
 					};
 				</script>
@@ -117,32 +227,7 @@ module.exports = (function () {
 				
 				<br>
 				
-				<div title="Prayer potion">
-					<a href="//osrs.wiki/Prayer_potion">
-						<img alt="Prayer potion" src="https://oldschool.runescape.wiki/images/Prayer_potion%284%29.png?219da">				
-					</a>
-					<span id="prayer-price">costs ${prayer.price} gp</span>
-					<span>restores <span id="prayer-points">7</span> prayer points</span>
-					<span>costs <span id="prayer-points-price">N/A</span> gp per point</span>
-				</div>
-				
-				<div title="Super restore">
-					<a href="//osrs.wiki/Super_restore">
-						<img alt="Super restore" src="https://oldschool.runescape.wiki/images/Super_restore%284%29.png?9074d">				
-					</a>
-					<span id="restore-price">costs ${restore.price} gp</span>
-					<span>restores <span id="restore-points">8</span> prayer points</span>
-					<span>costs <span id="restore-points-price">N/A</span> gp per point</span>
-				</div>		
-				
-				<div title="Sanfew serum">
-					<a href="//osrs.wiki/Sanfew_serum">
-						<img alt="Sanfew serum" src="https://oldschool.runescape.wiki/images/Sanfew_serum%284%29.png?7313d">				
-					</a>
-					<span id="sanfew-price">costs ${sanfew.price} gp</span>
-					<span>restores <span id="sanfew-points">4</span> prayer points</span>
-					<span>costs <span id="sanfew-points-price">N/A</span> gp per point</span>
-				</div>			
+				<div id="consumables"></div>		
 			`
 		});
 	});
