@@ -175,20 +175,20 @@ module.exports = (function () {
 							
 							const iconLinkEl = document.createElement("td");
 							iconLinkEl.title = item.name;
-							rowEl.appendChild(iconLinkEl);
 							
 							const imgEl = document.createElement("img");
 							imgEl.alt = item.name;
 							imgEl.src = "//oldschool.runescape.wiki/images/" + item.img;
 							iconLinkEl.appendChild(imgEl);
+							rowEl.appendChild(iconLinkEl);
 							
 							const nameEl = document.createElement("td");
-							iconLinkEl.title = item.name;
-							iconLinkEl.innerText = item.name;
+							nameEl.title = item.name;
+							nameEl.innerText = item.name;
 							rowEl.appendChild(nameEl);
 							
 							const linkEl = document.createElement("a");
-							linkEl.href = "//osrs.wiki" + item.name.replace(/\\s+/g, "_");
+							linkEl.href = "//osrs.wiki/" + item.name.replace(/\\s+/g, "_");
 							nameEl.appendChild(linkEl);
 							
 							const priceEl = document.createElement("td");
