@@ -201,11 +201,13 @@ module.exports = (function () {
 							rowEl.appendChild(priceEl);
 							
 							const restoreEl = document.createElement("td");
+							restoreEl.classList.add("text-center");
 							restoreEl.id = item.id + "-restore-dose";
 							restoreEl.innerHTML = "N/A";
 							rowEl.appendChild(restoreEl);
 							
 							const restoreFullEl = document.createElement("td");
+							restoreFullEl.classList.add("text-center");
 							restoreFullEl.id = item.id + "-restore-full";
 							restoreFullEl.innerHTML = "N/A";
 							rowEl.appendChild(restoreFullEl);
@@ -256,12 +258,12 @@ module.exports = (function () {
 				
 				<table id="consumables">
 					<thead>
-						<th>Potion</th>									
-						<th>Name</th>									
-						<th>Price</th>									
-						<th>Points/dose</th>									
-						<th>Points/full</th>									
-						<th>Cost/point</th>									
+						<th class="pl-2 pr-2">Potion</th>									
+						<th class="pl-2 pr-2">Name</th>									
+						<th class="pl-2 pr-2">Price</th>									
+						<th class="pl-2 pr-2">Points/dose</th>									
+						<th class="pl-2 pr-2">Points/full</th>									
+						<th class="pl-2 pr-2">Cost/point</th>									
 					</thead>
 					<tbody></tbody>
 				</table>		
