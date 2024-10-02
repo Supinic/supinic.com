@@ -166,7 +166,12 @@ module.exports = (function () {
 						(typeof value === "string" && value.startsWith("(")) ? eval(value) : value
 					));
 				
-					const roundFix = (number, places = 0) => ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);					
+					const roundFix = (number, places = 0) => {
+						const num = ((Math.round(number * (10 ** places))) / (10 ** places));
+						return (Number.isFinite(num))
+							? num.toFixed(2)
+							: "N/A"
+					}					
 				
 					window.onload = () => {						
 						const consumablesEl = document.querySelector("table#consumables tbody");
@@ -196,11 +201,18 @@ module.exports = (function () {
 							rowEl.appendChild(priceEl);
 							
 							const restoreEl = document.createElement("td");
-							restoreEl.innerHTML = "<span id='" + item.id + "-restore'>N/A</span> pts";
+							restoreEl.id = item.id + "-restore-dose";
+							restoreEl.innerHTML = "N/A";
+							rowEl.appendChild(restoreEl);
+							
+							const restoreFullEl = document.createElement("td");
+							restoreFullEl.id = item.id + "-restore-full";
+							restoreFullEl.innerHTML = "N/A";
 							rowEl.appendChild(restoreEl);
 							
 							const costEl = document.createElement("td");
-							costEl.innerHTML = "<span id='" + item.id + "-cost'>N/A</span> gp";
+							costEl.id = item.id + "-cost";
+							costEl.innerHTML = "N/A";
 							rowEl.appendChild(costEl);
 							
 							consumablesEl.appendChild(rowEl);
@@ -214,14 +226,17 @@ module.exports = (function () {
 							label.innerText = range.value;
 							
 							for (const item of consumables) {
-								const itemLabelEl = document.getElementById(item.id + "-restore");
+								const restoreDoseEl = document.getElementById(item.id + "-restore-dose");
+								const restoreFullEl = document.getElementById(item.id + "-restore-full");
 								const itemCostEl = document.getElementById(item.id + "-cost");
 								
 								const pointsRestored = item.formula(level);
+								const pointsRestoredFull = item.formula(level) * item.doses;
 								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses, 2);
 								
-								itemLabelEl.innerText = pointsRestored;
-								itemCostEl.innerText = pointCost;
+								restoreDoseEl.innerText = pointsRestored;
+								restoreFullEl.innerText = pointsRestoredFull;
+								itemCostEl.innerText = pointCost + " gp";
 							}
 						});
 					};
@@ -240,7 +255,8 @@ module.exports = (function () {
 						<th>Potion</th>									
 						<th>Name</th>									
 						<th>Price</th>									
-						<th>Restores</th>									
+						<th>Points/dose</th>									
+						<th>Points/full</th>									
 						<th>Cost/point</th>									
 					</thead>
 					<tbody></tbody>
