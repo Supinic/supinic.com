@@ -240,14 +240,16 @@ module.exports = (function () {
 							}
 						});
 						
-						range.value = 99;
+						// Forces first-time prices recalculation
+						const dummyEvent = new Event("input");
+						range.dispatchEvent(dummyEvent);
 					};
 				</script>
 				
 				<div>
 					Your prayer level: <label id="prayer-level-label">1</label>
 					<br>
-					<input id="prayer-level" type="range" min="1" max="99" style="width:100%"/>
+					<input id="prayer-level" type="range" min="1" max="99" value="99" style="width:100%"/>
 				</div>
 				
 				<br>
