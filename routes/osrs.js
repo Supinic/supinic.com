@@ -189,11 +189,11 @@ module.exports = (function () {
 							
 							const nameEl = document.createElement("td");
 							nameEl.title = item.name;
-							nameEl.innerText = item.name;
 							rowEl.appendChild(nameEl);
 							
 							const linkEl = document.createElement("a");
 							linkEl.href = "//osrs.wiki/" + item.name.replace(/\\s+/g, "_");
+							linkEl.innerText = item.name;
 							nameEl.appendChild(linkEl);
 							
 							const priceEl = document.createElement("td");
@@ -208,7 +208,7 @@ module.exports = (function () {
 							const restoreFullEl = document.createElement("td");
 							restoreFullEl.id = item.id + "-restore-full";
 							restoreFullEl.innerHTML = "N/A";
-							rowEl.appendChild(restoreEl);
+							rowEl.appendChild(restoreFullEl);
 							
 							const costEl = document.createElement("td");
 							costEl.id = item.id + "-cost";
