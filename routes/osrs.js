@@ -160,6 +160,8 @@ module.exports = (function () {
 
 		res.render("generic", {
 			data: `
+				<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"/>
+				<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"/>
 				<script> 
 					const prices = JSON.parse('${JSON.stringify(prices)}');
 					const consumables = JSON.parse('${functionAwareStringJson}', (key, value) => (
@@ -243,6 +245,8 @@ module.exports = (function () {
 						// Forces first-time prices recalculation
 						const dummyEvent = new Event("input");
 						range.dispatchEvent(dummyEvent);
+						
+						$("#consumables").DataTable({});						
 					};
 				</script>
 				
