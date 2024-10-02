@@ -169,33 +169,36 @@ module.exports = (function () {
 					const roundFix = (number, places) => ((Math.round(number * (10 ** places))) / (10 ** places)).toFixed(2);					
 				
 					window.onload = () => {						
-						const consumablesEl = document.getElementById("consumables");
+						const consumablesEl = document.querySelector("table#consumables tbody");
 						for (const item of consumables) {
-							const el = document.createElement("div");
-							el.title = item.name;
+							const rowEl = document.createElement("tr");
+							
+							const iconLinkEl = document.createElement("td");
+							iconLinkEl.title = item.name;
+							rowEl.appendChild(iconLinkEl);
 							
 							const linkEl = document.createElement("a");
 							linkEl.href = "//osrs.wiki" + item.name.replace(/\\s+/g, "_");
-							el.appendChild(linkEl);
+							iconLinkEl.appendChild(linkEl);
 							
 							const imgEl = document.createElement("img");
 							imgEl.alt = item.name;
 							imgEl.src = "//oldschool.runescape.wiki/images/" + item.img;
 							linkEl.appendChild(imgEl);
 							
-							const priceEl = document.createElement("span");
+							const priceEl = document.createElement("td");
 							priceEl.innerText = "costs " + prices[item.id] + " gp";
-							el.appendChild(priceEl);
+							rowEl.appendChild(priceEl);
 							
-							const restEl = document.createElement("div");
-							restEl.innerHTML = [
-								"<span>restores <span id='" + item.id + "-restore'>N/A</span></span>",
-							 	"<span>costs <span id='" + item.id + "-cost'>N/A</span></span>"
-							].join("");
+							const restoreEl = document.createElement("td");
+							restoreEl.innerHTML = "<span id='" + item.id + "-restore'>N/A</span> pts";
+							rowEl.appendChild(restoreEl);
 							
-							el.appendChild(restEl);			
+							const costEl = document.createElement("td");
+							restoreEl.innerHTML = "<span id='" + item.id + "-cost'>N/A</span> gp";
+							rowEl.appendChild(costEl);
 							
-							consumablesEl.appendChild(el);
+							consumablesEl.appendChild(rowEl);
 						}
 						
 						const range = document.getElementById("prayer-level");
@@ -227,7 +230,15 @@ module.exports = (function () {
 				
 				<br>
 				
-				<div id="consumables"></div>		
+				<table id="consumables">
+					<thead>
+						<th>Potion</th>									
+						<th>Price</th>									
+						<th>Restores</th>									
+						<th>Cost/point</th>									
+					</thead>
+					<tbody></tbody>
+				</table>		
 			`
 		});
 	});
