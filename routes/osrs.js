@@ -161,8 +161,8 @@ module.exports = (function () {
 		res.render("generic", {
 			data: `
 				<script> 
-					const prices = JSON.parse("${JSON.stringify(prices)}");
-					const consumables = JSON.parse("${functionAwareStringJson}", (key, value) => (
+					const prices = JSON.parse('${JSON.stringify(prices)}');
+					const consumables = JSON.parse('${functionAwareStringJson}', (key, value) => (
 						(typeof value === "string" && value.startsWith("(")) ? eval(value) : value
 					));
 				
