@@ -213,7 +213,7 @@ module.exports = (function () {
 								const itemCostEl = document.getElementById(item.id + "-cost");
 								
 								const pointsRestored = item.formula(level);
-								const pointCost = roundFix(prices[item.id] / pointRestored / item.doses);
+								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses);
 								
 								itemLabelEl.innerText = pointsRestored;
 								itemCostEl.innerText = pointCost;
