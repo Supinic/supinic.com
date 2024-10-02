@@ -195,7 +195,7 @@ module.exports = (function () {
 							rowEl.appendChild(restoreEl);
 							
 							const costEl = document.createElement("td");
-							restoreEl.innerHTML = "<span id='" + item.id + "-cost'>N/A</span> gp";
+							costEl.innerHTML = "<span id='" + item.id + "-cost'>N/A</span> gp";
 							rowEl.appendChild(costEl);
 							
 							consumablesEl.appendChild(rowEl);
