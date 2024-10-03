@@ -146,11 +146,26 @@ module.exports = (function () {
 					.single()
 					.flat("Value")
 				);
+
 				if (inactiveReason === "channel-inactive") {
 					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
 						The bot has been removed from target channel because of prolonged inactivity.
 						You can immediately receive the bot back by using this command →
 						$bot rejoin channel:"${targetChannel}"
+					`);
+				}
+				else if (inactiveReason === "suspended") {
+					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
+						The bot has been forced to leave the target channel because the channel has been suspended.
+						You can immediately receive the bot back by using this command →
+						$bot rejoin channel:"${targetChannel}"
+					`);
+				}
+				else if (inactiveReason === "bot-banned") {
+					return WebUtils.apiFail(res, 409, sb.Utils.tag.trim `
+						The bot has been forced to leave the target channel because the bot has been permanently banned.
+						You can immediately receive the bot back by unbanning the bot and using this command →
+						$bot i-will-not-ban-supibot-again channel:"${targetChannel}"
 					`);
 				}
 
