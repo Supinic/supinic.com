@@ -41,8 +41,8 @@ Passport.use("twitch-bot", new TwitchBotStrategy(
 	{
 		authorizationURL: "https://id.twitch.tv/oauth2/authorize",
 		tokenURL: "https://id.twitch.tv/oauth2/token",
-		clientID: process.env.TWITCH_CLIENT_ID,
-		clientSecret: process.env.TWITCH_CLIENT_SECRET,
+		clientID: process.env.WEBSITE_TWITCH_CLIENT_ID,
+		clientSecret: process.env.WEBSITE_TWITCH_CLIENT_SECRET,
 		callbackURL: "https://supinic.com/bot/twitch-auth/callback"
 	},
 	(access, refresh, profile, done) => {
