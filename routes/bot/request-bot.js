@@ -91,8 +91,8 @@ module.exports = (function () {
 		}
 
 		const now = sb.Date.now();
-		const christmasHolidayEnd = "2024-01-01";
-		const isChristmasHoliday = (new sb.Date("2023-12-20") < now && now < new sb.Date("2024-01-01"));
+		const christmasHolidayEnd = "2025-01-02";
+		const isChristmasHoliday = (new sb.Date("2024-12-22") < now && now < new sb.Date("2025-01-02"));
 
 		res.render("generic-form", {
 			prepend: sb.Utils.tag.trim `
