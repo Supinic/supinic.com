@@ -491,7 +491,7 @@ const fetchCommunityTimeline = async (inputData) => {
 	const featuresString = encodeURIComponent(JSON.stringify(defaults.communityTimeline.features));
 
 	const response = await sb.Got.get("FakeAgent")({
-		url: `https://api.twitter.com/graphql/${slug}/CommunityTweetsTimeline?variables=${variablesString}&features=${featuresString}`,
+		url: `https://x.com/i/api/graphql/${slug}/CommunityTweetsTimeline?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
 		headers: {
