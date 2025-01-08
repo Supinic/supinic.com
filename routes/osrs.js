@@ -74,21 +74,24 @@ module.exports = (function () {
 				img: "Prayer_potion(4).png",
 				id: 2434,
 				doses: 4,
-				formula: (level) => Math.floor(level / 4) + 7
+				formula: (level) => Math.floor(level * 25 / 100) + 7,
+				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 7
 			},
 			{
 				name: "Super restore",
 				img: "Super_restore(4).png",
 				id: 3024,
 				doses: 4,
-				formula: (level) => Math.floor(level / 4) + 8
+				formula: (level) => Math.floor(level * 25 / 100) + 8,
+				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 8
 			},
 			{
 				name: "Sanfew serum",
 				img: "Sanfew_serum(4).png",
 				id: 10925,
 				doses: 4,
-				formula: (level) => Math.floor(level * 3 / 10) + 4
+				formula: (level) => Math.floor(level * 30 / 100) + 4,
+				wrenchFormula: (level) => Math.floor(level * 32 / 100) + 4
 			},
 			{
 				name: "Prayer regeneration potion",
@@ -222,9 +225,11 @@ module.exports = (function () {
 						
 						const range = document.getElementById("prayer-level");
 						const label = document.getElementById("prayer-level-label");
+						const wrenchEl = document.getElementById("holy-wrench-enabled");
 						
 						range.addEventListener("input", () => {
 							const level = Number(range.value);
+							const wrenchEnabled = wrenchEl.checked;
 							label.innerText = range.value;
 							
 							for (const item of consumables) {
@@ -232,7 +237,10 @@ module.exports = (function () {
 								const restoreFullEl = document.getElementById(item.id + "-restore-full");
 								const itemCostEl = document.getElementById(item.id + "-cost");
 								
-								const pointsRestored = item.formula(level);
+								const pointsRestored = (wrenchEnabled && typeof item.wrenchFormula === "function")
+								 	? item.wrenchFormula(level) 
+								 	: item.formula(level);
+								
 								const pointsRestoredFull = item.formula(level) * item.doses;
 								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses, 2);
 								
@@ -252,6 +260,9 @@ module.exports = (function () {
 					Your prayer level: <label id="prayer-level-label">1</label>
 					<br>
 					<input id="prayer-level" type="range" min="1" max="99" value="99" style="width:100%"/>
+					<br>
+					<label for="holy-wrench-enabled"> Use Holy Wrench effect </label>
+					<input id="holy-wrench-enabled" type="checkbox" class="pr-1">
 				</div>
 				
 				<br>
