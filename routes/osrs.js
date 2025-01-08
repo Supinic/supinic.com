@@ -144,6 +144,14 @@ module.exports = (function () {
 				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 7
 			},
 			{
+				name: "Super restore mix",
+				img: "Super_restore_mix(2).png",
+				id: 11495,
+				doses: 2,
+				formula: (level) => Math.floor(level * 25 / 100) + 8,
+				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 8
+			},
+			{
 				name: "Jangerberries",
 				img: "Jangerberries.png",
 				id: 247,
