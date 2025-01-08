@@ -489,7 +489,7 @@ const fetchCommunityTimeline = async (inputData) => {
 	const featuresString = encodeURIComponent(JSON.stringify(defaults.communityTimeline.features));
 
 	const response = await sb.Got.get("FakeAgent")({
-		url: `https://x.com/i/api/graphql/${slug}/CommunityTweetsRankedLoggedOutTimeline?variables=${variablesString}&features=${featuresString}`,
+		url: `https://api.x.com/graphql/${slug}/CommunityTweetsRankedLoggedOutTimeline?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
 		headers: {
