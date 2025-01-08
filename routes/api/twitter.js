@@ -517,7 +517,7 @@ const fetchCommunityTimeline = async (inputData) => {
 
 	return {
 		success: true,
-		timeline: legacyTweetData
+		entries: legacyTweetData
 	};
 };
 
