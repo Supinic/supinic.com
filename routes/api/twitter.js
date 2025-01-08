@@ -14,7 +14,7 @@ const defaults = {
 		// Different slug when logged in than when logged out (!)
 		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
 		community: "YDYGxdoPEu0zNC2eWP_0MQ",
-		communityTimeline: "VJG5lEdOpKjZQyxw6558yQ",
+		communityTimeline: "ts7p5Pcn218YXRGFyn7",
 		timeline: "oPHs3ydu7ZOOy2f02soaPA",
 		timelineReplies: "nrdle2catTyGnTyj1Qa7wA",
 		user: "hVhfo_TquFTmgL7gYwf91Q"
@@ -107,9 +107,7 @@ const defaults = {
 	},
 	communityTimeline: {
 		variables: {
-			count: 1,
-			displayLocation: "Community",
-			rankingMode: "Relevance",
+			count: 20,
 			withCommunity: true
 		},
 		features: {
@@ -124,7 +122,7 @@ const defaults = {
 			communities_web_enable_tweet_community_results_fetch: true,
 			c9s_tweet_anatomy_moderator_badge_enabled: true,
 			responsive_web_grok_analyze_button_fetch_trends_enabled: false,
-			responsive_web_grok_analyze_post_followups_enabled: true,
+			responsive_web_grok_analyze_post_followups_enabled: false,
 			responsive_web_grok_share_attachment_enabled: true,
 			articles_preview_enabled: true,
 			responsive_web_edit_tweet_api_enabled: true,
@@ -491,7 +489,7 @@ const fetchCommunityTimeline = async (inputData) => {
 	const featuresString = encodeURIComponent(JSON.stringify(defaults.communityTimeline.features));
 
 	const response = await sb.Got.get("FakeAgent")({
-		url: `https://x.com/i/api/graphql/${slug}/CommunityTweetsTimeline?variables=${variablesString}&features=${featuresString}`,
+		url: `https://x.com/i/api/graphql/${slug}/CommunityTweetsRankedLoggedOutTimeline?variables=${variablesString}&features=${featuresString}`,
 		responseType: "json",
 		throwHttpErrors: false,
 		headers: {
