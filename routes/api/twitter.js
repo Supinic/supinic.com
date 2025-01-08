@@ -13,6 +13,8 @@ const defaults = {
 	slugs: {
 		// Different slug when logged in than when logged out (!)
 		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
+		community: "YDYGxdoPEu0zNC2eWP_0MQ",
+		communityTimeline: "VJG5lEdOpKjZQyxw6558yQ",
 		timeline: "oPHs3ydu7ZOOy2f02soaPA",
 		timelineReplies: "nrdle2catTyGnTyj1Qa7wA",
 		user: "hVhfo_TquFTmgL7gYwf91Q"
@@ -94,6 +96,51 @@ const defaults = {
 				responsive_web_text_conversations_enabled: false,
 				responsive_web_enhance_cards_enabled: false
 			}
+		}
+	},
+	community: {
+		variables: {},
+		features: {
+			c9s_list_members_action_api_enabled: false,
+			c9s_superc9s_indication_enabled: false
+		}
+	},
+	communityTimeline: {
+		variables: {
+			count: 1,
+			displayLocation: "Community",
+			rankingMode: "Relevance",
+			withCommunity: true
+		},
+		features: {
+			profile_label_improvements_pcf_label_in_post_enabled: false,
+			rweb_tipjar_consumption_enabled: true,
+			responsive_web_graphql_exclude_directive_enabled: true,
+			verified_phone_label_enabled: false,
+			creator_subscriptions_tweet_preview_api_enabled: true,
+			responsive_web_graphql_timeline_navigation_enabled: true,
+			responsive_web_graphql_skip_user_profile_image_extensions_enabled: false,
+			premium_content_api_read_enabled: false,
+			communities_web_enable_tweet_community_results_fetch: true,
+			c9s_tweet_anatomy_moderator_badge_enabled: true,
+			responsive_web_grok_analyze_button_fetch_trends_enabled: false,
+			responsive_web_grok_analyze_post_followups_enabled: true,
+			responsive_web_grok_share_attachment_enabled: true,
+			articles_preview_enabled: true,
+			responsive_web_edit_tweet_api_enabled: true,
+			graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+			view_counts_everywhere_api_enabled: true,
+			longform_notetweets_consumption_enabled: true,
+			responsive_web_twitter_article_tweet_consumption_enabled: true,
+			tweet_awards_web_tipping_enabled: false,
+			creator_subscriptions_quote_tweet_preview_enabled: false,
+			freedom_of_speech_not_reach_fetch_enabled: true,
+			standardized_nudges_misinfo: true,
+			tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: true,
+			rweb_video_timestamps_enabled: true,
+			longform_notetweets_rich_text_read_enabled: true,
+			longform_notetweets_inline_media_enabled: true,
+			responsive_web_enhance_cards_enabled: false
 		}
 	}
 };
@@ -393,6 +440,89 @@ const fetchTimeline = async (data) => {
 	};
 };
 
+const fetchCommunityId = async (inputData) => {
+	const { bearerToken, guestToken, slug, identifier } = inputData;
+	const variables = {
+		communityId: identifier,
+		...defaults.community.variables
+	};
+
+	const variablesString = encodeURIComponent(JSON.stringify(variables));
+	const featuresString = encodeURIComponent(JSON.stringify(defaults.community.features));
+
+	const response = await sb.Got.get("FakeAgent")({
+		url: `https://api.twitter.com/graphql/${slug}/CommunityQuery?variables=${variablesString}&features=${featuresString}`,
+		responseType: "json",
+		throwHttpErrors: false,
+		headers: {
+			Authorization: `Bearer ${bearerToken}`,
+			"X-Guest-Token": guestToken,
+			"X-CSRF-Token": defaults.csrfToken
+		}
+	});
+
+	if (!response.ok) {
+		return {
+			success: false,
+			error: {
+				code: "community-id-fetch",
+				body: response.body,
+				statusCode: response.statusCode
+			}
+		};
+	}
+
+	const data = response.body.data.communityResults.result;
+	return {
+		success: true,
+		id: data.id,
+		name: data.name
+	};
+};
+
+const fetchCommunityTimeline = async (inputData) => {
+	const { bearerToken, guestToken, slug, communityId } = inputData;
+	const variables = {
+		communityId,
+		...defaults.communityTimeline.variables
+	};
+
+	const variablesString = encodeURIComponent(JSON.stringify(variables));
+	const featuresString = encodeURIComponent(JSON.stringify(defaults.communityTimeline.features));
+
+	const response = await sb.Got.get("FakeAgent")({
+		url: `https://api.twitter.com/graphql/${slug}/CommunityTweetsTimeline?variables=${variablesString}&features=${featuresString}`,
+		responseType: "json",
+		throwHttpErrors: false,
+		headers: {
+			Authorization: `Bearer ${bearerToken}`,
+			"X-Guest-Token": guestToken,
+			"X-CSRF-Token": defaults.csrfToken
+		}
+	});
+
+	if (!response.ok) {
+		return {
+			success: false,
+			error: {
+				code: "community-timeline-fetch",
+				body: response.body,
+				statusCode: response.statusCode
+			}
+		};
+	}
+
+	const instructions = response.body.data.communityResults.result.ranked_community_timeline.timeline.instructions;
+	const entries = instructions.find(i => i.type === "TimelineAddEntries");
+	const pseudoTweets = entries.filter(i => i.entryId?.startsWith("tweet"));
+	const legacyTweetData = pseudoTweets.map(i => i.content.itemContent.tweet_results.tweet.legacy);
+
+	return {
+		success: true,
+		timeline: legacyTweetData
+	};
+};
+
 const cacheKeys = {
 	entryPage: "gql-twitter-entry-page",
 	mainFile: "gql-twitter-main-page",
@@ -408,6 +538,8 @@ const previousCacheKeys = {
 	guestToken: ["entryPage", "mainFile", "bearerToken"],
 	slugs: ["entryPage", "mainFile"],
 	userid: ["guestToken", "bearerToken", "entryPage", "mainFile"],
+	community: ["guestToken", "bearerToken", "entryPage", "mainFile"],
+	communityTimeline: ["guestToken", "bearerToken", "entryPage", "mainFile"],
 	timeline: ["guestToken", "bearerToken", "entryPage", "mainFile"]
 };
 
@@ -536,6 +668,70 @@ Router.get("/timeline/:username", async (req, res) => {
 	}
 
 	return WebUtils.apiSuccess(res, { userId, timeline }, {
+		skipCaseConversion: true
+	});
+});
+
+Router.get("/community/:identifier", async (req, res) => {
+	const { identifier } = req.params;
+
+	const { bearerToken, slugs } = defaults;
+	let guestToken = await sb.Cache.getByPrefix(cacheKeys.guestToken);
+	if (!guestToken) {
+		const guestTokenResult = await fetchGuestToken(bearerToken);
+		if (!guestTokenResult.success) {
+			await resetPreviousStepsCaches("guestToken");
+			return WebUtils.apiFail(res, 503, "Guest token load error", guestTokenResult.error);
+		}
+
+		guestToken = guestTokenResult.token;
+		await sb.Cache.setByPrefix(cacheKeys.guestToken, guestToken, { expiry: 300_000 }); // 5 minutes
+	}
+
+	const communityIdCacheKey = `gql-twitter-community-${identifier}`;
+	let communityId = await sb.Cache.getByPrefix(communityIdCacheKey);
+	if (!communityId) {
+		const communityIdResult = await fetchCommunityId({
+			bearerToken,
+			guestToken,
+			identifier,
+			slug: slugs.community
+		});
+
+		if (!communityIdResult.success) {
+			if (communityIdResult.error.code === "no-user-id") {
+				return WebUtils.apiFail(res, 404, "Community does not exist");
+			}
+			else {
+				await resetPreviousStepsCaches("community");
+				return WebUtils.apiFail(res, 503, "Community ID load error", communityIdResult.error);
+			}
+		}
+
+		communityId = communityIdResult.id;
+		await sb.Cache.setByPrefix(communityIdCacheKey, communityId, { expiry: 7 * 864e5 }); // 7 days
+	}
+
+	const communityTimelineCacheKey = `gql-twitter-community-timeline-${identifier}`;
+	let timeline = await sb.Cache.getByPrefix(communityTimelineCacheKey);
+
+	if (!timeline) {
+		const communityTimelineResult = await fetchCommunityTimeline({
+			bearerToken,
+			guestToken,
+			communityId
+		});
+
+		if (!communityTimelineResult.success) {
+			await resetPreviousStepsCaches("communityTimeline");
+			return WebUtils.apiFail(res, 503, "Community timeline load error", communityTimelineResult.error);
+		}
+
+		timeline = communityTimelineResult.entries;
+		await sb.Cache.setByPrefix(communityTimelineCacheKey, timeline, { expiry: 600_000 }); // 10 minutes
+	}
+
+	return WebUtils.apiSuccess(res, { communityId, timeline }, {
 		skipCaseConversion: true
 	});
 });
