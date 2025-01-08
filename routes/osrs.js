@@ -227,6 +227,9 @@ module.exports = (function () {
 						const label = document.getElementById("prayer-level-label");
 						const wrenchEl = document.getElementById("holy-wrench-enabled");
 						
+						// Invoke a proxy event
+						wrenchEl.addEventListener("change", () => range.dispatchEvent(new Event("input")));
+						
 						range.addEventListener("input", () => {
 							const level = Number(range.value);
 							const wrenchEnabled = wrenchEl.checked;
