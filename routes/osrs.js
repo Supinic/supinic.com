@@ -140,7 +140,8 @@ module.exports = (function () {
 				img: "Prayer_mix(2).png",
 				id: 11465,
 				doses: 2,
-				formula: (level) => Math.floor(level / 4) + 7
+				formula: (level) => Math.floor(level * 25 / 100) + 7,
+				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 7
 			},
 			{
 				name: "Jangerberries",
