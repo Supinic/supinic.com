@@ -511,7 +511,7 @@ const fetchCommunityTimeline = async (inputData) => {
 	}
 
 	const instructions = response.body.data.communityResults.result.ranked_community_timeline.timeline.instructions;
-	const entries = instructions.find(i => i.type === "TimelineAddEntries");
+	const { entries } = instructions.find(i => i.type === "TimelineAddEntries");
 	const pseudoTweets = entries.filter(i => i.entryId?.startsWith("tweet"));
 	const legacyTweetData = pseudoTweets.map(i => i.content.itemContent.tweet_results.tweet.legacy);
 
