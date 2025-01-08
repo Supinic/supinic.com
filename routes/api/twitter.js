@@ -689,8 +689,8 @@ Router.get("/community/:identifier", async (req, res) => {
 	}
 
 	const communityIdCacheKey = `gql-twitter-community-${identifier}`;
-	let communityId = await sb.Cache.getByPrefix(communityIdCacheKey);
-	if (!communityId) {
+	let communityData = await sb.Cache.getByPrefix(communityIdCacheKey);
+	if (!communityData) {
 		const communityIdResult = await fetchCommunityId({
 			bearerToken,
 			guestToken,
@@ -708,8 +708,8 @@ Router.get("/community/:identifier", async (req, res) => {
 			}
 		}
 
-		communityId = communityIdResult.id;
-		await sb.Cache.setByPrefix(communityIdCacheKey, communityId, { expiry: 7 * 864e5 }); // 7 days
+		communityData = communityIdResult.id;
+		await sb.Cache.setByPrefix(communityIdCacheKey, communityData, { expiry: 7 * 864e5 }); // 7 days
 	}
 
 	const communityTimelineCacheKey = `gql-twitter-community-timeline-${identifier}`;
@@ -719,7 +719,7 @@ Router.get("/community/:identifier", async (req, res) => {
 		const communityTimelineResult = await fetchCommunityTimeline({
 			bearerToken,
 			guestToken,
-			communityId,
+			communityId: identifier,
 			slug: defaults.slugs.communityTimeline
 		});
 
@@ -732,7 +732,8 @@ Router.get("/community/:identifier", async (req, res) => {
 		await sb.Cache.setByPrefix(communityTimelineCacheKey, timeline, { expiry: 600_000 }); // 10 minutes
 	}
 
-	return WebUtils.apiSuccess(res, { communityId, timeline }, {
+	const name = communityData.name;
+	return WebUtils.apiSuccess(res, { name, timeline }, {
 		skipCaseConversion: true
 	});
 });
