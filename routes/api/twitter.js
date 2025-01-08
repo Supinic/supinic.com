@@ -719,7 +719,8 @@ Router.get("/community/:identifier", async (req, res) => {
 		const communityTimelineResult = await fetchCommunityTimeline({
 			bearerToken,
 			guestToken,
-			communityId
+			communityId,
+			slug: defaults.slugs.communityTimeline
 		});
 
 		if (!communityTimelineResult.success) {
