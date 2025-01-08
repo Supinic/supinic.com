@@ -14,7 +14,7 @@ const defaults = {
 		// Different slug when logged in than when logged out (!)
 		// Also, requires the freedom_of_speech_not_reach_appeal_label_enabled feature to be set (!!)
 		community: "YDYGxdoPEu0zNC2eWP_0MQ",
-		communityTimeline: "ts7p5Pcn218YXRGFyn7",
+		communityTimeline: "ts7p5Pcn218YXRGFyn7-Rw",
 		timeline: "oPHs3ydu7ZOOy2f02soaPA",
 		timelineReplies: "nrdle2catTyGnTyj1Qa7wA",
 		user: "hVhfo_TquFTmgL7gYwf91Q"
