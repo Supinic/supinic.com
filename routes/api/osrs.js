@@ -375,7 +375,9 @@ Router.get("/lookup/:user", async (req, res) => {
 				data = initialResponse.body;
 				result.ironman.abandoned = true;
 			}
-			else {
+			else if (!data) {
+				// Only set the result `data` variable if it's not filled out yet. This is to prevent
+				// accidental overriding of HCIM data (filled in above blocks) with regular IM data.
 				data = compare.regular;
 			}
 		}
