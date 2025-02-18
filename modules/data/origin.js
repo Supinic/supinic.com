@@ -111,7 +111,7 @@ module.exports = (function () {
 
 			if (type.startsWith("Twitch")) {
 				// return `https://twitchemotes.com/emotes/${ID}`;
-				return `https://emotes.raccatta.cc/twitch/emote/${ID}`;
+				return `https://emotes.awoo.nl/twitch/emote/${ID}`;
 			}
 			else if (type.startsWith("BTTV")) {
 				return `https://betterttv.com/emotes/${ID}`;
