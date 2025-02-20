@@ -49,9 +49,13 @@ module.exports = (function () {
 				cancelled = "❌";
 			}
 
-			if (i.author.toLowerCase() === user) {
+			if (i.author === null) {
+				i.author = "(System reminder)";
+			}
+			else if (i.author.toLowerCase() === user) {
 				i.author = "(You)";
 			}
+
 			if (i.target.toLowerCase() === user) {
 				i.target = "(You)";
 			}
