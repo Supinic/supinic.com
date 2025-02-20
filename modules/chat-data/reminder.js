@@ -29,7 +29,7 @@ module.exports = (function () {
 			alias: "Reminder_Author",
 			toDatabase: "chat_data",
 			toTable: "User_Alias",
-			on: `${table}.User_From = Reminder_Author.ID OR ${table}.User_From IS NULL`
+			on: `${table}.User_From = Reminder_Author.ID`
 		})
 		.join({
 			alias: "Reminder_Target",
@@ -38,7 +38,7 @@ module.exports = (function () {
 			on: `${table}.User_To = Reminder_Target.ID`
 		})
 		.where("Type = %s OR Type = %s", "Reminder", "Deferred")
-		.where("Reminder_Author.ID = %n OR Reminder_Target.ID = %n", userID, userID);
+		.where("(User_From IS NULL AND User_To = %n) OR User_From = %n OR User_To = %n", userID, userID, userID);
 
 	class Reminder extends TemplateModule {
 		static async listByUser (userIdentifier, type) {
