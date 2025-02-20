@@ -25,11 +25,11 @@ module.exports = (function () {
 		.select("Reminder_Target.Name AS Target")
 		.from("chat_data", table)
 		.leftJoin("chat_data", "Channel")
-		.leftJoin({ // Left join - system reminders have User_From equal to `null` and would be skipped
+		.join({
 			alias: "Reminder_Author",
 			toDatabase: "chat_data",
 			toTable: "User_Alias",
-			on: `${table}.User_From = Reminder_Author.ID`
+			on: `${table}.User_From = Reminder_Author.ID OR ${table}.User_From IS NULL`
 		})
 		.join({
 			alias: "Reminder_Target",
