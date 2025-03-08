@@ -71,12 +71,12 @@ module.exports = (function () {
 			}
 			case 23: {
 				contentType = "audio";
-				embed = `<audio style="width:100%" controls><source src="${trackData.parsedLink}"></audio>`;
+				embed = `<audio style="width:100%" controls><source src="${encodeURIComponent(trackData.parsedLink)}"></audio>`;
 				break;
 			}
 			case 25:
 			case 26: {
-				embed = `<video width="320" height="166" controls style="width:100%"><source type="video/mp4" src="${trackData.parsedLink}"></video>`;
+				embed = `<video width="320" height="166" controls style="width:100%"><source type="video/mp4" src="${encodeURIComponent(trackData.parsedLink)}"></video>`;
 				break;
 			}
 		}
