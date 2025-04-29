@@ -8,6 +8,8 @@ const WebUtils = require("../../utils/webutils.js");
 // each numerical value being in a pre-determined order.
 const { experienceLevels } = require("./osrs-data.json");
 const reversedexperienceLevels = experienceLevels.reverse();
+
+const MAX_LEVEL = 99;
 const VIRTUAL_LEVEL_XP_THRESHOLD = experienceLevels.find(i => i.level === 100).experience;
 
 const oneHourTicks = 6000; // 60 minutes * 100 ticks per minute
@@ -397,12 +399,14 @@ Router.get("/lookup/:user", async (req, res) => {
 			if (xp >= VIRTUAL_LEVEL_XP_THRESHOLD) {
 				const levelData = reversedexperienceLevels.find(level => xp > level.experience);
 				resultSkillObject.virtualLevel = levelData.level;
+				virtualTotalLevel += (resultSkillObject.virtualLevel - MAX_LEVEL);
 			}
 			else {
 				resultSkillObject.virtualLevel = level;
 			}
-
-			virtualTotalLevel += resultSkillObject.virtualLevel;
+		}
+		else {
+			virtualTotalLevel += resultSkillObject.level;
 		}
 
 		result.skills.push(resultSkillObject);
