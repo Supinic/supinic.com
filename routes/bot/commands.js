@@ -325,7 +325,7 @@ module.exports = (function () {
 			? "N/A"
 			: restrictionItems.join("<br>");
 
-		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${encodeURIComponent(commandInfo.name)}/index.js">Open in new tab</a>`;
+		data.Code = `<a target="_blank" href="${baseGithubCommandPath}/${encodeURIComponent(commandInfo.name)}">Open in new tab</a>`;
 
 		res.render("generic-detail-table", {
 			data,
