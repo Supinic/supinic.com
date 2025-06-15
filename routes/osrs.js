@@ -152,6 +152,13 @@ module.exports = (function () {
 				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 8
 			},
 			{
+				name: "Zamorak mix",
+				img: "Zamorak_mix(2).png",
+				id: 11521,
+				doses: 2,
+				formula: (level) => Math.floor(level / 10)
+			},
+			{
 				name: "Jangerberries",
 				img: "Jangerberries.png",
 				id: 247,
@@ -253,7 +260,7 @@ module.exports = (function () {
 								 	? item.wrenchFormula(level) 
 								 	: item.formula(level);
 								
-								const pointsRestoredFull = item.formula(level) * item.doses;
+								const pointsRestoredFull = pointsRestored * item.doses;
 								const pointCost = roundFix(prices[item.id] / pointsRestored / item.doses, 2);
 								
 								restoreDoseEl.innerText = pointsRestored;
