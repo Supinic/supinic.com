@@ -17,7 +17,7 @@ append topheader
 
 	script.
 		if (typeof globalThis?.navigator?.serviceWorker !== "undefined" ) {
-			navigator.serviceWorker.register("/static/js/sw.js", { scope: "/" });
+			navigator.serviceWorker.register("/sw.js", { scope: "/" });
 		}
 
 	link(rel="icon" type="image/png" href="/static/img/HACKERMAN.png")
