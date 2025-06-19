@@ -399,8 +399,15 @@ module.exports = class WebUtils {
 		const rel = (options.rel) ? `rel="${options.rel}"` : "";
 
 		return string
-			.replaceAll(/(&lt;|<)(http?s:\/\/\S+)(&gt;|>)/g, "$2")
-			.replaceAll(/(https?:\/\/\S+)/g, `<a class="linkified" href="$1" ${target} ${rel}>$1</a>`);
+			.replaceAll(/(&lt;|<)(https?:\/\/\S+)(&gt;|>)/g, "$2")
+			.replaceAll(/(https?:\/\/\S+)/g, (total, match) => {
+				let classes = "linkified";
+				if (match.includes("i.imgur.com")) {
+					classes += " noaccept";
+				}
+
+				return `<a class="${classes}" href="${match}" ${target} ${rel}>${match}</a>`
+			});
 	}
 
 	static async logRequest (req, route) {

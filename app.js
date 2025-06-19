@@ -173,18 +173,6 @@ const importModule = async (module, path) => {
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.enable("trust proxy");
 
-	app.get("/sw.js", async (req, res, next) => {
-		const filePath = path.join(__dirname, "static/js/sw.js");
-		res.setHeader("Content-Type", "application/javascript");
-		res.setHeader("Service-Worker-Allowed", "/");
-
-		res.sendFile(filePath, (err) => {
-			if (err) {
-				next(err);
-			}
-		});
-	});
-
 	app.use("/public", Express.static(`${__dirname}/static/`, {
 		etag: true,
 		maxAge: "1 day",
