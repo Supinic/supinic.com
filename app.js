@@ -1,4 +1,4 @@
-import path from "node:path";
+const path = require("node:path");
 const importModule = async (module, path) => {
 	const { crons, definitions } = await import(`${path}/index.mjs`);
 
