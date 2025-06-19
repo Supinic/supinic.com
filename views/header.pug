@@ -15,9 +15,10 @@ append topheader
 			)
 	- }
 
-	- if (typeof globalThis?.navigator?.serviceWorker !== "undefined" ) {
-	-	navigator.serviceWorker.register("/static/js/sw.js");
-	- }
+	script.
+		if (typeof globalThis?.navigator?.serviceWorker !== "undefined" ) {
+			navigator.serviceWorker.register("/static/js/sw.js");
+		}
 
 	link(rel="icon" type="image/png" href="/static/img/HACKERMAN.png")
 	meta(name="robots" content="noindex")
