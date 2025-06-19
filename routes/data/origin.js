@@ -186,9 +186,7 @@ module.exports = (function () {
 			"Origin added": (originAddDetails.length !== 0) ? originAddDetails.join(", ") : "N/A",
 			"Related emotes": `${relatedEmotes}${sameNameEmotesButton}`,
 			Notes: (data.notes)
-				? linkify(data.notes)
-					.replace(/(https?:\/\/.+?)(\s|$)/gi, `<a rel="noopener noreferrer" target="_blank" href="$1">$1</a>$2`)
-					.replace(/\r?\n/g, "<br>")
+				? WebUtils.linkify(linkify(data.notes), { rel: "noopener noreferrer", target: "_blank" }).replaceAll(/\r?\n/g, "<br>")
 				: "N/A"
 		};
 
