@@ -1,8 +1,10 @@
-self.addEventListener("install", (evt) => console.log("Imgur redirector: Installed", { evt });
+/* eslint-env serviceworker */
+
+self.addEventListener("install", (evt) => console.log("Imgur redirector: Installed", { evt }));
 self.addEventListener("activate", (evt) => {
 	console.log("Imgur redirector: Activated", { evt });
 	evt.waitUntil(self.clients.claim());
-}
+});
 
 self.addEventListener("fetch", (evt) => {
 	console.log("Imgur redirector: Fetch", { evt });
