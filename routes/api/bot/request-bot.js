@@ -244,7 +244,7 @@ module.exports = (function () {
 		const cacheKey = `${BASE_CACHE_KEY}-${twitchChannelID}`;
 		const hasAuthorization = Boolean(await sb.Cache.getByPrefix(cacheKey));
 		if (!hasAuthorization && !modCheck.isModerator) {
-			return WebUtils.apiFail(res, 400, "Bot is neither permitted to chat nor a moderator, refer to \"Breaking news\"");
+			return WebUtils.apiFail(res, 400, "Bot is neither permitted to chat nor a moderator, refer to \"Rules\"");
 		}
 
 		let extraNotes = "";
