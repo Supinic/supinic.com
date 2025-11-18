@@ -417,20 +417,11 @@ Router.get("/lookup/:user", async (req, res) => {
 
 	for (const activityObject of data.activities) {
 		const { name, rank, score } = activityObject;
-		if (rank === -1) {
-			result.activities.push({
-				name,
-				rank: null,
-				value: null
-			});
-		}
-		else {
-			result.activities.push({
-				name,
-				rank,
-				value: score
-			});
-		}
+		result.activities.push({
+			name,
+			rank: (rank === -1) ? null : rank,
+			value: score
+		});
 	}
 
 	const combatLevelData = calculateCombatLevelData(result.skills);
