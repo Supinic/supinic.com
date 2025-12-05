@@ -25,7 +25,7 @@ append topheader
 	)
 	script.
 		if (typeof jQuery === 'undefined') {
-			document.write(`<script src="/static/js/fallback-jquery-3.7.1.min.js"><\\/script>`);
+			document.write(`<script src="/static/js/fallback-jquery-3.7.1.min.js"></script>`);
 		}
 
 	script(
@@ -35,7 +35,7 @@ append topheader
 	)
 	script.
 		if (!window.jQuery || !$.fn.modal) {
-			document.write('<script src="/static/js/fallback-bootstrap-4.6.2.min.js"><\\/script>');
+			document.write('<script src="/static/js/fallback-bootstrap-4.6.2.min.js"></script>');
 		}
 
 	link(
