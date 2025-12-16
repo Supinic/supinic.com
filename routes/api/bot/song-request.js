@@ -1,13 +1,14 @@
 const Express = require("express");
 const Router = Express.Router();
 
-const SongRequest = require("../../../modules/chat-data/song-request.js");
-const VideoType = require("../../../modules/data/video-type.js");
+const MediaRequest = require("../../../modules/stream/media-request.js");
+const User = require("../../../modules/chat-data/user-alias.js");
 const WebUtils = require("../../../utils/webutils.js");
 
 const cacheKeys = {
 	TTS_ENABLED: "text-to-speech-state",
-	SONG_REQUESTS_STATE: "song-requests-state"
+	SONG_REQUESTS_STATE: "song-requests-state",
+	MPV_ITEM_DATA: "mpv-item-data"
 };
 
 module.exports = (function () {
@@ -19,7 +20,7 @@ module.exports = (function () {
 	 * @apiDescription Fetches the stream's current song request state
 	 * @apiGroup Stream
 	 * @apiPermission none
-	 * @apiSuccess {string} state One of "off", "vlc", "cytube", "dubtrack"
+	 * @apiSuccess {string} state One of "off", "mpv"
 	 */
 	Router.get("/state", async (req, res) => {
 		const state = await sb.Cache.getByPrefix(cacheKeys.SONG_REQUESTS_STATE);
@@ -33,34 +34,43 @@ module.exports = (function () {
 	 * @apiGroup Stream
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} data
-	 * @apiSuccess {number} data.ID
-	 * @apiSuccess {number} data.vlcID
-	 * @apiSuccess {string} data.link
-	 * @apiSuccess {number} data.videoType
-	 * @apiSuccess {string} data.name
-	 * @apiSuccess {number} data.length
-	 * @apiSuccess {string} data.status
-	 * @apiSuccess {number} data.userAlias
-	 * @apiSuccess {string} data.added ISO Date
-	 * @apiSuccess {string} [data.started] ISO Date
-	 * @apiSuccess {string} [data.ended] ISO Date
-	 * @apiSuccess {string} data.parsedLink
+	 * @apiSuccess {number} data.order
+	 * @apiSuccess {string} data.url
+	 * @apiSuccess {string|null} data.name
+	 * @apiSuccess {number|null} data.length
+	 * @apiSuccess {string|null} data.username
 	 */
 	Router.get("/queue", async (req, res) => {
-		const prefixSymbol = process.env.VIDEO_TYPE_REPLACE_PREFIX;
-		const [videoTypes, rawData] = await Promise.all([
-			VideoType.getParsers(),
-			SongRequest.getNormalizedQueue(q => q.where("Status IN %s+", ["Current", "Queued"]))
-		]);
+		const entries = await sb.Cache.getByPrefix(cacheKeys.MPV_ITEM_DATA) ?? [];
+		const users = new Map();
 
-		const data = rawData.map(track => {
-			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol, track.Link);
+		const result = [];
+		for (const entry of entries) {
+			const item = entry[1];
+			const obj = {
+				order: item.id,
+				url: item.url,
+				name: item.name,
+				length: item.duration
+			};
 
-			return track;
-		});
+			if (item.user !== null) {
+				let username = users.get(item.user);
+				if (!username) {
+					const name = await User.getById(item.user);
+					if (name) {
+						users.set(item.user, name);
+						username = name;
+					}
+				}
 
-		return WebUtils.apiSuccess(res, data);
+				obj.username = username;
+			}
+
+			result.push(obj);
+		}
+
+		return WebUtils.apiSuccess(res, result);
 	});
 
 	/**
@@ -71,34 +81,26 @@ module.exports = (function () {
 	 * @apiPermission any
 	 * @apiSuccess {Object[]} data
 	 * @apiSuccess {number} data.ID
-	 * @apiSuccess {number} data.vlcID
-	 * @apiSuccess {string} data.link
-	 * @apiSuccess {number} data.videoType
-	 * @apiSuccess {string} data.name
-	 * @apiSuccess {number} data.length
-	 * @apiSuccess {string} data.status
-	 * @apiSuccess {number} data.userAlias
-	 * @apiSuccess {string} data.added ISO Date
-	 * @apiSuccess {string} [data.started] ISO Date
-	 * @apiSuccess {string} [data.ended] ISO Date
-	 * @apiSuccess {string} data.parsedLink
+	 * @apiSuccess {number} data.order
+	 * @apiSuccess {string} data.url
+	 * @apiSuccess {string|null} data.name
+	 * @apiSuccess {number|null} data.length
+	 * @apiSuccess {string|null} data.username
+	 * @apiSuccess {number} data.added
 	 */
 	Router.get("/history", async (req, res) => {
-		const prefixSymbol = process.env.VIDEO_TYPE_REPLACE_PREFIX;
-		const [videoTypes, rawData] = await Promise.all([
-			VideoType.getParsers(),
-			SongRequest.getNormalizedQueue(q => q
-				.where("Status = %s", "Inactive")
-				.where("Added >= (NOW() - INTERVAL 7 DAY)")
-			)
-		]);
+		const threshold = new sb.Date().addDays(-7);
+		const rawData = await MediaRequest.getHistoryQueue(threshold);
 
-		const data = rawData.map(track => {
-			const { Link_Prefix: prefix } = videoTypes.find(i => track.Video_Type === i.ID);
-			track.Parsed_Link = prefix.replace(prefixSymbol, track.Link);
-
-			return track;
-		});
+		const data = rawData.map(i => ({
+			ID: i.ID,
+			order: i.PID,
+			url: i.URL,
+			name: i.Name,
+			length: i.Duration,
+			username: i.Username,
+			added: i.Added
+		}));
 
 		return WebUtils.apiSuccess(res, data);
 	});
