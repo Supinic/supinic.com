@@ -7,7 +7,7 @@ module.exports = (function () {
 	const print = (data, ...extraFields) => data.map(track => {
 		const obj = {
 			Order: track.order,
-			Username: track.username,
+			Username: track.username ?? "(auto-requested)",
 			Media: (track.url.includes("/home"))
 				? `${sb.Utils.escapeHTML(track.name ?? track.url)}`
 				: `<a target="_blank" href="${track.url}">${sb.Utils.escapeHTML(track.name)}</a>`

@@ -8,7 +8,7 @@ module.exports = (function () {
 				: new sb.Date().addDays(-7);
 
 			return await sb.Query.getRecordset(rs => rs
-				.select("Media_Request.ID AS MID", "PID", "URL", "Name", "Added")
+				.select("Media_Request.ID AS MID", "PID", "URL", "Media_Request.Name AS Name", "Added")
 				.select("User_Alias.Name AS Username")
 				.from("stream", "Media_Request")
 				.leftJoin({
