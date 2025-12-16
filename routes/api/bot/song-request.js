@@ -57,7 +57,7 @@ module.exports = (function () {
 			if (item.user !== null) {
 				let username = users.get(item.user);
 				if (!username) {
-					const name = await User.getById(item.user);
+					const name = await User.getByID(item.user);
 					if (name) {
 						users.set(item.user, name);
 						username = name;
