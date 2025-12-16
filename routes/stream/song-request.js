@@ -17,7 +17,10 @@ module.exports = (function () {
 			obj.ID = track.ID;
 		}
 		if (extraFields.includes("Added")) {
-			obj.Added = new sb.Date(track.added).format("Y-m-d H:i");
+			obj.Added = {
+				value: new sb.Date(track.added).format("Y-m-d H:i"),
+				dataOrder: track.added
+			};
 		}
 
 		return obj;

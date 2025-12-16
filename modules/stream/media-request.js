@@ -20,6 +20,7 @@ module.exports = (function () {
 					toField: "ID"
 				})
 				.where("Added >= %d", date)
+				.orderBy("Added DESC")
 			);
 		}
 
