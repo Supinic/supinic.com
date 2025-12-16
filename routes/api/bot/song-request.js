@@ -57,10 +57,10 @@ module.exports = (function () {
 			if (item.user !== null) {
 				let username = users.get(item.user);
 				if (!username) {
-					const name = await User.getByID(item.user);
-					if (name) {
-						users.set(item.user, name);
-						username = name;
+					const userData = await User.getByID(item.user);
+					if (userData) {
+						users.set(item.user, userData.Name);
+						username = userData.Name;
 					}
 				}
 
