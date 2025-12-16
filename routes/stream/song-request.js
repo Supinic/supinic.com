@@ -4,69 +4,53 @@ const Router = Express.Router();
 module.exports = (function () {
 	"use strict";
 
-	const print = async (data, ...extraFields) => data.map(track => {
-		const startTime = (track.startTime)
-			? sb.Utils.formatTime(track.startTime, true)
-			: "0:00";
-		const endTime = (track.endTime)
-			? sb.Utils.formatTime(track.endTime, true)
-			: sb.Utils.formatTime(Number(track.length), true);
-
+	const print = (data, ...extraFields) => data.map(track => {
 		const obj = {
-			User: track.username,
-			Name: `<a target="_blank" href="${track.parsedLink}">${sb.Utils.escapeHTML(track.name)}</a>`,
-			Segment: {
-				dataOrder: (track.startTime || track.endTime)
-					? ((track.endTime ?? track.duration) - (track.startTime ?? 0))
-					: 0,
-				value: (track.startTime || track.endTime)
-					? `${startTime} - ${endTime}`
-					: "(full song)"
-			},
-			Duration: {
-				dataOrder: Number(track.duration),
-				value: sb.Utils.formatTime(Number(track.duration), true)
-			}
+			Order: track.order,
+			Username: track.username ?? "(auto-requested)",
+			Media: (track.url.includes("/home"))
+				? `${sb.Utils.escapeHTML(track.name ?? track.url)}`
+				: `<a target="_blank" href="${track.url}">${sb.Utils.escapeHTML(track.name)}</a>`
 		};
 
 		if (extraFields.includes("ID")) {
-			obj.ID = track.vlcID;
-		}
-		if (extraFields.includes("Status")) {
-			obj.Status = track.status;
+			obj.ID = track.ID;
 		}
 		if (extraFields.includes("Added")) {
-			obj.Added = new sb.Date(track.added).format("Y-m-d H:i");
+			obj.Added = {
+				value: new sb.Date(track.added).format("Y-m-d H:i"),
+				dataOrder: track.added
+			};
 		}
 
 		return obj;
 	});
 
 	Router.get("/queue", async (req, res) => {
-		const header = ["ID", "User", "Name", "Duration", "Segment", "Status"];
+		const header = ["Order", "Username", "Media"];
 		const response = await sb.Got.get("Supinic")({
 			url: "bot/song-request/queue"
 		});
-		const { data } = response.body;
 
+		const { data } = response.body;
 		res.render("generic-list-table", {
 			title: "Current song request queue at Supinic",
-			data: await print(data, "ID", "Status"),
+			data: print(data, "ID", "Status"),
 			head: header,
 			pageLength: 10
 		});
 	});
 
 	Router.get("/history", async (req, res) => {
-		const header = ["User", "Name", "Duration", "Segment", "Added"];
+		const header = ["ID", "Username", "Media", "Added"];
 		const response = await sb.Got.get("Supinic")({
 			url: "bot/song-request/history"
 		});
-		const { data } = response.body;
 
+		const { data } = response.body;
 		res.render("generic-list-table", {
 			title: "History of song requests at Supinic",
-			data: await print(data, "Added"),
+			data: await print(data, "Added", "ID"),
 			head: header,
 			pageLength: 25,
 			sortColumn: 4,
