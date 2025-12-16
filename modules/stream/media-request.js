@@ -14,7 +14,7 @@ module.exports = (function () {
 				.leftJoin({
 					fromDatabase: "stream",
 					fromTable: "Media_Request",
-					fromField: "Request",
+					fromField: "Requester",
 					toDatabase: "chat_data",
 					toTable: "User_Alias",
 					toField: "ID"
