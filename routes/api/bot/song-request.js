@@ -93,7 +93,7 @@ module.exports = (function () {
 		const rawData = await MediaRequest.getHistoryQueue(threshold);
 
 		const data = rawData.map(i => ({
-			ID: i.ID,
+			ID: i.MID,
 			order: i.PID,
 			url: i.URL,
 			name: i.Name,

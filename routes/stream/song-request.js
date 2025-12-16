@@ -4,11 +4,13 @@ const Router = Express.Router();
 module.exports = (function () {
 	"use strict";
 
-	const print = async (data, ...extraFields) => data.map(track => {
+	const print = (data, ...extraFields) => data.map(track => {
 		const obj = {
 			Order: track.order,
 			Username: track.username,
-			Media: `<a target="_blank" href="${track.url}">${sb.Utils.escapeHTML(track.name)}</a>`,
+			Media: (track.url.includes("/home"))
+				? `${sb.Utils.escapeHTML(track.name ?? track.url)}`
+				: `<a target="_blank" href="${track.url}">${sb.Utils.escapeHTML(track.name)}</a>`
 		};
 
 		if (extraFields.includes("ID")) {
