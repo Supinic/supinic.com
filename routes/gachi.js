@@ -130,7 +130,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/archive", async (req, res) => {
-		res.redirect("https://gachi.ivr.fi");
+		res.redirect("https://gachiarchive.ivr.fi");
 	});
 
 	Router.get("/resources", async (req, res) => {
