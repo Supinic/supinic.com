@@ -195,6 +195,10 @@ const importModule = async (module, path) => {
 
 	app.locals.navitems = [
 		{
+			name: "FAQ",
+			link: "data/faq/list"
+		},
+		{
 			name: "Supibot",
 			items: [
 				{ name: "FAQ", link: "data/faq/list" },
@@ -228,23 +232,6 @@ const importModule = async (module, path) => {
 			]
 		},
 		{
-			name: "Music",
-			items: [
-				{ name: "Gachi list", link: "track/gachi/list" },
-				{ name: "Todo list", link: "track/todo/list" },
-				{ name: "Favourites - find by user", link: "track/favourite/find" },
-
-				{ separator: true },
-
-				{ name: "Archives", link: "gachi/archive" },
-				{ name: "Legacy list", link: "gachi/list" }
-				// { name: "Add new", link: "add" },
-				// { name: "Guidelines", link: "guidelines" },
-				// { name: "Todo list", link: "todo" },
-				// { name: "Resources", link: "resources" }
-			]
-		},
-		{
 			name: "Stream",
 			items: [
 				{ name: "Cooking streams", link: "stream/recipe/list" },
@@ -258,10 +245,22 @@ const importModule = async (module, path) => {
 		{
 			name: "Other",
 			items: [
+				{ name: "Gachi list", link: "track/gachi/list" },
+				{ name: "Gachi archives", link: "gachi/archive" },
+				{ name: "Todo list", link: "track/todo/list" },
+				{ name: "Favs by user", link: "track/favourite/find" },
+				// { name: "Legacy list", link: "gachi/list" },
+				// { name: "Add new", link: "add" },
+				// { name: "Guidelines", link: "guidelines" },
+				// { name: "Todo list", link: "todo" },
+				// { name: "Resources", link: "resources" }[
+
+				{ separator: true },
+
 				{ name: "Bad Apple!!", link: "data/bad-apple/list" },
 				{ name: "DALL-E images", link: "data/dall-e/list" },
-				{ name: "OSRS Raids 3 calculator", link: "osrs/toa/calculator" },
-				{ name: "OSRS Prayer costs", link: "osrs/prayer/comparisons" }
+				{ name: "OSRS Prayer costs", link: "osrs/prayer/comparisons" },
+				{ name: "OSRS Raids 3 calculator", link: "osrs/toa/calculator" }
 			]
 		},
 		{
