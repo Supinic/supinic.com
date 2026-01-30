@@ -28,6 +28,10 @@ export const definition = {
 		}
 
 		for (const item of missingItems) {
+			if (typeof item.value !== "number") {
+				continue;
+			}
+
 			const row = await sb.Query.getRow("osrs", "Item");
 			row.setValues({
 				Game_ID: item.id,
