@@ -197,17 +197,6 @@ module.exports = (function () {
 				: "N/A"
 		};
 
-		const { author } = commandInfo;
-		if (author) {
-			let authorIdentifier = author;
-			if (Array.isArray(authorIdentifier)) {
-				const list = authorIdentifier.map(i => `<li>${i}</li>`).join("");
-				authorIdentifier = `<ul>${list}</ul>`;
-			}
-
-			data.Author = authorIdentifier;
-		}
-
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
 			const response = await sb.Got.get("Supibot")({
