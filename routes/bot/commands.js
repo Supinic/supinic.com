@@ -185,12 +185,6 @@ module.exports = (function () {
 		}
 
 		const commandInfo = response.body.data;
-		let authorIdentifier = commandInfo.author ?? "N/A";
-		if (Array.isArray(authorIdentifier)) {
-			const list = authorIdentifier.map(i => `<li>${i}</li>`).join("");
-			authorIdentifier = `<ul>${list}</ul>`;
-		}
-
 		const data = {
 			Name: commandInfo.name,
 			Aliases: (commandInfo.aliases.length === 0)
@@ -198,11 +192,21 @@ module.exports = (function () {
 				: commandInfo.aliases.join(", "),
 			Description: commandInfo.description ?? "N/A",
 			Cooldown: `${commandInfo.cooldown / 1000} seconds`,
-			Author: authorIdentifier,
 			"Dynamic description": (commandInfo.dynamicDescription)
 				? commandInfo.dynamicDescription.join("<br>")
 				: "N/A"
 		};
+
+		const { author } = commandInfo;
+		if (author) {
+			let authorIdentifier = author;
+			if (Array.isArray(authorIdentifier)) {
+				const list = authorIdentifier.map(i => `<li>${i}</li>`).join("");
+				authorIdentifier = `<ul>${list}</ul>`;
+			}
+
+			data.Author = authorIdentifier;
+		}
 
 		const auth = await WebUtils.getUserLevel(req, res);
 		if (auth.userID) {
