@@ -86,6 +86,14 @@ module.exports = (function () {
 				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 8
 			},
 			{
+				name: "Blighted super restore",
+				img: "Blighted_super_restore(4).png",
+				id: 24598,
+				doses: 4,
+				formula: (level) => Math.floor(level * 25 / 100) + 8,
+				wrenchFormula: (level) => Math.floor(level * 27 / 100) + 8
+			},
+			{
 				name: "Sanfew serum",
 				img: "Sanfew_serum(4).png",
 				id: 10925,
@@ -159,9 +167,24 @@ module.exports = (function () {
 				formula: (level) => Math.floor(level / 10)
 			},
 			{
+
+				name: "Bluefin",
+				img: "Bluefin.png",
+				id: 32344,
+				doses: 1,
+				formula: () => 5
+			},
+			{
 				name: "Jangerberries",
 				img: "Jangerberries.png",
 				id: 247,
+				doses: 1,
+				formula: () => 1
+			},
+			{
+				name: "Tonameyo white",
+				img: "Tonameyo_white.png",
+				id: 29958,
 				doses: 1,
 				formula: () => 1
 			}
