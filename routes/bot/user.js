@@ -6,7 +6,8 @@ const WebUtils = require("../../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
-	const gistify = (string) => string.replace(/\bimportGist:([A-Za-z0-9]{32})\b/, (total, slug) => (
+	const gistRegex = /\bimportGist:([A-Za-z0-9]{32})\b/;
+	const gistify = (string) => string.replace(gistRegex, (total, slug) => (
 		`<a href="//gist.github.com/${slug}">${total}</a>`
 	));
 
@@ -62,30 +63,37 @@ module.exports = (function () {
 			copyLinkString = `${copySection}${copyList}<br>${linkSection}${linkList}`;
 		}
 
-		let invocationString = "N/A";
+		let invocationString = null;
 		if (aliasData.invocation) {
 			const args = aliasData.arguments ?? [];
-			const invocation = `${aliasData.invocation} ${args.join(" ")}`.trim();
-
-			const escaped = sb.Utils.escapeHTML(invocation);
-			invocationString = gistify(escaped);
+			invocationString = `${aliasData.invocation} ${args.join(" ")}`.trim();
 		}
+
+		const data = {
+			User: aliasData.userName,
+			Alias: aliasData.name,
+			Created: created,
+			Edited: edited,
+			Description: (aliasData.description)
+				? sb.Utils.escapeHTML(aliasData.description)
+				: "N/A",
+			Invocation: (invocationString)
+				? `<code>${sb.Utils.escapeHTML(invocationString)}</code>`
+				: "N/A"
+		};
+
+		if (invocationString && invocationString.includes("importGist:")) {
+			const slug = invocationString.match(gistRegex)?.[1] ?? null;
+			if (slug) {
+				data.Gist = `<a href="//gist.github.com/${slug}>${slug}</a>`;
+			}
+		}
+
+		data["Copies/Links"] = copyLinkString;
 
 		res.render("generic-detail-table", {
 			title: `Alias ${aliasData.name} of user ${aliasData.userName}`,
-			data: {
-				User: aliasData.userName,
-				Alias: aliasData.name,
-				Created: created,
-				Edited: edited,
-				Description: (aliasData.description)
-					? sb.Utils.escapeHTML(aliasData.description)
-					: "N/A",
-				Invocation: (aliasData.invocation)
-					? `<code>${sb.Utils.escapeHTML(invocationString)}</code>`
-					: "N/A",
-				"Copies/Links": copyLinkString
-			},
+			data,
 			openGraphDefinition: [
 				{
 					property: "title",

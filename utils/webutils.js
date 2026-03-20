@@ -406,7 +406,7 @@ module.exports = class WebUtils {
 					classes += " noaccept";
 				}
 
-				return `<a class="${classes}" href="${match}" ${target} ${rel}>${match}</a>`
+				return `<a class="${classes}" href="${match}" ${target} ${rel}>${match}</a>`;
 			});
 	}
 
