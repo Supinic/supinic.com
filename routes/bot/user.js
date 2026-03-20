@@ -85,7 +85,7 @@ module.exports = (function () {
 		if (invocationString && invocationString.includes("importGist:")) {
 			const slug = invocationString.match(gistRegex)?.[1] ?? null;
 			if (slug) {
-				data.Gist = `<a href="//gist.github.com/${slug}>${slug}</a>`;
+				data.Gist = `<a href="//gist.github.com/${slug}">${slug}</a>`;
 			}
 		}
 
