@@ -6,14 +6,13 @@ const WebUtils = require("../../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
+	const gistify = (string) => string.replace(/\bimportGist:([A-Za-z0-9]{32})\b/, (total, slug) => (
+		`<a href="//gist.github.com/${slug}">${total}</a>`
+	));
+
 	const createAliasDetailTable = (res, aliasData) => {
 		const created = (aliasData.created) ? new sb.Date(aliasData.created).format("Y-m-d") : "N/A";
 		const edited = (aliasData.edited) ? new sb.Date(aliasData.edited).format("Y-m-d") : "N/A";
-
-		const args = aliasData.arguments ?? [];
-		const invocation = (aliasData.invocation)
-			? `${aliasData.invocation} ${args.join(" ")}`
-			: "N/A";
 
 		let copyLinkString = "N/A";
 		if (aliasData.type === "main" && aliasData.childAliasData) {
@@ -63,6 +62,15 @@ module.exports = (function () {
 			copyLinkString = `${copySection}${copyList}<br>${linkSection}${linkList}`;
 		}
 
+		let invocationString = "N/A";
+		if (aliasData.invocation) {
+			const args = aliasData.arguments ?? [];
+			const invocation = `${aliasData.invocation} ${args.join(" ")}`.trim();
+
+			const escaped = sb.Utils.escapeHTML(invocation);
+			invocationString = gistify(escaped);
+		}
+
 		res.render("generic-detail-table", {
 			title: `Alias ${aliasData.name} of user ${aliasData.userName}`,
 			data: {
@@ -74,7 +82,7 @@ module.exports = (function () {
 					? sb.Utils.escapeHTML(aliasData.description)
 					: "N/A",
 				Invocation: (aliasData.invocation)
-					? `<code>${sb.Utils.escapeHTML(invocation)}</code>`
+					? `<code>${sb.Utils.escapeHTML(invocationString)}</code>`
 					: "N/A",
 				"Copies/Links": copyLinkString
 			},
@@ -85,7 +93,7 @@ module.exports = (function () {
 				},
 				{
 					property: "description",
-					content: aliasData.description ?? invocation ?? "N/A"
+					content: aliasData.description ?? invocationString ?? "N/A"
 				},
 				{
 					property: "author",
@@ -188,7 +196,7 @@ module.exports = (function () {
 
 			const invocation = (alias.linkAuthor && alias.linkName)
 				? `<code>(link to alias ${alias.linkName} made by ${alias.linkAuthor})</code>`
-				: sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`);
+				: gistify(sb.Utils.escapeHTML(`${alias.invocation} ${alias.arguments.join(" ")}`));
 
 			return {
 				Name: {
