@@ -57,7 +57,7 @@ module.exports = (function () {
 	});
 
 	/**
-	 * @api {get} /bot/channel/list/ Channel - get previous channels
+	 * @api {get} /bot/channel/previousList Channel - get previous channels
 	 * @apiName GetPreviousNameList
 	 * @apiDescription For a given username/twitch user ID, this endpoint returns a list of all the channel rows that had the same user ID
 	 * @apiGroup Bot
