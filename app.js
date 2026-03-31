@@ -631,7 +631,7 @@ const importModule = async (module, path) => {
 	// eslint-enable no-unused-vars
 
 	// 404
-	app.get("*", (req, res) => res.status(404).render("error", {
+	app.get("/{*splat}", (req, res) => res.status(404).render("error", {
 		message: "404 Not found",
 		error: "Endpoint was not found"
 	}));
