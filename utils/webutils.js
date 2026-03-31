@@ -420,7 +420,7 @@ module.exports = class WebUtils {
 			User_Agent: req.header("User-Agent") || null,
 			Headers: JSON.stringify(req.headers),
 			Query: JSON.stringify(req.query),
-			Body: JSON.stringify(req.body)
+			Body: (req.body) ? JSON.stringify(req.body) : ""
 		});
 
 		return await row.save();
