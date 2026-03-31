@@ -36,9 +36,9 @@ module.exports = (function () {
 	 * @apiSuccess {Object[]} data
 	 * @apiSuccess {number} data.order
 	 * @apiSuccess {string} data.url
-	 * @apiSuccess {string|null} data.name
-	 * @apiSuccess {number|null} data.length
-	 * @apiSuccess {string|null} data.username
+	 * @apiSuccess {string} [data.name]
+	 * @apiSuccess {number} [data.length]
+	 * @apiSuccess {string} [data.username]
 	 */
 	Router.get("/queue", async (req, res) => {
 		const entries = await sb.Cache.getByPrefix(cacheKeys.MPV_ITEM_DATA) ?? [];
