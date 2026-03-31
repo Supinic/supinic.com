@@ -51,7 +51,7 @@ module.exports = (function () {
 			}
 		});
 
-		res.send(200);
+		res.status(200);
 	});
 
 	Router.delete("/auth-key", async (req, res) => {
@@ -66,7 +66,7 @@ module.exports = (function () {
 			}
 		});
 
-		res.send(200);
+		res.status(200);
 	});
 
 	Router.get("/auth-key", async (req, res) => {

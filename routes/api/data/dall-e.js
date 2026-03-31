@@ -9,7 +9,7 @@ const WebUtils = require("../../../utils/webutils.js");
 module.exports = (function () {
 	"use strict";
 
-	Router.use("*", compression({
+	Router.use("/{*splat}", compression({
 		level: zlib.Z_BEST_COMPRESSION,
 		strategy: zlib.Z_RLE,
 		threshold: 5000 // at least 5kB must be sent in order to trigger compression

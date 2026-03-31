@@ -307,7 +307,7 @@ const importModule = async (module, path) => {
 		res.send("6838d447-8257-45ab-a40a-18ecd1637c8d");
 	});
 
-	app.all("*", async (req, res, next) => {
+	app.all("/{*splat}", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await WebUtils.logRequest(req, routeType);
 		const requestLogSymbol = Symbol.for("request-log-symbol");
@@ -636,7 +636,13 @@ const importModule = async (module, path) => {
 		error: "Endpoint was not found"
 	}));
 
-	app.listen(port, () => console.log("Listening..."));
+	app.listen(port, (error) => {
+		if (error) {
+			throw error; // e.g. EADDRINUSE
+		}
+
+		console.log("Listening...");
+	});
 
 	sb.App = app;
 	sb.App.data = {

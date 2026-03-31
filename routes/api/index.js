@@ -25,13 +25,13 @@ module.exports = (function () {
 	"use strict";
 
 	// Rate limit for API endpoints
-	Router.use("/*", RateLimiter({
+	Router.use("/*splat", RateLimiter({
 		max: 100,
 		windowMs: 60_000,
 		message: "Flood protection rate limit (100 requests/minute) exceeded!"
 	}));
 
-	Router.all("/*", (req, res, next) => {
+	Router.all("/*splat", (req, res, next) => {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		res.header("Access-Control-Allow-Methods", "GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONS,TRACE,PATCH");
@@ -39,7 +39,7 @@ module.exports = (function () {
 		next();
 	});
 
-	Router.all("/*", (req, res, next) => {
+	Router.all("/*splat", (req, res, next) => {
 		const { deprecation } = req.query;
 		if (deprecation && sb.App.data.deprecation.has(deprecation)) {
 			delete req.query.deprecation;
@@ -117,7 +117,7 @@ module.exports = (function () {
 	});
 	// eslint-enable no-unused-vars
 
-	Router.all("*", (req, res) => WebUtils.apiFail(res, 404, "Not found"));
+	Router.all("/{*splat}", (req, res) => WebUtils.apiFail(res, 404, "Not found"));
 
 	return Router;
 })();
