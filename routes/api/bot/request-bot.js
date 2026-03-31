@@ -10,7 +10,7 @@ const BASE_CACHE_KEY = "website-twitch-auth-bot";
 
 const PLATFORM_TWITCH = "twitch";
 const PLATFORM_CYTUBE = "cytube";
-const SUPPORTED_PLATFORMS = [PLATFORM_TWITCH, PLATFORM_CYTUBE];
+const SUPPORTED_PLATFORMS = new Set([PLATFORM_TWITCH, PLATFORM_CYTUBE]);
 const PLATFORM_ID = {
 	twitch: 1,
 	cytube: 3
@@ -67,7 +67,7 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "No target or rename channel provided");
 		}
 
-		if (!SUPPORTED_PLATFORMS.includes(platform)) {
+		if (!SUPPORTED_PLATFORMS.has(platform)) {
 			return WebUtils.apiFail(res, 400, "Invalid platform provided");
 		}
 

@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 const noAcceptLinks = document.querySelectorAll("a.noaccept");
 for (const el of noAcceptLinks) {
 	el.addEventListener("click", async (evt) => {

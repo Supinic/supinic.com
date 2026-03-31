@@ -1,6 +1,6 @@
 const Express = require("express");
 const compression = require("compression");
-const zlib = require("zlib");
+const zlib = require("node:zlib");
 const Router = Express.Router();
 
 const DallE = require("../../../modules/data/dall-e.js");
@@ -12,7 +12,7 @@ module.exports = (function () {
 	Router.use("*", compression({
 		level: zlib.Z_BEST_COMPRESSION,
 		strategy: zlib.Z_RLE,
-		threshold: 5_000 // at least 5kB must be sent in order to trigger compression
+		threshold: 5000 // at least 5kB must be sent in order to trigger compression
 	}));
 
 	Router.get("/list/client", async (req, res) => {

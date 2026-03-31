@@ -13,7 +13,7 @@ module.exports = (function () {
 		 * @returns {Promise<Object[]>}
 		 */
 		static async list (options = {}) {
-			if (options.status === "Quarantined" || Array.isArray(options.status) && options.status.includes("Quarantined")) {
+			if (options.status === "Quarantined" || (Array.isArray(options.status) && options.status.includes("Quarantined"))) {
 				throw new sb.Error({
 					message: `The "Quarantined" status is not supported!`
 				});

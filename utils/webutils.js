@@ -57,7 +57,7 @@ module.exports = class WebUtils {
 		}
 		const responseData = {
 			statusCode: code,
-			timestamp: new Date().valueOf(),
+			timestamp: Date.now(),
 			data: null,
 			error: {
 				message,
@@ -93,7 +93,7 @@ module.exports = class WebUtils {
 
 		const responseData = {
 			statusCode: 200,
-			timestamp: new Date().valueOf(),
+			timestamp: Date.now(),
 			data: outputData,
 			error: null
 		};
@@ -136,7 +136,7 @@ module.exports = class WebUtils {
 			retirement: timestamp
 		});
 
-		const { parse, stringify } = require("querystring");
+		const { parse, stringify } = require("node:querystring");
 		const obj = parse(res.req._parsedOriginalUrl.query);
 		obj.deprecation = key;
 

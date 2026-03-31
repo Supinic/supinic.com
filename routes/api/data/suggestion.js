@@ -6,8 +6,8 @@ const Suggestion = require("../../../modules/data/suggestion.js");
 const Columns = require("../../../modules/internal/columns.js");
 const WebUtils = require("../../../utils/webutils.js");
 
-const nonAdminStatuses = ["Dismissed by author"];
-const lockedStatuses = ["Completed", "Denied", "Dismissed", "Dimissed by author"];
+const nonAdminStatuses = new Set(["Dismissed by author"]);
+const lockedStatuses = new Set(["Completed", "Denied", "Dismissed", "Dimissed by author"]);
 
 module.exports = (function () {
 	"use strict";
@@ -350,10 +350,10 @@ module.exports = (function () {
 			if (row.values.User_Alias !== auth.userID) {
 				return WebUtils.apiFail(res, 400, "You cannot edit this suggestion - it does not belong to you");
 			}
-			else if (lockedStatuses.includes(row.values.Status)) {
+			else if (lockedStatuses.has(row.values.Status)) {
 				return WebUtils.apiFail(res, 400, "You cannot edit this suggestion - its status has been locked");
 			}
-			else if (status && !nonAdminStatuses.includes(status)) {
+			else if (status && !nonAdminStatuses.has(status)) {
 				return WebUtils.apiFail(res, 400, "Cannot set this status");
 			}
 

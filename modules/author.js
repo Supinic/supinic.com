@@ -24,14 +24,15 @@ module.exports = (function () {
 			return rawData.map(row => {
 				const roles = {};
 
-				row.Roles.split(",").forEach(role => {
+				for (const role of row.Roles.split(",")) {
 					if (!roles[role]) {
 						roles[role] = 1;
 					}
 					else {
 						roles[role] += 1;
 					}
-				});
+				}
+
 				row.Roles = roles;
 
 				if (row.Aliases === null) {

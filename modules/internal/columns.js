@@ -14,7 +14,7 @@ module.exports = (function () {
 				return null;
 			}
 			else {
-				return data.COLUMN_TYPE.replace(/enum\(|\)|'/g, "").split(",").sort();
+				return data.COLUMN_TYPE.replaceAll(/enum\(|\)|'/g, "").split(",").sort();
 			}
 		}
 

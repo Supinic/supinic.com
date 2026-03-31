@@ -12,7 +12,7 @@ module.exports = (function () {
 			try {
 				await row.load(ID);
 			}
-			catch (e) {
+			catch {
 				return null;
 			}
 
@@ -109,7 +109,7 @@ module.exports = (function () {
 				}
 			}
 
-			data.Name = data.Name.replace(/^♂|♂$/g, "").trim();
+			data.Name = data.Name.replaceAll(/^♂|♂$/g, "").trim();
 			data.Author = data.Author.trim();
 			if (data.Based_On) {
 				data.Based_On = data.Based_On.trim();

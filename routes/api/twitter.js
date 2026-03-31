@@ -98,7 +98,6 @@ const defaults = {
 	}
 };
 
-// eslint-disable-next-line no-unused-vars
 const fetchEntryPageBody = async () => {
 	const response = await sb.Got.get("FakeAgent")({
 		url: `https://twitter.com/pajlada`,
@@ -121,7 +120,6 @@ const fetchEntryPageBody = async () => {
 	};
 };
 
-// eslint-disable-next-line no-unused-vars
 const fetchMainFileBody = async (entryPageBody) => {
 	const filename = entryPageBody.match(/responsive-web\/client-web\/(main\.\w+\.js)/)?.[1];
 	if (!filename) {
@@ -154,7 +152,6 @@ const fetchMainFileBody = async (entryPageBody) => {
 	};
 };
 
-// eslint-disable-next-line no-unused-vars
 const fetchBearerToken = (mainFileBody) => {
 	const token = mainFileBody.match(/"([a-zA-Z0-9%]{103,104})"/)?.[1];
 	if (!token) {

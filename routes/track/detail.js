@@ -119,8 +119,8 @@ module.exports = (function () {
 			}),
 
 			"Added on": (trackData.addedOn) ? new sb.Date(trackData.addedOn).sqlDate() : "N/A",
-			"Added by": (trackData.addedBy) ? trackData.addedBy : "N/A",
-			Notes: (trackData.notes) ? (trackData.notes.replace(/\n/g, "<br>")) : "N/A",
+			"Added by": (trackData.addedBy) ?? "N/A",
+			Notes: (trackData.notes) ? (trackData.notes.replaceAll("\n", "<br>")) : "N/A",
 			Embed: embed
 		};
 

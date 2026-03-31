@@ -10,6 +10,7 @@ const importModule = async (module, path) => {
 	}
 };
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 (async function () {
 	"use strict";
 
@@ -60,10 +61,9 @@ const importModule = async (module, path) => {
 	const bodyParser = require("body-parser");
 
 	const Express = require("express");
-	require("express-async-errors");
-
 	const Session = require("express-session");
 	const Passport = require("passport");
+
 	const { OAuth2Strategy } = require("passport-oauth");
 	// const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
@@ -325,8 +325,8 @@ const importModule = async (module, path) => {
 			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
 			if (columnValues.length !== 0) {
 				app.locals.columnValues = columnValues.map(key => ({
-					position: Number(key.match(/column(\d+)/)?.[1]) ?? null,
-					title: key.replace(/_/g, " ").match(/column(\w+)/)?.[1] ?? null,
+					position: Number(key.match(/column(\d+)/)?.[1] ?? null),
+					title: key.replaceAll("_", " ").match(/column(\w+)/)?.[1] ?? null,
 					value: req.query[key]
 				}));
 			}

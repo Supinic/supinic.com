@@ -40,20 +40,22 @@ module.exports = (function () {
 
 			const data = { ...row.valuesObject };
 			if (row.values.Country) {
-				data.Country = (await sb.Query.getRecordset(rs => rs
+				data.Country = await sb.Query.getRecordset(rs => rs
 					.select("Name")
 					.from("data", "Country")
 					.where("ID = %n", row.values.Country)
 					.single()
-				)).Name;
+					.flat("Name")
+				);
 			}
 
-			data.Aliases = (await sb.Query.getRecordset(rs => rs
+			data.Aliases = await sb.Query.getRecordset(rs => rs
 				.select("Name")
 				.from("music", "Alias")
 				.where("Target_Table = %s", "Author")
 				.where("Target_ID = %n", ID)
-			)).map(i => i.Name);
+				.flat("Name")
+			);
 
 			data.Tracks = await sb.Query.getRecordset(rs => rs
 				.select("Role")
@@ -117,12 +119,12 @@ module.exports = (function () {
 				});
 			}
 
-			const exists = (await Promise.all([
+			const [removeAuthorExists, existingAuthorExists] = await Promise.all([
 				Author.exists(removeAuthorID),
 				Author.exists(existingAuthorID)
-			])).every(Boolean);
+			]);
 
-			if (!exists) {
+			if (!removeAuthorExists && !existingAuthorExists) {
 				return false;
 			}
 

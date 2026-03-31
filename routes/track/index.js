@@ -23,7 +23,7 @@ module.exports = (function () {
 	}
 
 	const fetchList = async (req, res, listType, inputData = {}) => {
-		let sortColumn = 0;
+		let sortColumn;
 		const searchParams = {
 			includeYoutubeReuploads: "1"
 		};

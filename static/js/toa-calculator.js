@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 // import RaidsData from "/public/json/raids3-data.json" assert { type: "json" };
 import RaidsData from "/public/js/raids3-data.js";
 
@@ -22,7 +20,7 @@ const recalculateSummary = () => {
 	const capped = Math.min(uncapped, constants.damagePercentageCap);
 	const mode = modes.find(i => (i.min <= level && level <= i.max));
 
-	const summaryEl = document.getElementById("summary");
+	const summaryEl = document.querySelector("summary");
 
 	const iconEl = summaryEl.querySelector(`li[summary=icon]`);
 	iconEl.style.backgroundImage = `url(${mode.icon})`;
@@ -50,7 +48,7 @@ const setHash = () => {
 	const url = new URL(location.toString());
 
 	url.hash = invos;
-	window.history.replaceState(invos, null, url);
+	globalThis.history.replaceState(invos, null, url);
 };
 
 const generateInvocations = () => {
@@ -58,6 +56,7 @@ const generateInvocations = () => {
 
 	let result = 0n;
 	for (const invocation of selectedInvocations) {
+		// eslint-disable-next-line no-bitwise
 		result += (1n << (BigInt(invocation.id) - 1n));
 	}
 
@@ -76,15 +75,16 @@ const importInvocations = (hash = null) => {
 		rawValue = hash;
 	}
 
-	rawValue = rawValue.replaceAll(/#/g, "");
+	rawValue = rawValue.replaceAll("#", "");
 
-	const numValue = parseInt(rawValue, 16);
+	const numValue = Number.parseInt(rawValue, 16);
 	if (Number.isNaN(numValue)) {
 		alert(`Invalid value provided: ${rawValue}`);
 		return;
 	}
 
 	const value = BigInt(numValue);
+	// eslint-disable-next-line no-bitwise
 	if (value < 0n || value > (1n << BigInt(fullInvocationList.length))) {
 		alert("Value is outside of working range");
 		return;
@@ -94,7 +94,9 @@ const importInvocations = (hash = null) => {
 	clearInvocations();
 
 	for (const invocation of fullInvocationList) {
+		// eslint-disable-next-line no-bitwise
 		const mask = 1n << (BigInt(invocation.id) - 1n);
+		// eslint-disable-next-line no-bitwise
 		if ((value & mask) === 0n) {
 			continue;
 		}
@@ -120,14 +122,14 @@ const clearInvocations = () => {
 	recalculateSummary();
 };
 
-window.addEventListener("load", () => {
-	const topListEl = document.getElementById("invocation-list");
+globalThis.addEventListener("load", () => {
+	const topListEl = document.querySelector("invocation-list");
 	const fullInvocationList = RaidsData.invocationCategories.flatMap(i => i.list);
 	for (const category of RaidsData.invocationCategories) {
 		const { title, unique, list } = category;
 		const titleEl = document.createElement("li");
 		titleEl.textContent = title;
-		topListEl.appendChild(titleEl);
+		topListEl.append(titleEl);
 
 		const categoryListEl = document.createElement("ul");
 		for (const invocation of list) {
@@ -196,7 +198,7 @@ window.addEventListener("load", () => {
 				});
 			}
 
-			categoryListEl.appendChild(listItemEl);
+			categoryListEl.append(listItemEl);
 		}
 
 		for (const listItemEl of categoryListEl.children) {
@@ -212,27 +214,26 @@ window.addEventListener("load", () => {
 			}
 		}
 
-		topListEl.appendChild(categoryListEl);
+		topListEl.append(categoryListEl);
 	}
 
 	// Try loading invocations from url...
-	const url = new URL(window.location.toString());
+	const url = new URL(globalThis.location.toString());
 	if (url.hash !== "") {
 		importInvocations(url.hash);
 	}
 
-	// This may set the hash but as long as it was parsed by importInvocations above it's fine
+	// This may set the hash, but as long as it was parsed by importInvocations above, it's fine
 	recalculateSummary();
 
-
-	document.getElementById("button-clear").addEventListener("click", () => clearInvocations());
-	document.getElementById("button-import")
+	document.querySelector("button-clear").addEventListener("click", () => clearInvocations());
+	document.querySelector("button-import")
 		.addEventListener("click",
 			() => {
 				importInvocations();
 			}
 		);
-	document.getElementById("button-export")
+	document.querySelector("button-export")
 		.addEventListener("click",
 			() => {
 				alert(generateInvocations());
@@ -240,7 +241,7 @@ window.addEventListener("load", () => {
 		);
 });
 
-window.addEventListener("hashchange", () => {
+globalThis.addEventListener("hashchange", () => {
 	console.log(`Location fragment was updated to ${location.hash}, importing invocations from it...`);
 	importInvocations(location.hash);
 });

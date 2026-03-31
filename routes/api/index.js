@@ -16,7 +16,7 @@ const subroutes = [
 	["stream", "stream"],
 	["test", "test.js"],
 	["track", "track"],
-	["trackData", "trackData.js"],
+	["trackData", "track-data.js"],
 	["twitter", "twitter.js"]
 ];
 
@@ -63,7 +63,7 @@ module.exports = (function () {
 	 * @apiSuccess {string[]} endpoints.delete List of all API DELETE endpoints
 	 */
 	Router.get("/endpoints", async (req, res) => {
-		const endpoints = { GET: [], POST: [], PUT: [], DELETE: []};
+		const endpoints = { GET: [], POST: [], PUT: [], DELETE: [] };
 		const check = (layer, subPath) => {
 			if (Array.isArray(layer?.handle?.stack)) {
 				for (const subLayer of layer.handle.stack) {
