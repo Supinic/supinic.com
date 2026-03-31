@@ -1,5 +1,6 @@
 [
   "paloaltonetworks.com",
   "BLEXBot",
-  "Timpibot/0.9 (+http://www.timpi.io)"
+  "Timpibot/0.9 (+http://www.timpi.io)",
+  "meta-externalagent/1.1"
 ]
