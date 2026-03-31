@@ -83,9 +83,9 @@ module.exports = (function () {
 	 * @apiSuccess {number} data.ID
 	 * @apiSuccess {number} data.order
 	 * @apiSuccess {string} data.url
-	 * @apiSuccess {string|null} data.name
-	 * @apiSuccess {number|null} data.length
-	 * @apiSuccess {string|null} data.username
+	 * @apiSuccess {string} [data.name]
+	 * @apiSuccess {number} [data.length]
+	 * @apiSuccess {string} [data.username]
 	 * @apiSuccess {number} data.added
 	 */
 	Router.get("/history", async (req, res) => {
