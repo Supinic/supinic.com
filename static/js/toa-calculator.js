@@ -123,7 +123,7 @@ const clearInvocations = () => {
 };
 
 globalThis.addEventListener("load", () => {
-	const topListEl = document.querySelector("invocation-list");
+	const topListEl = document.querySelector("#invocation-list");
 	const fullInvocationList = RaidsData.invocationCategories.flatMap(i => i.list);
 	for (const category of RaidsData.invocationCategories) {
 		const { title, unique, list } = category;
