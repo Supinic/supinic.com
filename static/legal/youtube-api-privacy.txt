@@ -1,0 +1,33 @@
+YouTube Privacy Policy for Supibot
+
+Last updated: 2026-06-02
+
+Supibot is a hobby chatbot operated by an individual developer.
+The bot is used in Twitch and Discord communities and includes a command that allows users to search YouTube from chat.
+
+YouTube API Services
+Supibot uses the YouTube API Services to retrieve publicly available YouTube search results, such as video titles, channel names, thumbnails, video IDs, and links.
+Search results are posted back into the Twitch or Discord chat where the command was used.
+
+By using the YouTube related features of this bot, users are also subject to the YouTube Terms of Service: https://www.youtube.com/t/terms
+Google’s Privacy Policy is available here: https://www.google.com/policies/privacy
+
+Information Collected
+The bot does not require users to log in with a YouTube or Google account.
+The bot does not request OAuth authorization and does not access private YouTube account data.
+When a user runs the YouTube search command, the bot processes the search query provided in chat in order to request public search results from YouTube.
+
+Information Stored
+The bot does not store YouTube account data, OAuth tokens, private YouTube data, or user specific YouTube data.
+Any normal Twitch or Discord message visibility, logging, or retention is handled by those platforms respectively.
+
+How Information Is Used
+Information is used only to provide the requested chat command response, such as returning a relevant YouTube video link in chat.
+No YouTube data or information is used anywhere once the user query is finished.
+The bot does not sell user information, use YouTube API data for advertising, track users’ YouTube activity, build user profiles, or share user specific YouTube data with third parties.
+
+Data Deletion
+Because the bot does not store YouTube user data or any authorized Google/YouTube account data, there is no YouTube related user data to delete.
+
+Addendum
+Users can manage Google account permissions here: https://security.google.com/settings/security/permissions
