@@ -6,10 +6,12 @@ module.exports = (function () {
 
 	class WoWStatus extends TemplateModule {
 		static async list () {
-			return (await super.selectMultipleCustom(q => q
+			const data = await super.selectMultipleCustom(q => q
 				.select("User_Alias.Name AS User_Name")
 				.join("chat_data", "User_Alias")
-			)).map(i => ({
+			);
+
+			return data.map(i => ({
 				Name: i.User_Name,
 				Status: i.Status,
 				Play: i.Normalized_Status,

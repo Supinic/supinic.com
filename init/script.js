@@ -1,5 +1,5 @@
 const initializeDatabase = require("supi-db-init");
-const path = require("path");
+const path = require("node:path");
 
 const config = {
 	auth: {
@@ -23,9 +23,12 @@ const config = {
 initializeDatabase(config)
 	.then(() => {
 		console.log("OK");
+		// eslint-disable-next-line unicorn/no-process-exit
 		process.exit();
 	})
+// eslint-disable-next-line unicorn/prefer-top-level-await
 	.catch(e => {
 		console.error(e);
+		// eslint-disable-next-line unicorn/no-process-exit
 		process.exit();
 	});

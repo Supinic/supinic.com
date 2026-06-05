@@ -8,7 +8,7 @@ module.exports = (function () {
 
 
 	Router.get("/detail/:game", async (req, res) => {
-		const identifier = req.params.game.replace(/_/g, " ");
+		const identifier = req.params.game.replaceAll("_", " ");
 		const gameData = await Game.selectSingleCustom(q => q
 			.where("Name = %s", identifier)
 		);
@@ -22,7 +22,7 @@ module.exports = (function () {
 
 		const printData = {};
 		for (const [rawKey, value] of Object.entries(gameData)) {
-			const key = sb.Utils.capitalize(rawKey.replace(/_/g, " "));
+			const key = sb.Utils.capitalize(rawKey.replaceAll("_", " "));
 
 			if (key === "Released") {
 				printData[key] = (value === null)
@@ -89,7 +89,7 @@ module.exports = (function () {
 		const games = await Game.selectAll();
 
 		const printData = games.map(game => ({
-			Name: `<a href="/stream/game/detail/${game.Name.replace(/\s+/g, "_")}">${game.Name}</a>`,
+			Name: `<a href="/stream/game/detail/${game.Name.replaceAll(/\s+/g, "_")}">${game.Name}</a>`,
 			Status: game.Status,
 			Released: {
 				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,

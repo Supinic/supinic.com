@@ -10,6 +10,7 @@ const importModule = async (module, path) => {
 	}
 };
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 (async function () {
 	"use strict";
 
@@ -60,10 +61,9 @@ const importModule = async (module, path) => {
 	const bodyParser = require("body-parser");
 
 	const Express = require("express");
-	require("express-async-errors");
-
 	const Session = require("express-session");
 	const Passport = require("passport");
+
 	const { OAuth2Strategy } = require("passport-oauth");
 	// const CacheController = require("express-cache-controller");
 	const MySQLStore = require("express-mysql-session")(Session);
@@ -307,7 +307,7 @@ const importModule = async (module, path) => {
 		res.send("6838d447-8257-45ab-a40a-18ecd1637c8d");
 	});
 
-	app.all("*", async (req, res, next) => {
+	app.all("/{*splat}", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await WebUtils.logRequest(req, routeType);
 		const requestLogSymbol = Symbol.for("request-log-symbol");
@@ -325,8 +325,8 @@ const importModule = async (module, path) => {
 			const columnValues = Object.keys(req.query).filter(i => /column[\d\w]+/.test(i));
 			if (columnValues.length !== 0) {
 				app.locals.columnValues = columnValues.map(key => ({
-					position: Number(key.match(/column(\d+)/)?.[1]) ?? null,
-					title: key.replace(/_/g, " ").match(/column(\w+)/)?.[1] ?? null,
+					position: Number(key.match(/column(\d+)/)?.[1] ?? null),
+					title: key.replaceAll("_", " ").match(/column(\w+)/)?.[1] ?? null,
 					value: req.query[key]
 				}));
 			}
@@ -631,12 +631,18 @@ const importModule = async (module, path) => {
 	// eslint-enable no-unused-vars
 
 	// 404
-	app.get("*", (req, res) => res.status(404).render("error", {
+	app.get("/{*splat}", (req, res) => res.status(404).render("error", {
 		message: "404 Not found",
 		error: "Endpoint was not found"
 	}));
 
-	app.listen(port, () => console.log("Listening..."));
+	app.listen(port, (error) => {
+		if (error) {
+			throw error; // e.g. EADDRINUSE
+		}
+
+		console.log("Listening...");
+	});
 
 	sb.App = app;
 	sb.App.data = {

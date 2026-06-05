@@ -18,9 +18,7 @@ module.exports = (function () {
 			const timestamp = (i.timestamp) ? `?t=${i.timestamp}` : "";
 			const deviceLink = (i.device && i.link)
 				? `<a href="//youtu.be/${i.link}${timestamp}">${i.device}</a>`
-				: ((i.device)
-					? i.device
-					: "N/A");
+				: (i.device ?? "N/A");
 
 			return {
 				Device: deviceLink,
@@ -83,7 +81,7 @@ module.exports = (function () {
 			Height: detail.height ?? "N/A",
 			Width: detail.width ?? "N/A",
 			FPS: detail.fps ?? "N/A",
-			Notes: (detail.notes) ? detail.notes.replace(/\n/g, "<br>") : "N/A"
+			Notes: (detail.notes) ? detail.notes.replaceAll("\n", "<br>") : "N/A"
 		};
 
 		res.render("generic-detail-table", {

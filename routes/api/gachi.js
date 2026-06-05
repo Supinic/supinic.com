@@ -81,10 +81,10 @@ module.exports = (function () {
 		}));
 	});
 
-	Router.get("/todo/:filter*?", async (req, res) => {
+	Router.get("/todo/{:filter}", async (req, res) => {
 		const rawData = await Gachi.getTodoList();
 		let sendData = rawData.map(row => {
-			let status = null;
+			let status;
 			if (row.Result) {
 				status = "completed";
 			}

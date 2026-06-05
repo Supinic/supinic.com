@@ -33,7 +33,7 @@ module.exports = (function () {
 
 	Router.post("/auth-key", async (req, res) => {
 		const { userData } = res.locals.authUser;
-		const crypto = require("crypto");
+		const crypto = require("node:crypto");
 
 		const authKey = crypto.createHash("sha3-256")
 			.update(userData.Name)
@@ -51,7 +51,7 @@ module.exports = (function () {
 			}
 		});
 
-		res.send(200);
+		res.status(200);
 	});
 
 	Router.delete("/auth-key", async (req, res) => {
@@ -66,7 +66,7 @@ module.exports = (function () {
 			}
 		});
 
-		res.send(200);
+		res.status(200);
 	});
 
 	Router.get("/auth-key", async (req, res) => {

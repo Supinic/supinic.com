@@ -16,15 +16,15 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 400, "URL must being with a single slash");
 		}
 
-		const crypto = require("crypto");
+		const crypto = require("node:crypto");
 		const hash = crypto.createHash("md5");
 
 		const digest = hash
 			.update(url)
 			.digest()
 			.toString("base64")
-			.replace(/\+/g, "_")
-			.replace(/\//g, "-")
+			.replaceAll("+", "_")
+			.replaceAll("\\", "-")
 			.slice(0, 8);
 
 		const exists = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));

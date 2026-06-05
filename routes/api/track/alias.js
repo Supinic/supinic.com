@@ -33,12 +33,12 @@ module.exports = (function () {
 			return { code: 400, error: "No alias provided" };
 		}
 
-		let row = null;
+		let row;
 		try {
 			row = await sb.Query.getRow("music", table);
 			await row.load(tableID);
 		}
-		catch (e) {
+		catch {
 			return { code: 400, error: `${table}.${tableID} does not exist` };
 		}
 

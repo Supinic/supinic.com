@@ -18,7 +18,7 @@ module.exports = (function () {
 		const data = await Gachi.getAll();
 		const latest = data.filter(i => i.Added_On).sort((a, b) => a.Added_On - b.Added_On)[0].Added_On;
 		const rssData = data.filter(i => i.Added_On !== null && i.Added_On >= threshold).map(i => `${"\t\t<item>\n"
-					+ "\t\t\t<title>"}${i.Name.replace(/[\u00A0-\u9999<>&]/gim, i => `&#${i.charCodeAt(0)};`)}</title>\n`
+					+ "\t\t\t<title>"}${i.Name.replaceAll(/[\u00A0-\u9999<>&]/gim, i => `&#${i.codePointAt(0)};`)}</title>\n`
 					+ `\t\t\t<link>https://supinic.com/gachi/detail/${i.ID}</link>\n`
 					+ `\t\t\t<guid>https://supinic.com/gachi/detail/${i.ID}</guid>\n`
 					+ `\t\t\t<description>Published by ${i.Author} on ${i.Published}</description>\n`

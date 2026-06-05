@@ -32,12 +32,13 @@ module.exports = (function () {
 			}
 
 			const data = { ...row.valuesObject };
-			const prefix = (await sb.Query.getRecordset(rs => rs
+			const prefix = await sb.Query.getRecordset(rs => rs
 				.select("Link_Prefix")
 				.from("data", "Video_Type")
 				.where("ID = %n", row.values.Video_Type)
 				.single()
-			)).Link_Prefix;
+				.flat("Link_Prefix")
+			);
 
 			data.Added_By = "N/A";
 			if (row.values.Added_By) {
@@ -51,12 +52,13 @@ module.exports = (function () {
 				data.Parsed_Link = prefix.replace("$", row.values.Link);
 			}
 
-			data.Aliases = (await sb.Query.getRecordset(rs => rs
+			data.Aliases = await sb.Query.getRecordset(rs => rs
 				.select("Name AS Alias")
 				.from("music", "Alias")
 				.where("Target_Table = %s", "Track")
 				.where("Target_ID = %n", ID)
-			)).map(i => i.Alias);
+				.flat("Alias")
+			);
 
 			data.Authors = await sb.Query.getRecordset(rs => rs
 				.select("LOWER(Role) AS Role")
@@ -66,7 +68,7 @@ module.exports = (function () {
 				.where("Track = %n", ID)
 			);
 
-			data.Related_Tracks = (await Promise.all([
+			const relationships = await Promise.all([
 				sb.Query.getRecordset(rs => rs
 					.select("LOWER(Relationship) AS Relationship")
 					.select("Track_From AS From_ID")
@@ -87,7 +89,9 @@ module.exports = (function () {
 					})
 					.where("Track_To = %n", ID)
 				)
-			])).flat();
+			]);
+
+			data.Related_Tracks = relationships.flat();
 
 			const legacy = (await sb.Query.getRecordset(rs => rs
 				.select("Gachi.ID AS ID")

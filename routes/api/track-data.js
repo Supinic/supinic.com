@@ -46,7 +46,7 @@ module.exports = (function () {
 
 			return WebUtils.apiSuccess(res, data);
 		}
-		catch (e) {
+		catch {
 			return WebUtils.apiFail(res, 400, "Link could not be parsed");
 		}
 	});
@@ -76,7 +76,7 @@ module.exports = (function () {
 				link: url
 			});
 		}
-		catch (e) {
+		catch {
 			return WebUtils.apiFail(res, 400, "Link could not be parsed");
 		}
 	});

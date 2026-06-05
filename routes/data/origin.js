@@ -9,9 +9,9 @@ module.exports = (function () {
 	const IMAGE_NOT_FOUND_URL = "/static/img/cross.png";
 	const renderListColumns = ["Emote", "Name", "Emote added", "Origin added", "Type"];
 
-	const removeReferences = (string) => string.replace(/\[(.+?)]\((\d+)\)/g, "$1");
+	const removeReferences = (string) => string.replaceAll(/\[(.+?)]\((\d+)\)/g, "$1");
 	const linkify = (string) => (
-		string.replace(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
+		string.replaceAll(/\[(.+?)]\((\d+)\)/g, sb.Utils.tag.trim `
 			<a href="/data/origin/detail/$2">
 				<img class="linked-emote" loading="lazy" alt="$1" title="$1" src="/api/data/origin/image/$2"/>
 			</a>

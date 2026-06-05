@@ -7,7 +7,7 @@ const WebUtils = require("../../utils/webutils.js");
 // Old School Runescape API does not provide any info about its values and instead relies on the ordering of
 // each numerical value being in a pre-determined order.
 const { experienceLevels } = require("./osrs-data.json");
-const reversedexperienceLevels = experienceLevels.reverse();
+const reversedExperienceLevels = experienceLevels.toReversed();
 
 const MAX_LEVEL = 99;
 const VIRTUAL_LEVEL_XP_THRESHOLD = experienceLevels.find(i => i.level === 100).experience;
@@ -170,11 +170,11 @@ const fetchActivityData = async (ID) => {
 };
 
 // Formulae and general algorithm based on OSRS Wiki: https://oldschool.runescape.wiki/w/Combat_level
-const combatSkills = ["attack", "defence", "hitpoints", "magic", "prayer", "ranged", "strength"];
+const combatSkills = new Set(["attack", "defence", "hitpoints", "magic", "prayer", "ranged", "strength"]);
 const calculateCombatLevelData = (skills) => {
 	const combat = {};
 	for (const skill of skills) {
-		if (combatSkills.includes(skill.name.toLowerCase())) {
+		if (combatSkills.has(skill.name.toLowerCase())) {
 			combat[skill.name.toLowerCase()] = skill.level;
 		}
 	}
@@ -397,7 +397,7 @@ Router.get("/lookup/:user", async (req, res) => {
 
 		if (name !== "Overall") {
 			if (xp >= VIRTUAL_LEVEL_XP_THRESHOLD) {
-				const levelData = reversedexperienceLevels.find(level => xp > level.experience);
+				const levelData = reversedExperienceLevels.find(level => xp > level.experience);
 				resultSkillObject.virtualLevel = levelData.level;
 				virtualTotalLevel += (resultSkillObject.virtualLevel - MAX_LEVEL);
 			}

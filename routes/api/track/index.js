@@ -340,11 +340,11 @@ module.exports = (function () {
 		}
 
 		const LinkParser = await getLinkParser();
-		let parsedLink = null;
+		let parsedLink;
 		try {
 			parsedLink = LinkParser.parseLink(link);
 		}
-		catch (e) {
+		catch {
 			return WebUtils.apiFail(res, 400, "Cannot parse given link");
 		}
 
@@ -534,7 +534,9 @@ module.exports = (function () {
 		}
 	});
 
-	subroutes.forEach(([name, link]) => Router.use(`/${name}`, require(`./${link}`)));
+	for (const [name, link] of subroutes) {
+		Router.use(`/${name}`, require(`./${link}`));
+	}
 
 	return Router;
 })();

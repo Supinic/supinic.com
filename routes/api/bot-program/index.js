@@ -104,6 +104,7 @@ module.exports = (function () {
 			);
 
 			const badges = badgeData.map(row => {
+				// eslint-disable-next-line max-nested-callbacks
 				const badge = badgeList.find(i => i.ID === row.Badge);
 				return {
 					ID: badge.ID,

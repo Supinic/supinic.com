@@ -108,26 +108,6 @@ module.exports = class TemplateModule {
 		}));
 	}
 
-	static async existSome (...IDs) {
-		if (this.noIDs) {
-			throw new sb.Error({
-				message: `Module ${this.name} does not support fetching by ID`
-			});
-		}
-
-		return (await Promise.all(IDs.map(ID => this.exists(ID)))).some(i => i === true);
-	}
-
-	static async existAll (...IDs) {
-		if (this.noIDs) {
-			throw new sb.Error({
-				message: `Module ${this.name} does not support fetching by ID`
-			});
-		}
-
-		return (await Promise.all(IDs.map(ID => this.exists(ID)))).every(i => i === true);
-	}
-
 	static async insert (values) {
 		const row = await sb.Query.getRow(this.database, this.table);
 		row.setValues(values);
@@ -148,7 +128,7 @@ module.exports = class TemplateModule {
 			values: []
 		};
 
-		Object.entries(values).forEach(([name, value]) => {
+		for (const [name, value] of Object.entries(values)) {
 			const column = definition.columns.find(i => i.name === name);
 			if (!column) {
 				throw new sb.Error({
@@ -163,7 +143,7 @@ module.exports = class TemplateModule {
 
 			insert.properties.push(`\`${name}\``);
 			insert.values.push(sb.Query.convertToSQL(value, column.type));
-		});
+		}
 
 		return await sb.Query.raw(`INSERT INTO ${this.escapedPath} (${insert.properties.join(",")}) VALUES (${insert.values.join(",")})`);
 	}

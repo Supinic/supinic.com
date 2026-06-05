@@ -95,12 +95,13 @@ module.exports = (function () {
 			}
 
 			const data = { ...row.valuesObject };
-			const prefix = (await sb.Query.getRecordset(rs => rs
+			const prefix = await sb.Query.getRecordset(rs => rs
 				.select("Link_Prefix")
 				.from("data", "Video_Type")
 				.where("ID = %n", row.values.Video_Type)
 				.single()
-			)).Link_Prefix;
+				.flat("Link_Prefix")
+			);
 
 			data.Added_By = "N/A";
 			if (row.values.Added_By) {
@@ -114,12 +115,13 @@ module.exports = (function () {
 				data.Parsed_Link = prefix.replace(videoTypePrefix, row.values.Link);
 			}
 
-			data.Aliases = (await sb.Query.getRecordset(rs => rs
+			data.Aliases = await sb.Query.getRecordset(rs => rs
 				.select("Name AS Alias")
 				.from("music", "Alias")
 				.where("Target_Table = %s", "Track")
 				.where("Target_ID = %n", ID)
-			)).map(i => i.Alias);
+				.flat("Alias")
+			);
 
 			data.Authors = await sb.Query.getRecordset(rs => rs
 				.select("LOWER(Role) AS Role")
@@ -129,7 +131,7 @@ module.exports = (function () {
 				.where("Track = %n", ID)
 			);
 
-			data.Tags = (await sb.Query.getRecordset(rs => rs
+			data.Tags = await sb.Query.getRecordset(rs => rs
 				.select("Name")
 				.from("music", "Tag")
 				.join({
@@ -139,9 +141,10 @@ module.exports = (function () {
 				})
 				.where("Track_Tag.Track = %n", ID)
 				.orderBy("Tag.Name ASC")
-			)).map(i => i.Name);
+				.flat("Name")
+			);
 
-			data.Related_Tracks = (await Promise.all([
+			const relationships = await Promise.all([
 				sb.Query.getRecordset(rs => rs
 					.select("Track_Relationship.Notes AS Notes")
 					.select("LOWER(Relationship) AS Relationship")
@@ -164,7 +167,9 @@ module.exports = (function () {
 					})
 					.where("Track_To = %n", ID)
 				)
-			])).flat();
+			]);
+
+			data.Related_Tracks = relationships.flat();
 
 			const legacy = (await sb.Query.getRecordset(rs => rs
 				.select("Gachi.ID AS ID")
@@ -175,6 +180,7 @@ module.exports = (function () {
 				.where("Track.Link = %s", row.values.Link)
 				.single()
 			));
+
 			data.Legacy_ID = (legacy && legacy.ID) || null;
 
 			return data;
@@ -269,7 +275,7 @@ module.exports = (function () {
 					});
 				}
 
-				const string = [...Array(includeTags.length)].fill("Tag.ID = %n").join(" OR ");
+				const string = Array.from({ length: includeTags.length }).fill("Tag.ID = %n").join(" OR ");
 				queries.push(rs => rs.where(string, ...includeTags));
 			}
 
@@ -289,7 +295,7 @@ module.exports = (function () {
 					});
 				}
 
-				const string = [...Array(excludeTags.length)].fill("Tag.ID = %n").join(" AND ");
+				const string = Array.from({ length: excludeTags.length }).fill("Tag.ID = %n").join(" AND ");
 				queries.push(rs => rs.where(string, ...excludeTags));
 			}
 
@@ -443,7 +449,7 @@ module.exports = (function () {
 
 		static async add (options) {
 			const LinkParser = await getLinkParser();
-			let { tags = []} = options;
+			let { tags = [] } = options;
 			const { link, addedBy = 1, skipAuthorCheck = false } = options;
 			if (!Array.isArray(tags)) {
 				tags = [tags];
@@ -473,7 +479,7 @@ module.exports = (function () {
 			}
 
 			if (!skipAuthorCheck) {
-				const normalizedAuthorName = linkData.author.trim().toLowerCase().replace(/\s+/g, "_");
+				const normalizedAuthorName = linkData.author.trim().toLowerCase().replaceAll(/\s+/g, "_");
 				const authorCheck = await Author.selectSingleCustom(q => q
 					.where(`Normalized_Name = %s OR ${target} = %s`, normalizedAuthorName, author)
 				);
@@ -553,7 +559,7 @@ module.exports = (function () {
 				Track.selectSingleCustom(q => q.where("Link = %s", parsedLink))
 			]);
 
-			let reuploadID = null;
+			let reuploadID;
 			if (existingTrackData) {
 				reuploadID = existingTrackData.ID;
 			}
@@ -563,8 +569,7 @@ module.exports = (function () {
 					return new Result(false, "Could not add a new track", null, addResult);
 				}
 
-				console.log("Add result: ", addResult);
-
+				console.log({ addResult });
 				reuploadID = addResult.data.ID;
 			}
 
@@ -573,7 +578,7 @@ module.exports = (function () {
 				return new Result(true, "Reupload link is already connected to main track link, no changes necessary");
 			}
 
-			console.log(reuploadID, reuploadTag, todoTag, addedBy);
+			console.log({ reuploadID, reuploadTag, todoTag, addedBy });
 
 			const results = await Promise.all([
 				TrackTag.link(reuploadID, reuploadTag.ID, addedBy),
