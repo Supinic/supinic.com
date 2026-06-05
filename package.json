@@ -46,5 +46,5 @@
     "globals": "^17.4.0",
     "supi-db-init": "https://github.com/supinic/supi-db-init"
   },
-  "packageManager": "yarn@4.13.0"
+  "packageManager": "yarn@4.16.0"
 }
