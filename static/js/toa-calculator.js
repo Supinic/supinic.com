@@ -20,8 +20,7 @@ const recalculateSummary = () => {
 	const capped = Math.min(uncapped, constants.damagePercentageCap);
 	const mode = modes.find(i => (i.min <= level && level <= i.max));
 
-	const summaryEl = document.querySelector("summary");
-
+	const summaryEl = document.querySelector("#summary");
 	const iconEl = summaryEl.querySelector(`li[summary=icon]`);
 	iconEl.style.backgroundImage = `url(${mode.icon})`;
 
