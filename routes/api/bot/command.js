@@ -5,7 +5,7 @@ const Router = Express.Router();
 const WebUtils = require("../../../utils/webutils.js");
 const bodySchema = z.object({
 	body: z.object({
-		url: z.string().startsWith("/")
+		query: z.string().startsWith("/")
 	})
 });
 
