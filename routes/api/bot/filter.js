@@ -1,9 +1,16 @@
+const { z } = require("zod");
 const User = require("../../../modules/chat-data/user-alias");
 const Filter = require("../../../modules/chat-data/filter");
 const WebUtils = require("../../../utils/webutils.js");
 
 const Express = require("express");
 const Router = Express.Router();
+
+const typeSchema = z.object({
+	body: z.object({
+		type: z.string()
+	})
+});
 
 module.exports = (function () {
 	"use strict";
@@ -28,7 +35,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 403, "Endpoint requires login");
 		}
 
-		const { type } = req.body;
+		const requestParse = typeSchema.safeParse(req);
+		if (!requestParse.success) {
+			return WebUtils.apiFail(res, 400, "Body validation error", {
+				validation: requestParse.error
+			});
+		}
+
+		const { type } = requestParse.data.body;
 		if (!filterTypeMap[type]) {
 			return WebUtils.apiFail(res, 400, "Invalid filter type provided");
 		}

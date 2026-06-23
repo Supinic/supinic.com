@@ -1,7 +1,13 @@
+const { z } = require("zod");
 const Express = require("express");
 const Router = Express.Router();
 
 const WebUtils = require("../../../utils/webutils.js");
+const bodySchema = z.object({
+	body: z.object({
+		url: z.string().startsWith("/")
+	})
+});
 
 module.exports = (function () {
 	"use strict";
@@ -33,7 +39,14 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 504, "Could not reach internal Supibot API");
 		}
 
-		const { query } = req.body;
+		const parseResult = bodySchema.safeParse(req);
+		if (!parseResult.success) {
+			return WebUtils.apiFail(res, 400, "Body validation error", {
+				validation: parseResult.error
+			});
+		}
+
+		const { query } = parseResult.data.body;
 		if (!query) {
 			return WebUtils.apiFail(res, 400, "No command query provided");
 		}

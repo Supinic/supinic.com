@@ -17,7 +17,8 @@
     "passport-oauth": "latest",
     "pug": "^3.0.4",
     "supi-core": "https://github.com/supinic/supi-core",
-    "track-link-parser": "https://github.com/supinic/track-link-parser"
+    "track-link-parser": "https://github.com/supinic/track-link-parser",
+    "zod": "^4.4.3"
   },
   "engines": {
     "node": ">= 20.0"
