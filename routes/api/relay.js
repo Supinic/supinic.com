@@ -37,8 +37,8 @@ module.exports = (function () {
 			.update(url)
 			.digest()
 			.toString("base64")
-			.replaceAll("+", "_")
-			.replaceAll("\\", "-")
+			.replaceAll("+", "-")
+			.replaceAll("/", "_")
 			.slice(0, 8);
 
 		const exists = await LinkRelay.selectSingleCustom(q => q.where("Hash = %s", digest));
