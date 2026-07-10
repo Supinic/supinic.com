@@ -70,13 +70,15 @@ module.exports = (function () {
 				break;
 			}
 			case 23: {
+				const parsedUrl = new URL(trackData.parsedLink).toString();
 				contentType = "audio";
-				embed = `<audio style="width:100%" controls><source src="${encodeURIComponent(trackData.parsedLink)}"></audio>`;
+				embed = `<audio style="width:100%" controls><source src="${parsedUrl}"></audio>`;
 				break;
 			}
 			case 25:
 			case 26: {
-				embed = `<video width="320" height="166" controls style="width:100%"><source type="video/mp4" src="${encodeURIComponent(trackData.parsedLink)}"></video>`;
+				const parsedUrl = new URL(trackData.parsedLink).toString();
+				embed = `<video width="320" height="166" controls style="width:100%"><source type="video/mp4" src="${parsedUrl}"></video>`;
 				break;
 			}
 		}
