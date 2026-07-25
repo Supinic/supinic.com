@@ -1,0 +1,112 @@
+DISCORD PRIVACY POLICY FOR SUPIBOT
+
+Last updated: 2026-07-25
+
+1. Overview
+This Privacy Policy explains how Supibot collects, processes, stores, and shares information obtained through Discord.
+Supibot is a multi-platform chatbot that provides commands, reminders, AFK statuses, message forwarding, and related chat features across Discord, Twitch, IRC, and other supported platforms.
+Supibot does not sell personal data, serve targeted advertising, create behavioural profiles, or use Discord data to train artificial-intelligence or machine-learning models.
+
+2. Data Supibot processes
+Supibot may process the following Discord data:
+- Discord user IDs and usernames
+- Discord server and channel IDs and names
+- Messages sent in channels accessible to Supibot
+- Direct messages sent to Supibot
+- Message attachments, stickers, mentions, and reply references
+- Server membership and permission information
+- Command usage and general server or channel activity timestamps
+- Configuration selected by server administrators
+
+Most message content is processed temporarily so Supibot can recognize commands, execute chat features, detect reminders or AFK returns, and produce responses. Processing a message does not necessarily mean that the message is permanently stored.
+
+3. User identification
+Supibot may associate a Discord user ID with an internal Supibot user ID.
+This association allows user-specific features such as reminders, AFK statuses, preferences, and command data to work consistently across multiple chat platforms.
+The Discord ID is used as a technical account identifier. Supibot does not use it to monitor a user's general Discord activity, build a behavioural profile, or follow the user through servers in which Supibot is not operating.
+
+4. Guild message storage
+Messages sent in Discord guilds are not retained as complete message logs by default.
+Guild message logging is enabled only for specifically configured channels and only at the request of a person authorized to administer the relevant Discord server.
+Server administrators control which channels Supibot can access through Discord permissions. They may also request that configured logging, mirroring, forwarding, or similar features be enabled or disabled.
+Where complete message logging is not enabled, Supibot may still retain limited operational metadata, such as the date of the most recent message or command in a configured channel. This metadata is used to operate Supibot and does not contain the complete text of the message.
+
+5. Direct messages
+Direct messages sent directly to Supibot may be retained in operational logs.
+Users should not send confidential, financial, medical, authentication, or similarly sensitive information to Supibot.
+
+6. Reminders, AFK statuses, and other user data
+Supibot stores information voluntarily supplied by users when they create features such as:
+- Reminders
+- AFK statuses
+- Event subscriptions
+- User preferences
+- Account-linking requests
+
+This data is associated with Supibot's internal user ID so that the feature can be delivered to the correct user, including across supported chat platforms.
+
+7. Inactive server reports
+Discord limits the number of servers available to an unverified application.
+Supibot therefore periodically identifies potentially inactive Discord installations when approaching that limit.
+
+An inactive-server report may contain:
+- Server name and Discord server ID
+- Date Supibot joined the server
+- Approximate time of the last observed message and Supibot command
+- Number of non-bot members
+- Usernames and Discord IDs of server administrators
+
+This report is used only by the Supibot administrator to review inactive installations and, where appropriate, identify an administrator who can be contacted before Supibot is removed from a server.
+It is not used to analyse individual member activity, create user profiles, advertise to users, or make decisions about individual users.
+These reports are deleted once the information within them is processed by the Supibot administrator.
+
+8. Sharing of data
+Supibot does not sell Discord data. Data may be transmitted or disclosed only where necessary to provide Supibot's configured functionality, including:
+- Processing through Discord's services
+- Infrastructure and database services used to operate Supibot
+- Compliance with a valid legal obligation
+- Responding to a user's or server administrator's explicit request
+
+Third-party services process information under their own terms and privacy policies.
+
+9. Data retention
+Data is retained only for as long as reasonably necessary to provide Supibot's functionality, maintain its security and reliability, resolve technical problems, or comply with legal obligations.
+Discord IDs linked to internal Supibot accounts may be retained while the corresponding account remains active or while user-specific Supibot data continues to exist.
+Reminders, AFK statuses and similar records may remain stored until they expire, are completed, are revoked by the user, or are no longer needed.
+Configured message logs are retained according to the relevant server configuration and operational requirements.
+Inactive server reports are retained only for internal review and maintenance purposes and are deleted after processing.
+
+10. User and server controls
+Users may:
+- Stop using Supibot
+- Revoke their reminders, AFK statuses, and remove other user-controlled data via available Supibot commands
+- Request access to, or deletion of data associated with their Discord account
+- Block Supibot or prevent it from sending direct messages through Discord settings
+
+Server administrators may:
+- Restrict Supibot's access to channels using Discord permissions
+- Request that logging, mirroring, forwarding, or subscription features be enabled (and then disabled, if needed)
+- Remove Supibot from their server ("kick" or "ban")
+- Request deletion of stored server or channel configuration and configured message logs
+
+Some information may be retained where necessary to comply with legal obligations, prevent abuse, maintain security, or resolve an active dispute.
+
+11. Data deletion requests
+To request access to, correction of, or deletion of personal data associated with a Discord account, contact: supinic@pm.me
+The request should include the relevant Discord user ID and server ID so that the affected records can be located easily.
+Additional information may be requested where reasonably necessary to verify that the requester owns the account or is authorized to act for the server.
+
+12. Security
+Reasonable technical and organizational measures are used to protect stored data against unauthorized access, alteration, disclosure, or destruction.
+No internet-connected service can guarantee absolute security. Users should therefore avoid submitting sensitive information through Supibot.
+
+13. Children
+Supibot is not intended for anyone who is not permitted to use Discord under Discord's applicable minimum-age requirements.
+
+14. Changes to this policy
+This policy may be updated when Supibot's functionality, data handling, or legal obligations change.
+The current version will remain publicly available at the URL registered for Supibot's Privacy Policy in the Discord Developer Portal, specifically only on the website `https://supinic.com`.
+The date at the beginning of the policy indicates when it was most recently updated.
+
+15. Contact
+Questions about this Privacy Policy or Supibot's handling of Discord data may be sent to: supinic@pm.me
