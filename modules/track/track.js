@@ -564,7 +564,11 @@ module.exports = (function () {
 				reuploadID = existingTrackData.ID;
 			}
 			else {
-				const addResult = await Track.add(reuploadLink, reuploadTag.ID, addedBy);
+				const addResult = await Track.add({
+					link: reuploadLink,
+					addedBy
+				});
+
 				if (!addResult.success) {
 					return new Result(false, "Could not add a new track", null, addResult);
 				}
