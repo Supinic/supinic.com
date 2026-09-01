@@ -468,20 +468,15 @@ module.exports = (function () {
 				return new Result(false, "Link is not available");
 			}
 
-			let authorID = null;
-			const author = linkData.authorID;
-			const target = (linkData.type === "youtube")
-				? "Youtube_Channel_ID"
-				: `${sb.Utils.capitalize(target)}_ID`;
-
 			if (await Track.existsCustom(q => q.where("Link = %s", linkData.ID))) {
 				return new Result(false, "Link already exists in the database");
 			}
 
+			let authorID = null;
 			if (!skipAuthorCheck) {
 				const normalizedAuthorName = linkData.author.trim().toLowerCase().replaceAll(/\s+/g, "_");
 				const authorCheck = await Author.selectSingleCustom(q => q
-					.where(`Normalized_Name = %s OR ${target} = %s`, normalizedAuthorName, author)
+					.where(`Normalized_Name = %s`, normalizedAuthorName)
 				);
 
 				if (authorCheck && authorCheck.ID) {
@@ -491,7 +486,6 @@ module.exports = (function () {
 					const rawData = await Author.insert({
 						Name: linkData.author,
 						Normalized_Name: normalizedAuthorName,
-						[target]: linkData.authorID,
 						Added_By: addedBy || 1
 					});
 
