@@ -1,6 +1,5 @@
 export const definition = {
 	name: "Helix",
-	optionsType: "object",
 	options: {
 		prefixUrl: "https://api.twitch.tv/helix/",
 		responseType: "json",
@@ -25,6 +24,5 @@ export const definition = {
 			]
 		}
 	},
-	parent: "Global",
-	description: "Twitch Helix API definition"
+	parent: "Global"
 };

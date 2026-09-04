@@ -23,4 +23,3 @@ for (const definition of definitions) {
 }
 
 export { crons };
-export default crons;

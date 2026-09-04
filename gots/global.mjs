@@ -1,6 +1,5 @@
 export const definition = {
 	name: "Global",
-	optionsType: "function",
 	options: (() => ({
 		responseType: "json",
 		retry: {
@@ -15,6 +14,5 @@ export const definition = {
 			"User-Agent": `https://supinic.com server request`
 		}
 	})),
-	parent: null,
-	description: "Global definition - template for all others"
+	parent: null
 };
