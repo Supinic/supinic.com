@@ -5,7 +5,7 @@ import { definition as RPi4 } from "./rpi4.mjs";
 import { definition as Supibot } from "./supibot.mjs";
 import { definition as Supinic } from "./supinic.mjs";
 
-const definitions = [
+export const definitions = [
 	FakeAgent,
 	Helix,
 	Global,
@@ -13,6 +13,3 @@ const definitions = [
 	Supibot,
 	Supinic
 ];
-
-export { definitions };
-export default definitions;

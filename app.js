@@ -1,43 +1,27 @@
-const path = require("node:path");
-const importModule = async (module, path) => {
-	const { crons, definitions } = await import(`${path}/index.mjs`);
-
-	if (definitions) {
-		await module.importData(definitions);
-	}
-	else if (crons) {
-		sb.crons = crons;
-	}
-};
-
 // eslint-disable-next-line unicorn/prefer-top-level-await
 (async function () {
 	"use strict";
 
 	const core = await import("supi-core");
-	const Query = new core.Query({
-		user: process.env.MARIA_USER,
-		password: process.env.MARIA_PASSWORD,
-		host: process.env.MARIA_HOST,
-		connectionLimit: Number(process.env.MARIA_CONNECTION_LIMIT)
-	});
+	const { definitions: gotDefinitions } = await import(`./gots/index.mjs`);
 
 	globalThis.sb = {
 		Date: core.Date,
 		Error: core.Error,
-		Promise: core.Promise,
-		Got: core.Got,
 
-		Query,
+		Got: core.GotRegistry.fromDefinitions(gotDefinitions),
+		Query: new core.Query({
+			user: process.env.MARIA_USER,
+			password: process.env.MARIA_PASSWORD,
+			host: process.env.MARIA_HOST,
+			connectionLimit: Number(process.env.MARIA_CONNECTION_LIMIT)
+		}),
 		Cache: new core.Cache(process.env.REDIS_URL),
-		// Metrics: new core.Metrics(),
 		Utils: new core.Utils()
 	};
 
-	await Promise.all([
-		importModule(sb.Got,"./crons"),
-		importModule(sb.Got, "./gots")
-	]);
+	const { crons } = await import(`./crons/index.mjs`);
+	sb.crons = crons;
 
 	const WebUtils = require("./utils/webutils.js");
 	const subroutes = [
