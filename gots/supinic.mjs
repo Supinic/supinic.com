@@ -1,12 +1,11 @@
 export const definition = {
 	name: "Supinic",
-	optionsType: "object",
 	options: {
-		prefixUrl: "http://localhost/api", // @todo move this to some kind of config
+		prefixUrl: "http://localhost/api", // @todo move this to some kind of config,
+		allowAbsoluteUrls: false,
 		timeout: {
 			request: 30000
 		}
 	},
-	parent: "Global",
-	description: null
+	parent: "Global"
 };

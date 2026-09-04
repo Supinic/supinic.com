@@ -1,6 +1,5 @@
 export const definition = {
 	name: "Supibot",
-	optionsType: "function",
 	options: (() => {
 		const url = process.env.SUPIBOT_API_BASE_URL;
 		if (!url) {
@@ -10,9 +9,9 @@ export const definition = {
 		}
 
 		return {
-			prefixUrl: process.env.SUPIBOT_API_BASE_URL
+			prefixUrl: process.env.SUPIBOT_API_BASE_URL,
+			allowAbsoluteUrls: false
 		};
 	}),
-	parent: "Global",
-	description: null
+	parent: "Global"
 };
