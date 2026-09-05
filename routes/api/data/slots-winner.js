@@ -105,7 +105,7 @@ module.exports = (function () {
 		data.Rank = Number(await SlotsWinner.selectCustom(rs => rs
 			.select("COUNT(*) AS Rank")
 			.join("chat_data", "User_Alias")
-			.where("Odds > %n", data.Odds)
+			.where("Odds > %n", Number(data.Odds))
 			.groupBy("Odds")
 			.single()
 			.flat("Rank")
