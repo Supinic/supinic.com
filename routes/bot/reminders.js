@@ -23,7 +23,8 @@ module.exports = (function () {
 
 		const searchParams = WebUtils.authenticateLocalRequest(userID);
 		if (target === "lookup") {
-			const ID = (req.query.ID ?? "");
+			const rawId = (req.query.ID ?? "");
+			const ID = (Array.isArray(rawId)) ? rawId.join(",") : rawId;
 			searchParams.set("ID", ID);
 		}
 

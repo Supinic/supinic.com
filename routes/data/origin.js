@@ -83,7 +83,9 @@ module.exports = (function () {
 	});
 
 	Router.get("/lookup", async (req, res) => {
-		const ID = (req.query.ID ?? "");
+		const rawId = (req.query.ID ?? "");
+		const ID = (Array.isArray(rawId)) ? rawId.join(",") : rawId;
+
 		const response = await sb.Got.get("Supinic")({
 			url: "data/origin/lookup",
 			searchParams: {
