@@ -423,7 +423,8 @@ module.exports = class WebUtils {
 			Body: (req.body) ? JSON.stringify(req.body) : ""
 		});
 
-		return await row.save();
+		await row.save();
+		return row.values.ID;
 	}
 
 	static async loadVideoTypes () {
