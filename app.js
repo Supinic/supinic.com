@@ -291,10 +291,10 @@
 		res.send("6838d447-8257-45ab-a40a-18ecd1637c8d");
 	});
 
+	const requestLogSymbol = Symbol.for("request-log-symbol");
 	app.all("/{*splat}", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
 		const log = await WebUtils.logRequest(req, routeType);
-		const requestLogSymbol = Symbol.for("request-log-symbol");
 
 		req[requestLogSymbol] = log.insertId;
 		res.header("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive, noimageindex");
@@ -575,25 +575,24 @@
 			return;
 		}
 
-		const requestLogSymbol = Symbol.for("request-log-symbol");
 		try {
 			if (err instanceof OAuth2Strategy.AuthorizationError) {
-				const insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
-
 				res.set("Content-Type", "text/html");
 
+				const insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
 				return res.status(401).render("error", {
 					error: "401 Unauthorized",
 					message: `Your authorization failed due to a third party error (error ID ${insertId})`
 				});
 			}
 			else {
+				res.set("Content-Type", "text/html");
+
 				let insertId;
 				if (typeof err.message !== "string" || !err.message.includes("retrieve connection from pool timeout")) {
 					insertId = await WebUtils.logError("View", err, req[requestLogSymbol]);
 				}
 
-				res.set("Content-Type", "text/html");
 				return res.status(500).render("error", {
 					error: "500 Internal Error",
 					message: (insertId)

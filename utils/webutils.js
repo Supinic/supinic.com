@@ -551,8 +551,8 @@ module.exports = class WebUtils {
 			Stack: err?.stack ?? null
 		});
 
-		const result = await row.save();
-		return result.insertId;
+		await row.save();
+		return row.values.ID;
 	}
 
 	static parseVideoLink (type, link) {
