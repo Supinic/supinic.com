@@ -294,9 +294,7 @@
 	const requestLogSymbol = Symbol.for("request-log-symbol");
 	app.all("/{*splat}", async (req, res, next) => {
 		const routeType = (req.originalUrl.includes("api")) ? "API" : "View";
-		const log = await WebUtils.logRequest(req, routeType);
-
-		req[requestLogSymbol] = log.insertId;
+		req[requestLogSymbol] = await WebUtils.logRequest(req, routeType);
 		res.header("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive, noimageindex");
 
 		const blockedUserAgents = require("./blocked-user-agents.json");
