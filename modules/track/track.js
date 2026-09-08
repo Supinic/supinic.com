@@ -434,7 +434,7 @@ module.exports = (function () {
 				track.Favourites = track.Fan?.length ?? 0;
 				delete track.Fan;
 
-				track.Authors = [...track.Author].filter(Boolean);
+				track.Authors = [...track.Author].filter(i => Boolean(i.ID)); // filter out left-joined null authors
 				delete track.Author;
 
 				track.Tags = track.Tag.map(i => i.Name);
