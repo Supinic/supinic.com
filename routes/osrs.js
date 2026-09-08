@@ -10,10 +10,22 @@ module.exports = (function () {
 		const key = getItemCacheKey(itemId);
 		let priceData = await sb.Cache.getByPrefix(key);
 		if (!priceData) {
-			const resp = await fetch(`https://prices.runescape.wiki/api/v1/osrs/latest?id=${itemId}`);
-			const body = await resp.json();
+			const resp = await fetch(`https://prices.runescape.wiki/api/v1/osrs/latest?id=${itemId}`, {
+				headers: {
+					"User-Agent": "github.com/Supinic/supinic.com/blob/master/routes/osrs.js#13"
+				}
+			});
 
+			if (!resp.ok) {
+				return {
+					code: resp.statusCode,
+					success: false
+				};
+			}
+
+			const body = await resp.json();
 			const { high, low } = body.data[itemId];
+
 			priceData = {
 				price: Math.round((high + low) / 2)
 			};
@@ -192,7 +204,18 @@ module.exports = (function () {
 
 		const prices = {};
 		for (const item of consumables) {
-			const { price } = await fetchItemPrice(item.id);
+			const { success, code, price } = await fetchItemPrice(item.id);
+			if (success === false) {
+				return res.render("generic", {
+					data: sb.Utils.tag.trim `
+						<div class="pt-3 text-center">
+							<h4>Could not load price data from prices.runescape.wiki</h4>
+							<h5>Status code ${code}</h5>
+						</div>
+					`
+				});
+			}
+
 			prices[item.id] = price;
 		}
 
