@@ -343,6 +343,7 @@ module.exports = (function () {
 					.select("Fan.ID AS Fan_ID")
 					.select("Alias.Name AS Alias_Name")
 					.reference({
+						left: true,
 						sourceTable: "Track",
 						targetTable: "Tag",
 						referenceTable: "Track_Tag",
@@ -350,6 +351,7 @@ module.exports = (function () {
 						fields: ["Tag_Name"]
 					})
 					.reference({
+						left: true,
 						sourceTable: "Track",
 						targetTable: "Author",
 						referenceTable: "Track_Author",
@@ -357,6 +359,7 @@ module.exports = (function () {
 						fields: ["Author_ID", "Author_Name", "Author_Normalized_Name"]
 					})
 					.reference({
+						left: true,
 						targetAlias: "Fan",
 						sourceTable: "Track",
 						targetDatabase: "chat_data",
@@ -367,6 +370,7 @@ module.exports = (function () {
 						targetCondition: "User_Favourite.Active = 1"
 					})
 					.reference({
+						left: true,
 						sourceTable: "Track",
 						targetTable: "Alias",
 						targetField: "Target_ID",
