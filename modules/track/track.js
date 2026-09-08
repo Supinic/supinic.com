@@ -307,6 +307,7 @@ module.exports = (function () {
 				queries.push(rs => rs
 					.select("Youtube_Reupload.ID AS Reupload_ID")
 					.reference({
+						left: true,
 						fromTable: "Track",
 						referenceTable: "Track_Relationship",
 						referenceFieldSource: "Track_To",
