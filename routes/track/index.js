@@ -37,7 +37,10 @@ module.exports = (function () {
 			sortColumn = 4;
 		}
 		else if (listType === "lookup") {
-			searchParams.specificIDs = inputData.specificIDs.join(",");
+			searchParams.specificIDs = (Array.isArray(inputData.specificIDs))
+				? inputData.specificIDs.join(",")
+				: inputData.specificIDs;
+
 			sortColumn = 4;
 		}
 		else {
