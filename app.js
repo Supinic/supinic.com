@@ -29,7 +29,6 @@
 		"bot",
 		"contact",
 		"crypto-game",
-		"cytube",
 		"data",
 		"gachi",
 		"osrs",
@@ -219,7 +218,6 @@
 			name: "Stream",
 			items: [
 				{ name: "Cooking streams", link: "stream/recipe/list" },
-				{ name: "Cytube history", link: "cytube/video-request/history" },
 				{ name: "Playsounds", link: "stream/playsound/list" },
 				{ name: "Stream games", link: "stream/game/list" },
 				{ name: "Video request queue", link: "stream/song-request/queue" },

@@ -8,7 +8,6 @@ const subroutes = [
 	["bot", "bot"],
 	["bot-program", "bot-program"],
 	["crypto-game", "crypto-game"],
-	["cytube", "cytube"],
 	["data", "data"],
 	["gachi", "gachi.js"],
 	["osrs", "osrs.js"],
