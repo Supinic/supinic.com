@@ -2681,7 +2681,7 @@ duration-parser@supinic/duration-parser:
 
 "supi-core@https://github.com/supinic/supi-core":
   version: 3.2.0
-  resolution: "supi-core@https://github.com/supinic/supi-core.git#commit=4c1aefc4dce2d1a7f3cc469f5c46ce127f742de2"
+  resolution: "supi-core@https://github.com/supinic/supi-core.git#commit=851af67b0b9884c9b94618061735b272c8a598f6"
   dependencies:
     "@stylistic/eslint-plugin": "npm:^5.10.0"
     cheerio: "npm:^1.2.0"
@@ -2691,7 +2691,7 @@ duration-parser@supinic/duration-parser:
     mariadb: "npm:^3.5.4"
     prom-client: "npm:^15.1.3"
     random-js: "npm:^2.1.0"
-  checksum: 10c0/6031574f076ba2639f4f0294507240fa62c5c4b393f3daa70d254c18ecfe49ca91077fedcf7fd073a920e499dd7b3647500c3696ec13ae19fb3b13368be6fedc
+  checksum: 10c0/fb4bce6a0aed4d10368bfd660be22a60bd92d065e56d3b64ea34dd9f57da5c7207286ed385de3b0d38794b81a4355ea56232c02c92322a0c154c0ec80c574456
   languageName: node
   linkType: hard
 
