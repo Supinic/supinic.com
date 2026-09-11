@@ -37,7 +37,7 @@ const getLinkParser = async () => {
 			console.log("No Bilibili configuration, skipping Bilibili parser");
 		}
 
-		linkParser = new LinkParser(options);
+		linkParser = new LinkParser.default(options);
 	}
 
 	return linkParser;
