@@ -71,49 +71,48 @@ module.exports = (function () {
 		}
 
 		static parseURL (item) {
-			if (item.Available === "Backup" && item.Backup_Link) {
-				return item.Backup_Link;
+			if (item.available === "Backup" && item.backupLink) {
+				return item.backupLink;
 			}
-			else if (item.Available === null || item.Available === "None") {
+			else if (item.available === null || item.available === "None") {
 				return null;
 			}
-			else if (!item.Emote_ID || item.Available !== "Original") {
+			else if (!item.emoteId || item.available !== "Original") {
 				return null;
 			}
 
-			const ID = item.Emote_ID;
-			const type = item.Type;
+			const { emoteId, type } = item;
 			switch (type) {
 				case "Twitch - Bits": {
-					return `https://static-cdn.jtvnw.net/emoticons/v1/${ID}/3.0`;
+					return `https://static-cdn.jtvnw.net/emoticons/v1/${emoteId}/3.0`;
 				}
 
 				case "Twitch - Global":
 				case "Twitch - Sub":
 				case "Twitch - Other": {
-					return `https://static-cdn.jtvnw.net/emoticons/v2/${ID}/default/dark/3.0`;
+					return `https://static-cdn.jtvnw.net/emoticons/v2/${emoteId}/default/dark/3.0`;
 				}
 
 				case "BTTV":
 				case "BTTV - Global":
 				case "BTTV - Channel": {
-					return `https://cdn.betterttv.net/emote/${ID}/3x`;
+					return `https://cdn.betterttv.net/emote/${emoteId}/3x`;
 				}
 
 				case "FFZ":
 				case "FFZ - Global":
 				case "FFZ - Channel": {
-					return `https://cdn.frankerfacez.com/emote/${ID}/4`;
+					return `https://cdn.frankerfacez.com/emote/${emoteId}/4`;
 				}
 
 				case "7TV":
 				case "7TV - Global":
 				case "7TV - Channel": {
-					return `https://cdn.7tv.app/emote/${ID}/4x.webp`;
+					return `https://cdn.7tv.app/emote/${emoteId}/4x.webp`;
 				}
 
 				case "Discord": {
-					return `https://cdn.discordapp.com/emojis/${ID}?v=1`;
+					return `https://cdn.discordapp.com/emojis/${emoteId}?v=1`;
 				}
 			}
 
@@ -121,22 +120,20 @@ module.exports = (function () {
 		}
 
 		static getEmoteDetailURL (item) {
-			const ID = item.Emote_ID;
-			const type = item.Type;
-
+			const { emoteId, type } = item;
 			if (type.startsWith("Twitch")) {
 				// return `https://twitchemotes.com/emotes/${ID}`;
 				// return `https://emotes.awoo.nl/twitch/emote/${ID}`;
-				return `https://chatvau.lt/emote/twitch/${ID}`;
+				return `https://chatvau.lt/emote/twitch/${emoteId}`;
 			}
 			else if (type.startsWith("BTTV")) {
-				return `https://betterttv.com/emotes/${ID}`;
+				return `https://betterttv.com/emotes/${emoteId}`;
 			}
 			else if (type.startsWith("FFZ")) {
-				return `https://www.frankerfacez.com/emoticon/${ID}`;
+				return `https://www.frankerfacez.com/emoticon/${emoteId}`;
 			}
 			else if (type.startsWith("7TV")) {
-				return `https://7tv.app/emotes/${ID}`;
+				return `https://7tv.app/emotes/${emoteId}`;
 			}
 
 			return null;
