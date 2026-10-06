@@ -560,7 +560,8 @@
 			}
 		}
 
-		console.error("Website error", { err, req, res });
+		const timestamp = new sb.Date().format("Y-m-d H:i:s");
+		console.error(`Website error ${timestamp}`, { err, req, res });
 
 		// In the case of "internal auth error" from Twitch - where the user clicks the "Redirect now" button
 		// on the Twitch auth callback page, simply redirect to main page. I assume this error only happens
