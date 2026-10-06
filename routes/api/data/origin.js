@@ -146,7 +146,11 @@ module.exports = (function () {
 			return WebUtils.apiFail(res, 404, "Emote not found");
 		}
 
-		const url = Origin.parseURL(row.valuesObject);
+		const url = Origin.parseURL({
+			emoteId: row.values.Emote_ID,
+			type: row.values.Type
+		});
+
 		res.set("Cache-Control", "max-age=86400");
 		res.redirect(url);
 	});

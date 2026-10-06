@@ -54,7 +54,7 @@ module.exports = (function () {
 		static async getRelatedEmotes (ID) {
 			const stringReference = `(${ID})`;
 			const data = await super.selectCustom(q => q
-				.select("ID", "Name")
+				.select("ID", "Name AS name")
 				.where("Text %*like* OR Notes %*like*", stringReference, stringReference)
 			);
 
