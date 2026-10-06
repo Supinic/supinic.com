@@ -68,10 +68,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const { data } = await sb.Got.get("Supinic")({
-			url: "data/origin/list",
-			searchParams: {
-				skipReplacedEmotes: "true"
-			}
+			url: "data/origin/list"
 		}).json();
 
 		return renderList(res, data, {
@@ -88,10 +85,7 @@ module.exports = (function () {
 
 		const response = await sb.Got.get("Supinic")({
 			url: "data/origin/lookup",
-			searchParams: {
-				ID,
-				skipReplacedEmotes: "true"
-			}
+			searchParams: { ID }
 		});
 
 		if (response.statusCode !== 200) {
