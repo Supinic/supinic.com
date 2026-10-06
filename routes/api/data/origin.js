@@ -24,9 +24,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} [emoteDeleted] ISO date string - when the emote was deleted
 	 * @apiSuccess {string} [recordAdded] ISO date string - when the emote origin was added
 	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
-	 * @apiSuccess {string} [author] User name of whoever created the emote
-	 * @apiSuccess {string} [raffleWinner] User name of whoever won the emote raffle for this emote
-	 * @apiSuccess {string} [reporter] User name of whoever added the emote origin
+	 * @apiSuccess {string} [authorName] User name of whoever created the emote
+	 * @apiSuccess {string} [raffleWinnerName] User name of whoever won the emote raffle for this emote
+	 * @apiSuccess {string} [reporterName] User name of whoever added the emote origin
 	 * @apiSuccess {string} [url] Priority emote image URL - original first, then a backup link, or null if none exist
 	 * @apiSuccess {string} [notes] Custom notes
 	 **/
@@ -83,9 +83,9 @@ module.exports = (function () {
 	 * @apiSuccess {string} [emoteAdded] ISO date string - when the emote was published
 	 * @apiSuccess {string} [recordAdded] ISO date string - when the emote origin was added
 	 * @apiSuccess {string} [available] Whether the emote image is available, or if a backup exists
-	 * @apiSuccess {string} [author] User name of whoever created the emote
-	 * @apiSuccess {string} [raffleWinner] User name of whoever won the emote raffle for this emote
-	 * @apiSuccess {string} [reporter] User name of whoever added the emote origin
+	 * @apiSuccess {string} [authorName] User name of whoever created the emote
+	 * @apiSuccess {string} [raffleWinnerName] User name of whoever won the emote raffle for this emote
+	 * @apiSuccess {string} [reporterName] User name of whoever added the emote origin
 	 * @apiSuccess {string} [url] Priority emote image URL - original first, then a backup link, or null if none exist
 	 * @apiSuccess {string} [notes] Custom notes
 	 * @apiSuccess {Object[]} relatedEmotes The list of other emotes that have the current one linked in their descriptions or notes

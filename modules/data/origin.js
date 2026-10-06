@@ -8,9 +8,9 @@ module.exports = (function () {
 			const rawData = await super.selectCustom(q => q
 				.select("Origin.ID", "Emote_ID", "Origin.Name", "Tier", "Raffle", "Todo", "Available")
 				.select("Type", "Text", "Emote_Added", "Emote_Deleted", "Record_Added", "Notes", "Backup_Link", "Replaced")
-				.select("Author.Name AS Author")
-				.select("Reporter.Name AS Reporter")
-				.select("Raffle_Winner.Name AS Raffle_Winner")
+				.select("Author.Name AS AuthorName")
+				.select("Reporter.Name AS ReporterName")
+				.select("Raffle_Winner.Name AS RaffleWinnerName")
 				.leftJoin({
 					alias: "Author",
 					toDatabase: "chat_data",

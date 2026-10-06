@@ -120,8 +120,8 @@ module.exports = (function () {
 		const { data } = response.body;
 
 		const authorDetails = [];
-		if (data.author) {
-			authorDetails.push(`by ${data.author}`);
+		if (data.authorName) {
+			authorDetails.push(`by ${data.authorName}`);
 		}
 		if (data.emoteAdded) {
 			const addedOn = new sb.Date(data.emoteAdded).format("Y-m-d");
@@ -129,8 +129,8 @@ module.exports = (function () {
 		}
 
 		const originAddDetails = [];
-		if (data.reporter) {
-			originAddDetails.push(`by ${data.reporter}`);
+		if (data.reporterName) {
+			originAddDetails.push(`by ${data.reporterName}`);
 		}
 		if (data.recordAdded) {
 			const addedOn = new sb.Date(data.recordAdded).format("Y-m-d");
@@ -142,8 +142,8 @@ module.exports = (function () {
 			const addedOn = new sb.Date(data.raffle).format("Y-m-d");
 			raffleDetails.push(`raffled on ${addedOn}`);
 		}
-		if (data.raffleWinner) {
-			raffleDetails.push(`won by ${data.raffleWinner}`);
+		if (data.raffleWinnerName) {
+			raffleDetails.push(`won by ${data.raffleWinnerName}`);
 		}
 
 		const relatedEmotesList = data.relatedEmotes.map(i => `[${i.name}](${i.ID})`).join("");
