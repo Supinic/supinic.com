@@ -6,11 +6,11 @@ module.exports = (function () {
 	class Origin extends TemplateModule {
 		static async fetch (...IDs) {
 			const rawData = await super.selectCustom(q => q
-				.select("Origin.ID", "Emote_ID", "Origin.Name", "Tier", "Raffle", "Todo", "Available")
-				.select("Type", "Text", "Emote_Added", "Emote_Deleted", "Record_Added", "Notes", "Backup_Link", "Replaced")
-				.select("Author.Name AS AuthorName")
-				.select("Reporter.Name AS ReporterName")
-				.select("Raffle_Winner.Name AS RaffleWinnerName")
+				.select("Origin.ID as ID", "Emote_ID AS emoteId", "Origin.Name AS name", "Tier AS tier", "Raffle AS raffle", "Todo AS todo", "Available AS available")
+				.select("Type AS type", "Text AS text", "Emote_Added AS emoteAdded", "Emote_Deleted AS emoteDeleted", "Record_Added AS recordAdded", "Notes AS notes", "Backup_Link AS backupLink", "Replaced AS replaced")
+				.select("Author.Name AS authorName")
+				.select("Reporter.Name AS reporterName")
+				.select("Raffle_Winner.Name AS raffleWinnerName")
 				.leftJoin({
 					alias: "Author",
 					toDatabase: "chat_data",

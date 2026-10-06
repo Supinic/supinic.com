@@ -167,9 +167,9 @@ module.exports = (function () {
 				? `<img alt="${data.name}" class="detail-emote" src="${data.url}"/>`
 				: "N/A",
 			Name: data.name,
-			"Emote ID": (data.detailUrl && data.emoteID)
-				? `<a href="${data.detailUrl}">${data.emoteID}</a>`
-				: data.emoteID ?? "N/A",
+			"Emote ID": (data.detailUrl && data.emoteId)
+				? `<a href="${data.detailUrl}">${data.emoteId}</a>`
+				: data.emoteId ?? "N/A",
 			Type: `${tier} ${data.type}`,
 			Description: (data.text)
 				? linkify(data.text)

@@ -34,10 +34,10 @@ module.exports = (function () {
 		const data = await Origin.fetch();
 		if (req.query.skipReplacedEmotes) {
 			const filtered = data.filter(i => !i.Replaced);
-			return WebUtils.apiSuccess(res, filtered);
+			return WebUtils.apiSuccess(res, filtered, { skipCaseConversion: true });
 		}
 		else {
-			return WebUtils.apiSuccess(res, data);
+			return WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
 		}
 	});
 
@@ -64,7 +64,7 @@ module.exports = (function () {
 		}
 
 		const data = await Origin.fetch(...numberIDs);
-		return WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
 	});
 
 	/**
@@ -105,10 +105,11 @@ module.exports = (function () {
 		}
 
 		const relatedEmotes = await Origin.getRelatedEmotes(originID);
-		return WebUtils.apiSuccess(res, {
-			...data,
-			Related_Emotes: relatedEmotes
-		});
+		return WebUtils.apiSuccess(
+			res,
+			{ ...data, relatedEmotes },
+			{ skipCaseConversion: true }
+		);
 	});
 
 	/**
@@ -130,7 +131,7 @@ module.exports = (function () {
 		});
 
 		const data = await Origin.fetch(...ids);
-		return WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
 	});
 
 	Router.get("/image/:id", async (req, res) => {
