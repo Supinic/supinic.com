@@ -147,6 +147,8 @@ module.exports = (function () {
 		}
 
 		const url = Origin.parseURL({
+			available: row.values.Available,
+			backupLink: row.values.Backup_Link,
 			emoteId: row.values.Emote_ID,
 			type: row.values.Type
 		});
