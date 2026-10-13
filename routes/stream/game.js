@@ -72,7 +72,9 @@ module.exports = (function () {
 		const printData = games.map(game => ({
 			Name: `<a href="/stream/game/detail/${game.Name.replaceAll(/\s+/g, "_")}">${game.Name}</a>`,
 			Status: game.Status,
-			Genre: (game.Genre) ? game.Genre.split(",").join(" ") : "N/A",
+			Genre: (game.Genre && game.Genre.length !== 0) // watch out this is an array directly from the module
+				? game.Genre.join(" ")
+				: "N/A",
 			Steam: (game.Steam_ID)
 				? `<a href="//store.steampowered.com/app/${game.Steam_ID}">🔗</a>`
 				: "N/A",
