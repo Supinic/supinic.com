@@ -2,24 +2,6 @@ module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
 	class Game extends TemplateModule {
-		static async getComments (gameIdentifier) {
-			return await sb.Query.getRecordset(rs => rs
-				.select("User_Alias", "Created", "Text")
-				.select("User_Alias.Name AS Username")
-				.from("stream", "Game_Comment")
-				.join({
-					fromDatabase: "stream",
-					fromTable: "Game_Comment",
-					fromField: "User_Alias",
-					toDatabase: "chat_data",
-					toTable: "User_Alias",
-					toField: "ID"
-				})
-				.from("stream", "Game_Comment")
-				.where("Game = %s", gameIdentifier)
-			);
-		}
-
 		static async getStreams (gameIdentifier) {
 			return await sb.Query.getRecordset(rs => rs
 				.select("Timestamp", "Stream_Game.Notes AS Notes")

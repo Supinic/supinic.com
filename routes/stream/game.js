@@ -6,7 +6,6 @@ const Game = require("../../modules/stream/game.js");
 module.exports = (function () {
 	"use strict";
 
-
 	Router.get("/detail/:game", async (req, res) => {
 		const identifier = req.params.game.replaceAll("_", " ");
 		const gameData = await Game.selectSingleCustom(q => q
@@ -39,30 +38,13 @@ module.exports = (function () {
 			}
 		}
 
-		const [comments, streams] = await Promise.all([
-			Game.getComments(gameData.Name),
-			Game.getStreams(gameData.Name)
-		]);
-
-		const commentRows = comments.map(i => `<tr><td>${i.Created}</td><td>${i.Username}</td><td>${i.Text}</td></tr>`);
-		printData.Comments = sb.Utils.tag.trim `
-			<table id="comments">
-				<thead>
-					<th>Date</th>
-					<th>Username</th>
-					<th>Text</th>
-				</thead>
-				<tbody>
-					${commentRows}
-				</tbody>
-			</table>		
-		`;
-
+		const streams = await Game.getStreams(gameData.Name);
 		const streamsRows = streams.map(i => {
 			const date = new sb.Date(i.Date).format("Y-m-d");
 			const link = `<a href="//twitch.tv/videos/${i.Stream_ID}?t=${i.Timestamp}s">${i.Stream_ID}</a>`;
 			return `<tr><td>${date}</td><td>${link}</td><td>${i.Notes}</td></tr>`;
 		});
+
 		printData.Streams = sb.Utils.tag.trim `
 			<table id="streams">
 				<thead>
@@ -87,14 +69,13 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const games = await Game.selectAll();
-
 		const printData = games.map(game => ({
 			Name: `<a href="/stream/game/detail/${game.Name.replaceAll(/\s+/g, "_")}">${game.Name}</a>`,
 			Status: game.Status,
-			Released: {
-				dataOrder: (game.Released) ? new sb.Date(game.Released).valueOf() : 0,
-				value: (game.Released) ? new sb.Date(game.Released).format("Y") : "N/A"
-			},
+			Genre: (game.Genre) ? game.Genre.split(",").join(" ") : "N/A",
+			Steam: (game.Steam_ID)
+				? `<a href="//store.steampowered.com/app/${game.Steam_ID}">🔗</a>`
+				: "N/A",
 			"Game time": {
 				dataOrder: game.Completion_Time ?? 0,
 				value: (game.Completion_Time)
