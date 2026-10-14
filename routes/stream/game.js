@@ -23,7 +23,7 @@ module.exports = (function () {
 
 		const games = response.body.data;
 		const printData = games.map(game => ({
-			Name: `<a href="/stream/game/detail/${game.identifier}">${game.name}</a>`,
+			Name: `<a href="/stream/game/detail/${game.ID}">${game.name}</a>`,
 			Status: game.status,
 			Genre: (game.genres && game.genres.length !== 0)
 				? game.genres.join(" ")
