@@ -9,6 +9,7 @@ module.exports = (function () {
 		"Game.Completion_Time as completionTime",
 		"Game.Priority as priority",
 		"Game.Steam_ID as steamId",
+		"Game.Notes as notes",
 		"Game.Identifier as ID"
 	];
 

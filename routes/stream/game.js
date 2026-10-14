@@ -1,6 +1,8 @@
 const Express = require("express");
 const Router = Express.Router();
 
+const WebUtils = require("../../utils/webutils.js");
+
 module.exports = (function () {
 	"use strict";
 
@@ -70,11 +72,11 @@ module.exports = (function () {
 		const data = response.body.data;
 		const printData = {
 			Name: data.name,
-			Released: (data.released) ? new sb.Date(data.released).format("Y-m-d") : "N/A",
+			Released: (data.releaseDate) ? new sb.Date(data.releaseDate).format("Y-m-d") : "N/A",
 			Genres: (data.genres.length !== 0) ? data.genres.toSorted().join(" ") : "N/A",
 			Status: data.status,
 			Steam: (data.steamId) ? `<a href="https://store.steampowered.com/app/${data.steamId}">Steam link</a>` : "N/A",
-			Notes: data.notes ?? "N/A"
+			Notes: (data.notes) ? WebUtils.linkify(data.notes) : "N/A"
 		};
 
 		const streamsRows = data.streams.map(i => {
