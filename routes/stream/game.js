@@ -76,7 +76,7 @@ module.exports = (function () {
 			Genres: (data.genres.length !== 0) ? data.genres.toSorted().join(" ") : "N/A",
 			Status: data.status,
 			Steam: (data.steamId) ? `<a href="https://store.steampowered.com/app/${data.steamId}">Steam link</a>` : "N/A",
-			Notes: (data.notes) ? WebUtils.linkify(data.notes) : "N/A"
+			Notes: (data.notes) ? WebUtils.linkify(data.notes).replaceAll("\n", "<br>") : "N/A"
 		};
 
 		const streamsRows = data.streams.map(i => {
