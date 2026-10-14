@@ -5,6 +5,7 @@ module.exports = (function () {
 	"use strict";
 
 	const subroutes = [
+		["game", "game.js"],
 		["recipe", "recipe.js"]
 	];
 
