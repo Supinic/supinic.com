@@ -10,7 +10,7 @@ module.exports = (function () {
 
 	Router.get("/list", async (req, res) => {
 		const data = await Game.selectMultipleCustom(q => q.where("Status <> %s", "Hidden"));
-		return WebUtils.apiSuccess(res, data);
+		return WebUtils.apiSuccess(res, data, { skipCaseConversion: true });
 	});
 
 	Router.get("/detail/:game", async (req, res) => {
@@ -23,7 +23,7 @@ module.exports = (function () {
 		const values = { row };
 		const streams = await StreamGame.getForGame(values.name); // getForGame must receive name, not identifier!
 
-		return WebUtils.apiSuccess(res, { ...values, streams });
+		return WebUtils.apiSuccess(res, { ...values, streams }, { skipCaseConversion: true });
 	});
 
 	return Router;
