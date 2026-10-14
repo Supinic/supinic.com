@@ -80,7 +80,7 @@ module.exports = (function () {
 		const streamsRows = data.streams.map(i => {
 			const date = new sb.Date(i.date).format("Y-m-d");
 			const link = `<a href="//twitch.tv/videos/${i.streamId}">${i.streamId}</a>`;
-			return `<tr><td>${date}</td><td>${link}</td><td>${i.notes}</td></tr>`;
+			return `<tr><td>${date}</td><td>${link}</td><td>${i.notes ?? "N/A"}</td></tr>`;
 		});
 
 		printData.Streams = sb.Utils.tag.trim `
