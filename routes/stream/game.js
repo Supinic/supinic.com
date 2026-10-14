@@ -71,7 +71,7 @@ module.exports = (function () {
 		const printData = {
 			Name: data.name,
 			Released: (data.released) ? new sb.Date(data.released).format("Y-m-d") : "N/A",
-			Genres: data.genres,
+			Genres: (data.genres.length !== 0) ? data.genres.toSorted().join(" ") : "N/A",
 			Status: data.status,
 			Steam: (data.steamId) ? `<a href="https://store.steampowered.com/app/${data.steamId}">Steam link</a>` : "N/A",
 			Notes: data.notes ?? "N/A"
