@@ -37,7 +37,7 @@ module.exports = class TemplateModule {
 	static async selectSingleCustom (callback) {
 		return await sb.Query.getRecordset(rs => {
 			rs.single()
-				.select(`${this.table}.*`)
+				.select(this.allFields)
 				.from(this.database, this.table);
 
 			callback(rs);
@@ -54,7 +54,7 @@ module.exports = class TemplateModule {
 		}
 
 		return await sb.Query.getRecordset(rs => {
-			rs.select(`${this.table}.*`).from(this.database, this.table);
+			rs.select(this.allFields).from(this.database, this.table);
 			callback(rs);
 			return rs;
 		});
@@ -62,7 +62,7 @@ module.exports = class TemplateModule {
 
 	static async selectAll () {
 		return await sb.Query.getRecordset(rs => rs
-			.select(`${this.table}.*`)
+			.select(this.allFields)
 			.from(this.database, this.table)
 		);
 	}
@@ -245,6 +245,14 @@ module.exports = class TemplateModule {
 		throw new sb.Error({
 			message: `get: table must be overriden`
 		});
+	}
+
+	static get allFields () {
+		return (this.aliases) ? this.aliases.join(", ") : `${this.table}.*`;
+	}
+
+	static get aliases () {
+		return null;
 	}
 
 	static get escapedPath () {

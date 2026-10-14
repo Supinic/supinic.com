@@ -1,24 +1,19 @@
 module.exports = (function () {
 	const TemplateModule = require("../template.js");
 
-	class Game extends TemplateModule {
-		static async getStreams (gameIdentifier) {
-			return await sb.Query.getRecordset(rs => rs
-				.select("Timestamp", "Stream_Game.Notes AS Notes")
-				.select("Stream.Date AS Date", "Stream.Video_ID AS Stream_ID")
-				.select("Stream.Start AS Start", "Stream.End AS End")
-				.from("stream", "Stream_Game")
-				.join({
-					fromDatabase: "stream",
-					fromTable: "Stream_Game",
-					toDatabase: "stream",
-					toTable: "Stream",
-					on: "Stream_Game.Stream = Stream.Video_ID"
-				})
-				.where("Game = %s", gameIdentifier)
-			);
-		}
+	const aliases = [
+		"Game.Name as name",
+		"Game.Released as releaseDate",
+		"Game.Genre AS genres",
+		"Game.Status as status",
+		"Game.Completion_Time as completionTime",
+		"Game.Priority as priority",
+		"Game.Steam_ID as steamId",
+		"Game.Identifier as ID"
+	];
 
+	class Game extends TemplateModule {
+		static get aliases () { return aliases; }
 		static get name () { return "game"; }
 		static get database () { return "stream"; }
 		static get table () { return "Game"; }
