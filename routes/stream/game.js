@@ -42,7 +42,7 @@ module.exports = (function () {
 		res.render("generic-list-table", {
 			title: "Supi's stream games",
 			data: printData,
-			head: Object.keys(printData[0]),
+			head: ["Name", "Status", "Genre", "Steam", "Game time"],
 			pageLength: 25,
 			specificFiltering: true
 		});
