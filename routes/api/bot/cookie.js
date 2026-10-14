@@ -20,13 +20,7 @@ module.exports = (function () {
 		.join("chat_data", "User_Alias")
 		.where("Property = %s", "cookie")
 		.where("Value IS NOT NULL")
-		.orderBy(`(
-				CONVERT(JSON_EXTRACT(Value, '$.total.eaten.daily'), INT)
-				+ CONVERT(JSON_EXTRACT(Value, '$.total.eaten.received'), INT)
-				+ CONVERT(JSON_EXTRACT(Value, '$.total.donated'), INT)
-				+ CONVERT(JSON_EXTRACT(Value, '$.total.received'), INT)
-			) DESC`
-		)
+		.orderBy("User_Alias_Data.Sort_Value DESC")
 		.limit(1000)
 	);
 

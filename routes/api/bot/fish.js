@@ -14,7 +14,7 @@ module.exports = (function () {
 		.where("Property = %s", "fishData")
 		.where("Value IS NOT NULL")
 		.where("JSON_EXTRACT(Value, '$.removedFromLeaderboards') IS NULL")
-		.orderBy("CONVERT(JSON_EXTRACT(Value, '$.lifetime.fish'), INT) DESC")
+		.orderBy("User_Alias_Data.Sort_Value DESC")
 		.limit(5000)
 	);
 
