@@ -15,15 +15,13 @@ module.exports = (function () {
 
 	Router.get("/detail/:game", async (req, res) => {
 		const { game } = req.params;
-		const row = await Game.selectSingleCustom(q => q.where("Identifier = %s", game));
-		if (!row) {
+		const data = await Game.selectSingleCustom(q => q.where("Identifier = %s", game));
+		if (!data) {
 			return WebUtils.apiFail(res, 404, "Provided ID does not exist");
 		}
 
-		const values = { row };
-		const streams = await StreamGame.getForGame(values.name); // getForGame must receive name, not identifier!
-
-		return WebUtils.apiSuccess(res, { ...values, streams }, { skipCaseConversion: true });
+		const streams = await StreamGame.getForGame(data.name); // getForGame must receive name, not identifier!
+		return WebUtils.apiSuccess(res, { ...data, streams }, { skipCaseConversion: true });
 	});
 
 	return Router;
