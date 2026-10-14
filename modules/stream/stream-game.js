@@ -10,7 +10,6 @@ module.exports = (function () {
 		static async getForGame (gameName) {
 			return await super.selectMultipleCustom(q => q
 				.select("Stream.Date AS date", "Stream.Video_ID AS streamId")
-				.select("Stream.Start AS start", "Stream.End AS end")
 				.join({
 					fromDatabase: "stream",
 					fromTable: "Stream_Game",
