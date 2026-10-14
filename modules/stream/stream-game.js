@@ -25,7 +25,7 @@ module.exports = (function () {
 		static get aliases () { return aliases; }
 		static get name () { return "stream-game"; }
 		static get database () { return "stream"; }
-		static get table () { return "Stream_Gae"; }
+		static get table () { return "Stream_Game"; }
 	}
 
 	return StreamGame;
