@@ -49,7 +49,7 @@ module.exports = (function () {
 	});
 
 	Router.get("/detail/:game", async (req, res) => {
-		const game = normalize(req.params.name);
+		const game = normalize(req.params.game);
 		if (!game) {
 			return res.status(400).render("error", {
 				error: "400 Bad Request",
