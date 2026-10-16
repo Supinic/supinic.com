@@ -15,7 +15,7 @@ module.exports = (function () {
 		.where("Value IS NOT NULL")
 		.where("JSON_EXTRACT(Value, '$.removedFromLeaderboards') IS NULL")
 		.orderBy("User_Alias_Data.Sort_Value DESC")
-		.limit(5000)
+		.limit(1000)
 	);
 
 	const fetchSpecificUserFishData = async (username) => await sb.Query.getRecordset(rs => rs
